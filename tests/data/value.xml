@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<value>
+  <struct>
+    <member>
+      <name>books</name>
+      <value>
+        <array>
+        <data>
+        <value>
+          <struct>
+            <member>
+              <name>author</name>
+              <value><string>Milan Kundera</string></value>
+            </member>
+            <member>
+              <name>title</name>
+              <value><string>Unbearable Lightness of Being.</string></value>
+            </member>
+            <member>
+              <name>pages</name>
+              <value><int>378</int></value>
+            </member>
+            <member>
+              <name>price</name>
+              <value><double>210.90</double></value>
+            </member>
+          </struct>
+          </value>
+        <value>
+          <struct>
+            <member>
+              <name>author</name>
+              <value><string>D.D.Salinger</string></value>
+            </member>
+            <member>
+              <name>title</name>
+              <value><string>The Catcher in The Rye.</string></value>
+            </member>
+            <member>
+              <name>pages</name>
+              <value><int>250</int></value>
+            </member>
+            <member>
+              <name>price</name>
+              <value><double>40.30</double></value>
+            </member>
+          </struct>
+        </value>
+        </data>
+        </array>
+      </value>
+    </member>
+    <member>
+      <name>type.tests</name>
+      <value>
+        <array>
+        <data>
+          <value><i4>-10</i4></value>
+          <value><double>+3.14</double></value>
+          <value><boolean>true</boolean></value>
+          <value>String without &lt;string&gt; tag.</value>
+        </data>
+        </array>
+      </value>
+    </member>
+    </struct>
+</value>
