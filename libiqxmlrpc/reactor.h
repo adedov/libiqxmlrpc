@@ -15,12 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: reactor.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
 
 #include "lock.h"
+#include "socket.h"
 
 
 namespace iqnet
@@ -50,7 +51,7 @@ public:
   //! sets terminate variable to true.
   virtual void finish() {};
   
-  virtual int get_fd() const = 0;
+  virtual Socket::Handler get_handler() const = 0;
 };
 
 

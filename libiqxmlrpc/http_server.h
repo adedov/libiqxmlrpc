@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.h,v 1.1 2004-04-28 08:42:21 adedov Exp $
+//  $Id: http_server.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_server_h_
 #define _libiqxmlrpc_http_server_h_
@@ -34,7 +34,7 @@ class iqxmlrpc::Http_server_connection: public iqxmlrpc::Server_connection {
   iqnet::Reactor* reactor;
 
 public:
-  Http_server_connection( int, const iqnet::Inet_addr& );
+  Http_server_connection( const iqnet::Socket& );
 
   void set_reactor( iqnet::Reactor* r ) { reactor = r; }
 

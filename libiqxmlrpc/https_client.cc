@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_client.cc,v 1.1 2004-04-28 08:42:21 adedov Exp $
+//  $Id: https_client.cc,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #include <iostream>
 #include "https_client.h"
@@ -24,14 +24,12 @@ using namespace iqxmlrpc;
 using namespace iqnet;
 
 
-Https_client_connection::Https_client_connection( 
-    int sock, const iqnet::Inet_addr& peer 
-  ):
-    iqnet::ssl::Reaction_connection( sock, peer ),
-    Client_connection( sock, peer ),
-    resp_packet(0)
+Https_client_connection::Https_client_connection( const iqnet::Socket& s ):
+  iqnet::ssl::Reaction_connection( s ),
+  Client_connection( s ),
+  resp_packet(0)
 {
-  Reaction_connection::set_non_blocking( true );
+  iqnet::ssl::Reaction_connection::sock.set_non_blocking( true );
 }
 
 

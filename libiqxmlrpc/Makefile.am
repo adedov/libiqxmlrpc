@@ -9,6 +9,7 @@ pkginclude_HEADERS = \
   conn_fabric.h \
   net_except.h \
   inet_addr.h \
+  socket.h \
   acceptor.h \
   connector.h \
   lock.h \
@@ -42,8 +43,8 @@ pkginclude_HEADERS = \
 libiqxmlrpc_la_SOURCES = \
   inet_addr.cc \
   net_except.cc \
+  socket.cc \
   acceptor.cc \
-  connector.cc \
   reactor.cc \
   connection.cc \
   mt_synch.cc \

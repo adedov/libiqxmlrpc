@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_connection.h,v 1.2 2004-04-28 07:35:33 adedov Exp $
+//  $Id: ssl_connection.h,v 1.3 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _libiqnet_ssl_connection_
 #define _libiqnet_ssl_connection_
@@ -44,7 +44,7 @@ protected:
   SSL *ssl;
   
 public:
-  Connection( int sock, const iqnet::Inet_addr& );
+  Connection( const Socket& sock );
   ~Connection();
   
   void shutdown();
@@ -80,7 +80,7 @@ class iqnet::ssl::Reaction_connection: public ssl::Connection {
   int buf_len;
 
 public:
-  Reaction_connection( int, const iqnet::Inet_addr&, Reactor* = 0 );
+  Reaction_connection( const Socket&, Reactor* = 0 );
 
   //! A trick for supporting generic fabric.
   void set_reactor( Reactor* r )

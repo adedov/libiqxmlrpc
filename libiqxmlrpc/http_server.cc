@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.cc,v 1.1 2004-04-28 08:42:21 adedov Exp $
+//  $Id: http_server.cc,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -25,15 +25,15 @@ using namespace iqxmlrpc;
 using namespace iqnet;
 
 
-Http_server_connection::Http_server_connection( int fd, const Inet_addr& addr ):
-  Server_connection( fd, addr )
+Http_server_connection::Http_server_connection( const iqnet::Socket& s ):
+  Server_connection( s )
 {
 }
     
 
 void Http_server_connection::post_accept()
 {
-  set_non_blocking(true);
+  sock.set_non_blocking(true);
   reactor->register_handler( this, Reactor::INPUT );
 }
 

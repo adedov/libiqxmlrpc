@@ -15,52 +15,53 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: connection.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: socket.h,v 1.1 2004-05-17 08:43:02 adedov Exp $
 
-#ifndef _libiqnet_connection_h_
-#define _libiqnet_connection_h_
+#ifndef _libiqnet_socket_h_
+#define _libiqnet_socket_h_
 
-#include <string>
 #include "inet_addr.h"
-#include "reactor.h"
-#include "net_except.h"
 
 
-namespace iqnet 
+namespace iqnet
 {
-  class Connection;
-}
-
-
-//! An established TCP-connection.
-/*!
-    A build block for connection handling. 
-    Have to be created by Connection_fabric.
-*/
-class iqnet::Connection: public iqnet::Event_handler {
-protected:
-  Socket sock;
-
-public:
-  Connection( const Socket& );
-  virtual ~Connection();
-
-  virtual void post_accept() {}
-  virtual void post_connect() {}
-  
-  const iqnet::Inet_addr& get_peer_addr() const 
-  { 
-    return sock.get_peer_addr(); 
-  }
-  
-  Socket::Handler get_handler() const
-  {
-    return sock.get_handler();
-  }
-  
-  virtual int send( const char*, int );
-  virtual int recv( char*, int );
+  class Socket;
 };
 
+
+class iqnet::Socket {
+public:
+  typedef int Handler;
+
+private:
+  Handler sock;
+  Inet_addr peer;
+
+public:
+  //! Creates TCP, reusable socket.
+  Socket();
+  //! Create object from existing socket handler.
+  Socket( Handler, const Inet_addr& );
+  //! Destructor. Does not close actual socket.
+  virtual ~Socket() {}
+
+  Handler get_handler() const { return sock; }
+
+  void close();
+  void set_non_blocking( bool );
+
+  /*! \b Can \b not cause SIGPIPE signal. */
+  virtual int send( const char*, int );
+  /*! \b Can \b not cause SIGPIPE signal. */
+  virtual int recv( char*, int );
+  
+  void   bind( int port );
+  void   listen( unsigned backlog = 5 );
+  Socket accept();
+  void   connect( const iqnet::Inet_addr& );
+
+  //! Returns peer addr of connected or accepted socket.
+  const Inet_addr& get_peer_addr() const { return peer; }  
+};
 
 #endif

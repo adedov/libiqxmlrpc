@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.cc,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: acceptor.cc,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -32,17 +32,7 @@ Acceptor::Acceptor( int port, Accepted_conn_fabric* fabric_, Reactor* reactor_ )
   fabric(fabric_),
   reactor(reactor_)
 {
-  if( (sock = socket( PF_INET, SOCK_STREAM, 0 )) == -1 )
-    throw network_error( "socket" );
-
-  int enable = 1;
-  setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable) );
-  
-  Inet_addr addr( port );
-  const sockaddr* saddr = reinterpret_cast<const sockaddr*>(addr.get_sockaddr());
-  if( bind( sock, saddr, sizeof(sockaddr_in) ) == -1 )
-    throw network_error( "bind" );
-  
+  sock.bind( port );
   listen();
   reactor_->register_handler( this, Reactor::INPUT );
 }
@@ -50,7 +40,7 @@ Acceptor::Acceptor( int port, Accepted_conn_fabric* fabric_, Reactor* reactor_ )
 
 Acceptor::~Acceptor()
 {
-  close( sock );
+  sock.close();
 }
 
 
@@ -62,26 +52,19 @@ void Acceptor::handle_input( bool& )
 
 inline void Acceptor::listen()
 {
-  if( ::listen( sock, 5 ) == -1 )
-    throw network_error( "listen" );
+  sock.listen( 5 );
 }
 
 
 void Acceptor::accept()
 {
-  struct sockaddr_in addr;
-  socklen_t len;
-  
-  int new_sock = ::accept( sock, reinterpret_cast<sockaddr*>(&addr), &len );  
-  if( new_sock == -1 )
-    throw network_error( "accept" );
-
-  fabric->create_accepted( new_sock, Inet_addr( addr ) );
-  listen();
+  Socket new_sock( sock.accept() );
+  fabric->create_accepted( new_sock );
+  sock.listen();
 }
 
 
-const Inet_addr Acceptor::get_addr_listening() const
+/* const Inet_addr Acceptor::get_addr_listening() const
 {
   struct sockaddr_in addr;
   socklen_t len;
@@ -89,3 +72,4 @@ const Inet_addr Acceptor::get_addr_listening() const
   getsockname( sock, reinterpret_cast<sockaddr*>(&addr), &len );
   return Inet_addr( addr );
 }
+*/

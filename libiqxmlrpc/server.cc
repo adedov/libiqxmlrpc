@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.8 2004-04-27 04:19:02 adedov Exp $
+//  $Id: server.cc,v 1.9 2004-05-17 08:43:02 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -26,8 +26,8 @@
 using namespace iqxmlrpc;
 
 
-Server_connection::Server_connection( int sock, const iqnet::Inet_addr& peer ):
-  Connection( sock, peer ),
+Server_connection::Server_connection( const iqnet::Socket& s ):
+  Connection( s ),
   server(0),
   read_buf_sz(1024),
   read_buf(new char[1024])

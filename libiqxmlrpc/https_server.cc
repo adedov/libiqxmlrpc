@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_server.cc,v 1.1 2004-04-28 08:42:21 adedov Exp $
+//  $Id: https_server.cc,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #include <iostream>
 #include "https_server.h"
@@ -24,13 +24,10 @@ using namespace iqxmlrpc;
 using namespace iqnet;
 
 
-Https_server_connection::Https_server_connection( 
-    int fd,
-    const iqnet::Inet_addr& addr
-  ):
-    ssl::Reaction_connection( fd, addr ),
-    Server_connection( fd, addr ),
-    send_buf(0)
+Https_server_connection::Https_server_connection( const iqnet::Socket& s ):
+  ssl::Reaction_connection( s ),
+  Server_connection( s ),
+  send_buf(0)
 {
 }
 

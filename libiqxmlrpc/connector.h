@@ -15,44 +15,29 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: connector.h,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: connector.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _libiqnet_connector_h_
 #define _libiqnet_connector_h_
 
 #include <string>
-#include "inet_addr.h"
+#include "socket.h"
 
 
 namespace iqnet 
 {
-  class Connector_base;
   template <class Conn_type> class Connector;
-};
-
-
-//! Connector's base. Does actual socket's connection.
-class iqnet::Connector_base {
-protected:
-  Inet_addr peer_addr;
-  
-public:
-  Connector_base( const iqnet::Inet_addr& addr ): 
-    peer_addr(addr) {}
-      
-  virtual ~Connector_base() {}
-
-protected:
-  int socket_connect();
 };
 
 
 //! Connector template.
 template <class Conn_type>
-class iqnet::Connector: public iqnet::Connector_base {
+class iqnet::Connector {
+  Inet_addr peer_addr;
+
 public:
   Connector( const iqnet::Inet_addr& peer ):
-    Connector_base( peer ) {}
+    peer_addr(peer) {}
 
   //! Process connection.
   /*! Usage example:
@@ -66,8 +51,9 @@ public:
   */
   Conn_type* connect()
   {
-    int sock = socket_connect();
-    Conn_type* c = new Conn_type( sock, peer_addr );
+    Socket sock;
+    sock.connect( peer_addr );
+    Conn_type* c = new Conn_type( sock );
     c->post_connect();
     return c;
   }

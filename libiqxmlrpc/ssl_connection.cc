@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_connection.cc,v 1.2 2004-04-28 07:35:33 adedov Exp $
+//  $Id: ssl_connection.cc,v 1.3 2004-05-17 08:43:02 adedov Exp $
 
 //#include <iostream>
 #include <openssl/err.h>
@@ -24,8 +24,8 @@
 using namespace iqnet;
 
 
-ssl::Connection::Connection( int s, const iqnet::Inet_addr& addr ):
-  iqnet::Connection( s, addr ),
+ssl::Connection::Connection( const Socket& s ):
+  iqnet::Connection( s ),
   ssl_ctx( ssl::ctx )
 {
   if( !ssl_ctx )
@@ -36,7 +36,7 @@ ssl::Connection::Connection( int s, const iqnet::Inet_addr& addr ):
   if( !ssl )
     throw ssl::exception();
 
-  if( !SSL_set_fd( ssl, sock ) )
+  if( !SSL_set_fd( ssl, sock.get_handler() ) )
     throw ssl::exception();
 }
 
@@ -134,12 +134,11 @@ inline bool ssl::Connection::shutdown_sent()
 
 
 // ----------------------------------------------------------------------------
-ssl::Reaction_connection::Reaction_connection
-  ( int sock, const iqnet::Inet_addr& addr, Reactor* r ):
-  ssl::Connection( sock, addr ),
+ssl::Reaction_connection::Reaction_connection( const Socket& s, Reactor* r ):
+  ssl::Connection( s ),
   reactor(r)
 {
-  set_non_blocking( true );
+  sock.set_non_blocking( true );
 }
 
 

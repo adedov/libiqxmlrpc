@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_client.h,v 1.1 2004-04-28 08:42:21 adedov Exp $
+//  $Id: https_client.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _libiqxmlrpc_https_client_h_
 #define _libiqxmlrpc_https_client_h_
@@ -40,7 +40,7 @@ class iqxmlrpc::Https_client_connection:
   std::string out_str;
 
 public:
-  Https_client_connection( int sock, const iqnet::Inet_addr& peer );
+  Https_client_connection( const iqnet::Socket& );
 
   void post_connect() 
   { 

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_server.h,v 1.1 2004-04-28 08:42:21 adedov Exp $
+//  $Id: https_server.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _libiqxmlrpc_https_server_h_
 #define _libiqxmlrpc_https_server_h_
@@ -37,7 +37,7 @@ class iqxmlrpc::Https_server_connection:
   char* send_buf;
 
 public:
-  Https_server_connection( int, const iqnet::Inet_addr& );
+  Https_server_connection( const iqnet::Socket& );
 
   void post_accept() { Reaction_connection::post_accept(); }
   void finish() { delete this; }

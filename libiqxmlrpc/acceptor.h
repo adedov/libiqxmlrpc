@@ -15,13 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.h,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: acceptor.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _libiqnet_acceptor_h_
 #define _libiqnet_acceptor_h_
 
 #include <string>
 #include "inet_addr.h"
+#include "socket.h"
 #include "reactor.h"
 
 namespace iqnet 
@@ -40,7 +41,7 @@ namespace iqnet
     to create a specific connection handler.
 */
 class iqnet::Acceptor: public iqnet::Event_handler {
-  int sock;
+  Socket sock;
   Accepted_conn_fabric *fabric;
   Reactor *reactor;
     
@@ -48,12 +49,13 @@ public:
   Acceptor( int port, Accepted_conn_fabric*, Reactor* );
   virtual ~Acceptor();
 
-  const iqnet::Inet_addr get_addr_listening() const;
+//  const iqnet::Inet_addr get_addr_listening() const;
+
   void handle_input( bool& );
 
 protected:
   void finish() {}
-  int get_fd() const { return sock; }
+  Socket::Handler get_handler() const { return sock.get_handler(); }
   
   void accept();
   void listen();

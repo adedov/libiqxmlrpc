@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.10 2004-04-27 04:18:40 adedov Exp $
+//  $Id: server.h,v 1.11 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -55,7 +55,7 @@ protected:
   std::string response;
 
 public:
-  Server_connection( int sock, const iqnet::Inet_addr& peer );
+  Server_connection( const iqnet::Socket& );
   virtual ~Server_connection();
 
   void set_read_sz( unsigned );

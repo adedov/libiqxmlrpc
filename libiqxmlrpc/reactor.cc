@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.2 2004-04-27 04:15:36 adedov Exp $
+//  $Id: reactor.cc,v 1.3 2004-05-17 08:43:02 adedov Exp $
 
 #include <vector>
 #include <list>
@@ -43,23 +43,25 @@ using namespace iqnet;
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 class Reactor::Reactor_impl {
 public:
+  typedef Socket::Handler S_fd;
+
   struct Handler {
-    int            fd;
-    Event_handler* handler;
-    short          mask;
-    short          revents;
+    S_fd            fd;
+    Event_handler*  handler;
+    short           mask;
+    short           revents;
     
     Handler():
       fd(0), handler(0), mask(0), revents(0) {}
     
-    Handler( int fd_, Event_handler* eh, Reactor::Event_mask m ):
+    Handler( S_fd fd_, Event_handler* eh, Reactor::Event_mask m ):
       fd(fd_), handler(eh), mask(m), revents(0) {}
   };
   
   class Handler_fd_eq: public std::unary_function<bool, Handler> {
-    int fd;
+    S_fd fd;
   public:
-    Handler_fd_eq( int fd_ ): fd(fd_) {}
+    Handler_fd_eq( S_fd fd_ ): fd(fd_) {}
   
     bool operator ()( const Handler& h )
     {
@@ -70,7 +72,10 @@ public:
   typedef std::list<Handler> Handlers_box;
   typedef Handlers_box::const_iterator const_iterator;
   typedef Handlers_box::iterator iterator;
+
+#ifdef HAVE_POLL
   typedef std::vector<struct pollfd> Pollfd_vec;
+#endif
 
 private:
   iqnet::Lock *lock;
@@ -80,7 +85,7 @@ private:
 #ifdef HAVE_POLL
   Pollfd_vec pfd;
 #else
-  int max_fd;
+  S_fd max_fd;
   fd_set read_set, write_set, err_set;
 #endif
   
@@ -119,7 +124,7 @@ private:
 inline Reactor::Reactor_impl::iterator 
   Reactor::Reactor_impl::find_handler( Event_handler* eh )
 {
-  int fd = eh->get_fd();
+  S_fd fd = eh->get_handler();
   return std::find_if( begin(), end(), Handler_fd_eq(fd) );
 }
 
@@ -130,7 +135,7 @@ void Reactor::Reactor_impl::register_handler( Event_handler* eh, Event_mask mask
   Auto_lock a( lock );
   
   if( i == end() )
-    handlers.push_back( Handler( eh->get_fd(), eh, mask ) );
+    handlers.push_back( Handler( eh->get_handler(), eh, mask ) );
   else
     i->mask |= mask;
 }

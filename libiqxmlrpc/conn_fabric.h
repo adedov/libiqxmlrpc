@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: conn_fabric.h,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: conn_fabric.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _libiqnet_connection_fabric_
 #define _libiqnet_connection_fabric_
@@ -36,7 +36,7 @@ namespace iqnet
 class iqnet::Accepted_conn_fabric {
 public:
   virtual ~Accepted_conn_fabric() {}
-  virtual void create_accepted( int sock, const Inet_addr& peer_addr ) = 0;
+  virtual void create_accepted( const Socket& ) = 0;
 };
 
 
@@ -44,9 +44,9 @@ public:
 template <class Conn_type>
 class iqnet::Serial_conn_fabric: public iqnet::Accepted_conn_fabric {
 public:
-  void create_accepted( int sock, const Inet_addr& peer_addr )
+  void create_accepted( const Socket& sock )
   {
-    Conn_type* c = new Conn_type( sock, peer_addr );
+    Conn_type* c = new Conn_type( sock );
     post_create( c );
     c->post_accept();
   }

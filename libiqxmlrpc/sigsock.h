@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sigsock.h,v 1.2 2004-04-27 05:25:09 adedov Exp $
+//  $Id: sigsock.h,v 1.3 2004-05-17 08:43:02 adedov Exp $
 
 #ifndef _libiqnet_sigsock_h_
 #define _libiqnet_sigsock_h_
 
+#include "socket.h"
 #include "reactor.h"
 #include "lock.h"
 
@@ -32,7 +33,7 @@ namespace iqnet
 //! Helper pair of sockets which allows to reset poll/select
 //! state from another thread.
 class iqnet::Alarm_socket: public iqnet::Event_handler {
-  int sock[2];
+  Socket::Handler sock[2];
   Reactor* reactor;
   Lock* lock;
 
@@ -42,7 +43,7 @@ public:
 
   void handle_input( bool& );
 
-  int get_fd() const { return sock[0]; }
+  Socket::Handler get_handler() const { return sock[0]; }
 
   void send_alarm();
 };
