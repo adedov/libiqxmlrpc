@@ -14,8 +14,7 @@ using namespace iqnet;
 
 Connection::Connection( int s, const Inet_addr& addr ):
   sock(s), 
-  peer_addr(addr),
-  allow_part_send(false)
+  peer_addr(addr)
 {
 }
 
@@ -34,18 +33,15 @@ int Connection::send( const char* data, int len )
   if( ret == -1 )
     throw network_error( "send" );
 
-  if( !allow_part_send && ret != len )
-    throw send_failed();
-  
   return ret;
 }
 
 
 int Connection::recv( char* buf, int len )
 {
-  int ret;
+  int ret = ::recv( sock, buf, len, MSG_NOSIGNAL );
   
-  if( (ret = ::recv( sock, buf, len, MSG_NOSIGNAL )) == -1 )
+  if( ret == -1 )
     throw network_error( "recv" );
 
   return ret;
