@@ -55,12 +55,24 @@ libiqxmlrpc_la_SOURCES = \
   parser_specific.cc \
   request.cc \
   response.cc \
+  http.cc \
+  http_transport.cc \
+  https_transport.cc \
   method.cc \
   executor.cc \
-  http.cc \
   server.cc \
-  client.cc \
-  http_transport.cc \
-  https_transport.cc
+  client.cc
 
 #  xml_util.cc
+
+# Server only sources:
+#  thread.*
+#  sigsock.*
+#  method.*
+#  executor.*
+#  server.*
+#  
+# Client only sources:
+#  client.*
+
+  
