@@ -12,7 +12,8 @@ pkginclude_HEADERS = \
   method.h \
   null_transport.h \
   http.h \
-  http_transport.h
+  http_transport.h \
+  https_transport.h
 
 
 libiqxmlrpc_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
@@ -32,7 +33,8 @@ libiqxmlrpc_la_SOURCES = \
 
 
 libiqxmlrpc_net_la_SOURCES = \
-  http_transport.cc
+  http_transport.cc \
+  https_transport.cc
   
 libiqxmlrpc_net_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
 libiqxmlrpc_net_la_LIBADD = ../libiqnet/libiqnet.la libiqxmlrpc.la 
