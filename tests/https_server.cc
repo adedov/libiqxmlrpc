@@ -24,7 +24,7 @@ int main()
   try {
     ssl::ctx = ssl::Ctx::server_only( "data/cert.pem", "data/pk.pem" );
 
-    server = new Server( 3344, new Executor_fabric<Serial_executor> );
+    server = new Server( 3344, new Serial_executor_fabric );
     server->register_method<Get_weather>( "get_weather" );
     server->log_errors( &std::cerr );
     server->work<Https_server_connection>();
