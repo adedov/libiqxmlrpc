@@ -15,14 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: utf_conv.h,v 1.1 2004-10-03 16:23:02 adedov Exp $
+//  $Id: utf_conv.h,v 1.2 2004-10-03 16:33:13 adedov Exp $
 
 #ifndef _libiqxmlrpc_utf_conv_h_
 #define _libiqxmlrpc_utf_conv_h_
 
 #include <string>
-#include <stdexcept>
 #include <iconv.h>
+#include "except.h"
 
 
 namespace iqxmlrpc 
@@ -36,8 +36,8 @@ namespace iqxmlrpc
 */
 class iqxmlrpc::Utf_conv {
 public:
-  class Unknown_conversion;
-  class Conversion_failed;
+  class Unknown_charset_conversion;
+  class Charest_conversion_failed;
   
 private:
   iconv_t cd;
@@ -64,17 +64,17 @@ private:
 };
 
 
-class iqxmlrpc::Utf_conv::Unknown_conversion: public std::runtime_error {
+class iqxmlrpc::Utf_conv::Unknown_charset_conversion: public iqxmlrpc::Exception {
 public:
   Unknown_conversion( const std::string& cs ):
-    runtime_error( "iconv not aware about charset " + cs ) {}
+    Exception( "iconv not aware about charset " + cs ) {}
 };
 
 
-class iqxmlrpc::Utf_conv::Conversion_failed: public std::runtime_error {
+class iqxmlrpc::Utf_conv::Charest_conversion_failed: public iqxmlrpc::Exception {
 public:
   Conversion_failed():
-    runtime_error( "Conversion failed." ) {}
+    Exception( "Charset conversion failed." ) {}
 };
 
 

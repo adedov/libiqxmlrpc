@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: utf_conv.cc,v 1.1 2004-10-03 16:23:02 adedov Exp $
+//  $Id: utf_conv.cc,v 1.2 2004-10-03 16:33:13 adedov Exp $
 
 #include <errno.h>
 #include "utf_conv.h"
@@ -41,7 +41,7 @@ Utf_conv::Utf_conv( bool from_utf, const std::string& enc )
                    from_utf ? "utf-8" : enc.c_str() );
   
   if( cd == (iconv_t)-1 )
-    throw Unknown_conversion( enc );
+    throw Unknown_charset_conversion( enc );
 }
 
 
@@ -88,7 +88,7 @@ std::string Utf_conv::convert( const std::string& s, unsigned max_sym_len )
 
   int code = iconv( cd, &ibuf, &ileft, obuf.ptr2(), &oleft );
   if( code == (size_t)-1 )
-    throw Conversion_failed();
+    throw Charset_conversion_failed();
     
   return std::string( obuf.ptr1(), olen - oleft );
 }
