@@ -1,5 +1,14 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.6.2 - 0.6.3
+  * Now users' server methods aware about peer's address (Method::peer_addr()).
+  * Remove 'const' modifier from Firewall_base::grant() method.
+  * Other minor interface additions/code clean-ups.
+  
+  Fixes:
+    * Properly remove used connections on client side.
+    * Fix several bugs regarding socket functionality.
+
 0.6.1 - 0.6.2
   New features:
     * Added support for optional user's firewall classes. They may decide
