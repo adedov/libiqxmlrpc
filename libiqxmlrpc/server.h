@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.15 2004-10-14 03:10:38 adedov Exp $
+//  $Id: server.h,v 1.16 2004-10-15 09:42:55 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -98,6 +98,7 @@ protected:
   iqnet::Reactor reactor;
   iqnet::Accepted_conn_fabric* conn_fabric;
   iqnet::Acceptor* acceptor;
+  iqnet::Firewall_base* firewall;
 
   bool exit_flag;
   std::ostream* log;
@@ -125,6 +126,9 @@ public:
 
   //! Set maximum size of incoming client's request in bytes.
   void set_max_request_sz( unsigned );
+  
+  //! Set optional firewall object.
+  void set_firewall( iqnet::Firewall_base* );
   /*! \} */
 
   //! \name Run/stop server
@@ -162,6 +166,7 @@ void iqxmlrpc::Server::work()
   {
     conn_fabric = new Server_conn_fabric<Transport>( this, &reactor );
     acceptor = new iqnet::Acceptor( port, conn_fabric, &reactor );
+    acceptor->set_firewall( firewall );
   }
   
   while( !exit_flag )

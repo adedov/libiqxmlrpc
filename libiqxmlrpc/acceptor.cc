@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.cc,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: acceptor.cc,v 1.3 2004-10-15 09:42:55 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -30,7 +30,8 @@ using namespace iqnet;
 
 Acceptor::Acceptor( int port, Accepted_conn_fabric* fabric_, Reactor* reactor_ ):
   fabric(fabric_),
-  reactor(reactor_)
+  reactor(reactor_),
+  firewall(0)
 {
   sock.bind( port );
   listen();
@@ -41,6 +42,13 @@ Acceptor::Acceptor( int port, Accepted_conn_fabric* fabric_, Reactor* reactor_ )
 Acceptor::~Acceptor()
 {
   sock.close();
+}
+
+
+void Acceptor::set_firewall( iqnet::Firewall_base* fw )
+{
+  delete firewall;
+  firewall = fw;
 }
 
 
@@ -59,6 +67,17 @@ inline void Acceptor::listen()
 void Acceptor::accept()
 {
   Socket new_sock( sock.accept() );
+  
+  if( firewall )
+  {
+    if( !firewall->grant( new_sock.get_peer_addr() ) )
+    {
+      // new_sock.shutdown();
+      new_sock.close();
+      return;
+    }
+  }
+  
   fabric->create_accepted( new_sock );
   sock.listen();
 }

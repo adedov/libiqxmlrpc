@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: acceptor.h,v 1.3 2004-10-15 09:42:55 adedov Exp $
 
 #ifndef _libiqnet_acceptor_h_
 #define _libiqnet_acceptor_h_
@@ -29,8 +29,23 @@ namespace iqnet
 {
   class Accepted_conn_fabric;
   class Connection;
+  class Firewall_base;
   class Acceptor;
 };
+
+
+//! Firewall base class. 
+/*! Used by Acceptor to find out whether it should
+    accept XML-RPC requests from specific IP.
+*/
+class iqnet::Firewall_base {
+public:
+  virtual ~Firewall_base() {}
+
+  //! Must return bool to grant client to send request.
+  virtual bool grant( const iqnet::Inet_addr& ) const = 0;
+};
+
 
 //! An implementation of pattern that separates TCP-connection
 //! establishment from connection handling.
@@ -44,10 +59,13 @@ class iqnet::Acceptor: public iqnet::Event_handler {
   Socket sock;
   Accepted_conn_fabric *fabric;
   Reactor *reactor;
+  Firewall_base* firewall;
     
 public:
   Acceptor( int port, Accepted_conn_fabric*, Reactor* );
   virtual ~Acceptor();
+
+  void set_firewall( iqnet::Firewall_base* );
 
 //  const iqnet::Inet_addr get_addr_listening() const;
 
