@@ -73,6 +73,8 @@ public:
 */
 class iqxmlrpc::Method_dispatcher {
 public:
+  //! Exception is being thrown when user tries to create 
+  //! Method object for unregistered name.
   class Unknown_method: public Exception {
     enum { code = Fault_code::unknown_method };
   public:
