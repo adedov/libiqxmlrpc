@@ -15,12 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.cc,v 1.5 2004-04-14 08:56:40 adedov Exp $
+//  $Id: method.cc,v 1.6 2004-09-19 17:34:22 adedov Exp $
 
 #include "method.h"
 
 using namespace iqxmlrpc;
-
 
 Method_dispatcher::~Method_dispatcher()
 {
