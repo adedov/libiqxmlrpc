@@ -15,11 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_connection.cc,v 1.10 2004-03-29 06:20:15 adedov Exp $
+//  $Id: ssl_connection.cc,v 1.11 2004-04-14 07:28:07 adedov Exp $
 
 #include <iostream>
 #include <openssl/err.h>
-#include <libiqnet/ssl_connection.h>
+#include "ssl_connection.h"
 
 using namespace iqnet;
 

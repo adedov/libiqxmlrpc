@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_lib.cc,v 1.7 2004-03-29 06:20:15 adedov Exp $
+//  $Id: ssl_lib.cc,v 1.8 2004-04-14 07:28:07 adedov Exp $
 
 #include <openssl/rsa.h>
 #include <openssl/crypto.h>
@@ -23,8 +23,8 @@
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h> 
-#include <libiqnet/net_except.h>
-#include <libiqnet/ssl_lib.h>
+#include "net_except.h"
+#include "ssl_lib.h"
 
 using namespace iqnet::ssl;
 

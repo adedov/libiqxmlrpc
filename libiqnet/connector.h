@@ -15,13 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: connector.h,v 1.3 2004-03-29 06:20:15 adedov Exp $
+//  $Id: connector.h,v 1.4 2004-04-14 07:28:07 adedov Exp $
 
 #ifndef _libiqnet_connector_h_
 #define _libiqnet_connector_h_
 
 #include <string>
-#include <libiqnet/inet_addr.h>
+#include "inet_addr.h"
 
 
 namespace iqnet 

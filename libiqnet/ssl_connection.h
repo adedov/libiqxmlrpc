@@ -15,15 +15,15 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_connection.h,v 1.8 2004-03-29 06:20:15 adedov Exp $
+//  $Id: ssl_connection.h,v 1.9 2004-04-14 07:28:07 adedov Exp $
 
 #ifndef _libiqnet_ssl_connection_
 #define _libiqnet_ssl_connection_
 
 #include <openssl/ssl.h>
-#include <libiqnet/connection.h>
-#include <libiqnet/ssl_lib.h>
-#include <libiqnet/conn_fabric.h>
+#include "connection.h"
+#include "ssl_lib.h"
+#include "conn_fabric.h"
 
 
 namespace iqnet
