@@ -36,6 +36,7 @@ public:
   typedef void (*Parser)( Header*, std::istringstream& );
   typedef std::map<std::string, Parser> Parsers_box;
 
+private:
   struct Option {
     std::string name;
     std::string value;
@@ -45,6 +46,7 @@ public:
   };
 
   typedef std::list<Option> Options_box;
+  class Option_eq;
 
 private:
   Parsers_box parsers;

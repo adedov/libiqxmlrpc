@@ -8,8 +8,8 @@
 
 using namespace iqxmlrpc::http;
 
-
-class Option_eq: public std::unary_function<bool, Header::Option> {
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+class Header::Option_eq: public std::unary_function<bool, Header::Option> {
   std::string name;
   
 public:
@@ -20,7 +20,7 @@ public:
     return op.name == name;
   }
 };
-
+#endif
 
 Header::Header()
 {
