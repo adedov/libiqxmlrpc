@@ -48,10 +48,10 @@ void sigint_handler( int )
 
 int main()
 {
-  ssl::ctx = ssl::Ctx::server_only( "data/cert.pem", "data/pk.pem" );
-  signal( SIGINT, sigint_handler );
-
   try {
+    signal( SIGINT, sigint_handler );
+
+    ssl::ctx = ssl::Ctx::server_only( "data/cert.pem", "data/pk.pem" );
     dispatcher.register_method( "get_weather", new Method_factory<Get_weather> );
     server = new Https_server( 3344, &dispatcher );
     server->work();
