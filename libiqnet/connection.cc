@@ -88,7 +88,8 @@ const std::string Connection::recv_str()
 void Connection::set_non_blocking( bool flag )
 {
   int enable = flag;
-  ::setsockopt( sock, SOL_TCP, TCP_NODELAY, &enable, sizeof(int) );
+  if( ::setsockopt( sock, SOL_TCP, TCP_NODELAY, &enable, sizeof(int) ) == -1 )
+    throw network_error( "setsockopt" );
 }
 
 
