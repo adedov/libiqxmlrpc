@@ -128,10 +128,13 @@ void Reactor::Reactor_impl::prepare_user_events()
 {
   called_by_user.clear();
 
-  for( const_iterator i = begin(); i != end(); ++i )
+  for( iterator i = begin(); i != end(); ++i )
   {
     if( i->revents && (i->mask | i->revents) )
+    {
       called_by_user.push_back( *i );
+      i->revents &= !i->mask;
+    }
   }
 }
 
