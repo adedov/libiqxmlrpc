@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.22 2004-11-02 09:41:37 maxim Exp $
+//  $Id: value_type.h,v 1.23 2004-11-02 17:00:25 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -101,7 +101,12 @@ class iqxmlrpc::Array: public iqxmlrpc::Value_type {
   friend class Array_inserter;
   
 public:
-  typedef const Value & const_reference;
+  typedef Value value_type;
+  typedef value_type* pointer;
+  typedef const value_type* const_pointer;
+  typedef value_type& reference;
+  typedef const value_type& const_reference;
+
   class const_iterator;
   friend class Array::const_iterator;
 
@@ -127,8 +132,27 @@ public:
   
   unsigned size() const { return values.size(); }
   
-  const Value& operator []( unsigned ) const;
-  Value&       operator []( unsigned );
+  const Value& operator []( unsigned i ) const
+  {
+    try {
+      return (*values.at(i));
+    }
+    catch( const std::out_of_range& )
+    {
+      throw Out_of_range();
+    }
+  }
+
+  Value& operator []( unsigned i )
+  {
+    try {
+      return (*values.at(i));
+    }
+    catch( const std::out_of_range& )
+    {
+      throw Out_of_range();
+    }
+  }
   
   void push_back( Value* );
   void push_back( const Value& );
@@ -144,7 +168,7 @@ public:
   }
 
   Array::const_iterator begin() const;
-  Array::const_iterator end() const;
+  Array::const_iterator end()   const;
 };
 
 
@@ -176,6 +200,18 @@ public:
     return !(*this == ci );
   }
 };
+
+
+inline iqxmlrpc::Array::const_iterator iqxmlrpc::Array::begin() const
+{ 
+  return values.begin(); 
+}
+
+
+inline iqxmlrpc::Array::const_iterator iqxmlrpc::Array::end() const 
+{ 
+  return values.end(); 
+}
 
 
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
