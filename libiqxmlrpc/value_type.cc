@@ -15,17 +15,28 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.12 2004-08-17 03:56:12 adedov Exp $
+//  $Id: value_type.cc,v 1.13 2004-10-04 23:37:26 adedov Exp $
 
 #include <string.h>
-#include <sstream>
 #include <algorithm>
 #include "value_type.h"
 #include "value.h"
+#include "utf_conv.h"
 
 using namespace iqxmlrpc;
 
 
+iqxmlrpc::Utf_conv_base* iqxmlrpc::config::cs_conv = new Utf_null_conv;
+
+
+void iqxmlrpc::config::set_encoding( const std::string& enc, unsigned m )
+{
+  delete iqxmlrpc::config::cs_conv;
+  iqxmlrpc::config::cs_conv = new Utf_conv( enc, m );
+}
+
+
+// --------------------------------------------------------------------------
 Value_type* Nil::clone() const
 {
   return new Nil();
@@ -38,7 +49,7 @@ void Nil::to_xml( xmlpp::Node* p ) const
 }
 
 
-// --------------------------------------------------------------------------
+// --------------------- Scalar's specialization ------------------------------
 void Int::to_xml( xmlpp::Node* p ) const 
 {
   xmlpp::Element* el = p->add_child( "i4" );
@@ -66,10 +77,11 @@ void Double::to_xml( xmlpp::Node* p ) const
 }
 
 
-void String::to_xml( xmlpp::Node* p ) const
+// --------------------------------------------------------------------------
+void iqxmlrpc::String::to_xml( xmlpp::Node* p ) const
 {
   xmlpp::Element* el = p->add_child( "string" );
-  el->add_child_text( value_ );
+  el->add_child_text( config::cs_conv->to_utf(value_) );
 }
 
 

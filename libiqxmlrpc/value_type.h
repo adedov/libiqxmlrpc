@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.16 2004-08-17 03:56:12 adedov Exp $
+//  $Id: value_type.h,v 1.17 2004-10-04 23:37:26 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -23,6 +23,7 @@
 
 #include <time.h>
 #include <string>
+#include <sstream>
 #include <libxml++/libxml++.h>
 #include "except.h"
 
@@ -31,6 +32,8 @@
 namespace iqxmlrpc
 {
   class Value;
+  class Utf_conv_base;
+  
   class Value_type;
   class Nil;
   class Array;
@@ -44,6 +47,15 @@ namespace iqxmlrpc
   
   class Binary_data;
   class Date_time;
+    
+  namespace config
+  {
+    //! Current charset converter
+    extern iqxmlrpc::Utf_conv_base* cs_conv;
+    
+    //! Change current charset converter
+    void set_encoding( const std::string&, unsigned max_sym_len = 3 );
+  }  
 };
 
 
@@ -73,10 +85,11 @@ public:
 /*! \see \ref value_types */
 template <class T> 
 class iqxmlrpc::Scalar: public iqxmlrpc::Value_type {
+protected:
   T value_;
   
 public:
-  Scalar( T t ): value_(t) {}
+  Scalar( const T& t ): value_(t) {}
   Scalar<T>* clone() const { return new Scalar<T>(value_); }
 
   void to_xml( xmlpp::Node* ) const;
