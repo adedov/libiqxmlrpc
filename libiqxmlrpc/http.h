@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.h,v 1.16 2004-07-22 10:12:41 adedov Exp $
+//  $Id: http.h,v 1.17 2004-07-23 08:48:35 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -226,6 +226,7 @@ public:
   Packet_reader():
     header(0), 
     constructed(false),
+    pkt_max_sz(0),
     total_sz(0) {}
       
   ~Packet_reader()

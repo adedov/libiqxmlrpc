@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.11 2004-07-22 10:12:41 adedov Exp $
+//  $Id: server.cc,v 1.12 2004-07-23 08:48:35 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -77,7 +77,8 @@ Server::Server( int p, Executor_fabric_base* f ):
   conn_fabric(0),
   acceptor(0),
   exit_flag(false),
-  log(0)
+  log(0),
+  max_req_sz(0)
 {
 }
 
