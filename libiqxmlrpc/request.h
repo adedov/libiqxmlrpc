@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: request.h,v 1.2 2004-03-29 06:23:18 adedov Exp $
+//  $Id: request.h,v 1.3 2004-04-14 08:55:55 adedov Exp $
 
 #ifndef _iqxmlrpc_request_h_
 #define _iqxmlrpc_request_h_
@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 #include <libxml++/libxml++.h>
-#include <libiqxmlrpc/value.h>
+#include "value.h"
 
 
 namespace iqxmlrpc 
@@ -31,7 +31,10 @@ namespace iqxmlrpc
   class Value;
   class Request;
     
-  typedef std::vector<Value> Param_list;  
+  typedef std::vector<Value> Param_list;
+  
+  //! Build request object from XML-formed string.
+  Request* parse_request( const std::string& );
 };
 
 
