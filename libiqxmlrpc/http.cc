@@ -410,7 +410,7 @@ void Response_header::parse_server( Header* obj, std::istringstream& ss )
 
 
 // ---------------------------------------------------------------------------
-Packet::Packet( const std::string& h, const std::string& co ):
+Packet::Packet( Header* h, const std::string& co ):
   header_(h), 
   content_(co) 
 {
