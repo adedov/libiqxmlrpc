@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.h,v 1.1 2004-05-17 08:43:02 adedov Exp $
+//  $Id: socket.h,v 1.2 2004-06-25 08:08:57 adedov Exp $
 
 #ifndef _libiqnet_socket_h_
 #define _libiqnet_socket_h_
@@ -31,7 +31,11 @@ namespace iqnet
 
 class iqnet::Socket {
 public:
+#ifdef _WINDOWS
+	typedef SOCKET Handler;
+#else
   typedef int Handler;
+#endif //_WINDOWS
 
 private:
   Handler sock;

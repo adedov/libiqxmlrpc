@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: net_except.cc,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: net_except.cc,v 1.2 2004-06-25 08:08:57 adedov Exp $
 
 #include "sysinc.h"
 #include "net_except.h"
@@ -23,6 +23,7 @@
 
 iqnet::network_error::network_error( const std::string& msg, bool use_errno ):
   std::runtime_error( 
-    use_errno ? (msg + std::string(": ") + strerror(errno)) : msg )
+	  use_errno?(strerror(errno)):msg)
+//FIXME    use_errno ? (msg + std::string(": ") + strerror(errno)) : msg )
 {
 }

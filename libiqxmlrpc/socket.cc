@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.cc,v 1.2 2004-06-09 09:24:16 adedov Exp $
+//  $Id: socket.cc,v 1.3 2004-06-25 08:08:57 adedov Exp $
 
 #include "sysinc.h"
 #include "socket.h"
@@ -29,12 +29,14 @@ Socket::Socket()
   if( (sock = socket( PF_INET, SOCK_STREAM, 0 )) == -1 )
     throw network_error( "Socket::Socket" );
 
+#ifndef _WINDOWS
   int enable = 1;
   setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable) );
   
   struct linger ling;
   ling.l_onoff = 0;
   setsockopt( sock, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling) );
+#endif //_WINDOWS
 }
 
 
@@ -47,17 +49,27 @@ Socket::Socket( Socket::Handler h, const Inet_addr& addr ):
 
 void Socket::close()
 {
+#ifdef _WINDOWS
+	closesocket(sock);
+#else
   ::close( sock );
+#endif //_WINDOWS
 }
 
 
 void Socket::set_non_blocking( bool flag )
 {
+#ifdef _WINDOWS
+	unsigned long f = flag?1:0;
+	if (ioctlsocket(sock, FIONBIO, &f) != 0)
+		throw network_error( "Socket::set_non_blocking");
+#else
   int mode = fcntl( sock, F_GETFL, 0 );
   mode = flag ? mode | O_NDELAY : mode & ~O_NDELAY;
   
   if( fcntl( sock, F_SETFL, mode ) == -1 )
     throw network_error( "Socket::set_non_blocking" );
+#endif //_WINDOWS
 }
 
 
@@ -73,7 +85,11 @@ void Socket::set_non_blocking( bool flag )
 
 int Socket::send( const char* data, int len )
 {
+#ifdef _WINDOWS
+  int ret = ::send( sock, data, len, 0);
+#else
   int ret = ::send( sock, data, len, MSG_NOSIGNAL );
+#endif //_WINDOWS
   
   if( ret == -1 )
     throw network_error( "Socket::send" );
@@ -84,7 +100,11 @@ int Socket::send( const char* data, int len )
 
 int Socket::recv( char* buf, int len )
 {
+#ifdef _WINDOWS
+  int ret = ::recv( sock, buf, len, 0 );
+#else
   int ret = ::recv( sock, buf, len, MSG_NOSIGNAL );
+#endif //_WINDOWS
   
   if( ret == -1 )
     throw network_error( "Socket::recv" );

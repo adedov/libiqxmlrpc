@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sysinc.h,v 1.3 2004-04-27 04:16:51 adedov Exp $
+//  $Id: sysinc.h,v 1.4 2004-06-25 08:08:57 adedov Exp $
 
 /*! \file sysinc.h 
     This file should help to port library.
@@ -29,18 +29,24 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <time.h>
-#include <unistd.h>
+
+#ifdef _WINDOWS
+  #include "../win32/stdafx.h"
+#else
+  #include <unistd.h>
+  #include <netdb.h>
+  #include <sys/socket.h>
+  #include <sys/time.h>
+  #include <sys/types.h>
+  #include <pthread.h>
+  #include <arpa/inet.h>
+  #include <netinet/in.h>
+  #include <netinet/tcp.h>
+#endif //_WINDOWS
+
 #include <errno.h>
 #include <fcntl.h>
-#include <netdb.h>
 #include <string.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <pthread.h>
 
 #ifdef HAVE_POLL
   #include <sys/poll.h>

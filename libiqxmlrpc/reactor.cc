@@ -15,14 +15,18 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.4 2004-06-07 09:45:43 adedov Exp $
+//  $Id: reactor.cc,v 1.5 2004-06-25 08:08:57 adedov Exp $
 
 #include <vector>
 #include <list>
 #include <deque>
 #include <functional>
 #include <algorithm>
-#include "../config.h"
+
+#ifndef _WINDOWS
+  #include "../config.h"
+#endif
+
 #include "sysinc.h"
 
 #ifndef HAVE_POLL

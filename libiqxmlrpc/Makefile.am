@@ -11,6 +11,8 @@ libiqxmlrpc_server_la_LIBADD = libiqxmlrpc-general.la
 libiqxmlrpc_la_SOURCES = libiqxmlrpc.h
 libiqxmlrpc_la_LIBADD = libiqxmlrpc-general.la libiqxmlrpc-client.la libiqxmlrpc-server.la
 
+EXTRA_DIST = version.h.in version.h 
+
 pkginclude_HEADERS = \
   libiqxmlrpc.h \
   sysinc.h \

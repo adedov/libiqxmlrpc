@@ -15,15 +15,21 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.cc,v 1.21 2004-04-21 07:22:50 adedov Exp $
+//  $Id: http.cc,v 1.22 2004-06-25 08:08:57 adedov Exp $
 
 #include "sysinc.h"
 #include <iostream>
 #include <functional>
 #include <memory>
+#include <algorithm>
 #include "http.h"
 #include "method.h"
+
+#ifdef _WINDOWS
+#include "version.h"
+#else
 #include "../config.h"
+#endif //_WINDOWS
 
 using namespace iqxmlrpc::http;
 
