@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.3 2004-05-17 08:43:02 adedov Exp $
+//  $Id: reactor.cc,v 1.4 2004-06-07 09:45:43 adedov Exp $
 
 #include <vector>
 #include <list>
@@ -296,7 +296,7 @@ bool Reactor::Reactor_impl::handle_system_events( Reactor::Timeout to_ms )
   std::deque<Handler> active_hs;
   
 #ifdef HAVE_POLL    
-  for( int i = 0; i < hsz; i++ )
+  for( unsigned i = 0; i < hsz; i++ )
   {
     if( pfd[i].revents )
     {

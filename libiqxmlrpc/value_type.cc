@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.7 2004-05-11 10:11:46 adedov Exp $
+//  $Id: value_type.cc,v 1.8 2004-06-07 09:45:43 adedov Exp $
 
 #include <string.h>
 #include <sstream>
@@ -82,7 +82,7 @@ void Array::to_xml( xmlpp::Node* p ) const
   xmlpp::Element* el = arr_el->add_child( "data" );
   unsigned sz = size();
   
-  for( int i = 0; i < sz; i++ )
+  for( unsigned i = 0; i < sz; i++ )
     (*this)[i].to_xml( el );
 }
 
@@ -278,7 +278,7 @@ void Binary_data::encode() const
   const char* d = data.data();
   unsigned dsz = data.length();
 
-  for( int i = 0; i < dsz; i += 3 )
+  for( unsigned i = 0; i < dsz; i += 3 )
   {
     unsigned c = 0xff0000 & d[i] << 16;
     add_base64_char( (c >> 18) & 0x3f );

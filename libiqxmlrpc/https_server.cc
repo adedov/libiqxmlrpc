@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_server.cc,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: https_server.cc,v 1.3 2004-06-07 09:45:43 adedov Exp $
 
 #include <iostream>
 #include "https_server.h"
@@ -25,8 +25,8 @@ using namespace iqnet;
 
 
 Https_server_connection::Https_server_connection( const iqnet::Socket& s ):
-  ssl::Reaction_connection( s ),
   Server_connection( s ),
+  ssl::Reaction_connection( s ),
   send_buf(0)
 {
 }

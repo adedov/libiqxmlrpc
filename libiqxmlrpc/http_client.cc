@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_client.cc,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: http_client.cc,v 1.3 2004-06-07 09:45:43 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -65,7 +65,7 @@ void Http_client_connection::handle_output( bool& )
 
 void Http_client_connection::handle_input( bool& )
 {
-  for( int sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
+  for( unsigned sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
   {
     read_buf[0] = 0;
     int sz = recv( read_buf, read_buf_sz  );

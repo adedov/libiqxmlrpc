@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.4 2004-04-27 05:25:09 adedov Exp $
+//  $Id: executor.cc,v 1.5 2004-06-07 09:45:43 adedov Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -118,7 +118,7 @@ public:
 Pool_executor_fabric::Pool_executor_fabric( unsigned pool_size )
 {
   pool.reserve( pool_size );
-  for( int i = 0; i < pool_size; ++i )
+  for( unsigned i = 0; i < pool_size; ++i )
     pool.push_back( new Pool_thread(i, this) );
 }
 
