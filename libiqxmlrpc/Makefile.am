@@ -1,4 +1,4 @@
-lib_LTLIBRARIES = libiqxmlrpc.la libiqxmlrpc-net.la
+lib_LTLIBRARIES = libiqxmlrpc.la
 
 pkginclude_HEADERS = \
   libiqxmlrpc.h \
@@ -16,9 +16,6 @@ pkginclude_HEADERS = \
   https_transport.h
 
 
-libiqxmlrpc_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
-libiqxmlrpc_la_LIBADD = @LIBXMLPP@
-
 libiqxmlrpc_la_SOURCES = \
   except.cc \
   value_type.cc \
@@ -29,12 +26,9 @@ libiqxmlrpc_la_SOURCES = \
   response.cc \
   method.cc \
   null_transport.cc \
-  http.cc
-
-
-libiqxmlrpc_net_la_SOURCES = \
+  http.cc \
   http_transport.cc \
   https_transport.cc
   
-libiqxmlrpc_net_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
-libiqxmlrpc_net_la_LIBADD = ../libiqnet/libiqnet.la libiqxmlrpc.la 
+libiqxmlrpc_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
+libiqxmlrpc_la_LIBADD =  @LIBXMLPP@ ../libiqnet/libiqnet.la 
