@@ -4,7 +4,7 @@
 #include <libiqnet/conn_fabric.h>
 #include <libiqxmlrpc/libiqxmlrpc.h>
 #include <libiqxmlrpc/request.h>
-#include <libiqxmlrpc/transport.h>
+#include <libiqxmlrpc/null_transport.h>
 
 using namespace iqxmlrpc;
 using namespace iqnet;
