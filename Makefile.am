@@ -22,3 +22,6 @@ SUBDIRS = \
 rpm:	dist
 	cp $(PACKAGE)-$(VERSION).tar.gz /usr/src/redhat/SOURCES
 	rpmbuild -ba $(PACKAGE).spec
+
+clog:
+	cvs --fsf -P -S
