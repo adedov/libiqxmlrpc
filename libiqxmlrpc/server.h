@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.11 2004-05-17 08:43:02 adedov Exp $
+//  $Id: server.h,v 1.12 2004-07-20 05:36:53 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -44,7 +44,7 @@ namespace iqnet
 
 
 //! Base class for XML-RPC server connections.
-class iqxmlrpc::Server_connection: public iqnet::Connection {
+class iqxmlrpc::Server_connection {
 protected:
   Server *server;
   http::Packet_reader<http::Request_header> preader;
@@ -55,14 +55,14 @@ protected:
   std::string response;
 
 public:
-  Server_connection( const iqnet::Socket& );
-  virtual ~Server_connection();
+  Server_connection();
+  virtual ~Server_connection() = 0;
 
   void set_read_sz( unsigned );
   void set_server( Server* s ) { server = s; }
 
   virtual void schedule_response( http::Packet* );
-  
+
 protected:
   http::Packet* read_request( const std::string& );
 };
@@ -129,7 +129,6 @@ public:
   void schedule_execute( http::Packet*, Server_connection* );
   void schedule_response( const Response&, Server_connection*, Executor* );
   
-private:
   void log_err_msg( const std::string& );
 };
 

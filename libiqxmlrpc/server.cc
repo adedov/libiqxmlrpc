@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.9 2004-05-17 08:43:02 adedov Exp $
+//  $Id: server.cc,v 1.10 2004-07-20 05:36:53 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -26,8 +26,7 @@
 using namespace iqxmlrpc;
 
 
-Server_connection::Server_connection( const iqnet::Socket& s ):
-  Connection( s ),
+Server_connection::Server_connection():
   server(0),
   read_buf_sz(1024),
   read_buf(new char[1024])
@@ -96,7 +95,7 @@ void Server::log_errors( std::ostream* log_ )
 }
 
 
-inline void Server::log_err_msg( const std::string& msg )
+void Server::log_err_msg( const std::string& msg )
 {
   if( log )
     *log << msg << std::endl;
