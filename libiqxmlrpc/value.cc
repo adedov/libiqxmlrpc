@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.cc,v 1.5 2004-05-07 05:28:19 adedov Exp $
+//  $Id: value.cc,v 1.6 2004-05-11 10:11:46 adedov Exp $
 
 #include <stdexcept>
 #include "value.h"
@@ -80,6 +80,18 @@ Value::Value( const Struct& st ):
 
 Value::Value( const Binary_data& bin ):
   value( bin.clone() )
+{
+}
+
+
+Value::Value( const Date_time& dt ):
+  value( dt.clone() )
+{
+}
+
+
+Value::Value( const struct tm* dt ):
+  value( new Date_time(dt) )
 {
 }
 

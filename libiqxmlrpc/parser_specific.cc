@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser_specific.cc,v 1.4 2004-05-07 05:28:19 adedov Exp $
+//  $Id: parser_specific.cc,v 1.5 2004-05-11 10:11:46 adedov Exp $
 
 #include <iostream>
 #include <sstream>
@@ -131,6 +131,21 @@ Value_type* Base64_parser::parse_value( const Node* node ) const
     return Binary_data::from_base64( text->get_content() );
   else
     return Binary_data::from_base64( std::string() );
+}
+
+
+Value_type* Date_time_parser::parse_value( const Node* node ) const
+{
+  const Element *el = dynamic_cast<const Element*>(node);
+  if( !el )
+    throw Parse_error::at_node(node);
+    
+  const TextNode *text = el->get_child_text();
+  
+  if( text )
+    return new Date_time( text->get_content() );
+  else
+    return new Date_time( "" );
 }
 
 

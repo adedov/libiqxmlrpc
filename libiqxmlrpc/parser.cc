@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser.cc,v 1.5 2004-05-07 05:28:19 adedov Exp $
+//  $Id: parser.cc,v 1.6 2004-05-11 10:11:46 adedov Exp $
 
 #include <stdexcept>
 #include "sysinc.h"
@@ -53,6 +53,7 @@ Parser::Parser()
     register_parser<std::string>( "string", new String_parser );
     register_parser<std::string>( "", new String_parser ); // default type
     register_parser<Binary_data>( "base64", new Base64_parser );
+    register_parser<Date_time>( "dateTime.iso8601", new Date_time_parser );
     register_parser<Array>( "array", new Array_parser );
     register_parser<Struct>( "struct", new Struct_parser );
   }

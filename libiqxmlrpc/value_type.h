@@ -15,12 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.11 2004-05-07 05:28:19 adedov Exp $
+//  $Id: value_type.h,v 1.12 2004-05-11 10:11:46 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
 #define _iqxmlrpc_value_type_h_
 
+#include <time.h>
 #include <string>
 #include <libxml++/libxml++.h>
 #include "except.h"
@@ -41,6 +42,7 @@ namespace iqxmlrpc
   typedef Scalar<std::string> String;
   
   class Binary_data;
+  class Date_time;
 };
 
 
@@ -203,6 +205,33 @@ private:
   char get_idx( char );
   void decode_four( const std::string& );
   void decode();
+};
+
+
+//! XML-RPC dateTime.iso8601 type.
+class iqxmlrpc::Date_time: public iqxmlrpc::Value_type {
+public:
+  //! Malformed dateTime.iso8601 format exception. 
+  class Malformed_iso8601: public iqxmlrpc::Exception {
+  public:
+    Malformed_iso8601():
+      Exception( "Malformed date-time format." ) {}
+  };
+  
+private:
+  struct tm tm_;
+  mutable std::string cache;
+
+public:
+  Date_time( const struct tm* );
+  explicit Date_time( const std::string& dateTime_iso8601 );
+  explicit Date_time( bool localtime );
+
+  const struct tm& get_tm() const { return tm_; }
+  const std::string& to_string() const;  
+  
+  Value_type* clone() const;
+  void to_xml( xmlpp::Node* ) const;
 };
 
 

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.h,v 1.11 2004-05-07 05:28:19 adedov Exp $
+//  $Id: value.h,v 1.12 2004-05-11 10:11:46 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -60,6 +60,8 @@ public:
   Value( std::string );
   Value( const char* );
   Value( const Binary_data& );
+  Value( const Date_time& );
+  Value( const struct tm* );
   Value( const Array& );
   Value( const Struct& );
 
@@ -74,6 +76,7 @@ public:
   bool is_double() const { return can_cast<Double>(); }
   bool is_string() const { return can_cast<String>(); }
   bool is_binary() const { return can_cast<Binary_data>(); }
+  bool is_datetime() const { return can_cast<Date_time>(); }
   bool is_array()  const { return can_cast<Array>(); }
   bool is_struct() const { return can_cast<Struct>(); }
 
@@ -87,12 +90,14 @@ public:
   double      get_double() const { return cast<Double>()->value(); }
   std::string get_string() const { return cast<String>()->value(); }
   Binary_data get_binary() const { return Binary_data(*cast<Binary_data>()); }
+  Date_time   get_datetime() const { return Date_time(*cast<Date_time>()); }
 
   operator int()         const { return get_int(); }
   operator bool()        const { return get_bool(); }
   operator double()      const { return get_double(); }
   operator std::string() const { return get_string(); }
   operator Binary_data() const { return get_binary(); }
+  operator struct tm()   const { return get_datetime().get_tm(); }
   //! \}
   
   //! \name Array functions

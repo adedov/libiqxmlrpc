@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.6 2004-05-07 05:28:19 adedov Exp $
+//  $Id: value_type.cc,v 1.7 2004-05-11 10:11:46 adedov Exp $
 
 #include <string.h>
 #include <sstream>
@@ -395,4 +395,72 @@ void Binary_data::to_xml( xmlpp::Node* p ) const
 {
   xmlpp::Element* el = p->add_child( "base64" );
   el->add_child_text( get_base64() );
+}
+
+
+// ----------------------------------------------------------------------------
+Date_time::Date_time( const struct tm* t )
+{
+  tm_ = *t;
+}
+
+
+Date_time::Date_time( bool use_lt )
+{
+  time_t t;
+  ::time( &t );
+  struct tm *ptm = use_lt ? localtime( &t ) : gmtime( &t );
+  tm_ = *ptm;
+}
+
+
+Date_time::Date_time( const std::string& s )
+{
+  if( s.length() != 17 || s[8] != 'T' )
+    throw Malformed_iso8601();
+  
+  char alpha[] = "0123456789T:";
+  if( s.substr(0, 16).find_first_not_of(alpha) != std::string::npos )
+    throw Malformed_iso8601();
+
+  tm_.tm_year = atoi( s.substr(0, 4).c_str() ) - 1900;
+  tm_.tm_mon  = atoi( s.substr(4, 2).c_str() ) - 1;
+  tm_.tm_mday = atoi( s.substr(6, 2).c_str() );
+  tm_.tm_hour = atoi( s.substr(9, 2).c_str() );
+  tm_.tm_min  = atoi( s.substr(12, 2).c_str() );
+  tm_.tm_sec  = atoi( s.substr(15, 2).c_str() );
+  
+  if( (tm_.tm_year < 0) || !(tm_.tm_mon >= 0 && tm_.tm_mon <= 11) ||
+      !(tm_.tm_mday >= 1 && tm_.tm_mday <= 31) ||
+      !(tm_.tm_hour >= 0 && tm_.tm_hour <= 23) ||
+      !(tm_.tm_min >= 0 && tm_.tm_min <= 59) ||
+      !(tm_.tm_sec >= 0 && tm_.tm_sec <= 61) 
+    )
+    throw Malformed_iso8601();
+}
+
+
+Value_type* Date_time::clone() const
+{
+  return new Date_time( *this );
+}
+
+
+void Date_time::to_xml( xmlpp::Node* p ) const
+{
+  xmlpp::Element* el = p->add_child( "dateTime.iso8601" );
+  el->add_child_text( to_string() );  
+}
+
+
+const std::string& Date_time::to_string() const
+{
+  if( cache.empty() )
+  {
+    char s[18];
+    strftime( s, 18, "%Y%m%dT%H:%M:%S", &tm_ );
+    cache = std::string( s, 17 );
+  }
+  
+  return cache;
 }
