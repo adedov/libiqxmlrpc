@@ -15,10 +15,10 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_transport.cc,v 1.10 2004-04-14 08:49:16 adedov Exp $
+//  $Id: http_transport.cc,v 1.11 2004-04-19 08:11:44 adedov Exp $
 
-#include <unistd.h>
 #include <iostream>
+#include "sysinc.h"
 #include "http_transport.h"
 
 using namespace iqxmlrpc;

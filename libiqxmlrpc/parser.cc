@@ -15,11 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser.cc,v 1.3 2004-04-14 08:56:40 adedov Exp $
+//  $Id: parser.cc,v 1.4 2004-04-19 08:11:44 adedov Exp $
 
 #include <iostream>
-#include <stdlib.h>
 #include <stdexcept>
+#include "sysinc.h"
 #include "parser.h"
 #include "except.h"
 #include "parser_specific.h"

@@ -15,11 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.cc,v 1.18 2004-04-14 08:46:16 adedov Exp $
+//  $Id: http.cc,v 1.19 2004-04-19 08:11:44 adedov Exp $
 
-#include <time.h>
-#include <locale.h>
-#include <ctype.h>
+#include "sysinc.h"
 #include <iostream>
 #include <functional>
 #include <memory>
