@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.21 2004-10-20 09:29:13 adedov Exp $
+//  $Id: value_type.h,v 1.22 2004-11-02 09:41:37 maxim Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -101,6 +101,7 @@ class iqxmlrpc::Array: public iqxmlrpc::Value_type {
   friend class Array_inserter;
   
 public:
+  typedef const Value & const_reference;
   class const_iterator;
   friend class Array::const_iterator;
 
