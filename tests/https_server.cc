@@ -26,6 +26,7 @@ int main()
 
     server = new Server( 3344, new Executor_fabric<Serial_executor> );
     server->register_method<Get_weather>( "get_weather" );
+    server->log_errors( &std::cerr );
     server->work<Https_server_connection>();
   }
   catch( const std::exception& e )
