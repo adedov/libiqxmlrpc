@@ -52,8 +52,7 @@ Array* Array::clone() const
 
 Array::~Array()
 {
-  for( iterator i = values.begin(); i != values.end(); ++i )
-    delete *i;
+  clear();
 }
 
 
@@ -101,6 +100,15 @@ void Array::push_back( Value* val )
 void Array::push_back( const Value& val )
 {
   values.push_back( new Value(val) );
+}
+
+
+void Array::clear()
+{
+  for( iterator i = values.begin(); i != values.end(); ++i )
+    delete *i;
+  
+  values.clear();
 }
 
 

@@ -80,6 +80,16 @@ public:
   
   void push_back( Value* );
   void push_back( const Value& );
+  
+  void clear();
+  
+  template <class In>
+  void assign( In first, In last )
+  {
+    clear();
+    for( In i = first; i != last; ++i )
+      values.push_back( new Value(*i) );
+  }
 
 private:
   Array( const Array& ) {}
