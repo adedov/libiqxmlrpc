@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: http_server.h,v 1.3 2004-07-20 05:45:28 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_server_h_
 #define _libiqxmlrpc_http_server_h_
@@ -30,7 +30,10 @@ namespace iqxmlrpc
 
 
 //! Represents server-side \b HTTP non-blocking connection.
-class iqxmlrpc::Http_server_connection: public iqxmlrpc::Server_connection {
+class iqxmlrpc::Http_server_connection: 
+  public iqnet::Connection,
+  public iqxmlrpc::Server_connection 
+{
   iqnet::Reactor* reactor;
 
 public:
@@ -45,6 +48,10 @@ public:
   void handle_output( bool& );
 
   void schedule_response( http::Packet* packet );
+  
+  bool catch_in_reactor() const { return true; }
+  void log_exception( const std::exception& );
+  void log_unknown_exception();  
 };
 
 

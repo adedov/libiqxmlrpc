@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.cc,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: http_server.cc,v 1.3 2004-07-20 05:45:28 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -26,7 +26,7 @@ using namespace iqnet;
 
 
 Http_server_connection::Http_server_connection( const iqnet::Socket& s ):
-  Server_connection( s )
+  Connection( s )
 {
 }
     
@@ -87,4 +87,18 @@ void Http_server_connection::schedule_response( http::Packet* pkt )
 {
   Server_connection::schedule_response( pkt );
   reactor->register_handler( this, iqnet::Reactor::OUTPUT );
+}
+
+
+void Http_server_connection::log_exception( const std::exception& ex )
+{
+  std::string s( "iqxmlrpc::Http_server_connection: " );
+  s += ex.what();
+  server->log_err_msg( s );
+}
+
+
+void Http_server_connection::log_unknown_exception()
+{
+  server->log_err_msg( "iqxmlrpc::Http_server_connection: unknown exception." );
 }
