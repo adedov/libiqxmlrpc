@@ -8,7 +8,7 @@
 
 using namespace iqnet;
 
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 class Reactor::Reactor_impl {
 public:
   struct Handler {
@@ -59,6 +59,7 @@ public:
     
   bool handle_events( Reactor::Timeout );
 };
+#endif
 
 
 void Reactor::Reactor_impl::register_handler( Event_handler* eh, Event_mask mask )
