@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.h,v 1.15 2004-08-02 06:53:43 adedov Exp $
+//  $Id: value.h,v 1.16 2004-08-02 07:11:00 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -123,7 +123,7 @@ public:
   //! \{
   //! Access inner Struct value.
   Struct& the_struct() { return *cast<Struct>(); }
-  const Struct& the_struct() const { return *cast<Struct()>; }
+  const Struct& the_struct() const { return *cast<Struct()>(); }
 
   bool has_field( const std::string& f ) const
   {
