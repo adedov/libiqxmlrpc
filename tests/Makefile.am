@@ -2,42 +2,27 @@ EXTRA_DIST = data
 LDADD = ../libiqxmlrpc/libiqxmlrpc.la
 
 check_PROGRAMS = \
-  parse-value \
-  new-value \
-  parse-request \
   parse-response \
-  server-test1 \
-  server-test2 \
-  server-test3 \
-  server-test4 \
-  server-test5 \
-  client-test1 \
-  client-test2
+  parse-request \
+  parse-value \
+  value-usage \
+  http-server \
+  https-server \
+  http-client \
+  https-client 
 
 parse_value_SOURCES = parse_value.cc
 
-new_value_SOURCES = new_value.cc
+value_usage_SOURCES = value_usage.cc
 
 parse_request_SOURCES = parse_request.cc
 
 parse_response_SOURCES = parse_response.cc
 
-server_test1_SOURCES = server_test1.cc
+http_server_SOURCES = server_general.h http_server.cc
 
-server_test2_SOURCES = server_test2.cc
-server_test2_LDADD = ../libiqnet/libiqnet.la ${LDADD}
+https_server_SOURCES = server_general.h https_server.cc
 
-server_test3_SOURCES = server_test3.cc
-server_test3_LDADD = ../libiqnet/libiqnet.la ${LDADD}
+http_client_SOURCES = client_general.h http_client.cc
 
-server_test4_SOURCES = server_test4.cc
-server_test4_LDADD = ../libiqxmlrpc/libiqxmlrpc-net.la
-
-server_test5_SOURCES = server_test5.cc
-server_test5_LDADD = ../libiqxmlrpc/libiqxmlrpc-net.la
-
-client_test1_SOURCES = client_test1.cc
-client_test1_LDADD = ../libiqxmlrpc/libiqxmlrpc-net.la
-
-client_test2_SOURCES = client_test2.cc
-client_test2_LDADD = ../libiqxmlrpc/libiqxmlrpc-net.la
+https_client_SOURCES = client_general.h https_client.cc
