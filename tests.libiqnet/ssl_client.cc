@@ -1,6 +1,8 @@
 #include <iostream>
 #include <libiqnet/ssl_connection.h>
 #include <libiqnet/connector.h>
+#include <libiqnet/net_except.h>
+#include <string.h>
 
 using namespace iqnet;
 
@@ -22,7 +24,7 @@ public:
 int main()
 {
   try {
-    ssl::ctx = ssl::Ctx::client_ctx();
+    ssl::ctx = ssl::Ctx::client_only();
 
     Connector<SSL_Client> ctr( Inet_addr( "localhost", 3344 ) );
     SSL_Client* c = ctr.connect();

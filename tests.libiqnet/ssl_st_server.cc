@@ -11,8 +11,8 @@ class My_connection: public ssl::Reaction_connection {
   char* buf;
   
 public:
-  My_connection( int fd, const iqnet::Inet_addr& addr, ssl::Ctx* ctx ):
-    Reaction_connection( fd, addr, ctx, &::reactor ) 
+  My_connection( int fd, const iqnet::Inet_addr& addr ):
+    Reaction_connection( fd, addr, &::reactor ) 
   {
     buf = new char[256];
     bzero( buf, 256 );
@@ -53,9 +53,9 @@ public:
 int main()
 {
   try {
-    ssl::ctx = ssl::Ctx::server_ctx( "data/cert.pem", "data/pk.pem" );
+    ssl::ctx = ssl::Ctx::server_only( "data/cert.pem", "data/pk.pem" );
   
-    Acceptor acceptor( 3344, new ssl::Serial_conn_fabric<My_connection>(ssl::ctx), &reactor );
+    Acceptor acceptor( 3344, new Serial_conn_fabric<My_connection>, &reactor );
     std::cout << "Accepting connections on port 3344..." << std::endl;
     
     while( true )
