@@ -64,4 +64,5 @@ AC_OUTPUT(
   doc/Makefile
   libiqxmlrpc.pc
   libiqnet.pc
+  libiqxmlrpc.spec
 )

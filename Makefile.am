@@ -8,7 +8,9 @@ EXTRA_DIST = \
   libiqxmlrpc.pc.in \
   libiqxmlrpc.pc \
   libiqnet.pc.in \
-  libiqnet.pc
+  libiqnet.pc \
+  libiqxmlrpc.spec.in \
+  libiqxmlrpc.spec
 
 pkgconfigdir = ${libdir}/pkgconfig
 pkgconfig_DATA = \
