@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: libiqxmlrpc.h,v 1.7 2004-04-14 08:56:40 adedov Exp $
+//  $Id: libiqxmlrpc.h,v 1.8 2004-04-20 04:46:58 adedov Exp $
 
 /*! \file libiqxmlrpc.h */
 
@@ -26,6 +26,9 @@
 #include "value.h"
 #include "response.h"
 #include "method.h"
-#include "http.h"
+#include "server.h"
+#include "client.h"
+#include "http_transport.h"
+#include "https_transport.h"
 
 #endif
