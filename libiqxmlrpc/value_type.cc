@@ -108,15 +108,15 @@ void Array::clear()
   for( iterator i = values.begin(); i != values.end(); ++i )
     delete *i;
   
-  values.clear();
+  // Clear and free memory
+  std::vector<Value*>().swap( values );
 }
 
 
 // --------------------------------------------------------------------------
 Struct::~Struct()
 {
-  for( iterator i = values.begin(); i != values.end(); ++i )
-    delete i->second;
+  clear();
 }
 
 
@@ -169,6 +169,15 @@ Value& Struct::operator []( const std::string& f )
     throw No_field( f );
   
   return (*i->second);
+}
+
+
+void Struct::clear()
+{
+  for( iterator i = values.begin(); i != values.end(); ++i )
+    delete i->second;
+  
+  values.clear();
 }
 
 

@@ -52,6 +52,7 @@ public:
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
 class iqxmlrpc::Array: public iqxmlrpc::Value_type {
 public:
+  //! Exception which is being thrown on array range violation.
   class Out_of_range: public Exception {
     enum { code = Fault_code::xmlrpc_usage };
     
@@ -100,6 +101,8 @@ private:
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
 class iqxmlrpc::Struct: public iqxmlrpc::Value_type {
 public:
+  //! Exception which is being thrown when user tries 
+  //! to access structure's unexistent member.
   class No_field: public Exception {
     enum { code = Fault_code::xmlrpc_usage };
     
@@ -126,6 +129,7 @@ public:
   const Value& operator []( const std::string& ) const;
   Value&       operator []( const std::string& );
 
+  void clear();
   void insert( const std::string&, Value* );
   void insert( const std::string&, const Value& );
 
