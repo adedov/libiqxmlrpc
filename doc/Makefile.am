@@ -6,9 +6,11 @@ EXTRA_DIST = \
 
 DOCDIR=${prefix}/share/doc/@PACKAGE@
 
-install-data-local:
+doc:
 	doxygen libiqnet.doxygen
 	doxygen libiqxmlrpc.doxygen
+
+install-data-local: doc
 	${top_srcdir}/mkinstalldirs ${DOCDIR}
 	${top_srcdir}/mkinstalldirs ${DOCDIR}/libiqnet.html
 	${top_srcdir}/mkinstalldirs ${DOCDIR}/libiqxmlrpc.html
