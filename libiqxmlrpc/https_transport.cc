@@ -6,10 +6,9 @@ using namespace iqnet;
 
 Https_reaction_connection::Https_reaction_connection( 
     int fd, 
-    const iqnet::Inet_addr& addr, 
-    ssl::Ctx* ctx 
+    const iqnet::Inet_addr& addr
   ):
-    ssl::Reaction_connection( fd, addr, ctx ),
+    ssl::Reaction_connection( fd, addr ),
     server(0),
     response(0),
     recv_buf_sz(256),
@@ -84,10 +83,10 @@ void Https_reaction_connection::send_succeed( bool& terminate )
 
 
 // --------------------------------------------------------------------------
-Https_server::Https_server( int port, ssl::Ctx* ctx, Method_dispatcher* disp ):
+Https_server::Https_server( int port, Method_dispatcher* disp ):
   reactor(),
   acceptor(0),
-  cfabric( new C_fabric( ctx, disp, &reactor ) ),
+  cfabric( new C_fabric( disp, &reactor ) ),
   exit_flag(false) 
 {
   acceptor = new Acceptor( port, cfabric, &reactor );

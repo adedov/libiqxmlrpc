@@ -29,7 +29,7 @@ class iqxmlrpc::Https_reaction_connection:
   friend class Https_conn_fabric;
     
 public:
-  Https_reaction_connection( int, const iqnet::Inet_addr&, iqnet::ssl::Ctx* );
+  Https_reaction_connection( int, const iqnet::Inet_addr& );
   ~Https_reaction_connection();
 
   void finish() { delete this; }
@@ -44,14 +44,14 @@ protected:
 
 //! Fabric for Https_reaction_connection.
 class iqxmlrpc::Https_conn_fabric: 
-  public iqnet::ssl::Serial_conn_fabric<Https_reaction_connection> 
+  public iqnet::Serial_conn_fabric<Https_reaction_connection> 
 {
   Method_dispatcher *disp;
   iqnet::Reactor* reactor;
 
 public:
-  Https_conn_fabric( iqnet::ssl::Ctx* c, Method_dispatcher* d, iqnet::Reactor* r ):
-    Serial_conn_fabric<Https_reaction_connection>(c), disp(d), reactor(r) {}
+  Https_conn_fabric( Method_dispatcher* d, iqnet::Reactor* r ):
+    disp(d), reactor(r) {}
   
   void post_create( Https_reaction_connection* c )
   {
@@ -71,7 +71,7 @@ class iqxmlrpc::Https_server {
   bool  exit_flag;
 
 public:
-  Https_server( int port, iqnet::ssl::Ctx*, Method_dispatcher* );
+  Https_server( int port, Method_dispatcher* );
   ~Https_server();
 
   void set_exit_flag()
