@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sigsock.cc,v 1.1 2004-04-27 04:10:52 adedov Exp $
+//  $Id: sigsock.cc,v 1.2 2004-06-09 09:23:03 adedov Exp $
 
 #include "sigsock.h"
 #include "sysinc.h"
@@ -23,6 +23,9 @@
 
 using namespace iqnet;
 
+#ifndef AF_LOCAL
+#define AF_LOCAL AF_UNIX
+#endif
 
 Alarm_socket::Alarm_socket( Reactor* r, Lock* lck ):
   reactor(r),
@@ -49,7 +52,6 @@ Alarm_socket::~Alarm_socket()
 void Alarm_socket::handle_input( bool& )
 {
   char buf;
-  //for( ; ::read( sock[0], &buf, 1 ) > 0; );
   ::read( sock[0], &buf, 1 );
 }
 
