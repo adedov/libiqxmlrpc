@@ -3,6 +3,7 @@ AUTOMAKE_OPTIONS = foreign
 EXTRA_DIST = \
   License \
   ChangeLog \
+  README \
   autogen.sh \
   libiqxmlrpc.pc.in \
   libiqxmlrpc.pc \

@@ -1,0 +1,45 @@
+Libiqxmlrpc
+===========
+
+Libiqxmlrpc is an object-oriented library, which represents simple XML-RPC 
+solution both for client and server sides.
+
+Please, look into doc/index.html for further reading. This file explains only
+some steps of building and testing of the library.
+
+
+Build library
+-------------
+
+$ ./autogen.sh
+$ ./configure
+$ make
+
+## Build tests
+$ make check
+
+## Install
+$ make install
+
+Directories libiqnet and libiqxmlrpc contain project sources/headers. Directory
+tests contains tests/examples for libiqxmlrpc library. Directory tests.libiqnet 
+contains tests for libiqnet subproject.
+
+
+Build documentation
+-------------------
+
+You may also want to build documentation. In this case do the following:
+
+$ cd doc
+$ doxygen libiqnet.doxygen
+$ doxygen libiqxmlrpc.doxygen
+
+When you will done it, two directories with HTML docs must appear here:
+  libiqnet.html/ 
+  libiqxmlrpc.html/
+
+
+
+Good luck,
+Anton Dedov <adedov@iqmedia.com>
