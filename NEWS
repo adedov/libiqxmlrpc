@@ -1,5 +1,15 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.5.2 - 0.5.3
+  Fixes:
+    * Fix possible hang/crash in Reactor's code during secure connection.
+    * Code clean up regarding portability on VC++.
+
+  Interface additions:
+    * Added Array::const_iterator and begin/end interface.
+    * Added Value::arr_begin/end() interface for access to Array::const_iterator.
+    * Added const eqivs for Value::the_array() and Value::the_struct().
+
 0.5.1 - 0.5.2
   * Added support for (non-standard) Nil datatype.
   * Got rid of of some useless and buggy code.
@@ -7,7 +17,7 @@ Look into ChangeLog file for full list of changes generated from CVS.
 
 0.5 - 0.5.1
   * Added ability to specify maximum size of HTTP request 
-    in Server class interface vi Server::set_max_request_sz().
+    in Server class interface via Server::set_max_request_sz().
   * Code clean.
 
 0.4.3 - 0.5
