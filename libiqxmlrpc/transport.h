@@ -32,4 +32,18 @@ private:
 };
 
 
+//! Abstract class for XML-RPC client.
+/*! Inherit it to create concrete transport specific ones. */
+class iqxmlrpc::Client {
+public:
+  virtual ~Client() {}
+
+  Response execute( const std::string& method_name, const Param_list& pl );
+    
+protected:
+  //! Overwrite it to perform actual Remote Procedure Call.
+  virtual std::string do_execute( const Request& ) = 0;
+};
+
+
 #endif

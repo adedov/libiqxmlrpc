@@ -61,3 +61,16 @@ void Server::execute()
   m->execute( request->get_params(), resp_value );
   delete m;
 }
+
+
+// --------------------------------------------------------------------------
+Response Client::execute( const std::string& name, const Param_list& pl )
+{
+  std::string resp_str = do_execute( Request( name, pl ) );
+
+  xmlpp::DomParser parser;
+  parser.set_substitute_entities();
+  parser.parse_memory( resp_str );
+
+  return Response( parser.get_document() );
+}
