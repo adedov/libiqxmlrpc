@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: connector.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: connector.h,v 1.3 2004-06-10 04:33:25 adedov Exp $
 
 #ifndef _libiqnet_connector_h_
 #define _libiqnet_connector_h_
@@ -49,11 +49,11 @@ public:
         My_conn* conn = ctr.connect();
       \endcode
   */
-  Conn_type* connect()
+  Conn_type* connect( bool non_block_flag )
   {
     Socket sock;
     sock.connect( peer_addr );
-    Conn_type* c = new Conn_type( sock );
+    Conn_type* c = new Conn_type( sock, non_block_flag );
     c->post_connect();
     return c;
   }
