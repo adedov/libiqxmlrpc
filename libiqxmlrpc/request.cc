@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: request.cc,v 1.3 2004-04-14 08:50:21 adedov Exp $
+//  $Id: request.cc,v 1.4 2004-04-14 08:51:39 adedov Exp $
 
 #include <libxml++/libxml++.h>
 #include "request.h"
