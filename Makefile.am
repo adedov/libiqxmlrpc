@@ -1,6 +1,16 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = autogen.sh
+EXTRA_DIST = \
+  autogen.sh \
+  libiqxmlrpc.pc.in \
+  libiqxmlrpc.pc \
+  libiqnet.pc.in \
+  libiqnet.pc
+
+pkgconfigdir = ${libdir}/pkgconfig
+pkgconfig_DATA = \
+  libiqxmlrpc.pc \
+  libiqnet.pc
 
 SUBDIRS = \
   libiqnet \

@@ -62,4 +62,6 @@ AC_OUTPUT(
   tests.libiqnet/Makefile
   tests/Makefile
   doc/Makefile
+  libiqxmlrpc.pc
+  libiqnet.pc
 )

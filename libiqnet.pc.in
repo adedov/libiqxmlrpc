@@ -1,0 +1,10 @@
+prefix=@prefix@
+libdir=${prefix}/lib
+includedir=${prefix}/include/
+
+Name: libiqnet
+Description: IQ Media C++ network/multithread/SSL library.
+Version: @VERSION@
+Requires: libxml++-1.0
+Libs: -L${libdir} -liqnet
+Cflags: -I${includedir}
