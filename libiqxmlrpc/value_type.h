@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.17 2004-10-04 23:37:26 adedov Exp $
+//  $Id: value_type.h,v 1.18 2004-10-11 11:02:50 maxim Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -99,14 +99,16 @@ public:
 };
 
 
+
+class Array_inserter;
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
 /*! \see \ref array_usage */
 class iqxmlrpc::Array: public iqxmlrpc::Value_type {
   typedef std::vector<Value*> Val_vector;
   typedef Val_vector::iterator iterator;
   friend class Array_inserter;
-
 public:
+
   class const_iterator;
   friend class Array::const_iterator;
 
@@ -179,6 +181,7 @@ public:
   }
 };
 
+class Struct_inserter;
 
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
 /*! \see \ref struct_usage */

@@ -15,13 +15,16 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: utf_conv.h,v 1.3 2004-10-04 23:34:50 adedov Exp $
+//  $Id: utf_conv.h,v 1.4 2004-10-11 11:02:50 maxim Exp $
 
 #ifndef _libiqxmlrpc_utf_conv_h_
 #define _libiqxmlrpc_utf_conv_h_
 
 #include <string>
+extern "C" {
 #include <iconv.h>
+}
+
 #include "except.h"
 #include "value.h"
 

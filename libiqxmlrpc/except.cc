@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: except.cc,v 1.4 2004-09-19 09:32:38 adedov Exp $
+//  $Id: except.cc,v 1.5 2004-10-11 11:02:50 maxim Exp $
 
 #include <libxml++/libxml++.h>
 #include <sstream>
@@ -53,6 +53,6 @@ XML_RPC_violation XML_RPC_violation::caused(
 Fault::Fault( int c, const std::string& s ):
   Exception( s, c )
 {
-  if( c >= -32768 and c <= -32000 )
+  if( c >= -32768 && c <= -32000 )
     throw FCI_violation();
 }
