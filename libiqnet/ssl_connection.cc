@@ -95,7 +95,7 @@ int ssl::Connection::recv( char* buf, int len )
 {
   int ret = SSL_read( ssl, buf, len );
 
-  if( ret < 0 )
+  if( ret <= 0 )
     throw_io_exception( ssl, ret );
 
   return ret;
