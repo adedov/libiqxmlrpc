@@ -16,7 +16,9 @@ namespace iqxmlrpc
 
 
 //! Proxy class to access XML-RPC values by users.
-/*! \exception Bad_cast */
+/*! For more documentation please look into \ref value_usage .
+    \exception Bad_cast 
+*/
 class iqxmlrpc::Value {
 public:
   //! Bad_cast is being thrown on illegal 
@@ -59,7 +61,7 @@ public:
   std::string type_debug() const { return typeid(*value).name(); }
   //! \}
 
-  //! \name Accessing scalar value types
+  //! \name Access scalar value
   //! \{
   int         get_int()    const { return cast<Int>()->value(); }
   bool        get_bool()   const { return cast<Bool>()->value(); }
@@ -74,6 +76,9 @@ public:
   
   //! \name Array functions
   //! \{
+  //! Access inner Array value
+  Array& the_array() { return *cast<Array>(); }
+  
   unsigned size() const { return cast<Array>()->size(); }
   const Value& operator []( int ) const;
   Value&       operator []( int );
@@ -84,6 +89,9 @@ public:
   
   //! \name Struct functions
   //! \{
+  //! Access inner Struct value.
+  Struct& the_struct() { return *cast<Struct>(); }
+
   bool has_field( const std::string& f ) const
   {
     return cast<Struct>()->has_field(f);
@@ -129,5 +137,22 @@ private:
   }
 };
 
+
+/*! 
+\page value_usage Manipuling the values
+
+\section Value class
+Users of the library should use Value objects to store their values. 
+Value can contain values of various types defined in libiqxmlrpc and 
+represents an interface for retrieving/storing value of particular type
+as well as special functions specific only for Arrays and Structs.
+
+\subsection XML-RPC types
+
+\section Creating value
+\section Scalars
+\section Arrays
+\section Structs
+*/
 
 #endif
