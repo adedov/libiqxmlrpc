@@ -28,19 +28,5 @@ tests contains tests/examples for libiqxmlrpc library. Directory tests.libiqnet
 contains tests for libiqnet subproject.
 
 
-Build documentation
--------------------
-
-You may also want to build documentation. In this case do the following:
-
-$ cd doc
-$ doxygen libiqnet.doxygen
-$ doxygen libiqxmlrpc.doxygen
-
-When you will done it, two directories with HTML docs must appear here:
-  libiqnet.html/ 
-  libiqxmlrpc.html/
-
-
 Good luck,
 Anton Dedov <adedov@iqmedia.com>
