@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.13 2004-11-14 16:58:28 adedov Exp $
+//  $Id: client.h,v 1.14 2004-11-14 17:29:17 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -134,6 +134,11 @@ public:
     timeout(-1),
     non_blocking_flag(false)
   {
+  }
+  
+  ~Client()
+  {
+    delete tpt;
   }
   
   //! Set timeout for silence on network in seconds.
