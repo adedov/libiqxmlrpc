@@ -1,5 +1,9 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.5.3 - 0.5.4
+  Implemented copy constructors and = operators for Array and Struct
+	calsses.
+
 0.5.2 - 0.5.3
   Fixes:
     * Fix possible hang/crash in Reactor's code during secure connection.
