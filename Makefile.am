@@ -8,12 +8,19 @@ EXTRA_DIST = \
   autogen.sh \
   libiqxmlrpc.pc.in \
   libiqxmlrpc.pc \
+  libiqxmlrpc-server.pc.in \
+  libiqxmlrpc-server.pc \
+  libiqxmlrpc-client.pc.in \
+  libiqxmlrpc-client.pc \
   libiqxmlrpc.spec.in \
   libiqxmlrpc.spec
 
 pkgconfigdir = ${libdir}/pkgconfig
-pkgconfig_DATA = libiqxmlrpc.pc
-
+pkgconfig_DATA = \
+  libiqxmlrpc.pc \
+  libiqxmlrpc-server.pc \
+  libiqxmlrpc-client.pc
+  
 SUBDIRS = \
   libiqxmlrpc \
   tests \

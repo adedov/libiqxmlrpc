@@ -72,5 +72,7 @@ AC_OUTPUT(
   win32/res/Makefile
   doc/libiqxmlrpc.doxygen
   libiqxmlrpc.pc
+  libiqxmlrpc-server.pc
+  libiqxmlrpc-client.pc
   libiqxmlrpc.spec
 )

@@ -1,0 +1,10 @@
+prefix=@prefix@
+libdir=${prefix}/lib
+includedir=${prefix}/include/
+
+Name: libiqxmlrpc
+Description: Object-oriented C++ XML-RPC library. Server's stuff only.
+Version: @VERSION@
+Requires: libxml++-1.0
+Libs: -L${libdir} -lcrypto -lssl -liqxmlrpc-server
+Cflags: -I${includedir}
