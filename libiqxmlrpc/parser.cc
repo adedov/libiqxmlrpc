@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser.cc,v 1.6 2004-05-11 10:11:46 adedov Exp $
+//  $Id: parser.cc,v 1.7 2004-07-27 08:17:29 adedov Exp $
 
 #include <stdexcept>
 #include "sysinc.h"
@@ -46,16 +46,17 @@ Parser::Parser()
   if( types.empty() )
   {
     Value_parser* i4p = new Int_parser;
-    register_parser<int>( "i4", i4p );
-    register_parser<int>( "int", i4p );
-    register_parser<bool>( "boolean", new Boolean_parser );
-    register_parser<double>( "double", new Double_parser );
-    register_parser<std::string>( "string", new String_parser );
-    register_parser<std::string>( "", new String_parser ); // default type
-    register_parser<Binary_data>( "base64", new Base64_parser );
-    register_parser<Date_time>( "dateTime.iso8601", new Date_time_parser );
-    register_parser<Array>( "array", new Array_parser );
-    register_parser<Struct>( "struct", new Struct_parser );
+    register_parser( "i4", i4p );
+    register_parser( "int", i4p );
+    register_parser( "boolean", new Boolean_parser );
+    register_parser( "double", new Double_parser );
+    register_parser( "string", new String_parser );
+    register_parser( "", new String_parser ); // default type
+    register_parser( "nil", new Nil_parser );    
+    register_parser( "base64", new Base64_parser );
+    register_parser( "dateTime.iso8601", new Date_time_parser );
+    register_parser( "array", new Array_parser );
+    register_parser( "struct", new Struct_parser );
   }
 }
 
