@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.19 2004-11-14 16:58:28 adedov Exp $
+//  $Id: server.cc,v 1.20 2005-03-23 18:21:07 bada Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -71,18 +71,18 @@ http::Packet* Server_connection::read_request( const std::string& s )
 
 void Server_connection::schedule_response( http::Packet* pkt )
 {
-  pkt->set_keep_alive( keep_alive );
-  response = pkt->dump();
-  delete pkt;
+  std::auto_ptr<http::Packet> p(pkt);
+  p->set_keep_alive( keep_alive );
+  response = p->dump();
 }
 
 
 //-----------------------------------------------------------------------------
-Server::Server( int p, Executor_fabric_base* f ):
-  exec_fabric(f),
+Server::Server( int p, Executor_factory_base* f ):
+  exec_factory(f),
   port(p),
   reactor( f->create_lock() ),
-  conn_fabric(0),
+  conn_factory(0),
   acceptor(0),
   firewall(0),
   exit_flag(false),
@@ -95,8 +95,8 @@ Server::Server( int p, Executor_fabric_base* f ):
 Server::~Server()
 {
   delete acceptor;
-  delete conn_fabric;
-  delete exec_fabric;
+  delete conn_factory;
+  delete exec_factory;
 }
 
 
@@ -135,7 +135,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
     std::auto_ptr<http::Packet> packet(pkt);
     std::auto_ptr<Request> req( parse_request( packet->content() ) );
     Method* meth = disp.create_method( req->get_name(), conn->get_peer_addr() );
-    executor = exec_fabric->create( meth, this, conn );
+    executor = exec_factory->create( meth, this, conn );
     executor->execute( req->get_params() );
   }
   catch( const iqxmlrpc::Exception& e )
