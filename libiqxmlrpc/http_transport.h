@@ -17,6 +17,10 @@ namespace iqxmlrpc
 };
 
 
+//! Represents server-side HTTP non-blocking connection.
+/*! Does the actual work for sending/receiving HTTP packets via network. 
+    \see iqxmlrpc::Http_server
+*/
 class iqxmlrpc::Http_reaction_connection: 
   public iqnet::Connection, 
   private http::Server 
@@ -43,6 +47,7 @@ public:
 };
 
 
+//! Fabric for Http_reaction_connection.
 template <class Conn_type>
 class iqxmlrpc::Reaction_conn_fabric: public iqnet::Connection_fabric {
   Method_dispatcher *disp;
@@ -60,6 +65,10 @@ public:
 };
 
 
+//! Single thread XML-RPC HTTP server based on reactive model.
+/*! It just accepts new connections and creates objects of
+    Http_reaction_connection class for each one. 
+    Then Http_reaction_connection does all real work. */
 class iqxmlrpc::Http_server {
   typedef Reaction_conn_fabric<Http_reaction_connection> C_fabric;
   
@@ -82,6 +91,10 @@ public:
 };
 
 
+//! Single thread XML-RPC HTTP client based on blocking connection.
+/*! Implements functions for real network collaboration,
+    sending/receiving HTTP packets.
+*/
 class iqxmlrpc::Http_client: public iqxmlrpc::http::Client {
   iqnet::Inet_addr addr;
   iqnet::Connection* conn;
