@@ -19,8 +19,11 @@ See examples also \ref https_server_ex.
 \b Next \b reading
 - \ref define_server_behaviour
 - \ref execution_model
+
+\b Examples
 - \ref http_server
 - \ref https_server
+- \ref http_server_thr
 */
 
 
@@ -59,7 +62,7 @@ string parameter of fuction specifies method's name to use in XML-RPC.
 
 
 /*!
-\page execution_model Libiqxmlrpc execution model
+\page execution_model An execution model of Libiqxmlrpc
 iqxmlrpc::Server parses XML-RPC requests and creates an object of appropriate 
 class for each requested method. After that, Server starts method's execution 
 through iqxmlrpc::Executor object, which is created by Server using
@@ -70,8 +73,24 @@ construction, thus, he defines Server's <b>method execution policy</b>. E.g.
 specific Executor_fabric can create Executor's children, which run methods in 
 new thread (Threaded_executor in future).
 
-However, there is thing, which any Executor object can not change. It is that
-fact that all network communications are working in the Server object's thread.
-In other words, all network IO is performed in one thread independently of 
-used execution policy.
+\note Note that there is thing, which any Executor object can not change. 
+It is that fact that all network communications are working in the Server 
+object's thread. In other words, all network IO is performed in one thread 
+independently of used execution policy.
+
+\subsection policy_list Available execution policies
+Currently, libraray provides two execution policies:
+ - Serial execution;
+ - Execution in a pool of threads.
+ 
+An example for creating Server with serial execution model:
+\dontinclude http_server.cc
+\skip main()
+\skipline Server
+
+An example for creating Server with multithreaded execution model, using a
+pool of 10 threads:
+\dontinclude http_server_thr.cc
+\skip main()
+\skipline Server
 */

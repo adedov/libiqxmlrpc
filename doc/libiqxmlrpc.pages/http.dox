@@ -31,6 +31,37 @@ See an entire example text \ref http_server_ex
 
 
 /*!
+\page http_server_thr Writing multithreaded XML-RPC HTTP server
+
+Brief example for XML-RPC server application, which uses HTTP as transport and
+thread pool:
+
+\dontinclude http_server_thr.cc
+\skipline Server
+
+\dontinclude server_general.h
+\skipline Get_weather
+\skipline public:
+\until }
+
+\dontinclude http_server_thr.cc
+\skipline main
+\skipline {
+\skipline try
+\until ####EOF
+
+See an entire example text \ref http_server_thr_ex
+*/
+
+/*!
+\page http_server_thr_ex Http_server_thr example
+\e server_general.h
+\include server_general.h
+\e http_server_thr.cc
+\include http_server_thr.cc
+*/
+
+/*!
 \page http_client Writing XML-RPC HTTP client
 Use iqxmlrpc::Http_client_connection as template's parameter for iqxmlrpc::Client
 when you want to perform XML-RPC client's requests over HTTP.

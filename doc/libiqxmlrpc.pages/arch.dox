@@ -16,7 +16,7 @@ These pages do not contain any information about Libiqnet, so please look into
 its native doxygen docs.
 
 
-\section class_categ Class categories
+\section class_categ_obsolete Class categories
 Library consist of classes of several categories. This division is quite
 conditional, almost all of these classes are in the single namespace 
 \ref iqxmlrpc. Exception is \ref iqxmlrpc::http namespace which contains 

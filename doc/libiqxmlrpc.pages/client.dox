@@ -15,4 +15,18 @@ response was received, client closes the connection.
 Class iqxmlrpc::Client inherits iqxmlrpc::Client_base. So we can create 
 relatively transport-independent code:
 \include client_general.h
+
+\subsection exceptions Caring about exceptions
+User must care about exceptions, which library can throw.
+These exceptions are:
+ - iqnet::network_error<br>
+This exception will be thrown in case of some errors found by networking code.
+ 
+ - iqxmlrpc::Exception<br>
+This class is a base class for many exception related to XML-RPC.
+
+User can also check if received response is an XML-RPC Fault Response by 
+using iqxmlrpc::Response::is_fault member function or just try to get access
+to Response's content (iqxmlrpc::Response::value). In second case the 
+iqxmlrpc::Fault exception would be thrown if it was a Fault Reponse.
 */

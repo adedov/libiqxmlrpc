@@ -1,5 +1,5 @@
 /*!
-\page exceptions Library exceptions (obsolete)
+\page exceptions_obsolete Library exceptions (obsolete)
 
 Since libiqxmlrpc and libiqnet are seamless integrated, libiqxmlrpc can throw 
 two types of exceptions during the work. They are native libiqxmlrpc exceptions 

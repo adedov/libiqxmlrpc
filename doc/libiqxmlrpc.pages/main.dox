@@ -2,12 +2,7 @@
 \mainpage libiqxmlrpc Documentation
 
 - \ref about
-- \ref features
 - \ref requirements
-
-<b>Library architecture </b>
-- \ref arch_overview
-- \ref exceptions
 
 <b>Library Usage</b>
 - \ref data_rep
@@ -24,6 +19,7 @@ This library provides Object Oriented API for
 Main goal of project is to provide:
   -# Nice object oriented design;
   -# HTTP, HTTPS as client and server transport;
+  -# Server method's serial and multithreaded execution policies;
   -# Comfortable way to extend library's functionality.
 
 \author Anton Dedov <adedov@iqmedia.com> for IQ Media, Inc.
@@ -31,18 +27,11 @@ Main goal of project is to provide:
 
 
 /*!
-\page features Features
-\todo Features documentation
-*/
-
-
-/*!
 \page requirements Requirements
+Libiqxmlrpc requires following third-party libraries:
+ - libxml++-1.0<br>
+   http://libxmlplusplus.sourceforge.net/
 
-Libiqxmlrpc uses \b libxml++-1.0 as XML parser.<br>
-<i>You can find it at http://libxmlplusplus.sourceforge.net/</i>
-
-Libiqxmlrpc also uses its co-project \b Libiqnet as 
-Object Oriented network infrastructure.<br>
-<i>It is distributed with Libiqxmlrpc. It also requires <b>OpenSSL</b>.</i>
+ - OpenSSL<br>
+   http://www.openssl.org
 */
