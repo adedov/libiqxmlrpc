@@ -12,27 +12,23 @@
 
 /*! 
 \mainpage libiqxmlrpc Documentation
-  - \ref about
-  - \ref guide
-*/
-
-/*! 
-\page about About
+\section about About
 This library provides Object Oriented API for 
 <a href="http://www.xmlrpc.com>XML-RPC</a>.
 
 Main goals of project is to provide:
   -# Nice object oriented design;
-  -# Maximum to separate code that operates with XML-RPC structures
+  -# Maximum separation of code which operates with XML-RPC structures
      from that one, which provides transport functionality;
-  -# Provide HTTP, HTTPS as standart transports;
-  -# Provide comfortable way to extend library's functionality.
+  -# HTTP, HTTPS as standart transports;
+  -# Comfortable way to extend library's functionality.
 
 \author Anton Dedov <adedov@iqmedia.com> for IQ Media, Inc.
+
+\htmlonly
+<b>See also:</b><dd><a href="pages.html">Related Pages</a>
+\endhtmlonly
 */
 
-/*! 
-\page guide Getting started
-*/
 
 #endif

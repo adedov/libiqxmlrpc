@@ -140,19 +140,102 @@ private:
 
 /*! 
 \page value_usage Manipuling the values
+\section value_class iqxmlrpc::Value class
+Users of the library should use objects of class iqxmlrpc::Value 
+to store/transfer their values. Value objects can contain values of various 
+types defined in libiqxmlrpc and represent an interface for 
+retrieving/storing value of particular type as well as special methods which
+specific only for iqxmlrpc::Array and iqxmlrpc::Struct.
 
-\section Value class
-Users of the library should use Value objects to store their values. 
-Value can contain values of various types defined in libiqxmlrpc and 
-represents an interface for retrieving/storing value of particular type
-as well as special functions specific only for Arrays and Structs.
+\see \ref value_types
 
-\subsection XML-RPC types
+\section value_create Creating a value
+One can assign Value object with following type of argument:
+  - int
+  - bool
+  - double
+  - std::string
+  - const char*
+  - iqxmlrpc::Array
+  - iqxmlrpc::Struct
+  
+In all cases new object of class inherited from iqxmlrpc::Value_type will be
+created.
 
-\section Creating value
-\section Scalars
-\section Arrays
-\section Structs
+\b Example:
+\code
+  Value v1 = 10;
+  Value v2 = true;
+  Value v3 = 0.44;
+  Value v4 = "C string";
+  Value v5 = Array();
+  Value v6 = Struct();
+  
+  v5.push_back( true );
+  v6.insert( "test_item", 0.33 );
+\endcode
+
+\section value_convert Accessing values
+One can convert Value to a concrete type:
+\code
+  int          i = v1;
+  bool         b = v2;
+  double       d = v3;
+  std::string  s = v4;
+  bool        b2 = v5[0];
+  double      d2 = v6["test_item"];
+\endcode
+
+When many ambiguous conversions are possible use Value::get_xxx() functions:
+\code
+  try 
+  {
+    std::cout 
+      << v1.get_int()     << std::endl
+      << v2.get_bool()    << std::endl
+      << v3.get_double()  << std::endl
+      << v4.get_string()  << std::endl
+      << v5[0].get_bool() << std::endl
+      << v6["test_item"].get_double << std::endl
+  }
+  catch( const iqxmlrpc::Value::Bad_cast& e )
+  {
+    std::cerr << e.what() << std::endl;
+  }
+\endcode
+
+As you can see in listing above, if user will try to preform incorrect type
+conversion then exception iqxmlrpc::Value::Bad_cast would be thrown.
+
+It is also possible to check a correctness of type explicitly:
+\code
+  if( v1.is_int() )
+    std::cout << v1.get_int() << std::endl;
+  else
+    std::cerr << "int is expected." << std::endl;
+\endcode
+
+\section value_access_array Accessing Arrays and Structs
+iqxmlrpc::Value provides several methods to access a Value as it would be
+Array or Struct. These methods are mostly have the same name as real ones.
+E.g. Value::push_back tries to call Array::push_back and so on. So one can
+call some (not all) array or struct specific methods directly from Value:
+\code
+  Value v = Array();
+  v.push_back( false );
+  v.push_back( Struct() );
+  v[1].insert( "test_item", 0.33 );
+\endcode
+
+One can also get access to actual array or struct by calling 
+iqxmlrpc::Value::the_array() or iqxmlrpc::Value::the_struct().
+
+\b Example:
+\code
+  Value v = Struct();
+  // ...
+  v.the_struct().clear();
+\endcode
 */
 
 #endif
