@@ -14,24 +14,29 @@ using namespace iqnet;
 
 Connection::Connection( int s, const Inet_addr& addr ):
   sock(s), 
-  peer_addr(addr)
+  peer_addr(addr),
+  allow_part_send(false)
 {
 }
 
 
 Connection::~Connection()
 {
+  ::shutdown( sock, 2 );
   close( sock );
 }
 
 
 int Connection::send( const char* data, int len )
 {
-  int ret;
+  int ret = ::send( sock, data, len, MSG_NOSIGNAL );
   
-  if( (ret = ::send( sock, data, len, MSG_NOSIGNAL )) != len )
+  if( ret == -1 )
     throw network_error( "send" );
 
+  if( !allow_part_send && ret != len )
+    throw send_failed();
+  
   return ret;
 }
 
