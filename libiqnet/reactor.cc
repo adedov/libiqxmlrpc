@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.7 2004-04-14 07:26:40 adedov Exp $
+//  $Id: reactor.cc,v 1.8 2004-04-19 08:39:53 adedov Exp $
 
 #include <iostream>
 #include <vector>
@@ -23,15 +23,9 @@
 #include <deque>
 #include <functional>
 #include <algorithm>
-#include "../config.h"
+#include "sysinc.h"
 
-#ifdef HAVE_POLL
-  #include <sys/poll.h>
-#else
-  #include <sys/time.h>
-  #include <sys/types.h>
-  #include <unistd.h>
-
+#ifndef HAVE_POLL
   #define POLLIN      0x0001    /* There is data to read */
   #define POLLPRI     0x0002    /* There is urgent data to read */
   #define POLLOUT     0x0004    /* Writing now will not block */

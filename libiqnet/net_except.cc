@@ -15,10 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: net_except.cc,v 1.3 2004-03-29 06:20:15 adedov Exp $
+//  $Id: net_except.cc,v 1.4 2004-04-19 08:39:53 adedov Exp $
 
-#include <errno.h>
-#include <string.h>
+#include "sysinc.h"
 #include "net_except.h"
 
 

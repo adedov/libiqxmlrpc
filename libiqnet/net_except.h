@@ -15,13 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: net_except.h,v 1.3 2004-03-29 06:19:07 adedov Exp $
+//  $Id: net_except.h,v 1.4 2004-04-19 08:39:53 adedov Exp $
 
 #ifndef _libiqnet_net_except_h_
 #define _libiqnet_net_except_h_
 
 #include <stdexcept>
-#include <errno.h>
+#include "sysinc.h"
+
 
 namespace iqnet 
 {

@@ -15,16 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: inet_addr.h,v 1.4 2004-03-29 06:20:15 adedov Exp $
+//  $Id: inet_addr.h,v 1.5 2004-04-19 08:39:53 adedov Exp $
 
 #ifndef _libiqnet_inet_addr_h_
 #define _libiqnet_inet_addr_h_
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <string>
+#include "sysinc.h"
 
 //! Library's global namespace
 namespace iqnet 

@@ -15,13 +15,10 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.cc,v 1.4 2004-03-29 06:20:15 adedov Exp $
+//  $Id: acceptor.cc,v 1.5 2004-04-19 08:39:53 adedov Exp $
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <errno.h>
 #include <iostream>
+#include "sysinc.h"
 #include "acceptor.h"
 #include "connection.h"
 #include "conn_fabric.h"
