@@ -2,10 +2,11 @@
 \page https_server Writing XML-RPC HTTPS server
 
 Libiqxmlrpc provides ability to run XML-RPC server over secure connection.
-Use iqxmlrpc::Https_server class to embed HTTPS server to your application:
+You just need Https_server_connection template parameter instead of
+Http_server_connection:
 
 \dontinclude https_server.cc
-\skipline Https_server
+\skipline Server
 
 \dontinclude server_general.h
 \skipline Get_weather
@@ -20,10 +21,10 @@ Use iqxmlrpc::Https_server class to embed HTTPS server to your application:
 
 See an entire example text \ref https_server_ex
 
-\note Note that an example is almost like that one for Http_server but we
-need also initialize SSL library here. We must create server-oriented SSL 
-context. There is global variable iqnet::ssl::ctx in underlying network library,
-it must be initialized with appropriate iqnet::ssl::Ctx object.
+\note Note that one must initialize SSL library to use HTTPS transport. 
+There is global variable iqnet::ssl::ctx in underlying network library,
+it must be initialized with appropriate iqnet::ssl::Ctx object (server-only 
+orientedc ontext in our case).
 */
 
 
@@ -38,11 +39,11 @@ it must be initialized with appropriate iqnet::ssl::Ctx object.
 
 /*!
 \page https_client Writing XML-RPC HTTPS client
-Use iqxmlrpc::Https_client objects to perform XML-RPC client requests over HTTP.
-Here is example of Https_client usage. See also \ref client_prog page for source 
-of the show_weather function.
+Use iqxmlrpc::Https_client_connection as template's parameter for 
+iqxmlrpc::Client when you want to perform XML-RPC client's requests over HTTP.
 
 \include https_client.cc
+
 \note This example is pretty like in \ref http_client but here we must also 
 initialize OpenSSL library. This can be achieved by assigning global variable 
 iqnet::ssl::ctx with client-oriented context object.

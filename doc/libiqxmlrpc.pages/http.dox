@@ -1,10 +1,10 @@
 /*!
 \page http_server Writing XML-RPC HTTP server
 
-Use iqxmlrpc::Http_server class to embed HTTP server within your application:
+Brief example for XML-RPC server application, which uses HTTP as transport:
 
 \dontinclude http_server.cc
-\skipline Http_server
+\skipline Server
 
 \dontinclude server_general.h
 \skipline Get_weather
@@ -32,11 +32,13 @@ See an entire example text \ref http_server_ex
 
 /*!
 \page http_client Writing XML-RPC HTTP client
-Use iqxmlrpc::Http_client objects to perform XML-RPC client requests over HTTP.
-Here is example of Http_client usage. See also \ref client_prog page for source 
-of the show_weather function.
+Use iqxmlrpc::Http_client_connection as template's parameter for iqxmlrpc::Client
+when you want to perform XML-RPC client's requests over HTTP.
 
 \include http_client.cc
+
 \note When iqnet::Inet_addr class is constructed from port value only, it 
 becames a localhost address with specific port number.
+
+\see \ref client_prog page for source of the show_weather function.
 */
