@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.9 2004-04-23 02:21:31 adedov Exp $
+//  $Id: server.h,v 1.10 2004-04-27 04:18:40 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
 
+#include <iostream>
 #include <ostream>
 #include "acceptor.h"
 #include "connection.h"
@@ -122,7 +123,9 @@ public:
   //! Set stream to log errors. Transfer NULL to turn loggin off.
   void log_errors( std::ostream* );
   //! \}
-  
+
+  iqnet::Reactor* get_reactor() { return &reactor; }
+
   void schedule_execute( http::Packet*, Server_connection* );
   void schedule_response( const Response&, Server_connection*, Executor* );
   
