@@ -8,7 +8,8 @@ check_PROGRAMS = \
   parse-response \
   server-test1 \
   server-test2 \
-  server-test3 
+  server-test3 \
+  server-test4
 
 parse_value_SOURCES = parse_value.cc
 
@@ -25,3 +26,6 @@ server_test2_LDADD = ../libiqnet/libiqnet.la ${LDADD}
 
 server_test3_SOURCES = server_test3.cc
 server_test3_LDADD = ../libiqnet/libiqnet.la ${LDADD}
+
+server_test4_SOURCES = server_test4.cc
+server_test4_LDADD = ../libiqxmlrpc/libiqxmlrpc-net.la
