@@ -15,48 +15,47 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: thread.h,v 1.3 2004-05-14 06:57:49 adedov Exp $
+//  $Id: mt_synch.h,v 1.1 2004-05-14 06:57:49 adedov Exp $
 
-#ifndef _libiqnet_thread_h_
-#define _libiqnet_thread_h_
+#ifndef _libiqnet_mt_synch_h_
+#define _libiqnet_mt_synch_h_
 
-#include <stdexcept>
-#include "sysinc.h"
-#include "mt_synch.h"
+#include "lock.h"
 
 namespace iqnet
 {
-  class Thread;
+  class Mutex_lock;
+  class Cond;    
 };
 
 
-//! Thread wrapper.
-class iqnet::Thread {
+//! Thread synchronization via mutex
+class iqnet::Mutex_lock: public iqnet::Lock {
+  pthread_mutex_t mutex;
+
 public:
-  //! Unable to create a thread exception.
-  class Create_failed: public std::runtime_error {
-  public:
-    Create_failed():
-      runtime_error( "Could not create a thread." ) {}
-  };
-  
-private:
-  pthread_t thr;
-  Mutex_lock init_lock;
-  
+  Mutex_lock();
+  ~Mutex_lock();
+
+  void acquire();
+  void release();
+};
+
+
+//! Conditional variable.
+class iqnet::Cond {
+  pthread_cond_t cond;
+  pthread_mutex_t mutex;
+
 public:
-  Thread();
-  //! Cancels thread.
-  virtual ~Thread();
+  Cond();
+  virtual ~Cond();
 
-  void join();
-  void cancel();
+  void acquire_lock();
+  void release_lock();  
 
-private:
-  static void* run( void* obj );
-
-protected:
-  virtual void do_run() = 0;
+  void wait();
+  void signal();
 };
 
 #endif

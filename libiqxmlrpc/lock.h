@@ -15,22 +15,18 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: lock.h,v 1.3 2004-04-27 05:25:09 adedov Exp $
+//  $Id: lock.h,v 1.4 2004-05-14 06:57:49 adedov Exp $
 
 #ifndef _libiqnet_lock_h_
 #define _libiqnet_lock_h_
 
 #include "sysinc.h"
 
-
 namespace iqnet 
 {
   class Lock;
   class Null_lock;
-  class Mutex_lock;
   class Auto_lock;
-    
-  class Cond;
 };
 
 
@@ -49,19 +45,6 @@ class iqnet::Null_lock: public iqnet::Lock {
 public:
   void acquire() {}
   void release() {}
-};
-
-
-//! Thread synchronization via mutex
-class iqnet::Mutex_lock: public iqnet::Lock {
-  pthread_mutex_t mutex;
-
-public:
-  Mutex_lock();
-  ~Mutex_lock();
-
-  void acquire();
-  void release();
 };
 
 
@@ -93,21 +76,5 @@ public:
   }
 };
 
-
-//! Conditional variable.
-class iqnet::Cond {
-  pthread_cond_t cond;
-  pthread_mutex_t mutex;
-
-public:
-  Cond();
-  virtual ~Cond();
-
-  void acquire_lock();
-  void release_lock();  
-
-  void wait();
-  void signal();
-};
 
 #endif

@@ -12,6 +12,7 @@ pkginclude_HEADERS = \
   acceptor.h \
   connector.h \
   lock.h \
+  mt_synch.h \
   thread.h \
   reactor.h \
   connection.h \
@@ -45,7 +46,7 @@ libiqxmlrpc_la_SOURCES = \
   connector.cc \
   reactor.cc \
   connection.cc \
-  lock.cc \
+  mt_synch.cc \
   thread.cc \
   sigsock.cc \
   ssl_lib.cc \

@@ -15,9 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: lock.cc,v 1.1 2004-04-27 04:10:52 adedov Exp $
+//  $Id: mt_synch.cc,v 1.1 2004-05-14 06:57:49 adedov Exp $
 
-#include "lock.h"
+#include "mt_synch.h"
 
 using namespace iqnet;
 
