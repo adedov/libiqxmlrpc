@@ -21,17 +21,23 @@ XML-RPC (http://www.xmlrpc.com) standard assumes following data types to use.
   - array
   - struct
 
-\todo Types datetime and base64 are not supported in libiqxmlrpc yet.
+\todo Datetime is not supported in libiqxmlrpc yet.
 
 Library maps each XML-RPC type into a stand-alone class. Here is a piece of 
 code which declares libiqxmlrpc data type classes (value_type.h):
-\dontinclude value_type.h
+
+\dontinclude "value_type.h"
 \skip namespace
 \skip iqxmlrpc
-\until }
+\until };
 
-As you can see, all scalar type classes are just an instance of template
+As you can see, most scalar type classes are just an instance of template
 iqxmlrpc::Scalar.
+
+\section base64_usage Binary_data (base64) usage
+Please, look into library examples:
+  - \ref base64_cc
+  - \ref parse_value_cc
 
 \section array_usage Array's usage
 iqxmlrpc::Array represents XML-RPC array data type. One can insert an array's
@@ -199,4 +205,16 @@ iqxmlrpc::Value::the_array() or iqxmlrpc::Value::the_struct().
   // ...
   v.the_struct().clear();
 \endcode
+*/
+
+
+/*! 
+  \page base64_cc tests/base64.cc:  base64 encoding/decoding
+  \include base64.cc
+*/
+
+
+/*! 
+  \page parse_value_cc tests/parse_value.cc: access Value's content
+  \include parse_value.cc
 */
