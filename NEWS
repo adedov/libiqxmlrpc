@@ -1,5 +1,11 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.5.5 - 0.6
+  * Added support for server introspection.
+  * Added support for Fault Code Interoperability standard.
+  * Added transparent charset conversion support.
+  * Fix compilation troubles on Win32.
+
 0.5.4 - 0.5.5
   * Fix uninitialized Client::non_blocking_flag.
   * Improve treatment of socket related errors.
