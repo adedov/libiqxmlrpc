@@ -14,7 +14,7 @@ public:
   My_connection( int fd, const iqnet::Inet_addr& addr ):
     Connection( fd, addr ) {}
 
-  void post_init()
+  void post_accept()
   {
     std::cout << "New connection established." << std::endl;
     reactor.register_handler( this, Reactor::OUTPUT );
