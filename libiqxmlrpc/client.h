@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.8 2004-05-17 08:43:02 adedov Exp $
+//  $Id: client.h,v 1.9 2004-06-10 04:34:20 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -85,7 +85,8 @@ class iqxmlrpc::Client: public iqxmlrpc::Client_base {
   std::string vhost;
   iqnet::Connector<Transport> ctr;
   int timeout;
-  
+  bool non_blocking_flag;
+
 public:
   //! Construct the client
   /*! \param addr_ Actual server address;
@@ -112,7 +113,8 @@ public:
   */
   void set_timeout( int seconds )
   {
-    timeout = seconds;
+    if( (timeout = seconds) > 0 )
+      non_blocking_flag = true;
   }
   
   //! Perform Remote Procedure Call
@@ -128,7 +130,7 @@ iqxmlrpc::Response iqxmlrpc::Client<T>::execute(
   const std::string& method, const Param_list& pl )
 {
   Request req( method, pl );
-  std::auto_ptr<T> conn( ctr.connect() );
+  std::auto_ptr<T> conn( ctr.connect(non_blocking_flag) );
   conn->set_timeout( timeout );
   return conn->process_session( req, uri, vhost );
 }
