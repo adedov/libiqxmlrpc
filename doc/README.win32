@@ -1,0 +1,3 @@
+Native win32 port is for client part only.
+It was made by Koshelev Maxim.
+Use MS Visual Studio 2003 to build it.
