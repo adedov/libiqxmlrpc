@@ -470,13 +470,27 @@ public:
   Packet* read_packet( const std::string& );
 
 private:
+  void clear();
   void read_header( const std::string& );
 };
 
 
 template <class Header_type>
+inline void Packet_reader<Header_type>::clear()
+{
+  header = 0;
+  content_cache.erase();
+  header_cache.erase();
+  constructed = false;
+}
+
+
+template <class Header_type>
 Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
-{  
+{
+  if( constructed )
+    clear();
+  
   if( !header )
     read_header(s);
   else
@@ -486,7 +500,6 @@ Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
   {
     content_cache.erase( header->content_length(), std::string::npos );
     Packet* packet = new Packet( header, content_cache );
-    content_cache = header_cache = "";
     constructed = true;
     return packet;
   }
