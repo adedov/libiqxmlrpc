@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: reactor.h,v 1.3 2004-07-20 05:41:20 adedov Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
@@ -50,7 +50,14 @@ public:
   //! Invoked by Reactor when handle_X() 
   //! sets terminate variable to true.
   virtual void finish() {};
-  
+
+  //! Whether reactor should catch its exceptions.
+  virtual bool catch_in_reactor() const { return false; }
+  //! Log its exception catched in an external object.
+  virtual void log_exception( const std::exception& ) {};
+  //! Log its exception catched in an external object.
+  virtual void log_unknown_exception() {};
+    
   virtual Socket::Handler get_handler() const = 0;
 };
 

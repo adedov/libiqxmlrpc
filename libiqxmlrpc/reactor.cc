@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.5 2004-06-25 08:08:57 adedov Exp $
+//  $Id: reactor.cc,v 1.6 2004-07-20 05:41:20 adedov Exp $
 
 #include <vector>
 #include <list>
@@ -119,6 +119,8 @@ private:
   void prepare_user_events();
   void prepare_system_events();
   void invoke_event_handler( Handler& );
+  void invoke_servers_handler( Handler&, bool& );
+  void invoke_clients_handler( Handler&, bool& );
   void handle_user_events();
   bool handle_system_events( Reactor::Timeout );
 };
@@ -232,13 +234,43 @@ void Reactor::Reactor_impl::prepare_system_events()
 }
 
 
-void Reactor::Reactor_impl::invoke_event_handler( Handler& h )
+inline 
+void Reactor::Reactor_impl::invoke_servers_handler( Handler& h, bool& terminate )
 {
   bool in  = h.revents & POLLIN;
   bool out = h.revents & POLLOUT || h.revents & POLLPRI;
   bool err = h.revents & POLLHUP || h.revents & POLLERR || h.revents & POLLNVAL;
-  bool terminate = false;
+  
+  try {
+    if( in && out )
+      h.handler->handle_io( terminate );
+    else if( in )
+      h.handler->handle_input( terminate );
+    else if( out )
+      h.handler->handle_output( terminate );
+    else if( err )
+      terminate = true;
+  }
+  catch( const std::exception& e )
+  {
+    h.handler->log_exception( e );
+    terminate = true;
+  }
+  catch( ... )
+  {
+    h.handler->log_unknown_exception();
+    terminate = true;
+  }
+}
 
+
+inline
+void Reactor::Reactor_impl::invoke_clients_handler( Handler& h, bool& terminate )
+{
+  bool in  = h.revents & POLLIN;
+  bool out = h.revents & POLLOUT || h.revents & POLLPRI;
+  bool err = h.revents & POLLHUP || h.revents & POLLERR || h.revents & POLLNVAL;
+  
   if( in && out )
     h.handler->handle_io( terminate );
   else if( in )
@@ -247,6 +279,17 @@ void Reactor::Reactor_impl::invoke_event_handler( Handler& h )
     h.handler->handle_output( terminate );
   else if( err )
     terminate = true;
+}
+
+
+void Reactor::Reactor_impl::invoke_event_handler( Handler& h )
+{
+  bool terminate = false;
+
+  if( h.handler->catch_in_reactor() )
+    invoke_servers_handler( h, terminate );
+  else
+    invoke_clients_handler( h, terminate );
   
   if( terminate )
   {
