@@ -2,6 +2,7 @@ lib_LTLIBRARIES = libiqxmlrpc.la
 
 pkginclude_HEADERS = \
   libiqxmlrpc.h \
+  sysinc.h \
   except.h \
   value_type.h \
   value.h \
