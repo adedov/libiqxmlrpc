@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.h,v 1.4 2004-04-27 05:25:09 adedov Exp $
+//  $Id: executor.h,v 1.5 2004-06-07 09:44:59 adedov Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -39,7 +39,7 @@ namespace iqxmlrpc
   class Pool_executor;
 
   class Executor_fabric_base;
-  template <class Executor_type> class Executor_fabric;
+  class Serial_executor_fabric;
   class Pool_executor_fabric;
 };
 
@@ -68,6 +68,8 @@ protected:
 //! Abstract base for Executor's fabrics.
 class iqxmlrpc::Executor_fabric_base {
 public:
+  virtual ~Executor_fabric_base() {}
+
   virtual Executor* create( 
     Method*, 
     Server*, 
@@ -78,27 +80,7 @@ public:
 };
 
 
-//! Simple template for Executor's fabric.
-template < class Executor_type >
-class iqxmlrpc::Executor_fabric: public iqxmlrpc::Executor_fabric_base {
-public:
-  typedef typename Executor_type::Lock Lock;
-
-  //! Create concrete Executor's object.
-  Executor* create( Method* m, Server* s, Server_connection* c )
-  {
-    return new Executor_type( m, s, c );
-  }
-  
-  //! Create appropriate Lock object, which corresponds execution policy.
-  iqnet::Lock* create_lock()
-  {
-    return new Lock;
-  }
-};
-
-
-//! An Executor which provides serial execution policy.
+//! Single thread executor.
 class iqxmlrpc::Serial_executor: public iqxmlrpc::Executor {
 public:
   typedef iqnet::Null_lock Lock;
@@ -107,6 +89,21 @@ public:
     Executor( m, s, c ) {}
 
   void execute( const Param_list& params );
+};
+
+
+//! Factory class for Serial_executor.
+class iqxmlrpc::Serial_executor_fabric: public iqxmlrpc::Executor_fabric_base {
+public:
+  Executor* create( Method* m, Server* s, Server_connection* c )
+  {
+    return new Serial_executor( m, s, c );
+  }
+  
+  iqnet::Lock* create_lock()
+  {
+    return new Serial_executor::Lock;
+  }
 };
 
 
@@ -129,9 +126,7 @@ public:
 
 
 //! Fabric for Pool_executor objects. It is also serves as a pool of threads.
-class iqxmlrpc::Pool_executor_fabric: 
-  public iqxmlrpc::Executor_fabric<Pool_executor>
-{
+class iqxmlrpc::Pool_executor_fabric: public iqxmlrpc::Executor_fabric_base {
   class Pool_thread;
   friend class Pool_thread;
 
@@ -148,6 +143,11 @@ public:
     return new Pool_executor( this, m, s, c );
   }
   
+  iqnet::Lock* create_lock()
+  {
+    return new Pool_executor::Lock;
+  }
+
   void register_executor( Pool_executor* );
 };
 
