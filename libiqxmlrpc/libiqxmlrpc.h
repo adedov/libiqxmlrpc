@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: libiqxmlrpc.h,v 1.10 2004-07-01 07:35:21 adedov Exp $
+//  $Id: libiqxmlrpc.h,v 1.11 2004-10-14 03:22:57 adedov Exp $
 
 /*! 
   \file libiqxmlrpc.h
@@ -34,5 +34,6 @@
 #include "value.h"
 #include "response.h"
 #include "method.h"
+#include "utf_conv.h"
 
 #endif
