@@ -1,3 +1,4 @@
+#include <iostream>
 #include <libiqxmlrpc/http_transport.h>
 
 using namespace iqxmlrpc;
@@ -38,11 +39,17 @@ void Http_reaction_connection::finish()
 }
 
 
-void Http_reaction_connection::handle_input( bool& )
+void Http_reaction_connection::handle_input( bool& terminate )
 { 
   try {
     char buf[256];
     int n = recv( buf, sizeof(buf) );
+    
+    if( !n )
+    {
+      terminate = true;
+      return;
+    }
     
     if( !read_request( std::string(buf, n) ) )
       return;
