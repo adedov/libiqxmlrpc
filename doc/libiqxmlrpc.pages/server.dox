@@ -1,0 +1,75 @@
+/*! 
+\page server_prog Writing XML-RPC server
+To create XML-RPC server application using libiqxmlrpc, one must define its
+behaviour by creating the set of iqxmlrpc::Method class children, associate 
+them with instance of iqxmlrpc::Method_dispatcher and then run concrete 
+transport server like iqxmlrpc::Http_server or iqxmlrpc::Https_server.
+
+- \ref define_methods
+- \ref method_disp
+- \ref http_server
+- \ref https_server
+*/
+
+
+/*!
+\page define_methods Defining server behaviour
+
+An actual server behaviour is defined by number of server methods. An 
+application developer is responsible for creation of such methods' set.
+Each server method is a class that must be a child of iqxmlrpc::Method class.
+One must at least define abstract method iqxmlrpc::Method::execute in child 
+class.
+
+Here is simple method example:
+\code
+  class Chk_password: public iqxmlrpc::Method {
+    enum { my_fault = Fault_code::last+1 };
+
+  public:
+    void execute( const iqxmlrpc::Param_list& pl, iqxmlrpc::Value& retval )
+    {
+      if( !chk_password( pl[0] )
+        throw Fault( my_fault, "Password is incorrect." );
+    }
+
+  private:
+    bool chk_password( const std::string& );
+  };
+\endcode
+
+\note When user throws libiqxml::Fault exception library forms fault response
+to a remote client as proposed by XML-RPC standard. So feel free throw 
+iqxmlrpc::Fault object or its childs when you want to inform remote user about
+method's fault.
+*/
+
+
+/*!
+\page method_disp Method dispatcher
+Library recognizes client's requests and executes appropriate methods. 
+The iqxmlrpc::Method_dispatcher holds all information about all methods 
+available on a server and creates method objects on demand.
+
+To make specific server method be accessible on server one must register it 
+on Method_dispatcher:
+\code
+  iqxmlrpc::Method_dispatcher disp;
+  disp.register_method( "check_password", new Method_factory<Chk_password> );
+\endcode
+
+\b Method_dispatcher::register_method function takes \e name
+of method as first argument and \e method \e factory as second argument.
+
+\par Method name
+Method \e name is an unique string by which remote client can invoke specific 
+method through a XML-RPC call.
+
+\par Method factory
+\e Method \e factory is an object wich constructs specific method object. Since
+Method_dispatcher know nothing about concrete nethod's type it requires some
+fabric to construct concrect Method object at runtime. Library has template 
+class iqxmlrpc::Method_factory. One can use it in almost all cases, as in 
+previous example. If you need more flexibility then inherit 
+iqxmlrpc::Method_factory_base.
+*/

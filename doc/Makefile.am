@@ -1,3 +1,4 @@
 EXTRA_DIST = \
   libiqxmlrpc.doxygen \
-  libiqnet.doxygen
+  libiqnet.doxygen \
+  libiqxmlrpc.pages/*.dox
