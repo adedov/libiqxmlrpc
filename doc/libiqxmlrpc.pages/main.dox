@@ -8,6 +8,7 @@
 - \ref data_rep
 - \ref server_prog
 - \ref client_prog
+- \ref charset_support
 */
 
 
@@ -34,4 +35,28 @@ Libiqxmlrpc requires following third-party libraries:
 
  - OpenSSL<br>
    http://www.openssl.org
+*/
+
+
+/*!
+\page charset_support Charset support
+Libiqxmlrpc sends all XML data in UTF-8. It also waits for UTF-8 encoded data
+from peer. But users need not care about charset conversion if they use 
+charsets different from UTF-8 in their applications. Library takes care about it
+and provides transparent charset conversion from local encoding to UTF-8 and 
+vice versa.
+
+To configure library for transparent charset conversion one must call 
+iqxmlrpc::config::set_encoding with encoding name as parameter:
+\code
+  int main()
+  {
+    try 
+    {
+      iqxmlrpc::config::set_encoding( "KOI8-R" );    
+      // ...
+\endcode
+
+\note Library uses iconv (GNU libiconv) for charset conversion. So you can use
+'iconv -l' to list all known charsets.
 */

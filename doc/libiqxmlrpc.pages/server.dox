@@ -19,6 +19,8 @@ See examples also \ref https_server_ex.
 \b Next \b reading
 - \ref define_server_behaviour
 - \ref execution_model
+- \ref introspection
+- \ref fci_conformance
 
 \b Examples
 - \ref http_server
@@ -93,4 +95,60 @@ pool of 10 threads:
 \dontinclude tests/http_server_thr.cc
 \skip main()
 \skipline Server
+*/
+
+
+/*!
+\page introspection Server introspection
+Libiqxmlrpc allows to create server application which allows clients 
+request some help information its supported methods. This facility called 
+introspection.
+
+Please refer http://xmlrpc.usefulinc.com/doc/reserved.html
+introspection's specification.
+
+\subsection enable_introspeciton Enable introspection
+One need call iqxmlrpc::Server::enable_introspection method to turn on 
+introspection support in application.
+
+\subsection provide_help Provide help informaion
+It is not enough to just enable introspeciton for get things work. One must also
+provide appropriate structures to make helper informaion available for clients.
+
+It is more easy to describe an example of well created method class, which
+contains introspeciton information:
+\code
+  class MyMethod: public iqxmlrpc::Method {
+  public:
+    class Help: public Method::Help {
+      iqxmlrpc::Value signature() const;
+      std::string help() const;
+    };
+    
+    // ...  
+  };
+\endcode
+
+According to this example one need create nested class Help in MyMethod.
+It should be inherited form iqxmlrpc::Method::Help and reimplement virtual
+"signature" and "help" methods to ensure introspeciton support for particular 
+method class MyMethod.
+
+\note Help::signature must return iqxmlrpc::Value formed according to 
+introspecion specification.
+
+\note If some method class does not contain nested Help class then library
+would use iqxmlrpc::Method::Help class for introspection. It's signature and 
+help methods return Nil and empty string respectively.
+*/
+
+
+/*!
+\page fci_conformance Fault Code Interoperability
+Libiqxmlrpc is 
+<a href="http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php">FCI</a>
+compatible.
+
+So it returns FCI conformant fault codes and forbid users to return fault codes
+in range [-32768, -32000] as FCI requires.
 */
