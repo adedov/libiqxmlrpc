@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.8 2004-03-29 06:23:18 adedov Exp $
+//  $Id: value_type.h,v 1.9 2004-04-14 08:56:40 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -23,7 +23,7 @@
 
 #include <string>
 #include <libxml++/libxml++.h>
-#include <libiqxmlrpc/except.h>
+#include "except.h"
 
 
 //! XML-RPC library

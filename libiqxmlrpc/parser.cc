@@ -15,16 +15,16 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser.cc,v 1.2 2004-03-29 06:23:18 adedov Exp $
+//  $Id: parser.cc,v 1.3 2004-04-14 08:56:40 adedov Exp $
 
 #include <iostream>
 #include <stdlib.h>
 #include <stdexcept>
-#include <libiqxmlrpc/parser.h>
-#include <libiqxmlrpc/except.h>
-#include <libiqxmlrpc/parser_specific.h>
-#include <libiqxmlrpc/value_type.h>
-#include <libiqxmlrpc/value.h>
+#include "parser.h"
+#include "except.h"
+#include "parser_specific.h"
+#include "value_type.h"
+#include "value.h"
 
 using namespace iqxmlrpc;
 

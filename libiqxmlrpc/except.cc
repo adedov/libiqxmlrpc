@@ -15,11 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: except.cc,v 1.2 2004-03-29 06:23:18 adedov Exp $
+//  $Id: except.cc,v 1.3 2004-04-14 08:56:40 adedov Exp $
 
 #include <libxml++/libxml++.h>
 #include <sstream>
-#include <libiqxmlrpc/except.h>
+#include "except.h"
 
 using namespace iqxmlrpc;
 

@@ -15,9 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.cc,v 1.4 2004-03-29 06:23:18 adedov Exp $
+//  $Id: method.cc,v 1.5 2004-04-14 08:56:40 adedov Exp $
 
-#include <libiqxmlrpc/method.h>
+#include "method.h"
 
 using namespace iqxmlrpc;
 

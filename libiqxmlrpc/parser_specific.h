@@ -15,13 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser_specific.h,v 1.2 2004-03-29 06:23:18 adedov Exp $
+//  $Id: parser_specific.h,v 1.3 2004-04-14 08:56:40 adedov Exp $
 
 // This file contains parser classes for specific Value types.
 #ifndef _iqxmlrpc_parser_specific_h_
 #define _iqxmlrpc_parser_specific_h_
 
-#include <libiqxmlrpc/parser.h>
+#include "parser.h"
 
 
 namespace iqxmlrpc

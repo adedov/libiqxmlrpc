@@ -15,15 +15,15 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.8 2004-03-29 06:23:18 adedov Exp $
+//  $Id: method.h,v 1.9 2004-04-14 08:56:40 adedov Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
 
 #include <string>
 #include <map>
-#include <libiqxmlrpc/value.h>
-#include <libiqxmlrpc/except.h>
+#include "value.h"
+#include "except.h"
 
 
 namespace iqxmlrpc

@@ -15,17 +15,17 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: libiqxmlrpc.h,v 1.6 2004-03-29 06:23:18 adedov Exp $
+//  $Id: libiqxmlrpc.h,v 1.7 2004-04-14 08:56:40 adedov Exp $
 
 /*! \file libiqxmlrpc.h */
 
 #ifndef _libiqxmlrpc_h_
 #define _libiqxmlrpc_h_
 
-#include <libiqxmlrpc/except.h>
-#include <libiqxmlrpc/value.h>
-#include <libiqxmlrpc/response.h>
-#include <libiqxmlrpc/method.h>
-#include <libiqxmlrpc/http.h>
+#include "except.h"
+#include "value.h"
+#include "response.h"
+#include "method.h"
+#include "http.h"
 
 #endif

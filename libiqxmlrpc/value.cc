@@ -15,12 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.cc,v 1.3 2004-03-29 06:23:18 adedov Exp $
+//  $Id: value.cc,v 1.4 2004-04-14 08:56:40 adedov Exp $
 
 #include <stdexcept>
 #include <iostream>
-#include <libiqxmlrpc/value.h>
-#include <libiqxmlrpc/value_type.h>
+#include "value.h"
+#include "value_type.h"
 
 using namespace iqxmlrpc;
 
