@@ -1,3 +1,4 @@
+#include <iostream>
 #include <libiqxmlrpc/https_transport.h>
 
 using namespace iqxmlrpc;
@@ -51,7 +52,8 @@ void Https_reaction_connection::recv_succeed
       return;
     }
     
-    if( !server->read_request( std::string(recv_buf, real_len) ) )
+    std::string s(recv_buf, real_len);
+    if( !server->read_request( s ) )
     {
       my_reg_recv();
       return;
@@ -66,7 +68,7 @@ void Https_reaction_connection::recv_succeed
   }
   
   std::string s( response->dump() );
-  send_buf = new char[s.length()+1];
+  send_buf = new char[s.length()];
   s.copy( send_buf, std::string::npos );
   reg_send( send_buf, s.length() );
 }
@@ -104,4 +106,43 @@ void Https_server::work()
 {
   while( !exit_flag )
     reactor.handle_events();
+}
+
+
+// --------------------------------------------------------------------------
+Https_client::Https_client( const iqnet::Inet_addr& a, const std::string& uri ):
+  http::Client( uri ),
+  addr(a),
+  conn(0),
+  ctr(a)
+{
+  set_client_host( iqnet::get_host_name() );
+}
+
+
+Https_client::~Https_client()
+{
+  delete conn;
+}
+
+
+void Https_client::send_request( const http::Packet& packet )
+{
+  conn = ctr.connect();
+  std::string req( packet.dump() );
+  conn->send( req.c_str(), req.length() );
+}
+
+
+void Https_client::recv_response()
+{
+  int sum = 0;
+  
+  for( bool r = false; !r; )
+  {
+    char buf[256];
+    bzero( buf, 256 );
+    unsigned sz = conn->recv( buf, 255 );
+    r = read_response( sz ? std::string(buf, sz) : std::string("") );
+  }
 }
