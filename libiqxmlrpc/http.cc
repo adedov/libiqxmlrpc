@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.cc,v 1.20 2004-04-21 06:14:00 adedov Exp $
+//  $Id: http.cc,v 1.21 2004-04-21 07:22:50 adedov Exp $
 
 #include "sysinc.h"
 #include <iostream>
@@ -41,8 +41,10 @@ public:
 };
 #endif
 
+
 Header::Header():
-  content_length_(0)
+  content_length_(0),
+  content_length_set_(false)
 {
   init_parser();
   
@@ -63,6 +65,7 @@ void Header::set_version( const std::string& v )
 
 void Header::set_content_length( unsigned lth )
 {
+  content_length_set_ = true;
   content_length_ = lth;
   std::ostringstream ss;
   ss << lth;

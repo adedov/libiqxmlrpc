@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_transport.cc,v 1.11 2004-04-19 08:11:44 adedov Exp $
+//  $Id: http_transport.cc,v 1.12 2004-04-21 07:22:50 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -100,10 +100,7 @@ http::Packet* Http_client_connection::do_process_session( const std::string& s )
     read_buf[0] = 0;
     unsigned sz = recv( read_buf, read_buf_sz-1  );
     
-    if( !sz )
-      throw http::Malformed_packet();
-    
-    http::Packet* pkt = read_response( std::string(read_buf, sz) );
+    http::Packet* pkt = read_response( sz ? std::string(read_buf, sz) : "" );
     if( pkt )
       return pkt;
   }

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.h,v 1.14 2004-04-21 06:14:00 adedov Exp $
+//  $Id: http.h,v 1.15 2004-04-21 07:22:50 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -80,6 +80,7 @@ private:
 
   std::string version_;
   unsigned    content_length_;
+  bool        content_length_set_;
   
 public:
   Header();
@@ -87,8 +88,9 @@ public:
 
   virtual Header* clone() const { return new Header(*this); }
   
-  const std::string& version()        const { return version_; }
-  unsigned           content_length() const { return content_length_; }
+  const std::string& version()     const { return version_; }
+  unsigned content_length()        const { return content_length_; }
+  bool     is_content_length_set() const { return content_length_set_; }
   
   void set_version( const std::string& v );
   void set_content_length( unsigned ln );
@@ -306,16 +308,29 @@ namespace iqxmlrpc
         clear();
       
       if( !header )
+      {
+        if( s.empty() )
+          throw http::Malformed_packet();
+        
         read_header(s);
+      }
       else
         content_cache += s;
       
-      if( header && content_cache.length() >= header->content_length() )  
+      if( header )
       {
-        content_cache.erase( header->content_length(), std::string::npos );
-        Packet* packet = new Packet( header, content_cache );
-        constructed = true;
-        return packet;
+        bool ready = s.empty() && !header->is_content_length_set() ||
+                     content_cache.length() >= header->content_length();
+        
+        if( ready )
+        {
+          if( header->is_content_length_set() )
+            content_cache.erase( header->content_length(), std::string::npos );
+
+          Packet* packet = new Packet( header, content_cache );
+          constructed = true;
+          return packet;
+        }
       }
       
       return 0;
