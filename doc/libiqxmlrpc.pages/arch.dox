@@ -1,5 +1,5 @@
 /*!
-\page arch_overview Architecture overview
+\page arch_overview Architecture overview (obsolete)
 
 \section lib_morph Library morphology
 Libiqxmlrpc contains code related to XML-RPC stuff directly. There is also a 
