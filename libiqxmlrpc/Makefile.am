@@ -10,10 +10,14 @@ pkginclude_HEADERS = \
   request.h \
   response.h \
   method.h \
-  null_transport.h \
+  executor.h \
   http.h \
+  server.h \
+  client.h \
   http_transport.h \
   https_transport.h
+
+#  xml_util.h
 
 
 libiqxmlrpc_la_SOURCES = \
@@ -25,10 +29,14 @@ libiqxmlrpc_la_SOURCES = \
   request.cc \
   response.cc \
   method.cc \
-  null_transport.cc \
+  executor.cc \
   http.cc \
+  server.cc \
+  client.cc \
   http_transport.cc \
   https_transport.cc
+
+#  xml_util.cc
   
 libiqxmlrpc_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
 libiqxmlrpc_la_LIBADD =  @LIBXMLPP@ ../libiqnet/libiqnet.la 
