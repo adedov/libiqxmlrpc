@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.10 2004-04-22 07:43:19 adedov Exp $
+//  $Id: value_type.h,v 1.11 2004-05-07 05:28:19 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -39,6 +39,8 @@ namespace iqxmlrpc
   typedef Scalar<bool> Bool;
   typedef Scalar<double> Double;
   typedef Scalar<std::string> String;
+  
+  class Binary_data;
 };
 
 
@@ -155,6 +157,52 @@ public:
 private:
   Struct( const Struct& ) {}
   const Struct& operator =( const Struct& ) { return *this; }
+};
+
+
+//! XML-RPC Base64 type.
+class iqxmlrpc::Binary_data: public iqxmlrpc::Value_type {
+public:
+  //! Malformed base64 encoding format exception. 
+  class Malformed_base64: public iqxmlrpc::Exception {
+  public:
+    Malformed_base64():
+      Exception( "Malformed base64 format." ) {}
+  };
+  
+private:
+  static const char base64_alpha[64];
+
+  std::string data;
+  mutable std::string base64;
+
+public:
+  //! Construct an object from encoded data.
+  static Binary_data* from_base64( const std::string& );
+  //! Construct an object from raw data.
+  static Binary_data* from_data( const std::string& );
+  //! Construct an object from raw data.
+  static Binary_data* from_data( const char*, unsigned size );
+  
+  //! Get data in encoded form.
+  const std::string& get_base64() const;
+  //! Get raw data.
+  const std::string& get_data() const;
+
+  Value_type* clone() const;
+  void to_xml( xmlpp::Node* parent ) const;
+  
+private:
+  class End_of_data {};
+
+  Binary_data( const std::string&, bool raw );
+
+  void add_base64_char( int idx ) const;
+  void encode() const;
+
+  char get_idx( char );
+  void decode_four( const std::string& );
+  void decode();
 };
 
 

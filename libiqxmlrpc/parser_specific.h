@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser_specific.h,v 1.3 2004-04-14 08:56:40 adedov Exp $
+//  $Id: parser_specific.h,v 1.4 2004-05-07 05:28:19 adedov Exp $
 
 // This file contains parser classes for specific Value types.
 #ifndef _iqxmlrpc_parser_specific_h_
@@ -30,6 +30,7 @@ namespace iqxmlrpc
   class String_parser;
   class Boolean_parser;
   class Double_parser;
+  class Base64_parser;
   class Array_parser;
   class Struct_parser;
 };
@@ -54,6 +55,12 @@ public:
 
 
 class iqxmlrpc::Double_parser: public iqxmlrpc::Value_parser {
+public:
+  Value_type* parse_value( const xmlpp::Node* ) const;
+};
+
+
+class iqxmlrpc::Base64_parser: public iqxmlrpc::Value_parser {
 public:
   Value_type* parse_value( const xmlpp::Node* ) const;
 };

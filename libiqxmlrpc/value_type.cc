@@ -15,8 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.5 2004-04-14 08:56:40 adedov Exp $
+//  $Id: value_type.cc,v 1.6 2004-05-07 05:28:19 adedov Exp $
 
+#include <string.h>
 #include <sstream>
 #include "value_type.h"
 #include "value.h"
@@ -209,4 +210,189 @@ void Struct::insert( const std::string& f, Value* val )
 void Struct::insert( const std::string& f, const Value& val )
 {
   values[f] = new Value(val);
+}
+
+
+// ----------------------------------------------------------------------------
+const char Binary_data::base64_alpha[64] = { 
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
+
+
+Binary_data* Binary_data::from_base64( const std::string& s )
+{
+  return new Binary_data( s, false );
+}
+
+
+Binary_data* Binary_data::from_data( const std::string& s )
+{
+  return new Binary_data( s, true );
+}
+
+
+Binary_data* Binary_data::from_data( const char* s, unsigned size )
+{
+  return new Binary_data( std::string(s, size), true );
+}
+
+
+Binary_data::Binary_data( const std::string& s, bool raw )
+{
+  if( raw )
+    data = s;
+  else
+  {
+    base64 = s;
+    decode();
+  }
+}
+
+
+const std::string& Binary_data::get_data() const 
+{
+  return data;
+}
+
+
+const std::string& Binary_data::get_base64() const 
+{
+  if( base64.empty() && !data.empty() )
+    encode();
+
+  return base64;
+}
+
+
+inline void Binary_data::add_base64_char( int idx ) const
+{
+  base64 += base64_alpha[idx];
+}
+
+
+void Binary_data::encode() const 
+{
+  const char* d = data.data();
+  unsigned dsz = data.length();
+
+  for( int i = 0; i < dsz; i += 3 )
+  {
+    unsigned c = 0xff0000 & d[i] << 16;
+    add_base64_char( (c >> 18) & 0x3f );
+
+    if( i+1 < dsz )
+    {
+      c |= 0x00ff00 & d[i+1] << 8;
+      add_base64_char( (c >> 12) & 0x3f );
+    }
+    else
+    {
+      add_base64_char( (c >> 12) & 0x3f );
+      base64 += "==";
+      return;
+    }
+    
+    if( i+2 < dsz )
+    {
+      c |= 0x0000ff & d[i+2];
+      add_base64_char( (c >> 6) & 0x3f );
+      add_base64_char( c & 0x3f );
+    }
+    else
+    {
+      add_base64_char( (c >> 6) & 0x3f );
+      base64 += "=";
+      return;
+    }
+  }
+}
+
+
+inline char Binary_data::get_idx( char c )
+{
+  if( c == '=' )
+    throw End_of_data();
+
+  if( c >= 'A' && c <= 'Z' )
+    return c - 'A';
+  
+  if( c >= 'a' && c <= 'z' )
+    return 26 + c - 'a';
+  
+  if( c >= '0' && c <= '9' )
+    return 52 + c - '0';
+  
+  if( c == '+' )
+    return 62;
+  
+  if( c == '/' )
+    return 63;
+
+  throw Malformed_base64();  
+}
+
+
+inline void Binary_data::decode_four( const std::string& four )
+{
+  char c1 = four[0];
+  char c2 = four[1];
+  char c3 = four[2];
+  char c4 = four[3];
+  
+  if( c1 == '=' || c2 == '=' )
+    throw Malformed_base64();
+  
+  try {
+    unsigned pair = get_idx(c1) << 6 | get_idx(c2);
+    data += char(pair >> 4 & 0xff);
+  
+    pair = get_idx(c2) << 6 | get_idx(c3);
+    data += char(pair >> 2);
+  
+    pair = get_idx(c3) << 6 | get_idx(c4);
+    data += char(pair & 0xff);
+  }
+  catch( const End_of_data& )
+  {
+  }
+}
+
+
+void Binary_data::decode()
+{
+  const char* d = base64.data();
+  int dsz = base64.length();
+  std::string four;
+  
+  for( int i = 0; i < dsz; i++ )
+  {
+    if( isspace( d[i] ) )
+      continue;
+    
+    four += d[i];
+    if( four.length() == 4 )
+    {
+      decode_four( four );
+      four.erase();
+    }
+  }
+  
+  if( !four.empty() )
+    throw Malformed_base64();
+}
+
+
+Value_type* Binary_data::clone() const 
+{
+  return new Binary_data(*this);
+}
+
+
+void Binary_data::to_xml( xmlpp::Node* p ) const 
+{
+  xmlpp::Element* el = p->add_child( "base64" );
+  el->add_child_text( get_base64() );
 }

@@ -15,10 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.cc,v 1.4 2004-04-14 08:56:40 adedov Exp $
+//  $Id: value.cc,v 1.5 2004-05-07 05:28:19 adedov Exp $
 
 #include <stdexcept>
-#include <iostream>
 #include "value.h"
 #include "value_type.h"
 
@@ -75,6 +74,12 @@ Value::Value( const Array& arr ):
 
 Value::Value( const Struct& st ):
   value( st.clone() )
+{
+}
+
+
+Value::Value( const Binary_data& bin ):
+  value( bin.clone() )
 {
 }
 
