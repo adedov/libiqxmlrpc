@@ -5,6 +5,8 @@ check_PROGRAMS = \
   parse-response \
   parse-request \
   parse-value \
+  base64-encode \
+  base64-decode \
   value-usage \
   http-server \
   http-server-thr \
@@ -15,6 +17,9 @@ check_PROGRAMS = \
   https-client-i
 
 parse_value_SOURCES = parse_value.cc
+
+base64_encode_SOURCES = base64.cc
+base64_decode_SOURCES = base64.cc
 
 value_usage_SOURCES = value_usage.cc
 
