@@ -16,7 +16,6 @@ pkgconfig_DATA = libiqxmlrpc.pc
 
 SUBDIRS = \
   libiqxmlrpc \
-  tests.libiqnet \
   tests \
   doc
 
