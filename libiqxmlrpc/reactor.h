@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.3 2004-07-20 05:41:20 adedov Exp $
+//  $Id: reactor.h,v 1.4 2004-08-17 04:24:42 adedov Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
@@ -38,6 +38,7 @@ public:
 
   virtual void handle_input( bool& terminate ) {}
   virtual void handle_output( bool& terminate ) {}
+  virtual void handle_error( bool& terminate ) { terminate = true; }
 
   virtual void handle_io( bool& terminate )
   {
@@ -57,7 +58,7 @@ public:
   virtual void log_exception( const std::exception& ) {};
   //! Log its exception catched in an external object.
   virtual void log_unknown_exception() {};
-    
+  
   virtual Socket::Handler get_handler() const = 0;
 };
 
