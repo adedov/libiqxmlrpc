@@ -15,34 +15,29 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sysinc.h,v 1.2 2004-04-22 09:25:56 adedov Exp $
+//  $Id: connector.cc,v 1.1 2004-04-22 09:25:56 adedov Exp $
 
-/*! \file sysinc.h 
-    This file should help to port library.
-    Insert here include macro of platform dependent headers.
-*/
+#include "sysinc.h"
+#include "connector.h"
+#include "net_except.h"
 
-#ifndef _iqxmlrpc_sysinc_h_
-#define _iqxmlrpc_sysinc_h_
+using namespace iqnet;
 
-#include <ctype.h>
-#include <locale.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <sys/types.h>
 
-#ifdef HAVE_POLL
-  #include <sys/poll.h>
-#endif
+int Connector_base::socket_connect()
+{
+  int sock = socket( PF_INET, SOCK_STREAM, 0 );
+  if( sock == -1 )
+    throw network_error( "socket" );
 
-#endif
+  int enable = 1;
+  setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable) );
+
+  const sockaddr* saddr = 
+    reinterpret_cast<const sockaddr*>(peer_addr.get_sockaddr());
+  
+  if( ::connect(sock, saddr, sizeof(sockaddr_in)) )
+    throw network_error( "connect" );
+  
+  return sock;
+}

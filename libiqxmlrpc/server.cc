@@ -15,9 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.6 2004-04-22 08:11:41 adedov Exp $
+//  $Id: server.cc,v 1.7 2004-04-22 09:25:56 adedov Exp $
 
-#include "libiqnet/reactor.h"
+#include "reactor.h"
 #include "server.h"
 #include "request.h"
 #include "response.h"

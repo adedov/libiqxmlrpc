@@ -15,14 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.5 2004-04-21 10:04:41 adedov Exp $
+//  $Id: client.h,v 1.6 2004-04-22 09:25:56 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
 
 #include <memory>
-#include "libiqnet/connection.h"
-#include "libiqnet/connector.h"
+#include "connection.h"
+#include "connector.h"
 #include "request.h"
 #include "response.h"
 #include "http.h"

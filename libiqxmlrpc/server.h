@@ -15,15 +15,15 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.7 2004-04-22 08:11:41 adedov Exp $
+//  $Id: server.h,v 1.8 2004-04-22 09:25:56 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
 
 #include <ostream>
-#include "libiqnet/acceptor.h"
-#include "libiqnet/connection.h"
-#include "libiqnet/conn_fabric.h"
+#include "acceptor.h"
+#include "connection.h"
+#include "conn_fabric.h"
 #include "executor.h"
 #include "method.h"
 #include "http.h"

@@ -15,13 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_transport.h,v 1.7 2004-04-14 08:49:16 adedov Exp $
+//  $Id: https_transport.h,v 1.8 2004-04-22 09:25:56 adedov Exp $
 
 #ifndef _libiqxmlrpc_https_transport_h_
 #define _libiqxmlrpc_https_transport_h_
 
-#include "libiqnet/connector.h"
-#include "libiqnet/ssl_connection.h"
+#include "connector.h"
+#include "ssl_connection.h"
 #include "server.h"
 #include "client.h"
 

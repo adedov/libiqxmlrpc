@@ -15,34 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sysinc.h,v 1.2 2004-04-22 09:25:56 adedov Exp $
+//  $Id: net_except.cc,v 1.1 2004-04-22 09:25:56 adedov Exp $
 
-/*! \file sysinc.h 
-    This file should help to port library.
-    Insert here include macro of platform dependent headers.
-*/
+#include "sysinc.h"
+#include "net_except.h"
 
-#ifndef _iqxmlrpc_sysinc_h_
-#define _iqxmlrpc_sysinc_h_
 
-#include <ctype.h>
-#include <locale.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <sys/types.h>
-
-#ifdef HAVE_POLL
-  #include <sys/poll.h>
-#endif
-
-#endif
+iqnet::network_error::network_error( const std::string& msg, bool use_errno ):
+  std::runtime_error( 
+    use_errno ? (msg + std::string(": ") + strerror(errno)) : msg )
+{
+}

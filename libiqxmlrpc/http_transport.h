@@ -15,12 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_transport.h,v 1.9 2004-04-14 08:49:16 adedov Exp $
+//  $Id: http_transport.h,v 1.10 2004-04-22 09:25:56 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_transport_h_
 #define _libiqxmlrpc_http_transport_h_
 
-#include "libiqnet/connector.h"
+#include "connector.h"
 #include "server.h"
 #include "client.h"
 

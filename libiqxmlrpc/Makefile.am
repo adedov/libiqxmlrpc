@@ -1,7 +1,21 @@
 lib_LTLIBRARIES = libiqxmlrpc.la
 
+libiqxmlrpc_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
+libiqxmlrpc_la_LIBADD =  @LIBXMLPP@ @OPENSSL@
+
 pkginclude_HEADERS = \
   libiqxmlrpc.h \
+  net_sysinc.h \
+  conn_fabric.h \
+  net_except.h \
+  inet_addr.h \
+  acceptor.h \
+  connector.h \
+  lock.h \
+  reactor.h \
+  connection.h \
+  ssl_lib.h \
+  ssl_connection.h \
   sysinc.h \
   except.h \
   value_type.h \
@@ -22,6 +36,14 @@ pkginclude_HEADERS = \
 
 
 libiqxmlrpc_la_SOURCES = \
+  inet_addr.cc \
+  net_except.cc \
+  acceptor.cc \
+  connector.cc \
+  reactor.cc \
+  connection.cc \
+  ssl_lib.cc \
+  ssl_connection.cc \
   except.cc \
   value_type.cc \
   value.cc \
@@ -38,6 +60,3 @@ libiqxmlrpc_la_SOURCES = \
   https_transport.cc
 
 #  xml_util.cc
-  
-libiqxmlrpc_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
-libiqxmlrpc_la_LIBADD =  @LIBXMLPP@ ../libiqnet/libiqnet.la 

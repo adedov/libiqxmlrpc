@@ -15,34 +15,41 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sysinc.h,v 1.2 2004-04-22 09:25:56 adedov Exp $
+//  $Id: inet_addr.h,v 1.1 2004-04-22 09:25:56 adedov Exp $
 
-/*! \file sysinc.h 
-    This file should help to port library.
-    Insert here include macro of platform dependent headers.
-*/
+#ifndef _libiqnet_inet_addr_h_
+#define _libiqnet_inet_addr_h_
 
-#ifndef _iqxmlrpc_sysinc_h_
-#define _iqxmlrpc_sysinc_h_
+#include <string>
+#include "sysinc.h"
 
-#include <ctype.h>
-#include <locale.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <sys/types.h>
+//! Library's global namespace
+namespace iqnet 
+{
+  class Inet_addr;
+  
+  //! Returns host.domain of local processor.
+  std::string get_host_name();
+};
 
-#ifdef HAVE_POLL
-  #include <sys/poll.h>
-#endif
+
+//! An object representation of internet address.
+/*! A wrapper for sockaddr_in system structure. */
+class iqnet::Inet_addr {
+  struct sockaddr_in sa;
+  std::string host;
+  int port;
+  
+public:
+  Inet_addr( const struct sockaddr_in& );
+  Inet_addr( const std::string& host, int port );
+  Inet_addr( int port );
+
+  virtual ~Inet_addr() {}
+  
+  const struct sockaddr_in* get_sockaddr() const { return &sa; }
+  const std::string& get_host_name() const { return host; }
+  int get_port() const { return port; }
+};
 
 #endif
