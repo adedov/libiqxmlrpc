@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_server.cc,v 1.5 2004-10-22 04:13:27 adedov Exp $
+//  $Id: https_server.cc,v 1.6 2004-11-14 17:24:54 adedov Exp $
 
 #include "https_server.h"
 
@@ -62,6 +62,8 @@ void Https_server_connection::recv_succeed
   }
   catch( const http::Error_response& e )
   {
+    // Close connection after sending HTTP error response
+    keep_alive = false;
     schedule_response( new http::Packet(e) );
   }
 }
@@ -71,7 +73,11 @@ void Https_server_connection::send_succeed( bool& terminate )
 {
   delete[] send_buf;
   send_buf = 0;
-  terminate = reg_shutdown();
+  
+  if( keep_alive )
+    my_reg_recv();
+  else
+    terminate = reg_shutdown();
 }
 
 
