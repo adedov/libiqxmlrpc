@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_lib.cc,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: ssl_lib.cc,v 1.2 2004-07-20 05:32:53 adedov Exp $
 
 #include <openssl/rsa.h>
 #include <openssl/crypto.h>
@@ -95,6 +95,7 @@ exception::exception() throw():
   ssl_err( ERR_get_error() ),
   msg( ERR_reason_error_string(ssl_err) )
 {
+  msg = "iqnet::ssl: " + msg;
 }
 
 
@@ -102,6 +103,7 @@ exception::exception( unsigned long err ) throw():
   ssl_err(err),
   msg( ERR_reason_error_string(ssl_err) )
 {
+  msg = "iqnet::ssl: " + msg;
 }
 
 
@@ -109,6 +111,7 @@ exception::exception( const std::string& msg_ ) throw():
   ssl_err(0),
   msg( msg_ )
 {
+  msg = "iqnet::ssl: " + msg;
 }
 
 
