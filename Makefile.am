@@ -36,6 +36,5 @@ rpm:	dist
 clog:
 	cvs2cl --fsf -P -S
 
-mydist:	dist doc
-	( cd doc; make )
+mydist:	dist
 	( cd doc; tar cfz ../libiqxmlrpc-doc-@VERSION@.tar.gz index.html libiqxmlrpc.html )
