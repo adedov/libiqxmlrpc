@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: connection.cc,v 1.3 2004-08-17 04:27:15 adedov Exp $
+//  $Id: connection.cc,v 1.4 2004-10-25 04:32:25 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -34,6 +34,13 @@ Connection::Connection( const Socket& s ):
 Connection::~Connection()
 {
   ::shutdown( sock.get_handler(), 2 );
+  sock.close();
+}
+
+
+void Connection::finish()
+{
+  sock.shutdown();
   sock.close();
 }
 

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: connection.h,v 1.3 2004-08-17 04:27:15 adedov Exp $
+//  $Id: connection.h,v 1.4 2004-10-25 04:32:25 adedov Exp $
 
 #ifndef _libiqnet_connection_h_
 #define _libiqnet_connection_h_
@@ -45,6 +45,7 @@ public:
   Connection( const Socket& );
   virtual ~Connection();
 
+  void finish();
   void handle_error( bool& );
 
   virtual void post_accept() {}
