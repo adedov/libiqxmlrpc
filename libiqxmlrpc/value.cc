@@ -70,6 +70,7 @@ const Value& Value::operator =( const Value& v )
 {
   delete value;
   value = v.value->clone();
+  return *this;
 }
 
 
