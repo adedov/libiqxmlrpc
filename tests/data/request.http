@@ -2,7 +2,7 @@ PUT /RPC2 HTTP/1.0
 User-Agent: Test Suite
 Host: exabiche.prgn.ru
 Content-type: text/xml
-Content-length: 1
+Content-length: 252
 
 <?xml version="1.0"?>
 <methodCall>
