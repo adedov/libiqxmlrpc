@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: connection.cc,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: connection.cc,v 1.3 2004-08-17 04:27:15 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -35,6 +35,18 @@ Connection::~Connection()
 {
   ::shutdown( sock.get_handler(), 2 );
   sock.close();
+}
+
+
+void Connection::handle_error( bool& )
+{
+  int sock_err = sock.get_last_error();
+
+  if( sock_err )
+  {
+    errno = sock_err;
+    throw network_error( "Connection::throw_sock_exception" );
+  }
 }
 
 
