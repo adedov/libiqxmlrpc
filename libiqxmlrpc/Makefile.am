@@ -30,8 +30,10 @@ pkginclude_HEADERS = \
   http.h \
   server.h \
   client.h \
-  http_transport.h \
-  https_transport.h
+  http_client.h \
+  http_server.h \
+  https_client.h \
+  https_server.h
 
 #  xml_util.h
 
@@ -56,8 +58,10 @@ libiqxmlrpc_la_SOURCES = \
   request.cc \
   response.cc \
   http.cc \
-  http_transport.cc \
-  https_transport.cc \
+  http_client.cc \
+  http_server.cc \
+  https_client.cc \
+  https_server.cc \
   method.cc \
   executor.cc \
   server.cc \
@@ -71,8 +75,12 @@ libiqxmlrpc_la_SOURCES = \
 #  method.*
 #  executor.*
 #  server.*
+#  http_server.*
+#  https_server.*
 #  
 # Client only sources:
+#  http_client.*
+#  https_client.*
 #  client.*
 
   

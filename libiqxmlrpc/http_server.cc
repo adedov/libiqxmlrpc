@@ -15,11 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_transport.cc,v 1.13 2004-04-28 04:20:03 adedov Exp $
+//  $Id: http_server.cc,v 1.1 2004-04-28 08:42:21 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
-#include "http_transport.h"
+#include "http_server.h"
 
 using namespace iqxmlrpc;
 using namespace iqnet;
@@ -87,59 +87,4 @@ void Http_server_connection::schedule_response( http::Packet* pkt )
 {
   Server_connection::schedule_response( pkt );
   reactor->register_handler( this, iqnet::Reactor::OUTPUT );
-}
-
-
-// --------------------------------------------------------------------------
-Http_client_connection::Http_client_connection( 
-    int sock, const iqnet::Inet_addr& peer 
-  ):
-    Client_connection( sock, peer ),
-    reactor( new iqnet::Null_lock ),
-    resp_packet(0)
-{
-  set_non_blocking( true );
-}
-
-
-http::Packet* Http_client_connection::do_process_session( const std::string& s )
-{
-  out_str = s;
-  reactor.register_handler( this, iqnet::Reactor::OUTPUT );
-  
-  do {
-    int to = timeout >= 0 ? timeout*1000 : -1;
-    if( !reactor.handle_events(to) )
-      throw Client_timeout();
-  }
-  while( !resp_packet );
-
-  return resp_packet;
-}
-
-
-void Http_client_connection::handle_output( bool& )
-{
-  int sz = send( out_str.c_str(), out_str.length() );
-  out_str.erase( 0, sz );
-  
-  if( out_str.empty() )
-  {
-    reactor.unregister_handler( this, iqnet::Reactor::OUTPUT );
-    reactor.register_handler( this, iqnet::Reactor::INPUT );
-  }
-}
-
-
-void Http_client_connection::handle_input( bool& )
-{
-  for( int sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
-  {
-    read_buf[0] = 0;
-    int sz = recv( read_buf, read_buf_sz  );
-    resp_packet = read_response( sz ? std::string(read_buf, sz) : "" );
-  }
-  
-  if( resp_packet )
-    reactor.unregister_handler( this );
 }

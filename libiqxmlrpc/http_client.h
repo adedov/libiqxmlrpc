@@ -15,38 +15,17 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_transport.h,v 1.11 2004-04-28 04:20:03 adedov Exp $
+//  $Id: http_client.h,v 1.1 2004-04-28 08:42:21 adedov Exp $
 
-#ifndef _libiqxmlrpc_http_transport_h_
-#define _libiqxmlrpc_http_transport_h_
+#ifndef _libiqxmlrpc_http_client_h_
+#define _libiqxmlrpc_http_client_h_
 
 #include "connector.h"
-#include "server.h"
 #include "client.h"
 
 namespace iqxmlrpc
 {
-  class Http_server_connection;
   class Http_client_connection;
-};
-
-
-//! Represents server-side \b HTTP non-blocking connection.
-class iqxmlrpc::Http_server_connection: public iqxmlrpc::Server_connection {
-  iqnet::Reactor* reactor;
-
-public:
-  Http_server_connection( int, const iqnet::Inet_addr& );
-
-  void set_reactor( iqnet::Reactor* r ) { reactor = r; }
-
-  void post_accept();  
-  void finish();
-  
-  void handle_input( bool& );
-  void handle_output( bool& );
-
-  void schedule_response( http::Packet* packet );
 };
 
 
