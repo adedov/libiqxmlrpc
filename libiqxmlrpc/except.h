@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: except.h,v 1.6 2004-04-22 07:43:19 adedov Exp $
+//  $Id: except.h,v 1.7 2004-09-19 09:32:38 adedov Exp $
 
 #ifndef _iqxmlrpc_except_h_
 #define _iqxmlrpc_except_h_
@@ -27,46 +27,86 @@ namespace xmlpp
   class Node;
 };
 
-
+// Exceptions are conformant ot Fault Code Interoperability, version 20010516.
+// http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php
 namespace iqxmlrpc 
 {
-  //! Base class for iqxmlrpc exceptions.
-  class Exception: public std::runtime_error {
-  public:
-    Exception( const std::string& i ):
-      runtime_error( i ) {}
+  class Exception;
+  class Parse_error;
+  class XML_RPC_violation;
+  class Unknown_method;
+  class Invalid_meth_params;
+  class Fault; 
+};
 
-    virtual int code() const { return -1; }
-  };
 
+//! Base class for iqxmlrpc exceptions.
+class iqxmlrpc::Exception: public std::runtime_error {
+  int ex_code;
   
-  //! Common exception class for various error cases 
-  //! which can happen during parsing of XML-RPC structures.
-  class Parse_error: public Exception {
+public:
+  Exception( const std::string& i, int c = -32000 /*undefined error*/ ):
+    runtime_error( i ), ex_code(c) {}
+
+  virtual int code() const { return ex_code; }
+};
+
+
+//! XML Parser error.
+class iqxmlrpc::Parse_error: public iqxmlrpc::Exception {
+public:
+  Parse_error( const std::string& d ):
+    Exception( "Parser error. " + d, -32700 ) {}
+};
+
+
+//! XML-RPC structures not conforming to spec.
+class iqxmlrpc::XML_RPC_violation: public iqxmlrpc::Exception {
+public:
+  static XML_RPC_violation at_node( const xmlpp::Node* );
+  static XML_RPC_violation caused( const std::string&, const xmlpp::Node* = 0 );
+
+  XML_RPC_violation():
+    Exception( "Server error. XML-RPC violation.", -32600 ) {}
+
+private:
+  XML_RPC_violation( const std::string& s ):
+    Exception( "Server error. XML-RPC violation: " + s, -32600 ) {}
+};
+
+
+//! Exception is being thrown when user tries to create 
+//! Method object for unregistered name.
+class iqxmlrpc::Unknown_method: public iqxmlrpc::Exception {
+public:
+  Unknown_method( const std::string& name ): 
+    Exception( "Server error. Method '" + name + "' not found.", -32601 ) {}
+};
+
+
+//! Invalid method parameters exception.
+class iqxmlrpc::Invalid_meth_params: public iqxmlrpc::Exception {
+public:
+  Invalid_meth_params():
+    Exception( "Server error. Invalid method parameters.", -32602 ) {}
+};
+
+
+//! Exception which user should throw from Method to
+//! initiate fault response.
+class iqxmlrpc::Fault: public iqxmlrpc::Exception {
+public:
+  class FCI_violation: public std::runtime_error {
   public:
-    static Parse_error at_node( const xmlpp::Node* );
-    static Parse_error caused( const std::string&, const xmlpp::Node* = 0 );
-
-    Parse_error():
-      Exception( "Could not parse XML-RPC data." ) {}
-        
-  private:
-    Parse_error( const std::string& d ):
-      Exception( "Could not parse XML-RPC data: " + d + "." ) {}
+    FCI_violation():
+      runtime_error( 
+        "You should not specify application specific error codes "
+        "in interval [-32768, -32000]." 
+      ) {};
   };
-
-
-  //! Exception which user should throw from Method to
-  //! initiate fault response.
-  class Fault: public iqxmlrpc::Exception {
-    int code_;
-    
-  public:
-    Fault( int c, const std::string& s ):
-      Exception( s ), code_(c) {}
-        
-    int code() const { return code_; }
-  };
+  
+public:
+  Fault( int c, const std::string& s );
 };
 
 #endif

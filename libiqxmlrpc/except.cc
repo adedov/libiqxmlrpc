@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: except.cc,v 1.3 2004-04-14 08:56:40 adedov Exp $
+//  $Id: except.cc,v 1.4 2004-09-19 09:32:38 adedov Exp $
 
 #include <libxml++/libxml++.h>
 #include <sstream>
@@ -24,15 +24,16 @@
 using namespace iqxmlrpc;
 
 
-Parse_error Parse_error::at_node( const xmlpp::Node* node )
+XML_RPC_violation XML_RPC_violation::at_node( const xmlpp::Node* node )
 {
   std::stringstream s;
-  s << "format violation at line " << node->get_line();
-  return Parse_error( s.str() );
+  s << "XML-RPC format violation at line " << node->get_line();
+  return XML_RPC_violation( s.str() );
 }
 
 
-Parse_error Parse_error::caused( const std::string& s, const xmlpp::Node* node )
+XML_RPC_violation XML_RPC_violation::caused( 
+  const std::string& s, const xmlpp::Node* node )
 {
   std::string errstr(s);
   
@@ -43,5 +44,15 @@ Parse_error Parse_error::caused( const std::string& s, const xmlpp::Node* node )
     errstr += s.str();
   }
   
-  return Parse_error( errstr );
+  return XML_RPC_violation( errstr );
+}
+
+
+
+// ----------------------------------------------------------------------------
+Fault::Fault( int c, const std::string& s ):
+  Exception( s, c )
+{
+  if( c >= -32768 and c <= -32000 )
+    throw FCI_violation();
 }
