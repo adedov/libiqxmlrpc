@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_connection.h,v 1.3 2004-05-17 08:43:02 adedov Exp $
+//  $Id: ssl_connection.h,v 1.4 2005-03-23 18:26:00 bada Exp $
 
 #ifndef _libiqnet_ssl_connection_
 #define _libiqnet_ssl_connection_
@@ -23,7 +23,7 @@
 #include <openssl/ssl.h>
 #include "connection.h"
 #include "ssl_lib.h"
-#include "conn_fabric.h"
+#include "conn_factory.h"
 
 
 namespace iqnet
@@ -32,7 +32,7 @@ namespace iqnet
   {
     class Connection;
     class Reaction_connection;
-    class Serial_conn_fabric;
+    class Serial_conn_factory;
   }
 };
   
@@ -82,7 +82,7 @@ class iqnet::ssl::Reaction_connection: public ssl::Connection {
 public:
   Reaction_connection( const Socket&, Reactor* = 0 );
 
-  //! A trick for supporting generic fabric.
+  //! A trick for supporting generic factory.
   void set_reactor( Reactor* r )
   {
     reactor = r;

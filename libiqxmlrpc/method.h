@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.13 2004-10-22 04:13:27 adedov Exp $
+//  $Id: method.h,v 1.14 2005-03-23 18:26:00 bada Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -115,8 +115,8 @@ class iqxmlrpc::Method_dispatcher {
 public:
   virtual ~Method_dispatcher();
 
-  //! Register Method with it fabric. 
-  /*! Method_dispatcher responsible for fabric deletion. */
+  //! Register Method with its factory.
+  /*! Method_dispatcher owns factory object. */
   void register_method( const std::string& name, Method_factory_base* );
 
   //! Create method object according to specified name. 

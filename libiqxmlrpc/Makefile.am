@@ -16,7 +16,7 @@ EXTRA_DIST = version.h.in version.h
 pkginclude_HEADERS = \
   libiqxmlrpc.h \
   sysinc.h \
-  conn_fabric.h \
+  conn_factory.h \
   net_except.h \
   inet_addr.h \
   socket.h \

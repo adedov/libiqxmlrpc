@@ -1,4 +1,4 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
 //  
 //  This library is free software; you can redistribute it and/or
@@ -15,34 +15,34 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: conn_fabric.h,v 1.2 2004-05-17 08:43:02 adedov Exp $
+//  $Id: conn_factory.h,v 1.1 2005-03-23 18:26:00 bada Exp $
 
-#ifndef _libiqnet_connection_fabric_
-#define _libiqnet_connection_fabric_
+#ifndef _libiqnet_connection_factory_
+#define _libiqnet_connection_factory_
 
 #include <string>
 #include "inet_addr.h"
 
 namespace iqnet 
 {
-  class Accepted_conn_fabric;
+  class Accepted_conn_factory;
     
-  template<class Conn_type> 
-  class Serial_conn_fabric;
+  template<class Conn_type>
+  class Serial_conn_factory;
 };
 
 
-//! Abstract fabric for accepted connections.
-class iqnet::Accepted_conn_fabric {
+//! Abstract factory for accepted connections.
+class iqnet::Accepted_conn_factory {
 public:
-  virtual ~Accepted_conn_fabric() {}
+  virtual ~Accepted_conn_factory() {}
   virtual void create_accepted( const Socket& ) = 0;
 };
 
 
-//! Fabric for single threaded connections.
+//! Factory class for single threaded connections.
 template <class Conn_type>
-class iqnet::Serial_conn_fabric: public iqnet::Accepted_conn_fabric {
+class iqnet::Serial_conn_factory: public iqnet::Accepted_conn_factory {
 public:
   void create_accepted( const Socket& sock )
   {

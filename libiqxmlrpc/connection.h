@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: connection.h,v 1.4 2004-10-25 04:32:25 adedov Exp $
+//  $Id: connection.h,v 1.5 2005-03-23 18:26:00 bada Exp $
 
 #ifndef _libiqnet_connection_h_
 #define _libiqnet_connection_h_
@@ -35,7 +35,7 @@ namespace iqnet
 //! An established TCP-connection.
 /*!
     A build block for connection handling. 
-    Have to be created by Connection_fabric.
+    Have to be created by connection's factory.
 */
 class iqnet::Connection: public iqnet::Event_handler {
 protected:

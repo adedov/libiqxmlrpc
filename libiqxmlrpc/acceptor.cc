@@ -15,21 +15,21 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.cc,v 1.6 2004-10-25 07:58:48 adedov Exp $
+//  $Id: acceptor.cc,v 1.7 2005-03-23 18:26:00 bada Exp $
 
 #include <iostream>
 #include "sysinc.h"
 #include "acceptor.h"
 #include "connection.h"
-#include "conn_fabric.h"
+#include "conn_factory.h"
 #include "net_except.h"
 #include "inet_addr.h"
 
 using namespace iqnet;
 
 
-Acceptor::Acceptor( int port, Accepted_conn_fabric* fabric_, Reactor* reactor_ ):
-  fabric(fabric_),
+Acceptor::Acceptor( int port, Accepted_conn_factory* factory_, Reactor* reactor_ ):
+  factory(factory_),
   reactor(reactor_),
   firewall(0)
 {
@@ -79,7 +79,7 @@ void Acceptor::accept()
     }
   }
   
-  fabric->create_accepted( new_sock );
+  factory->create_accepted( new_sock );
 }
 
 

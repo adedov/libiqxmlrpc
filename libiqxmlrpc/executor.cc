@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.5 2004-06-07 09:45:43 adedov Exp $
+//  $Id: executor.cc,v 1.6 2005-03-23 18:26:00 bada Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -62,12 +62,12 @@ void Serial_executor::execute( const Param_list& params )
 
 // ----------------------------------------------------------------------------
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-class Pool_executor_fabric::Pool_thread: public iqnet::Thread {
+class Pool_executor_factory::Pool_thread: public iqnet::Thread {
   unsigned name;
-  Pool_executor_fabric* pool;
+  Pool_executor_factory* pool;
 
 public:
-  Pool_thread( unsigned name_, Pool_executor_fabric* pool_ ):
+  Pool_thread( unsigned name_, Pool_executor_factory* pool_ ):
     name(name_),
     pool(pool_) 
   {
@@ -79,12 +79,12 @@ protected:
 #endif
 
 
-void Pool_executor_fabric::Pool_thread::do_run()
+void Pool_executor_factory::Pool_thread::do_run()
 {
-  Pool_executor_fabric::Pool_thread* obj = 
-    static_cast<Pool_executor_fabric::Pool_thread*>(this);
+  Pool_executor_factory::Pool_thread* obj = 
+    static_cast<Pool_executor_factory::Pool_thread*>(this);
   
-  Pool_executor_fabric* pool = obj->pool;
+  Pool_executor_factory* pool = obj->pool;
 
   for(;;)
   {
@@ -115,7 +115,7 @@ public:
 #endif
 
 
-Pool_executor_fabric::Pool_executor_fabric( unsigned pool_size )
+Pool_executor_factory::Pool_executor_factory( unsigned pool_size )
 {
   pool.reserve( pool_size );
   for( unsigned i = 0; i < pool_size; ++i )
@@ -123,10 +123,10 @@ Pool_executor_fabric::Pool_executor_fabric( unsigned pool_size )
 }
 
 
-Pool_executor_fabric::~Pool_executor_fabric()
+Pool_executor_factory::~Pool_executor_factory()
 {
   std::for_each( pool.begin(), pool.end(), 
-                 Deleter<Pool_executor_fabric::Pool_thread>() );
+                 Deleter<Pool_executor_factory::Pool_thread>() );
 
   req_queue_cond.acquire_lock();
 
@@ -134,7 +134,7 @@ Pool_executor_fabric::~Pool_executor_fabric()
 }
 
 
-void Pool_executor_fabric::register_executor( Pool_executor* executor )
+void Pool_executor_factory::register_executor( Pool_executor* executor )
 {
   req_queue_cond.acquire_lock();
   req_queue.push_back( executor );
@@ -148,7 +148,7 @@ iqnet::Alarm_socket* Pool_executor::alarm_sock = 0;
 
 
 Pool_executor::Pool_executor( 
-    Pool_executor_fabric* p, Method* m, Server* s, Server_connection* c 
+    Pool_executor_factory* p, Method* m, Server* s, Server_connection* c 
   ):
     Executor( m, s, c ),
     pool(p)

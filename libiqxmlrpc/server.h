@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.18 2004-11-14 16:58:28 adedov Exp $
+//  $Id: server.h,v 1.19 2005-03-23 18:26:00 bada Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -24,7 +24,7 @@
 #include <ostream>
 #include "acceptor.h"
 #include "connection.h"
-#include "conn_fabric.h"
+#include "conn_factory.h"
 #include "executor.h"
 #include "method.h"
 #include "http.h"
@@ -33,7 +33,7 @@
 namespace iqxmlrpc
 {
   class Server_connection;
-  template <class Transport> class Server_conn_fabric;
+  template <class Transport> class Server_conn_factory;
   class Server_base;
   class Server;
 };
@@ -75,15 +75,15 @@ protected:
 };
 
 
-//! Server connections fabric.
+//! Server connections factory.
 template < class Transport >
-class iqxmlrpc::Server_conn_fabric: public iqnet::Serial_conn_fabric<Transport> 
+class iqxmlrpc::Server_conn_factory: public iqnet::Serial_conn_factory<Transport> 
 {
   Server* server;
   iqnet::Reactor* reactor;
 
 public:
-  Server_conn_fabric( Server* s, iqnet::Reactor* r ):
+  Server_conn_factory( Server* s, iqnet::Reactor* r ):
     server(s), reactor(r) {}
   
   void post_create( Transport* c )
@@ -98,11 +98,11 @@ public:
 class iqxmlrpc::Server {
 protected:
   Method_dispatcher disp;
-  Executor_fabric_base* exec_fabric;
+  Executor_factory_base* exec_factory;
 
   int port;
   iqnet::Reactor reactor;
-  iqnet::Accepted_conn_fabric* conn_fabric;
+  iqnet::Accepted_conn_factory* conn_factory;
   iqnet::Acceptor* acceptor;
   iqnet::Firewall_base* firewall;
 
@@ -112,9 +112,9 @@ protected:
 
 public:
   /*! \param port Port to accept connections on.
-      \param executor_fabric Executor fabric to use to create needed Executor.
+      \param executor_factory Executor factory to use to create needed Executor.
   */
-  Server( int port, Executor_fabric_base* executor_fabric );
+  Server( int port, Executor_factory_base* executor_factory );
   virtual ~Server();
 
   //! \name Server configuration methods
@@ -168,10 +168,10 @@ void iqxmlrpc::Server::register_method( const std::string& meth_name )
 template <class Transport>
 void iqxmlrpc::Server::work()
 {
-  if( !conn_fabric )
+  if( !conn_factory )
   {
-    conn_fabric = new Server_conn_fabric<Transport>( this, &reactor );
-    acceptor = new iqnet::Acceptor( port, conn_fabric, &reactor );
+    conn_factory = new Server_conn_factory<Transport>( this, &reactor );
+    acceptor = new iqnet::Acceptor( port, conn_factory, &reactor );
     acceptor->set_firewall( firewall );
   }
   

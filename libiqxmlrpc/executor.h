@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.h,v 1.5 2004-06-07 09:44:59 adedov Exp $
+//  $Id: executor.h,v 1.6 2005-03-23 18:26:00 bada Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -38,9 +38,9 @@ namespace iqxmlrpc
   class Serial_executor;
   class Pool_executor;
 
-  class Executor_fabric_base;
-  class Serial_executor_fabric;
-  class Pool_executor_fabric;
+  class Executor_factory_base;
+  class Serial_executor_factory;
+  class Pool_executor_factory;
 };
 
 
@@ -65,10 +65,10 @@ protected:
 };
 
 
-//! Abstract base for Executor's fabrics.
-class iqxmlrpc::Executor_fabric_base {
+//! Abstract base for Executor's factories.
+class iqxmlrpc::Executor_factory_base {
 public:
-  virtual ~Executor_fabric_base() {}
+  virtual ~Executor_factory_base() {}
 
   virtual Executor* create( 
     Method*, 
@@ -93,7 +93,7 @@ public:
 
 
 //! Factory class for Serial_executor.
-class iqxmlrpc::Serial_executor_fabric: public iqxmlrpc::Executor_fabric_base {
+class iqxmlrpc::Serial_executor_factory: public iqxmlrpc::Executor_factory_base {
 public:
   Executor* create( Method* m, Server* s, Server_connection* c )
   {
@@ -111,13 +111,13 @@ public:
 class iqxmlrpc::Pool_executor: public iqxmlrpc::Executor {
   static iqnet::Alarm_socket* alarm_sock;
 
-  Pool_executor_fabric* pool;
+  Pool_executor_factory* pool;
   Param_list params;
 
 public:
   typedef iqnet::Mutex_lock Lock;
 
-  Pool_executor( Pool_executor_fabric*, Method*, Server*, Server_connection* );
+  Pool_executor( Pool_executor_factory*, Method*, Server*, Server_connection* );
   ~Pool_executor();
 
   void execute( const Param_list& params );
@@ -125,8 +125,8 @@ public:
 };
 
 
-//! Fabric for Pool_executor objects. It is also serves as a pool of threads.
-class iqxmlrpc::Pool_executor_fabric: public iqxmlrpc::Executor_fabric_base {
+//! Factory for Pool_executor objects. It is also serves as a pool of threads.
+class iqxmlrpc::Pool_executor_factory: public iqxmlrpc::Executor_factory_base {
   class Pool_thread;
   friend class Pool_thread;
 
@@ -135,8 +135,8 @@ class iqxmlrpc::Pool_executor_fabric: public iqxmlrpc::Executor_fabric_base {
   iqnet::Cond req_queue_cond;
   
 public:
-  Pool_executor_fabric( unsigned pool_size );
-  ~Pool_executor_fabric();
+  Pool_executor_factory( unsigned pool_size );
+  ~Pool_executor_factory();
 
   Executor* create( Method* m, Server* s, Server_connection* c )
   {
