@@ -1,8 +1,8 @@
 #!/bin/sh
 
-aclocal
-libtoolize
-automake --foreign --add-missing
+aclocal-1.4
+libtoolize-1.4 --force
+automake-1.4 --foreign --add-missing
 autoconf
 
 echo Please run ./configure now.
