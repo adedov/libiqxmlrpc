@@ -67,7 +67,7 @@ public:
 
   //! Adds/alters header option.
   /*! For example: 
-      \code set_option( "allow:", "PUT" ); \endcode
+      \code set_option( "allow:", "POST" ); \endcode
   */
   void set_option( const std::string& name, const std::string& value );
   
@@ -234,7 +234,7 @@ public:
   Method_not_allowed():
     Error_response( "Method not allowed", 405 )
   {
-    header_->set_option( "allowed:", "PUT" );
+    header_->set_option( "allowed:", "POST" );
   }
 };
 

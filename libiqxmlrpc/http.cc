@@ -312,7 +312,7 @@ void Request_header::parse_method( std::istringstream& ss )
   std::string method, version;
 
   rs >> method;
-  if( method != "PUT" )
+  if( method != "POST" )
     throw Method_not_allowed();
 
   rs >> uri_;
@@ -477,10 +477,9 @@ bool Server::read_request( const std::string& s )
   else
     content_cache += s;
   
-  unsigned lth = header->content_length();
-  if( header && content_cache.length() >= lth )
+  if( header && content_cache.length() >= header->content_length() )  
   {
-    content_cache.erase( lth, std::string::npos );
+    content_cache.erase( header->content_length(), std::string::npos );
     packet = new Packet( header, content_cache );
     content_cache = header_cache = "";
     return true;
