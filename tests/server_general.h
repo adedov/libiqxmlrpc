@@ -3,8 +3,6 @@
 
 
 class Get_weather: public iqxmlrpc::Method {
-  enum { user_fault = iqxmlrpc::Fault_code::last+1 };
-  
 public:
   void execute( const iqxmlrpc::Param_list&, iqxmlrpc::Value& );
 };
@@ -16,7 +14,7 @@ void Get_weather::execute(
   std::cout << "Get_weather method invoked." << std::endl;
 
   if( args[0].get_string() != "Krasnoyarsk" )
-    throw iqxmlrpc::Fault( user_fault, "Unknown town." );
+    throw iqxmlrpc::Fault( 0, "Unknown town." );
   
   iqxmlrpc::Struct s;
   s.insert( "weather", "Snow" );
