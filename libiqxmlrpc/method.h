@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.10 2004-04-22 07:43:19 adedov Exp $
+//  $Id: method.h,v 1.11 2004-09-19 17:32:35 adedov Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -31,7 +31,7 @@ namespace iqxmlrpc
   //! Vector of Value objects.
   typedef std::vector<Value> Param_list;
 
-  class Method;
+  class Method;  
   class Method_factory_base;
   template <class T> class Method_factory;
   class Method_dispatcher;
@@ -41,6 +41,15 @@ namespace iqxmlrpc
 //! Abstract base for server method. 
 //! Inherit it to create actual server method.
 class iqxmlrpc::Method {
+public:
+  class Help {
+  public:
+    virtual ~Help() {}
+    virtual iqxmlrpc::Value signature() const { return iqxmlrpc::Nil(); }
+    virtual std::string help()          const { return ""; }
+  };
+  
+private:
   friend class Method_dispatcher;
   std::string name_;
   
@@ -92,16 +101,6 @@ public:
     \endcode
 */
 class iqxmlrpc::Method_dispatcher {
-public:
-  //! Exception is being thrown when user tries to create 
-  //! Method object for unregistered name.
-  class Unknown_method: public Exception {
-  public:
-    Unknown_method( const std::string& name ): 
-      Exception( "Unknown method '" + name + "'." ) {}
-  };
-  
-private:
   typedef std::map<std::string, Method_factory_base*> Factory_map;
   Factory_map fs;
   
