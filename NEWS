@@ -1,3 +1,8 @@
+0.2.3 - 0.3
+  * Add ability to run server methods in a pool of threads.
+  * Minor code cleaning.
+  * Update documentation.
+
 0.2.2 - 0.2.3
   * Fix compilation problem with (new?) compilers.
   * Fix libiqxmlrpc.pc
