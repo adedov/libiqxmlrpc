@@ -127,8 +127,12 @@ void Http_client::recv_response()
   for( bool r = false; !r; )
   {
     char buf[256];
-    bzero( buf, 256 );
-    unsigned sz = conn->recv( buf, 255 );
-    r = read_response( sz ? std::string(buf, sz) : std::string("") );
+    bzero( buf, sizeof(buf) );
+    unsigned sz = conn->recv( buf, sizeof(buf) );
+    
+    if( !sz )
+      throw http::Malformed_packet();
+    
+    r = read_response( std::string(buf, sz) );
   }
 }
