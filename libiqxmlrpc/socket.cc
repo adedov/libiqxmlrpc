@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.cc,v 1.7 2004-10-25 04:31:18 adedov Exp $
+//  $Id: socket.cc,v 1.8 2004-10-25 07:46:26 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -143,7 +143,7 @@ void Socket::listen( unsigned blog )
 Socket Socket::accept()
 {
   struct sockaddr_in addr;
-  socklen_t len;
+  socklen_t len = sizeof(sockaddr_in);
   
   Handler new_sock = ::accept( sock, reinterpret_cast<sockaddr*>(&addr), &len );  
   if( new_sock == -1 )
