@@ -7,12 +7,13 @@ EXTRA_DIST = \
 
 DOCDIR=${prefix}/share/doc/@PACKAGE@
 
-doc:
+all: libiqxmlrpc.html index.html
+
+libiqxmlrpc.html:
 	doxygen libiqxmlrpc.doxygen
 
-install-data-local: doc
-	${top_srcdir}/mkinstalldirs ${DOCDIR}
-	${top_srcdir}/mkinstalldirs ${DOCDIR}/libiqxmlrpc.html
+install-data-local: libiqxmlrpc.html index.html
+	mkdir -p ${DOCDIR}/libiqxmlrpc.html
 	install -m 644 index.html ${DOCDIR}
 	install -m 644 libiqxmlrpc.html/* ${DOCDIR}/libiqxmlrpc.html
 
