@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sysinc.h,v 1.2 2004-04-22 09:25:56 adedov Exp $
+//  $Id: sysinc.h,v 1.3 2004-04-27 04:16:51 adedov Exp $
 
 /*! \file sysinc.h 
     This file should help to port library.
@@ -40,6 +40,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <pthread.h>
 
 #ifdef HAVE_POLL
   #include <sys/poll.h>
