@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.cc,v 1.5 2004-09-19 17:33:47 adedov Exp $
+//  $Id: client.cc,v 1.6 2004-10-04 23:25:14 adedov Exp $
 
 #include "client.h"
 #include "http.h"
@@ -44,7 +44,7 @@ Response Client_connection::process_session(
   try 
   {
     std::auto_ptr<xmlpp::Document> xmldoc( req.to_xml() );
-    std::string req_xml_str( xmldoc->write_to_string_formatted() );
+    std::string req_xml_str( xmldoc->write_to_string_formatted( "utf-8" ) );
     Packet req_p( new Request_header( uri, vhost ), req_xml_str );
   
     // Received packet
