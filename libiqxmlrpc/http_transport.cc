@@ -36,7 +36,7 @@ void Http_reaction_connection::finish()
 
 
 void Http_reaction_connection::handle_input( bool& terminate )
-{ 
+{   
   try {
     char buf[256];
     int n = recv( buf, sizeof(buf) );
@@ -58,6 +58,7 @@ void Http_reaction_connection::handle_input( bool& terminate )
     response = new http::Packet(e);
   }
 
+  reactor->unregister_handler( this, Reactor::INPUT );
   reactor->register_handler( this, Reactor::OUTPUT );
 }
 
