@@ -35,10 +35,15 @@ class.
 
 \include server_general.h
 
-\note When user throws libiqxml::Fault exception from execute method,
-library forms fault response to a remote client as proposed by XML-RPC standard. 
+\subsection fault_response Fault responses
+When user throws libiqxml::Fault exception from execute method, library forms 
+fault response to a remote client as proposed by XML-RPC standard. 
 So feel free to throw iqxmlrpc::Fault object or its childs when you want to 
-inform remote user about method's fault.
+inform remote user about method's fault. User also responsible for assigning 
+any sense to the error codes, transmited with fault response.
+
+Library uses <i>fault code -1</i> to indicate error occured/find within 
+server's code.
 
 
 \subsection register_methods Register the methods
