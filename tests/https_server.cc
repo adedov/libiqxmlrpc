@@ -26,10 +26,8 @@ int main()
   try {
     ssl::ctx = ssl::Ctx::server_only( "data/cert.pem", "data/pk.pem" );
 
-    Method_dispatcher dispatcher;
-    dispatcher.register_method( "get_weather", new Method_factory<Get_weather> );
-
-    server = new Server( 3344, &dispatcher, new Executor_fabric<Serial_executor> );
+    server = new Server( 3344, new Executor_fabric<Serial_executor> );
+    server->register_method<Get_weather>( "get_weather" );
     server->work<Https_server_connection>();
   }
   catch( const std::exception& e )

@@ -23,9 +23,8 @@ int main()
   signal( SIGINT, sigint_handler );
 
   try {
-    Method_dispatcher dispatcher;
-    dispatcher.register_method( "get_weather", new Method_factory<Get_weather> );
-    server = new Server( 3344, &dispatcher, new Executor_fabric<Serial_executor> );
+    server = new Server( 3344, new Executor_fabric<Serial_executor> );
+    server->register_method<Get_weather>( "get_weather" );
     server->work<Http_server_connection>();
   }
   catch( const std::exception& e )
