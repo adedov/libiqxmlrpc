@@ -3,7 +3,7 @@ libdir=${prefix}/lib
 includedir=${prefix}/include/
 
 Name: libiqnet
-Description: IQ Media C++ network/multithread/SSL library.
+Description: Object-oriented C++ network library with SSL support.
 Version: @VERSION@
 Requires: libxml++-1.0
 Libs: -L${libdir} -liqnet
