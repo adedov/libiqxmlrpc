@@ -64,7 +64,6 @@ AC_OUTPUT(
   tests.libiqnet/Makefile
   tests/Makefile
   doc/Makefile
-  config.h
   libiqxmlrpc.pc
   libiqnet.pc
   libiqxmlrpc.spec
