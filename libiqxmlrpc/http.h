@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.h,v 1.13 2004-04-14 08:46:16 adedov Exp $
+//  $Id: http.h,v 1.14 2004-04-21 06:14:00 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -134,7 +134,7 @@ class iqxmlrpc::http::Request_header: public http::Header {
 public:
   Request_header( const std::string& to_parse );
   Request_header( std::istringstream& to_parse );
-  Request_header( const std::string& uri, const std::string& client_host );
+  Request_header( const std::string& uri, const std::string& host );
 
   ~Request_header();
 

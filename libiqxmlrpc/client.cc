@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.cc,v 1.1 2004-04-14 08:44:03 adedov Exp $
+//  $Id: client.cc,v 1.2 2004-04-21 06:13:59 adedov Exp $
 
 #include "client.h"
 #include "http.h"
@@ -38,7 +38,7 @@ Client_connection::~Client_connection()
 
 
 Response Client_connection::process_session( 
-  const Request& req, const std::string& uri, const std::string& local_host )
+  const Request& req, const std::string& uri, const std::string& vhost )
 {
   using namespace http;
 
@@ -46,7 +46,7 @@ Response Client_connection::process_session(
   {
     std::auto_ptr<xmlpp::Document> xmldoc( req.to_xml() );
     std::string req_xml_str( xmldoc->write_to_string_formatted() );
-    Packet req_p( new Request_header( uri, local_host ), req_xml_str );
+    Packet req_p( new Request_header( uri, vhost ), req_xml_str );
   
     // Received packet
     std::auto_ptr<Packet> res_p( do_process_session(req_p.dump()) );

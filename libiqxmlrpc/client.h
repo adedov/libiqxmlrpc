@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.2 2004-04-21 05:15:34 adedov Exp $
+//  $Id: client.h,v 1.3 2004-04-21 06:14:00 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -49,8 +49,8 @@ public:
 
   Response process_session( 
     const Request&, 
-    const std::string& uri, 
-    const std::string& lhost 
+    const std::string& uri,
+    const std::string& vhost
   );
 
 protected:
@@ -71,15 +71,23 @@ public:
 template < class Transport >
 class iqxmlrpc::Client: public iqxmlrpc::Client_base {
   iqnet::Inet_addr addr;
-  std::string local_host;
   std::string uri;
+  std::string vhost;
   iqnet::Connector<Transport> ctr;
   
 public:
-  Client( const iqnet::Inet_addr& addr_, const std::string& uri_="/RPC" ):
+  /*! \param addr_ Actual server address;
+      \param uri_  Requested URI (default "/RPC");
+      \param host_ Requested virtual host (default "")
+  */
+  Client( 
+    const iqnet::Inet_addr& addr_, 
+    const std::string& uri_= "/RPC",
+    const std::string& host_ = "" 
+  ):
     addr(addr_), 
-    local_host(iqnet::get_host_name()),
     uri(uri_),
+    vhost(host_),
     ctr(addr)
   {
   }
@@ -95,7 +103,7 @@ iqxmlrpc::Response iqxmlrpc::Client<T>::execute(
 {
   Request req( method, pl );
   std::auto_ptr<T> conn( ctr.connect() );
-  return conn->process_session( req, uri, local_host );
+  return conn->process_session( req, uri, vhost );
 }
 
 #endif

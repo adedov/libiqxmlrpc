@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.cc,v 1.19 2004-04-19 08:11:44 adedov Exp $
+//  $Id: http.cc,v 1.20 2004-04-21 06:14:00 adedov Exp $
 
 #include "sysinc.h"
 #include <iostream>
@@ -289,16 +289,18 @@ Request_header::Request_header( std::istringstream& ss )
 
 
 Request_header::Request_header( 
-  const std::string& req_uri, 
-  const std::string& client_host 
+  const std::string& req_uri,
+  const std::string& server_host
 ):
   uri_(req_uri),
-  host_(client_host),
+  host_(server_host),
   user_agent_(PACKAGE " " VERSION)
 {
   set_version( "HTTP/1.0" );
   set_option( "user-agent:", user_agent_ );
-  set_option( "host:", host_ );
+  
+  if( !host_.empty() )
+    set_option( "host:", host_ );
 }
 
 
@@ -342,6 +344,8 @@ void Request_header::parse_host( Header* obj, std::istringstream& ss )
 {
   Request_header* req = static_cast<Request_header*>(obj);
   ss >> req->host_;
+
+  // Compare requested host with actual server hostname?
 }
 
 
