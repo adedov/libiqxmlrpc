@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.h,v 1.2 2004-06-25 08:08:57 adedov Exp $
+//  $Id: socket.h,v 1.3 2004-08-17 03:52:29 adedov Exp $
 
 #ifndef _libiqnet_socket_h_
 #define _libiqnet_socket_h_
@@ -52,6 +52,8 @@ public:
   Handler get_handler() const { return sock; }
 
   void close();
+  
+  //! \note Does not disable non-blocking mode under UNIX.
   void set_non_blocking( bool );
 
   /*! \b Can \b not cause SIGPIPE signal. */
@@ -66,6 +68,9 @@ public:
 
   //! Returns peer addr of connected or accepted socket.
   const Inet_addr& get_peer_addr() const { return peer; }  
+  
+  //! Returns last error occured with socket.
+  int get_last_error();
 };
 
 #endif

@@ -15,8 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.cc,v 1.4 2004-08-02 05:57:37 adedov Exp $
+//  $Id: socket.cc,v 1.5 2004-08-17 03:52:29 adedov Exp $
 
+#include <iostream>
 #include "sysinc.h"
 #include "socket.h"
 #include "net_except.h"
@@ -60,14 +61,14 @@ void Socket::close()
 void Socket::set_non_blocking( bool flag )
 {
 #ifdef _WINDOWS
-	unsigned long f = flag?1:0;
-	if (ioctlsocket(sock, FIONBIO, &f) != 0)
+	unsigned long f = flag ? 1 : 0;
+	if( ioctlsocket(sock, FIONBIO, &f) != 0 )
 		throw network_error( "Socket::set_non_blocking");
 #else
-  int mode = fcntl( sock, F_GETFL, 0 );
-  mode = flag ? mode | O_NDELAY : mode & ~O_NDELAY;
-  
-  if( fcntl( sock, F_SETFL, mode ) == -1 )
+  if( !flag )
+    return;
+
+  if( fcntl( sock, F_SETFL, O_NDELAY ) == -1 )
     throw network_error( "Socket::set_non_blocking" );
 #endif //_WINDOWS
 }
@@ -155,4 +156,14 @@ void Socket::connect( const iqnet::Inet_addr& peer_addr )
     throw network_error( "Socket::connect" );
   
   peer = peer_addr;
+}
+
+
+int Socket::get_last_error()
+{
+  int err = 0;
+  socklen_t int_sz = 0;
+  
+  ::getsockopt( sock, SOL_SOCKET, SO_ERROR, &err, &int_sz );
+  return err;
 }
