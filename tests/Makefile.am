@@ -7,6 +7,7 @@ check_PROGRAMS = \
   parse-value \
   value-usage \
   http-server \
+  http-server-thr \
   https-server \
   http-client \
   http-client-i \
@@ -22,6 +23,8 @@ parse_request_SOURCES = parse_request.cc
 parse_response_SOURCES = parse_response.cc
 
 http_server_SOURCES = server_general.h http_server.cc
+
+http_server_thr_SOURCES = server_general.h http_server_thr.cc
 
 https_server_SOURCES = server_general.h https_server.cc
 
