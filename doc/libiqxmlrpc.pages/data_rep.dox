@@ -124,6 +124,7 @@ One can assign Value object with following type of argument:
   - double
   - std::string
   - const char*
+  - Binary_data*
   - iqxmlrpc::Array
   - iqxmlrpc::Struct
   
@@ -136,22 +137,24 @@ created and placed under control of Value object.
   Value v2 = true;
   Value v3 = 0.44;
   Value v4 = "C string";
-  Value v5 = Array();
-  Value v6 = Struct();
+  Value v5 = Binary_data::from_data( "some data" );
+  Value v6 = Array();
+  Value v7 = Struct();
   
-  v5.push_back( true );
-  v6.insert( "test_item", 0.33 );
+  v6.push_back( true );
+  v7.insert( "test_item", 0.33 );
 \endcode
 
 \section value_convert Accessing the values
 One can convert Value to a concrete type:
 \code
-  int          i = v1;
-  bool         b = v2;
-  double       d = v3;
-  std::string  s = v4;
-  bool        b2 = v5[0];
-  double      d2 = v6["test_item"];
+  int           i = v1;
+  bool          b = v2;
+  double        d = v3;
+  std::string   s = v4;
+  bool         b2 = v6[0];
+  double       d2 = v7["test_item"];
+  Binary_data bin = v5;
 \endcode
 
 When many ambiguous conversions are possible use Value::get_xxx() functions:
@@ -163,8 +166,9 @@ When many ambiguous conversions are possible use Value::get_xxx() functions:
       << v2.get_bool()    << std::endl
       << v3.get_double()  << std::endl
       << v4.get_string()  << std::endl
-      << v5[0].get_bool() << std::endl
-      << v6["test_item"].get_double() << std::endl
+      << v5.get_binary().get_data() << std::endl
+      << v6[0].get_bool() << std::endl
+      << v7["test_item"].get_double() << std::endl
   }
   catch( const iqxmlrpc::Value::Bad_cast& e )
   {
