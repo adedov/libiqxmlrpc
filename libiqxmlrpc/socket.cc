@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.cc,v 1.1 2004-05-17 08:43:02 adedov Exp $
+//  $Id: socket.cc,v 1.2 2004-06-09 09:24:16 adedov Exp $
 
 #include "sysinc.h"
 #include "socket.h"
@@ -54,12 +54,22 @@ void Socket::close()
 void Socket::set_non_blocking( bool flag )
 {
   int mode = fcntl( sock, F_GETFL, 0 );
-  mode = flag ? mode | O_NDELAY : mode & !O_NDELAY;
+  mode = flag ? mode | O_NDELAY : mode & ~O_NDELAY;
   
   if( fcntl( sock, F_SETFL, mode ) == -1 )
     throw network_error( "Socket::set_non_blocking" );
 }
 
+
+#ifndef MSG_NOSIGNAL
+// MSG_NOSIGNAL tells send() and recv() not to generate SIGPIPE when
+// the other side closes the connection.  This is a nice feature, but
+// unfortunately not portable.
+#warning "Allowing Broken Pipe signals (SIGPIPE) due to lack of MSG_NOSIGNAL."
+#warning "If you get unwanted Broken Pipe signals, consider ignoring them:"
+#warning "signal(SIGPIPE, SIG_IGN);"
+#define MSG_NOSIGNAL 0
+#endif
 
 int Socket::send( const char* data, int len )
 {
