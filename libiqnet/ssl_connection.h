@@ -24,18 +24,22 @@ protected:
   SSL *ssl;
   
 public:
-  Connection( int sock, const iqnet::Inet_addr&, ssl::Ctx* );
+  Connection( int sock, const iqnet::Inet_addr&, ssl::Ctx* = 0 );
   ~Connection();
   
   int send( const char*, int );
   int recv( char*, int );
 
-  //! Alias for ssl_accept()
-  void post_init() { ssl_accept(); }
+  //! Does ssl_accept()
+  void post_accept() { ssl_accept(); }
+  //! Does  ssl_connect()
+  void post_connect() { ssl_connect(); }
 
 protected:
-  //! Perform SSL accepting (for server side only).
+  //! Performs SSL accepting
   virtual void ssl_accept();
+  //! Performs SSL connecting
+  virtual void ssl_connect();
 };
 
 
@@ -52,7 +56,8 @@ class ssl::Reaction_connection: public ssl::Connection {
 public:
   Reaction_connection( int, const iqnet::Inet_addr&, ssl::Ctx*, Reactor* );
 
-  void post_init();
+  void post_accept();
+  //void post_connect();
   void handle_input( bool& );
   void handle_output( bool& );
 

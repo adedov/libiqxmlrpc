@@ -5,12 +5,13 @@
 using namespace iqnet;
 
 
-ssl::Connection::Connection( 
-    int s, const iqnet::Inet_addr& addr, ssl::Ctx* ssl_ctx_ 
-  ):
-    iqnet::Connection( s, addr ),
-    ssl_ctx( ssl_ctx_ )
+ssl::Connection::Connection( int s, const iqnet::Inet_addr& addr, ssl::Ctx* c ):
+  iqnet::Connection( s, addr ),
+  ssl_ctx( c ? c : ssl::ctx )
 {
+  if( !ssl_ctx )
+    throw ssl::not_initialized();
+  
   ssl = SSL_new( ssl_ctx->context() );
   
   if( !ssl )
@@ -23,6 +24,7 @@ ssl::Connection::Connection(
 
 ssl::Connection::~Connection()
 {
+  SSL_shutdown( ssl );
   SSL_free( ssl );
 }
 
@@ -30,6 +32,15 @@ ssl::Connection::~Connection()
 void ssl::Connection::ssl_accept()
 {
   int ret = SSL_accept( ssl );
+  
+  if( ret != 1 )
+    throw_io_exception( ssl, ret );
+}
+
+
+void ssl::Connection::ssl_connect()
+{
+  int ret = SSL_connect( ssl );
   
   if( ret != 1 )
     throw_io_exception( ssl, ret );
@@ -50,7 +61,7 @@ int ssl::Connection::send( const char* data, int len )
 int ssl::Connection::recv( char* buf, int len )
 {
   int ret = SSL_read( ssl, buf, len );
-  
+
   if( ret < 0 )
     throw_io_exception( ssl, ret );
 
@@ -67,7 +78,7 @@ ssl::Reaction_connection::Reaction_connection
 }
 
 
-void ssl::Reaction_connection::post_init()
+void ssl::Reaction_connection::post_accept()
 {
   try {
     set_non_blocking( true );
