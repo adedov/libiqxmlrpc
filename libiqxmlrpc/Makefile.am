@@ -13,7 +13,8 @@ pkginclude_HEADERS = \
   request.h \
   response.h \
   method.h \
-  transport.h
+  transport.h \
+  http.h
   
 
 libiqxmlrpc_la_SOURCES = \
@@ -25,4 +26,5 @@ libiqxmlrpc_la_SOURCES = \
   request.cc \
   response.cc \
   method.cc \
-  transport.cc
+  transport.cc \
+  http.cc
