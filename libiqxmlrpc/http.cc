@@ -25,6 +25,8 @@ public:
 Header::Header()
 {
   init_parser();
+  
+  set_option( "connection:", "close" );
 }
 
 
@@ -438,6 +440,15 @@ Packet& Packet::operator =( const Packet& p )
   content_ = p.content_;
   
   return *this;
+}
+
+
+void Packet::set_keep_alive( bool keep_alive )
+{
+  if( keep_alive )
+    header_->set_option( "connection:", "keep-alive" );
+  else
+    header_->set_option( "connection:", "close" );
 }
 
   

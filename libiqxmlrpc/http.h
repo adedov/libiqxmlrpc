@@ -168,9 +168,13 @@ public:
 
   Packet& operator =( const Packet& );
 
+  //! Sets header option "connection: {keep-alive|close}".
+  //! By default connection is close.
+  void set_keep_alive( bool = true );
+  
   const http::Header* header()  const { return header_; }
   const std::string&  content() const { return content_; }
-  
+
   virtual std::string dump() const
   {
     return header_->dump() + content_;
