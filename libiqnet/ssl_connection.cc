@@ -117,7 +117,7 @@ void ssl::Reaction_connection::handle_input( bool& terminate )
         break;
       
       case READING:
-        recv_succeed( terminate, try_recv(), buf_len );
+        recv_succeed( terminate, buf_len, try_recv() );
         break;
       
       case WRITING:
@@ -157,7 +157,7 @@ void ssl::Reaction_connection::handle_output( bool& terminate )
         break;
       
       case READING:
-        recv_succeed( terminate, try_recv(), buf_len );
+        recv_succeed( terminate, buf_len, try_recv() );
         break;
       
       case WRITING:
