@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.cc,v 1.4 2004-10-22 04:13:27 adedov Exp $
+//  $Id: http_server.cc,v 1.5 2004-11-14 16:58:28 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -65,6 +65,8 @@ void Http_server_connection::handle_input( bool& terminate )
   }
   catch( const http::Error_response& e )
   {
+    // Close connection after sending HTTP error response
+    keep_alive = false;
     schedule_response( new http::Packet(e) );
   }
 }
@@ -76,7 +78,14 @@ void Http_server_connection::handle_output( bool& terminate )
 
   if( sz == response.length() )
   {
-    terminate = true;
+    if( keep_alive )
+    {
+      reactor->unregister_handler( this, Reactor::OUTPUT );
+      reactor->register_handler( this, Reactor::INPUT );
+    }
+    else 
+      terminate = true;
+    
     return;
   }
 

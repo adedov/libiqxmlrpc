@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.cc,v 1.22 2004-06-25 08:08:57 adedov Exp $
+//  $Id: http.cc,v 1.23 2004-11-14 16:58:28 adedov Exp $
 
 #include "sysinc.h"
 #include <iostream>
@@ -50,11 +50,10 @@ public:
 
 Header::Header():
   content_length_(0),
-  content_length_set_(false)
+  content_length_set_(false),
+  conn_keep_alive_(false)
 {
   init_parser();
-  
-  set_option( "connection:", "close" );
 }
 
 
@@ -85,10 +84,17 @@ void Header::set_content_length( unsigned lth )
 }
 
 
+void Header::set_conn_keep_alive( bool c )
+{
+  set_option( "connection:", c ? "keep-alive" : "close" );
+}
+
+
 inline void Header::init_parser()
 {
   parsers["content-length:"] = Header::parse_content_length;
   parsers["content-type:"]   = Header::parse_content_type;
+  parsers["connection:"]     = Header::parse_connection;
 }
 
 
@@ -280,6 +286,20 @@ void Header::parse_content_length( Header* obj, std::istringstream& ss )
   unsigned i;
   ss >> i;
   obj->set_content_length(i);
+}
+
+
+void Header::parse_connection( Header* obj, std::istringstream& ss )
+{
+  std::string opt;
+  ss >> opt;
+
+  if( opt == "keep-alive" )
+    obj->conn_keep_alive_ = true;
+  else if( opt == "close" )
+    obj->conn_keep_alive_ = false;
+  else
+    throw Malformed_packet();
 }
 
 
@@ -475,8 +495,5 @@ Packet& Packet::operator =( const Packet& p )
 
 void Packet::set_keep_alive( bool keep_alive )
 {
-  if( keep_alive )
-    header_->set_option( "connection:", "keep-alive" );
-  else
-    header_->set_option( "connection:", "close" );
+  header_->set_conn_keep_alive( keep_alive );
 }

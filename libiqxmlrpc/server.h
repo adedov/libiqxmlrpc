@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.17 2004-10-22 04:13:27 adedov Exp $
+//  $Id: server.h,v 1.18 2004-11-14 16:58:28 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -55,6 +55,9 @@ protected:
   char    *read_buf;
 
   std::string response;
+
+protected:
+  bool keep_alive;  
 
 public:
   Server_connection( const iqnet::Inet_addr& );

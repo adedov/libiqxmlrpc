@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_client.cc,v 1.8 2004-10-26 05:15:03 adedov Exp $
+//  $Id: http_client.cc,v 1.9 2004-11-14 16:58:28 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -38,6 +38,7 @@ Http_client_connection::Http_client_connection( const iqnet::Socket& s, bool nb 
 http::Packet* Http_client_connection::do_process_session( const std::string& s )
 {
   out_str = s;
+  resp_packet = 0;
   reactor.register_handler( this, iqnet::Reactor::OUTPUT );
   
   do {

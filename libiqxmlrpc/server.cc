@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.18 2004-10-25 02:48:12 adedov Exp $
+//  $Id: server.cc,v 1.19 2004-11-14 16:58:28 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -30,7 +30,8 @@ Server_connection::Server_connection( const iqnet::Inet_addr& a ):
   peer_addr(a),
   server(0),
   read_buf_sz(1024),
-  read_buf(new char[1024])
+  read_buf(new char[1024]),
+  keep_alive(false)
 {
 }
 
@@ -54,7 +55,12 @@ http::Packet* Server_connection::read_request( const std::string& s )
   try 
   {
     preader.set_max_size( server->get_max_request_sz() );
-    return preader.read_packet(s);
+    http::Packet* r = preader.read_packet(s);
+    
+    if( r )
+      keep_alive = r->header()->conn_keep_alive();
+    
+    return r;
   }
   catch( const http::Malformed_packet& )
   {
@@ -65,6 +71,7 @@ http::Packet* Server_connection::read_request( const std::string& s )
 
 void Server_connection::schedule_response( http::Packet* pkt )
 {
+  pkt->set_keep_alive( keep_alive );
   response = pkt->dump();
   delete pkt;
 }

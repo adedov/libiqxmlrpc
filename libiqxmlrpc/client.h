@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.12 2004-10-04 23:31:35 adedov Exp $
+//  $Id: client.h,v 1.13 2004-11-14 16:58:28 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -44,6 +44,7 @@ class iqxmlrpc::Client_connection {
 protected:
   unsigned read_buf_sz;
   char *read_buf;
+  bool keep_alive;
   int timeout;
 
 public:
@@ -60,7 +61,17 @@ public:
   {
     timeout = seconds;
   }
+  
+  void set_keep_alive( bool ka )
+  {
+    keep_alive = ka;
+  }
 
+  bool get_keep_alive() const 
+  {
+    return keep_alive;
+  }
+  
 protected:
   http::Packet* read_response( const std::string& );
   virtual http::Packet* do_process_session( const std::string& ) = 0;
@@ -80,11 +91,26 @@ public:
 //! Template for XML-RPC client class.
 template < class Transport >
 class iqxmlrpc::Client: public iqxmlrpc::Client_base {
+  class Conn_ptr
+  {
+    Transport* ptr;
+
+  public:
+    Conn_ptr( Transport *t ): 
+      ptr(t) {}
+        
+    ~Conn_ptr() { if(!ptr->get_keep_alive()) delete ptr; }
+    
+    Transport* operator ->() { return ptr; }
+  };
+  
   iqnet::Inet_addr addr;
   std::string      uri;
   std::string      vhost;
   iqnet::Connector<Transport> ctr;
-
+  Transport*       tpt;
+  
+  bool keep_alive;
   int  timeout;
   bool non_blocking_flag;
 
@@ -103,6 +129,8 @@ public:
     uri(uri_),
     vhost(host_.empty() ? addr_.get_host_name() : host_),
     ctr(addr),
+    tpt(0),
+    keep_alive(false),
     timeout(-1),
     non_blocking_flag(false)
   {
@@ -119,6 +147,18 @@ public:
       non_blocking_flag = true;
   }
   
+  //! Set connection keep-alive
+  void set_keep_alive( bool ka )
+  {
+    keep_alive = ka;
+    
+    if( !keep_alive && tpt )
+    {
+      delete tpt;
+      tpt = 0;
+    }
+  }
+  
   //! Perform Remote Procedure Call
   Response execute( const std::string& method_name, const Param_list& pl );
   
@@ -132,7 +172,12 @@ iqxmlrpc::Response iqxmlrpc::Client<T>::execute(
   const std::string& method, const Param_list& pl )
 {
   Request req( method, pl );
-  std::auto_ptr<T> conn( ctr.connect(non_blocking_flag) );
+  
+  if( keep_alive && !tpt )
+    tpt = ctr.connect( non_blocking_flag );
+    
+  Conn_ptr conn( keep_alive ? tpt : ctr.connect(non_blocking_flag) );
+  conn->set_keep_alive( keep_alive );
   conn->set_timeout( timeout );
   return conn->process_session( req, uri, vhost );
 }

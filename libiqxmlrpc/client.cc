@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.cc,v 1.6 2004-10-04 23:25:14 adedov Exp $
+//  $Id: client.cc,v 1.7 2004-11-14 16:58:28 adedov Exp $
 
 #include "client.h"
 #include "http.h"
@@ -25,7 +25,8 @@ using namespace iqxmlrpc;
 
 Client_connection::Client_connection():
   read_buf_sz(1024),
-  read_buf(new char[read_buf_sz])
+  read_buf(new char[read_buf_sz]),
+  keep_alive(false)
 {
 }
 
@@ -46,6 +47,7 @@ Response Client_connection::process_session(
     std::auto_ptr<xmlpp::Document> xmldoc( req.to_xml() );
     std::string req_xml_str( xmldoc->write_to_string_formatted( "utf-8" ) );
     Packet req_p( new Request_header( uri, vhost ), req_xml_str );
+    req_p.set_keep_alive( keep_alive );
   
     // Received packet
     std::auto_ptr<Packet> res_p( do_process_session(req_p.dump()) );

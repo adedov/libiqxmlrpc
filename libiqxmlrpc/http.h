@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.h,v 1.18 2004-09-19 09:37:26 adedov Exp $
+//  $Id: http.h,v 1.19 2004-11-14 16:58:28 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -82,6 +82,7 @@ private:
   std::string version_;
   unsigned    content_length_;
   bool        content_length_set_;
+  bool        conn_keep_alive_;
   
 public:
   Header();
@@ -92,9 +93,11 @@ public:
   const std::string& version()     const { return version_; }
   unsigned content_length()        const { return content_length_; }
   bool     is_content_length_set() const { return content_length_set_; }
+  bool     conn_keep_alive()       const { return conn_keep_alive_; }
   
   void set_version( const std::string& v );
   void set_content_length( unsigned ln );
+  void set_conn_keep_alive( bool );
 
   //! Adds/alters header option.
   /*! For example: 
@@ -125,6 +128,7 @@ private:
 
   static void parse_content_type( Header*, std::istringstream& );
   static void parse_content_length( Header*, std::istringstream& );
+  static void parse_connection( Header*, std::istringstream& );
 };
 
 
