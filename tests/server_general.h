@@ -2,10 +2,9 @@
 #include <libiqxmlrpc/libiqxmlrpc.h>
 
 
-const int user_fault = iqxmlrpc::Fault_code::last+1;
-
-
 class Get_weather: public iqxmlrpc::Method {
+  enum { user_fault = iqxmlrpc::Fault_code::last+1 };
+  
 public:
   void execute( const iqxmlrpc::Param_list&, iqxmlrpc::Value& );
 };
