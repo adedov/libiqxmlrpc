@@ -41,7 +41,7 @@ AC_ARG_ENABLE( debug,
 
 AC_ARG_ENABLE( profile,
   [  --enable-profile enables support for gprof],
-  [CXXFLAGS="$CXXFLAGS -pg -fprofile-arcs"] )
+  [CXXFLAGS="$CXXFLAGS -pg"] )
 
 AC_ARG_ENABLE( docs,
   [  --disable-docs   prevents building/installing documentation],
