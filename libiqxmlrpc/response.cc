@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: response.cc,v 1.6 2004-10-19 07:00:19 adedov Exp $
+//  $Id: response.cc,v 1.7 2004-10-19 09:00:05 adedov Exp $
 
 #include <memory>
 #include "response.h"
@@ -51,6 +51,28 @@ Response::Response( int fcode, const std::string& fstring ):
   fault_code_(fcode),
   fault_string_(fstring)
 {
+}
+
+
+inline void Response::assign( const Response& r )
+{
+  value_ = r.value_;
+  fault_code_ = r.fault_code_;
+  fault_string_ = r.fault_string_;
+}
+
+
+Response::Response( const Response& r )
+{
+  assign( r );
+}
+
+
+Response& Response::operator =( const Response& r )
+{
+  delete value_;
+  assign( r );
+  return *this;
 }
 
 

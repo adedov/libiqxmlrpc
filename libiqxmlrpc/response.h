@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: response.h,v 1.3 2004-04-27 08:10:55 adedov Exp $
+//  $Id: response.h,v 1.4 2004-10-19 09:00:05 adedov Exp $
 
 #ifndef _iqxmlrpc_response_h_
 #define _iqxmlrpc_response_h_
@@ -43,7 +43,10 @@ public:
   Response( const xmlpp::Node* );
   Response( const Value& );
   Response( int fault_code, const std::string& fault_string );
+  Response( const Response& );
   virtual ~Response();
+
+  Response& operator =( const Response& );
 
   xmlpp::Document* to_xml() const;
 
@@ -58,6 +61,8 @@ public:
   const std::string& fault_string() const { return fault_string_; }
   
 private:
+  void assign( const Response& );
+
   void parse( const xmlpp::Node* );
   void parse_param( const xmlpp::Node* );
   void parse_fault( const xmlpp::Node* );
