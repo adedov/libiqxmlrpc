@@ -83,4 +83,5 @@ libiqxmlrpc_la_SOURCES = \
 #  https_client.*
 #  client.*
 
-  
+clean-local:
+	rm -f *.da  
