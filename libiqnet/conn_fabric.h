@@ -6,7 +6,6 @@
 
 namespace iqnet 
 {
-  class Connection;
   class Connection_fabric;
       
   template<class Conn_type> 
@@ -19,17 +18,17 @@ class iqnet::Connection_fabric {
 public:
   virtual ~Connection_fabric() {}
   
-  virtual void create_connection( int sock, const Inet_addr& peer_addr ) = 0;
+  virtual void create_accepted( int sock, const Inet_addr& peer_addr ) = 0;
 };
 
 
 template <class Conn_type>
 class iqnet::Serial_conn_fabric: public iqnet::Connection_fabric {
 public:
-  void create_connection( int sock, const Inet_addr& peer_addr )
+  void create_accepted( int sock, const Inet_addr& peer_addr )
   {
     Conn_type* c = new Conn_type( sock, peer_addr );
-    c->post_init();
+    c->post_accept();
   }
 };
 

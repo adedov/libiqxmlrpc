@@ -60,7 +60,7 @@ void Acceptor::accept()
   if( new_sock == -1 )
     throw network_error( "accept" );
 
-  fabric->create_connection( new_sock, Inet_addr( addr ) );
+  fabric->create_accepted( new_sock, Inet_addr( addr ) );
   listen();
 }
 
