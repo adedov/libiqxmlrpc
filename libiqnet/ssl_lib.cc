@@ -102,6 +102,12 @@ void iqnet::ssl::throw_io_exception( SSL* ssl, int ret )
     case SSL_ERROR_NONE:
       return;
     
+    case SSL_ERROR_ZERO_RETURN:
+    {
+      bool clean = SSL_get_shutdown(ssl) & SSL_RECEIVED_SHUTDOWN;
+      throw connection_close( clean );
+    }
+    
     case SSL_ERROR_WANT_READ:
       throw need_read();
     

@@ -21,6 +21,7 @@ namespace iqnet
   
     class exception;
     class not_initialized;
+    class connection_close;
     class io_error;
     class need_write;
     class need_read;
@@ -80,6 +81,14 @@ class iqnet::ssl::not_initialized: public ssl::exception {
 public:
   not_initialized():
     exception( "Libiqnet::ssl not initialized." ) {}
+};
+
+
+class iqnet::ssl::connection_close: public ssl::exception {
+  bool clean;
+public:
+  connection_close( bool clean_ ): clean(clean_) {}
+  bool is_clean() const { return clean; }
 };
 
 
