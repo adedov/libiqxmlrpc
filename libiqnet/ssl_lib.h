@@ -32,15 +32,16 @@ class ssl::Ctx {
   SSL_CTX* ctx;
   
 public:
-  static Ctx* server_ctx( const std::string& cert_path, const std::string& key_path );
-  static Ctx* client_ctx();
+  static Ctx* client_server( const std::string& cert_path, const std::string& key_path );
+  static Ctx* server_only( const std::string& cert_path, const std::string& key_path );
+  static Ctx* client_only();
 
   ~Ctx();
 
   SSL_CTX* context() { return ctx; }
   
 private:
-  Ctx( const std::string& cert_path, const std::string& key_path );
+  Ctx( const std::string&, const std::string&, bool init_client );
   Ctx();
 
   void init_library();

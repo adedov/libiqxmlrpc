@@ -12,24 +12,29 @@ using namespace iqnet::ssl;
 iqnet::ssl::Ctx* iqnet::ssl::ctx = 0;
 bool Ctx::initialized = false;
 
-
-Ctx* Ctx::server_ctx( const std::string& cert_path, const std::string& key_path )
+Ctx* Ctx::client_server( const std::string& cert_path, const std::string& key_path )
 {
-  return new Ctx( cert_path, key_path );
+  return new Ctx( cert_path, key_path, true );
 }
 
 
-Ctx* Ctx::client_ctx()
+Ctx* Ctx::server_only( const std::string& cert_path, const std::string& key_path )
+{
+  return new Ctx( cert_path, key_path, false );
+}
+
+
+Ctx* Ctx::client_only()
 {
   return new Ctx;
 }
 
 
-Ctx::Ctx( const std::string& cert_path, const std::string& key_path )
+Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client )
 {
   init_library();
-  
-  SSL_METHOD *meth = SSLv23_server_method();
+
+  SSL_METHOD* meth = client ? SSLv23_method() : SSLv23_server_method();
   ctx = SSL_CTX_new( meth );
   
   if( 
