@@ -5,7 +5,7 @@ libiqxmlrpc_la_LIBADD =  @LIBXMLPP@ @OPENSSL@
 
 pkginclude_HEADERS = \
   libiqxmlrpc.h \
-  net_sysinc.h \
+  sysinc.h \
   conn_fabric.h \
   net_except.h \
   inet_addr.h \
@@ -16,7 +16,6 @@ pkginclude_HEADERS = \
   connection.h \
   ssl_lib.h \
   ssl_connection.h \
-  sysinc.h \
   except.h \
   value_type.h \
   value.h \
