@@ -15,8 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: response.cc,v 1.3 2004-04-14 08:56:40 adedov Exp $
+//  $Id: response.cc,v 1.4 2004-04-27 04:15:36 adedov Exp $
 
+#include <memory>
 #include "response.h"
 #include "parser.h"
 #include "value.h"
@@ -61,24 +62,15 @@ Response::~Response()
 
 xmlpp::Document* Response::to_xml() const
 {
-  xmlpp::Document* doc = new xmlpp::Document();
-
-  try 
-  {
-    xmlpp::Element* el = doc->create_root_node( "methodResponse" );
-    
-    if( is_fault() )
-      fault_to_xml( el );
-    else
-      ok_to_xml( el );
-  }
-  catch(...)
-  {
-    delete doc;
-    throw;
-  }
+  std::auto_ptr<xmlpp::Document> doc( new xmlpp::Document() );
+  xmlpp::Element* el = doc->create_root_node( "methodResponse" );
   
-  return doc;
+  if( is_fault() )
+    fault_to_xml( el );
+  else
+    ok_to_xml( el );
+  
+  return doc.release();
 }
 
 

@@ -15,9 +15,8 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: reactor.cc,v 1.2 2004-04-27 04:15:36 adedov Exp $
 
-#include <iostream>
 #include <vector>
 #include <list>
 #include <deque>
