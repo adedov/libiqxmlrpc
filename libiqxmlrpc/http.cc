@@ -103,7 +103,7 @@ void Header::parse( std::istringstream& ss )
     }
     
     if( i->name.find(":") == std::string::npos )
-      throw Bad_request();
+      throw Malformed_packet();
   }
 }
 
@@ -156,7 +156,7 @@ std::string Header::read_option_name( std::istringstream& ss )
     }
   }
 
-  throw Bad_request();
+  throw Malformed_packet();
 }
 
 
@@ -167,14 +167,14 @@ void Header::read_eol( std::istringstream& ss )
   {
     case '\r':
       if( ss.get() != '\n' )
-        throw Bad_request();
+        throw Malformed_packet();
       break;
       
     case '\n':
       break;
     
     default:
-      throw Bad_request();
+      throw Malformed_packet();
   }
 }
 
@@ -184,7 +184,7 @@ std::string Header::read_option_content( std::istringstream& ss )
   for( ; ss && (ss.peek() == ' ' || ss.peek() == '\t'); ss.get() )
   
   if( !ss )
-    throw Bad_request();
+    throw Malformed_packet();
   
   std::string option;
   while( ss )
@@ -210,7 +210,7 @@ void Header::ignore_line( std::istringstream& ss )
     {
       case '\r':
         if( cr )
-          throw Bad_request();
+          throw Malformed_packet();
         cr = true;
         break;
       
@@ -219,7 +219,7 @@ void Header::ignore_line( std::istringstream& ss )
       
       default:
         if( cr )
-          throw Bad_request();
+          throw Malformed_packet();
     }
   }
 }
@@ -533,8 +533,14 @@ Server::~Server()
 
 bool Server::read_request( const std::string& s )
 {
-  packet = preader->read_packet( s );
-  return packet;
+  try {
+    packet = preader->read_packet( s );
+    return packet;
+  }
+  catch( const Malformed_packet& )
+  {
+    throw Bad_request();
+  }
 }
 
 

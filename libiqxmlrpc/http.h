@@ -23,6 +23,7 @@ namespace http
   template <class Header_type>
   class Packet_reader;
     
+  class Malformed_packet;
   class Error_response;
   class Bad_request;
   class Method_not_allowed;
@@ -239,6 +240,14 @@ protected:
 
   virtual void send_request( const http::Packet& ) = 0;
   virtual void recv_response() = 0;
+};
+
+
+//! Exception which is thrown on syntax error during HTTP packet parsing.
+class http::Malformed_packet: public Exception {
+public:
+  Malformed_packet():
+    Exception( "Malformed HTTP packet received." ) {}
 };
 
 
