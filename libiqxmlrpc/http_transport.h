@@ -5,14 +5,15 @@
 #include <libiqnet/acceptor.h>
 #include <libiqnet/connection.h>
 #include <libiqnet/conn_fabric.h>
+#include <libiqnet/connector.h>
 
 namespace iqxmlrpc
 {
   template <class Conn_type> class Reaction_conn_fabric;
   class Http_reaction_connection;
-  //class Https_threaded_connection;
 
   class Http_server;
+  class Http_client;
 };
 
 
@@ -51,7 +52,7 @@ public:
   Reaction_conn_fabric( Method_dispatcher* d, iqnet::Reactor* r ):
     disp(d), reactor(r) {}
   
-  void create_connection( int fd, const iqnet::Inet_addr& addr )
+  void create_accepted( int fd, const iqnet::Inet_addr& addr )
   {
     Conn_type *c = new Conn_type( fd, addr, reactor, disp );
     c->post_init();
@@ -81,19 +82,19 @@ public:
 };
 
 
-/*!
-\page network_server Setting up network server
-Currently library supports two types transport to run XML-RPC services on:
-- HTTP over \b non-blocking connections in a \b single \b thread.
-- HTTPS over \b blocking connections, each connection runs its \b own \b thread.
+class iqxmlrpc::Http_client: public iqxmlrpc::http::Client {
+  iqnet::Inet_addr addr;
+  iqnet::Connection* conn;
+  iqnet::Connector<iqnet::Connection> ctr;
+  
+public:
+  Http_client( const iqnet::Inet_addr&, const std::string& uri="/RPC" );
+  virtual ~Http_client();
 
-\todo HTTPS Not implemented yet.
+protected:
+  void send_request( const http::Packet& );
+  void recv_response();
+};
 
-Such a difference beetwen these transports has a simple explanation: 
-non-blocking networking is quite simple to implement on a application layer but
-at the same time implementing SSL over non-blocking connections is much more 
-harder then just multithreading.
-
-*/
 
 #endif
