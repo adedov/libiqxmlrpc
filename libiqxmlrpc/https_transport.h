@@ -16,6 +16,10 @@ namespace iqxmlrpc
 };
 
 
+//! Represents server-side \b HTTPS non-blocking connection.
+/*! Does the actual work for sending/receiving HTTP packets via SSL.
+    \see iqxmlrpc::Https_server
+*/
 class iqxmlrpc::Https_reaction_connection: 
   public iqnet::ssl::Reaction_connection 
 {
@@ -61,6 +65,10 @@ public:
 };
 
 
+//! Single thread XML-RPC \b HTTPS server based on reactive model.
+/*! It just accepts new connections and creates objects of
+    Https_reaction_connection class for each one. 
+    Then Https_reaction_connection does all real work. */
 class iqxmlrpc::Https_server {
   typedef Https_conn_fabric C_fabric;
   
@@ -83,6 +91,10 @@ public:
 };
 
 
+//! Single thread XML-RPC \b HTTPS client based on blocking connection.
+/*! Implements functions for real network collaboration,
+    sending/receiving HTTPS packets using SSL.
+*/
 class iqxmlrpc::Https_client: public iqxmlrpc::http::Client {
   iqnet::Inet_addr addr;
   iqnet::ssl::Connection* conn;

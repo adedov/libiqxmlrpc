@@ -16,7 +16,7 @@ namespace iqxmlrpc
 };
 
 
-//! Represents server-side HTTP non-blocking connection.
+//! Represents server-side \b HTTP non-blocking connection.
 /*! Does the actual work for sending/receiving HTTP packets via network. 
     \see iqxmlrpc::Http_server
 */
@@ -58,7 +58,7 @@ public:
 };
 
 
-//! Single thread XML-RPC HTTP server based on reactive model.
+//! Single thread XML-RPC \b HTTP server based on reactive model.
 /*! It just accepts new connections and creates objects of
     Http_reaction_connection class for each one. 
     Then Http_reaction_connection does all real work. */
@@ -84,7 +84,7 @@ public:
 };
 
 
-//! Single thread XML-RPC HTTP client based on blocking connection.
+//! Single thread XML-RPC \b HTTP client based on blocking connection.
 /*! Implements functions for real network collaboration,
     sending/receiving HTTP packets.
 */
