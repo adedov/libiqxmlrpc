@@ -15,10 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: inet_addr.cc,v 1.4 2004-03-31 05:32:14 adedov Exp $
+//  $Id: inet_addr.cc,v 1.5 2004-04-19 08:39:08 adedov Exp $
 
-#include <unistd.h>
-#include <netdb.h>
+#include "sysinc.h"
 #include "inet_addr.h"
 #include "net_except.h"
 
@@ -28,7 +27,7 @@ using namespace iqnet;
 std::string iqnet::get_host_name()
 {
   char buf[256];
-  bzero( buf, 256 );
+  buf[255] = 0;
   ::gethostname( buf, 255 );
  
   return buf;
