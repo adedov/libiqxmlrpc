@@ -15,16 +15,28 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: request.cc,v 1.2 2004-03-29 06:23:18 adedov Exp $
+//  $Id: request.cc,v 1.3 2004-04-14 08:50:21 adedov Exp $
 
-#include <libiqxmlrpc/request.h>
-#include <libiqxmlrpc/parser.h>
-#include <libiqxmlrpc/value.h>
-#include <libiqxmlrpc/except.h>
+#include <libxml++/libxml++.h>
+#include "request.h"
+#include "parser.h"
+#include "value.h"
+#include "except.h"
 
 using namespace iqxmlrpc;
 
 
+Request* iqxmlrpc::parse_request( const std::string& request_string )
+{
+  xmlpp::DomParser parser;
+  parser.set_substitute_entities();
+  parser.parse_memory( request_string );
+
+  return new Request( parser.get_document() );
+}
+
+
+//-----------------------------------------------------------------------------
 Request::Request( const xmlpp::Document* doc )
 {
   parse( doc->get_root_node() );
