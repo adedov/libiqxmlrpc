@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.4 2004-04-21 09:54:09 adedov Exp $
+//  $Id: client.h,v 1.5 2004-04-21 10:04:41 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -81,7 +81,7 @@ public:
   //! Construct the client
   /*! \param addr_ Actual server address;
       \param uri_  Requested URI (default "/RPC");
-      \param host_ Requested virtual host (default "")
+      \param host_ Requested virtual host (by default calculated form addr).
   */
   Client( 
     const iqnet::Inet_addr& addr_, 
@@ -90,7 +90,7 @@ public:
   ):
     addr(addr_), 
     uri(uri_),
-    vhost(host_),
+    vhost(host_.empty() ? addr_.get_host_name() : host_),
     ctr(addr)
   {
   }
