@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.14 2004-09-19 17:47:26 adedov Exp $
+//  $Id: server.h,v 1.15 2004-10-14 03:10:38 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -116,6 +116,8 @@ public:
   template <class Method_class> 
   void register_method( const std::string& name );
 
+  //! Allow clients to request introspection information 
+  //! via special built-in methods.
   void enable_introspection();
 
   //! Set stream to log errors. Transfer NULL to turn loggin off.
