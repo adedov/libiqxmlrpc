@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.h,v 1.15 2004-04-21 07:22:50 adedov Exp $
+//  $Id: http.h,v 1.16 2004-07-22 10:12:41 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -48,6 +48,7 @@ namespace iqxmlrpc
     class Error_response;
     class Bad_request;
     class Method_not_allowed;
+    class Request_too_large;
     class Unsupported_content_type;
       
     class Server;
@@ -218,21 +219,31 @@ class iqxmlrpc::http::Packet_reader {
   std::string content_cache;
   Header* header;
   bool constructed;
+  unsigned pkt_max_sz;
+  unsigned total_sz;
   
 public:
   Packet_reader():
-    header(0), constructed(false) {}
+    header(0), 
+    constructed(false),
+    total_sz(0) {}
       
   ~Packet_reader()
   {
     if( !constructed )
       delete header;
   }
-      
+   
+  void set_max_size( unsigned m ) 
+  { 
+    pkt_max_sz = m; 
+  }
+  
   Packet* read_packet( const std::string& );
 
 private:
   void clear();
+  void check_sz( unsigned );
   void read_header( const std::string& );
 };
 
@@ -278,6 +289,13 @@ public:
 };
 
 
+class iqxmlrpc::http::Request_too_large: public http::Error_response {
+public:
+  Request_too_large():
+    Error_response( "Request Entity Too Large", 413 ) {}
+};
+
+
 //! HTTP/1.1 415 Unsupported media type
 class iqxmlrpc::http::Unsupported_content_type: public http::Error_response {
 public:
@@ -291,70 +309,84 @@ namespace iqxmlrpc
 {
   namespace http 
   {
-    template <class Header_type>
-    inline void Packet_reader<Header_type>::clear()
-    {
-      header = 0;
-      content_cache.erase();
-      header_cache.erase();
-      constructed = false;
-    }
-    
-    
-    template <class Header_type>
-    Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
-    {
-      if( constructed )
-        clear();
-      
-      if( !header )
-      {
-        if( s.empty() )
-          throw http::Malformed_packet();
-        
-        read_header(s);
-      }
-      else
-        content_cache += s;
-      
-      if( header )
-      {
-        bool ready = s.empty() && !header->is_content_length_set() ||
-                     content_cache.length() >= header->content_length();
-        
-        if( ready )
-        {
-          if( header->is_content_length_set() )
-            content_cache.erase( header->content_length(), std::string::npos );
 
-          Packet* packet = new Packet( header, content_cache );
-          constructed = true;
-          return packet;
-        }
-      }
-      
-      return 0;
-    }
+  template <class Header_type>
+  inline void Packet_reader<Header_type>::clear()
+  {
+    header = 0;
+    content_cache.erase();
+    header_cache.erase();
+    constructed = false;
+    total_sz = 0;
+  }
+
+  template <class Header_type>
+  void Packet_reader<Header_type>::check_sz( unsigned sz )
+  {
+    if( !pkt_max_sz )
+      return;
     
+    total_sz += sz;
+    if( total_sz >= pkt_max_sz )
+      throw Request_too_large();
+  }
+  
+  template <class Header_type>
+  Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
+  {
+    if( constructed )
+      clear();
     
-    template <class Header_type>
-    void Packet_reader<Header_type>::read_header( const std::string& s )
+    check_sz( s.length() );
+    
+    if( !header )
     {
-      header_cache += s;
-      unsigned i = header_cache.find( "\r\n\r\n" );
+      if( s.empty() )
+        throw http::Malformed_packet();
       
-      if( i == std::string::npos )
-        i = header_cache.find( "\n\n" );
-      
-      if( i == std::string::npos )
-        return;
-      
-      std::istringstream ss( header_cache );
-      header = new Header_type( ss );
-      
-      for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
-        content_cache += c;
+      read_header(s);
     }
+    else
+      content_cache += s;
+    
+    if( header )
+    {
+      bool ready = s.empty() && !header->is_content_length_set() ||
+                   content_cache.length() >= header->content_length();
+      
+      if( ready )
+      {
+        if( header->is_content_length_set() )
+          content_cache.erase( header->content_length(), std::string::npos );
+
+        Packet* packet = new Packet( header, content_cache );
+        constructed = true;
+        return packet;
+      }
+    }
+    
+    return 0;
+  }
+  
+  template <class Header_type>
+  void Packet_reader<Header_type>::read_header( const std::string& s )
+  {
+    header_cache += s;
+    unsigned i = header_cache.find( "\r\n\r\n" );
+    
+    if( i == std::string::npos )
+      i = header_cache.find( "\n\n" );
+    
+    if( i == std::string::npos )
+      return;
+    
+    std::istringstream ss( header_cache );
+    header = new Header_type( ss );
+    
+    for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
+      content_cache += c;
+  }
+
   };
 };
 

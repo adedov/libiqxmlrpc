@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.10 2004-07-20 05:36:53 adedov Exp $
+//  $Id: server.cc,v 1.11 2004-07-22 10:12:41 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -52,6 +52,7 @@ http::Packet* Server_connection::read_request( const std::string& s )
 {
   try 
   {
+    preader.set_max_size( server->get_max_request_sz() );
     return preader.read_packet(s);
   }
   catch( const http::Malformed_packet& )
@@ -92,6 +93,12 @@ Server::~Server()
 void Server::log_errors( std::ostream* log_ )
 {
   log = log_;
+}
+
+
+void Server::set_max_request_sz( unsigned sz )
+{
+  max_req_sz = sz;
 }
 
 

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.12 2004-07-20 05:36:53 adedov Exp $
+//  $Id: server.h,v 1.13 2004-07-22 10:12:41 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -100,6 +100,7 @@ protected:
 
   bool exit_flag;
   std::ostream* log;
+  unsigned max_req_sz;
 
 public:
   //! Construct a server.
@@ -122,6 +123,9 @@ public:
 
   //! Set stream to log errors. Transfer NULL to turn loggin off.
   void log_errors( std::ostream* );
+  
+  //! Set maximum size of incoming client's request in bytes.
+  void set_max_request_sz( unsigned );
   //! \}
 
   iqnet::Reactor* get_reactor() { return &reactor; }
@@ -130,6 +134,7 @@ public:
   void schedule_response( const Response&, Server_connection*, Executor* );
   
   void log_err_msg( const std::string& );
+  unsigned get_max_request_sz() const { return max_req_sz; }
 };
 
 
