@@ -1,5 +1,5 @@
 AC_INIT( libiqxmlrpc/value.h )
-AM_INIT_AUTOMAKE( libiqxmlrpc, 0.1.1 )
+AM_INIT_AUTOMAKE( libiqxmlrpc, 0.2 )
 AM_CONFIG_HEADER( config.h )
 
 LIBIQNET_VERSION=0:0:0
@@ -64,6 +64,8 @@ AC_OUTPUT(
   tests.libiqnet/Makefile
   tests/Makefile
   doc/Makefile
+  doc/libiqnet.doxygen
+  doc/libiqxmlrpc.doxygen
   libiqxmlrpc.pc
   libiqnet.pc
   libiqxmlrpc.spec

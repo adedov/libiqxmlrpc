@@ -1,3 +1,10 @@
+0.1.1 - 0.2
+  * Library architecture refactoring. Add ability to add alternative method's
+    execution policies. Got rid of useless classes.
+  * Use select() syscall if poll() is not present in a system.
+  * Various minor bug and style fixes.
+  * Update documentation.
+
 0.1.0 - 0.1.1
   * Fix some build problems;
   * Documentation update;
