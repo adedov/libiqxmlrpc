@@ -15,13 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.6 2004-04-07 06:30:38 adedov Exp $
+//  $Id: reactor.cc,v 1.7 2004-04-14 07:26:40 adedov Exp $
 
 #include <iostream>
 #include <vector>
 #include <list>
 #include <deque>
 #include <functional>
+#include <algorithm>
 #include "../config.h"
 
 #ifdef HAVE_POLL
@@ -39,8 +40,8 @@
   #define POLLNVAL    0x0020    /* Invalid request: fd not open */
 #endif
 
-#include <libiqnet/reactor.h>
-#include <libiqnet/net_except.h>
+#include "reactor.h"
+#include "net_except.h"
 
 using namespace iqnet;
 
@@ -78,6 +79,7 @@ public:
   typedef std::vector<struct pollfd> Pollfd_vec;
 
 private:
+  iqnet::Lock *lock;
   Handlers_box handlers;
   Handlers_box called_by_user;
 
@@ -89,6 +91,13 @@ private:
 #endif
   
 public:
+  Reactor_impl( iqnet::Lock* lck ): lock(lck) {}
+
+  ~Reactor_impl()
+  {
+    delete lock;
+  }
+
   unsigned       size()  const { return handlers.size(); }
   const_iterator begin() const { return handlers.begin(); }
   iterator       begin()       { return handlers.begin(); }
@@ -124,6 +133,7 @@ inline Reactor::Reactor_impl::iterator
 void Reactor::Reactor_impl::register_handler( Event_handler* eh, Event_mask mask )
 {
   iterator i = find_handler( eh );
+  Auto_lock a( lock );
   
   if( i == end() )
     handlers.push_back( Handler( eh->get_fd(), eh, mask ) );
@@ -138,6 +148,7 @@ void Reactor::Reactor_impl::unregister_handler( Event_handler* eh, Event_mask ma
   
   if( i != end() )
   {
+    Auto_lock a( lock );
     int newmask = (i->mask &= !mask);
 
     if( !newmask )
@@ -151,7 +162,10 @@ void Reactor::Reactor_impl::unregister_handler( Event_handler* eh )
   iterator i = find_handler( eh );
   
   if( i != end() )
+  {
+    Auto_lock a( lock );
     handlers.erase(i);
+  }
 }
 
 
@@ -161,7 +175,8 @@ void Reactor::Reactor_impl::fake_event( Event_handler* eh, Event_mask mask )
 
   if( i == end() )
     return;
-  
+
+  Auto_lock a( lock );
   i->revents |= mask;
 }
 
@@ -175,6 +190,7 @@ void Reactor::Reactor_impl::prepare_user_events()
     if( i->revents && (i->mask | i->revents) )
     {
       called_by_user.push_back( *i );
+      Auto_lock a( lock );  
       i->revents &= !i->mask;
     }
   }
@@ -327,8 +343,8 @@ bool Reactor::Reactor_impl::handle_events( Reactor::Timeout to_ms )
 
 
 // ---------------------------------------------------------------------------
-Reactor::Reactor():
-  impl(new Reactor_impl)
+Reactor::Reactor( iqnet::Lock* lock_ ):
+  impl(new Reactor_impl(lock_))
 {
 }
 

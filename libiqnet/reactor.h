@@ -15,10 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.5 2004-03-29 06:20:15 adedov Exp $
+//  $Id: reactor.h,v 1.6 2004-04-14 07:26:40 adedov Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
+
+#include "lock.h"
+
 
 namespace iqnet
 {
@@ -63,9 +66,9 @@ public:
 private:
   class Reactor_impl;
   Reactor_impl* impl;
-  
+
 public:
-  Reactor();
+  Reactor( iqnet::Lock* = new Null_lock );
   virtual ~Reactor();
 
   void register_handler( Event_handler*, Event_mask );
