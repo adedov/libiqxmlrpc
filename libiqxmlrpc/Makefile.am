@@ -1,8 +1,10 @@
 lib_LTLIBRARIES = libiqxmlrpc.la
 
-libiqxmlrpc_la_LDFLAGS = -version-info @LIBRARY_VERSION@
+libiqxmlrpc_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
+libiqxmlrpc_la_LIBADD = @LIBXMLPP@
 
 pkginclude_HEADERS = \
+  libiqxmlrpc.h \
   except.h \
   value_type.h \
   value.h \
