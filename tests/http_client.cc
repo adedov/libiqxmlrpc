@@ -1,11 +1,12 @@
+#include <iostream>
 #include <stdexcept>
-#include <libiqxmlrpc/http_transport.h>
+#include "libiqxmlrpc/http_transport.h"
 #include "client_general.h"
 
 int main()
 {
   try {
-    iqxmlrpc::Http_client client( iqnet::Inet_addr(3344) );
+    iqxmlrpc::Client<iqxmlrpc::Http_client_connection> client( iqnet::Inet_addr(3344) );
     
     show_weather( client, "Krasnoyarsk" );
     show_weather( client, "New York" );

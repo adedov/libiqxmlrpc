@@ -1,12 +1,13 @@
 #include <signal.h>
-#include <libiqnet/ssl_lib.h>
-#include <libiqxmlrpc/https_transport.h>
+#include "libiqnet/ssl_lib.h"
+#include "libiqxmlrpc/server.h"
+#include "libiqxmlrpc/https_transport.h"
 #include "server_general.h"
 
 using namespace iqnet;
 using namespace iqxmlrpc;
 
-Https_server *server = 0;
+Server *server = 0;
 
 
 void sigint_handler( int )
@@ -28,8 +29,8 @@ int main()
     Method_dispatcher dispatcher;
     dispatcher.register_method( "get_weather", new Method_factory<Get_weather> );
 
-    server = new Https_server( 3344, &dispatcher );
-    server->work();
+    server = new Server( 3344, &dispatcher, new Executor_fabric<Serial_executor> );
+    server->work<Https_server_connection>();
   }
   catch( const std::exception& e )
   {

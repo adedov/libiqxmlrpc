@@ -1,11 +1,12 @@
 #include <signal.h>
-#include <libiqxmlrpc/http_transport.h>
+#include "libiqxmlrpc/server.h"
+#include "libiqxmlrpc/http_transport.h"
 #include "server_general.h"
 
 using namespace iqnet;
 using namespace iqxmlrpc;
 
-Http_server *server = 0;
+Server *server = 0;
 
 
 void sigint_handler( int )
@@ -24,9 +25,8 @@ int main()
   try {
     Method_dispatcher dispatcher;
     dispatcher.register_method( "get_weather", new Method_factory<Get_weather> );
-    
-    server = new Http_server( 3344, &dispatcher );
-    server->work();
+    server = new Server( 3344, &dispatcher, new Executor_fabric<Serial_executor> );
+    server->work<Http_server_connection>();
   }
   catch( const std::exception& e )
   {

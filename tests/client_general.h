@@ -1,9 +1,10 @@
 #include <iostream>
 #include <string>
-#include <libiqxmlrpc/libiqxmlrpc.h>
+#include "libiqxmlrpc/libiqxmlrpc.h"
+#include "libiqxmlrpc/client.h"
 
 
-void show_weather( iqxmlrpc::Client& client, const std::string& town )
+void show_weather( iqxmlrpc::Client_base& client, const std::string& town )
 {
   using namespace iqxmlrpc;
   

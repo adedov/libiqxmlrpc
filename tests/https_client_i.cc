@@ -1,14 +1,14 @@
 // Intensive testing HTTPS client
 
 #include <stdexcept>
-#include <libiqxmlrpc/https_transport.h>
+#include "libiqxmlrpc/https_transport.h"
 #include "client_general.h"
 
 int main()
 {
   try {
     iqnet::ssl::ctx = iqnet::ssl::Ctx::client_only();
-    iqxmlrpc::Https_client client( iqnet::Inet_addr("localhost", 3344) );
+    iqxmlrpc::Client<iqxmlrpc::Https_client_connection> client( iqnet::Inet_addr("localhost", 3344) );
 
     while( true )
     {

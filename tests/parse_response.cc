@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdexcept>
-#include <libiqxmlrpc/response.h>
-#include <libiqxmlrpc/value.h>
+#include "libiqxmlrpc/response.h"
+#include "libiqxmlrpc/value.h"
 
 using namespace iqxmlrpc;
 
