@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.15 2004-10-14 03:14:58 adedov Exp $
+//  $Id: value_type.cc,v 1.16 2004-10-19 07:28:42 adedov Exp $
 
 #include <string.h>
 #include <algorithm>
@@ -142,7 +142,7 @@ const Value& Array::operator []( unsigned i ) const
   try {
     return (*values.at(i));
   }
-  catch( std::out_of_range )
+  catch( const std::out_of_range& )
   {
     throw Out_of_range();
   }
@@ -154,7 +154,7 @@ Value& Array::operator []( unsigned i )
   try {
     return (*values.at(i));
   }
-  catch( std::out_of_range )
+  catch( const std::out_of_range& )
   {
     throw Out_of_range();
   }
