@@ -14,18 +14,19 @@
 			Name="Debug|Win32"
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			UseOfMFC="2"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../libiqxmlrpc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;_WINDOWS_COMPILE_TIME"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="TRUE"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -34,17 +35,7 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLinkerTool"
-				IgnoreImportLibrary="FALSE"
-				AdditionalDependencies="libssl.lib libcrypto.lib libxml++.lib libxml2.lib"
-				OutputFile="$(OutDir)/libiqxmlrpc.dll"
-				LinkIncremental="2"
-				IgnoreAllDefaultLibraries="FALSE"
-				ModuleDefinitionFile=".\libiqxmlrpc.def"
-				GenerateDebugInformation="TRUE"
-				SubSystem="2"
-				ImportLibrary="$(OutDir)/libiqxmlrpc.lib"
-				TargetMachine="1"/>
+				Name="VCLibrarianTool"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -64,8 +55,6 @@
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
@@ -75,15 +64,20 @@
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
-			ConfigurationType="2"
-			UseOfMFC="1"
+			ConfigurationType="4"
+			UseOfMFC="2"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="0"
 				AdditionalIncludeDirectories="../libiqxmlrpc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL"
-				RuntimeLibrary="0"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;_WINDOWS_COMPILE_TIME"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="FALSE"
 				TreatWChar_tAsBuiltInType="TRUE"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -91,17 +85,7 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="libssl.lib libcrypto.lib libxml++.lib libxml2.lib"
-				OutputFile="$(OutDir)/libiqxmlrpc.dll"
-				LinkIncremental="2"
-				ModuleDefinitionFile=".\libiqxmlrpc.def"
-				GenerateDebugInformation="TRUE"
-				SubSystem="2"
-				OptimizeReferences="0"
-				EnableCOMDATFolding="0"
-				ImportLibrary="$(OutDir)/libiqxmlrpc.lib"
-				TargetMachine="1"/>
+				Name="VCLibrarianTool"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
@@ -121,8 +105,6 @@
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
@@ -413,6 +395,21 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\libiqxmlrpc\utf_conv.cc">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\value.cc">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -499,7 +496,7 @@
 				RelativePath="..\libiqxmlrpc\request.h">
 			</File>
 			<File
-				RelativePath=".\Resource.h">
+				RelativePath="..\libiqxmlrpc\Resource.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\response.h">
@@ -518,6 +515,9 @@
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\sysinc.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\utf_conv.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\value.h">

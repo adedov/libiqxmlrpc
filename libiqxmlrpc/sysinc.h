@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sysinc.h,v 1.4 2004-06-25 08:08:57 adedov Exp $
+//  $Id: sysinc.h,v 1.5 2004-11-25 12:10:44 maxim Exp $
 
 /*! \file sysinc.h 
     This file should help to port library.
@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#ifdef _WINDOWS
+#ifdef _WINDOWS_COMPILE_TIME
   #include "../win32/stdafx.h"
 #else
   #include <unistd.h>
