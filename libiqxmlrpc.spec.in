@@ -5,8 +5,9 @@ Summary:  Simple object-oriented XML-RPC client-server solution for C++.
 License:  LGPL
 URL:      http://libiqxmlrpc.sourceforge.net
 Group:    System Environment/Libraries
+Source:   libiqxmlrpc-@VERSION@.tar.gz
 BuildRoot: %{_tmppath}/%{name}-buildroot-%{version}-%{release}
-BuildRequires: openssl-devel, libxml++-devel
+BuildRequires: doxygen, openssl-devel, libxml++-devel
 Requires: openssl, libxml++
 Prefix:   /usr
 
@@ -16,7 +17,9 @@ It provides API for building client/server-side software.
 It supports HTTP and HTTPS transport portocols as well.
 
 %package devel
-Group: Development/Libraries
+Summary: Simple object-oriented XML-RPC client-server solution for C++.
+Group:   Development/Libraries
+Requires: %name, openssl-devel, libxml++-devel
 
 %description devel
 Libiqxmlrpc - an object-oriented XML-RPC library written on C++. 
@@ -28,16 +31,13 @@ This package contains files, which are required for development purposes.
 %prep
 rm -rf ${RPM_BUILD_ROOT}
 
-%setup
+%setup -q
 
 %build
 ./configure --prefix=${RPM_BUILD_ROOT}/usr
 make
 
 %install
-make install-exec
-
-%install devel
 make install
 
 %clean
@@ -45,10 +45,16 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-,root,root)
-%{prefix}/lib/
+%{prefix}/lib/*.so
+%{prefix}/lib/*.so.*
+%{prefix}/share/doc/libiqxmlrpc/index.html
 
 %files devel
 %defattr(-,root,root)
 %{prefix}/include/libiqnet
 %{prefix}/include/libiqxmlrpc
-%{prefix}/lib/
+%{prefix}/lib/*.a
+%{prefix}/lib/*.la
+%{prefix}/lib/pkgconfig
+%{prefix}/share/doc/libiqxmlrpc/libiqnet.html
+%{prefix}/share/doc/libiqxmlrpc/libiqxmlrpc.html
