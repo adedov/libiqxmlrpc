@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.6 2004-04-16 07:36:08 adedov Exp $
+//  $Id: server.h,v 1.7 2004-04-22 08:11:41 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
 
+#include <ostream>
 #include "libiqnet/acceptor.h"
 #include "libiqnet/connection.h"
 #include "libiqnet/conn_fabric.h"
@@ -97,6 +98,7 @@ protected:
   iqnet::Acceptor* acceptor;
 
   bool exit_flag;
+  std::ostream* log;
 
 public:
   //! Construct a server.
@@ -106,6 +108,8 @@ public:
   Server( int port, Executor_fabric_base* executor_fabric );
   virtual ~Server();
 
+  //! \group Users interface
+  //! \{
   //! Ask server to exit from work() event handle loop.
   void set_exit_flag() { exit_flag = true; }
   
@@ -115,8 +119,15 @@ public:
   //! Process accepting connections and methods dispatching.
   template <class Transport> void work();
 
+  //! Set stream to log errors. Transfer NULL to turn loggin off.
+  void log_errors( std::ostream* );
+  //! \}
+  
   void schedule_execute( http::Packet*, Server_connection* );
   void schedule_response( const Response&, Server_connection*, Executor* );
+  
+private:
+  void log_err_msg( const std::string& );
 };
 
 

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.5 2004-04-22 07:43:19 adedov Exp $
+//  $Id: server.cc,v 1.6 2004-04-22 08:11:41 adedov Exp $
 
 #include "libiqnet/reactor.h"
 #include "server.h"
@@ -75,7 +75,8 @@ Server::Server( int p, Executor_fabric_base* f ):
   reactor( f->create_lock() ),
   conn_fabric(0),
   acceptor(0),
-  exit_flag(false)
+  exit_flag(false),
+  log(0)
 {
 }
 
@@ -85,6 +86,19 @@ Server::~Server()
   delete acceptor;
   delete conn_fabric;
   delete exec_fabric;
+}
+
+
+void Server::log_errors( std::ostream* log_ )
+{
+  log = log_;
+}
+
+
+inline void Server::log_err_msg( const std::string& msg )
+{
+  if( log )
+    *log << msg << std::endl;
 }
 
 
@@ -99,14 +113,10 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
     executor = exec_fabric->create( meth, this, conn );
     executor->execute( req->get_params() );
   }
-  catch( const xmlpp::exception& e )
-  {
-    Response err_r( -1, e.what() );
-    schedule_response( err_r, conn, executor );
-  }
   catch( const std::exception& e )
   {
-    Response err_r( -1, "Internal Server Error." );
+    log_err_msg( e.what() );
+    Response err_r( -1, e.what() );
     schedule_response( err_r, conn, executor );
   }
 }
