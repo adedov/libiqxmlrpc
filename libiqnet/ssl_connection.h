@@ -81,6 +81,7 @@ protected:
   void ssl_accept();
   //! Returns true if shutdown already performed.
   bool reg_shutdown();
+  void reg_accept();
   void reg_send( const char*, int );
   void reg_recv( char*, int );
 

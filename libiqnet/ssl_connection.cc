@@ -126,21 +126,7 @@ ssl::Reaction_connection::Reaction_connection
 
 void ssl::Reaction_connection::post_accept()
 {
-  try {
-    state = ACCEPTING;
-    ssl::Connection::post_accept();
-    accept_succeed();
-  }
-  catch( const ssl::need_read& )
-  {
-    std::cout << "post_accept: need_read" << std::endl;
-    reactor->register_handler( this, Reactor::INPUT );
-  }
-  catch( const ssl::need_write& )
-  {
-    std::cout << "post_accept: need_write" << std::endl;
-    reactor->register_handler( this, Reactor::OUTPUT );
-  }
+  reg_accept();
 }
 
 
@@ -286,6 +272,13 @@ bool ssl::Reaction_connection::reg_shutdown()
   }
   
   return false;
+}
+
+
+void ssl::Reaction_connection::reg_accept()
+{
+  state = ACCEPTING;
+  reactor->register_handler( this, Reactor::INPUT );
 }
 
 
