@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.4 2004-04-16 07:15:50 adedov Exp $
+//  $Id: server.cc,v 1.5 2004-04-22 07:43:19 adedov Exp $
 
 #include "libiqnet/reactor.h"
 #include "server.h"
@@ -90,11 +90,25 @@ Server::~Server()
 
 void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 {
-  std::auto_ptr<http::Packet> packet(pkt);
-  std::auto_ptr<Request> req( parse_request( packet->content() ) );
-  Method* meth = disp.create_method( req->get_name() );
-  Executor* executor = exec_fabric->create( meth, this, conn );
-  executor->execute( req->get_params() );
+  Executor* executor = 0;
+
+  try {
+    std::auto_ptr<http::Packet> packet(pkt);
+    std::auto_ptr<Request> req( parse_request( packet->content() ) );
+    Method* meth = disp.create_method( req->get_name() );
+    executor = exec_fabric->create( meth, this, conn );
+    executor->execute( req->get_params() );
+  }
+  catch( const xmlpp::exception& e )
+  {
+    Response err_r( -1, e.what() );
+    schedule_response( err_r, conn, executor );
+  }
+  catch( const std::exception& e )
+  {
+    Response err_r( -1, "Internal Server Error." );
+    schedule_response( err_r, conn, executor );
+  }
 }
 
 

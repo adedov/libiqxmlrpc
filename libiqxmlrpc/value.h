@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.h,v 1.9 2004-04-14 08:56:40 adedov Exp $
+//  $Id: value.h,v 1.10 2004-04-22 07:43:19 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -43,11 +43,9 @@ public:
   //! Bad_cast is being thrown on illegal 
   //! type conversion or Value::get_X() call.
   class Bad_cast: public Exception {
-    enum { code = Fault_code::xmlrpc_usage };
-    
   public:
     Bad_cast():
-      Exception( "iqxmlrpc::Value: incorrect type was requested.", code ) {}
+      Exception( "iqxmlrpc::Value: incorrect type was requested." ) {}
   };
   
 private:

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.9 2004-04-14 08:56:40 adedov Exp $
+//  $Id: method.h,v 1.10 2004-04-22 07:43:19 adedov Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -96,10 +96,9 @@ public:
   //! Exception is being thrown when user tries to create 
   //! Method object for unregistered name.
   class Unknown_method: public Exception {
-    enum { code = Fault_code::unknown_method };
   public:
     Unknown_method( const std::string& name ): 
-      Exception( "Unknown method '" + name + "'.", code ) {}
+      Exception( "Unknown method '" + name + "'." ) {}
   };
   
 private:

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.1 2004-04-14 08:44:03 adedov Exp $
+//  $Id: executor.cc,v 1.2 2004-04-22 07:43:19 adedov Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -48,27 +48,13 @@ void Executor::schedule_response( const Response& resp )
 // ----------------------------------------------------------------------------
 void Serial_executor::execute( const Param_list& params )
 {
-  std::string error_msg;
-  int fault_code;
-  
-  try 
-  {
+  try {
     Value result(0);
     method->execute( params, result );
     schedule_response( Response(result) );
-    return;
   }
-  catch( const xmlpp::exception& e )
+  catch( const Fault& f )
   {
-    error_msg  = e.what();
-    fault_code = Fault_code::xml_parser;
+    schedule_response( Response( f.code(), f.what() ) );
   }
-  catch( const Exception& e )
-  {
-    error_msg = e.what();
-    fault_code = e.code();
-  }
-
-  // Should be invoked in exception case only.
-  schedule_response( Response(fault_code, error_msg) );
 }

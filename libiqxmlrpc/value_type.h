@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.9 2004-04-14 08:56:40 adedov Exp $
+//  $Id: value_type.h,v 1.10 2004-04-22 07:43:19 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -76,11 +76,9 @@ class iqxmlrpc::Array: public iqxmlrpc::Value_type {
 public:
   //! Exception which is being thrown on array range violation.
   class Out_of_range: public Exception {
-    enum { code = Fault_code::xmlrpc_usage };
-    
   public:
     Out_of_range():
-      Exception( "iqxmlrpc::Array: index out of range.", code ) {}
+      Exception( "iqxmlrpc::Array: index out of range." ) {}
   };
 
 private:
@@ -127,11 +125,9 @@ public:
   //! Exception which is being thrown when user tries 
   //! to access structure's unexistent member.
   class No_field: public Exception {
-    enum { code = Fault_code::xmlrpc_usage };
-    
   public:
     No_field( const std::string& f ):
-      Exception( "iqxmlrpc::Struct: field '" + f + "' not exist.", code ) {}
+      Exception( "iqxmlrpc::Struct: field '" + f + "' not exist." ) {}
   };
 
 private:

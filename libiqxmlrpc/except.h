@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: except.h,v 1.5 2004-03-29 06:23:18 adedov Exp $
+//  $Id: except.h,v 1.6 2004-04-22 07:43:19 adedov Exp $
 
 #ifndef _iqxmlrpc_except_h_
 #define _iqxmlrpc_except_h_
@@ -30,57 +30,43 @@ namespace xmlpp
 
 namespace iqxmlrpc 
 {
-  namespace Fault_code
-  {
-    enum {
-      xml_parser,
-      xmlrpc_parser,
-      xmlrpc_usage,
-      unknown_method,
-      first = xml_parser,
-      last  = unknown_method
-    };
-  };
-
-  
   //! Base class for iqxmlrpc exceptions.
   class Exception: public std::runtime_error {
-    int code_;
-    
   public:
-    Exception( const std::string& i, int c = Fault_code::xmlrpc_usage ):
-      runtime_error( i ), code_(c) {}
-        
-    int code() const { return code_; }
+    Exception( const std::string& i ):
+      runtime_error( i ) {}
+
+    virtual int code() const { return -1; }
   };
 
   
   //! Common exception class for various error cases 
   //! which can happen during parsing of XML-RPC structures.
   class Parse_error: public Exception {
-    enum { code = Fault_code::xmlrpc_parser };
-    
   public:
     static Parse_error at_node( const xmlpp::Node* );
     static Parse_error caused( const std::string&, const xmlpp::Node* = 0 );
 
     Parse_error():
-      Exception( "Could not parse XML-RPC data.", code ) {}
+      Exception( "Could not parse XML-RPC data." ) {}
         
   private:
     Parse_error( const std::string& d ):
-      Exception( "Could not parse XML-RPC data: " + d + ".", code ) {}
+      Exception( "Could not parse XML-RPC data: " + d + "." ) {}
   };
 
 
   //! Exception which user should throw from Method to
   //! initiate fault response.
   class Fault: public iqxmlrpc::Exception {
+    int code_;
+    
   public:
-    Fault( int code, const std::string& s ):
-      Exception( s, code ) {}
+    Fault( int c, const std::string& s ):
+      Exception( s ), code_(c) {}
+        
+    int code() const { return code_; }
   };
 };
-
 
 #endif
