@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include "connection.h"
 #include "net_except.h"
 
@@ -87,9 +88,11 @@ const std::string Connection::recv_str()
 
 void Connection::set_non_blocking( bool flag )
 {
-  int enable = flag;
-  if( ::setsockopt( sock, SOL_TCP, TCP_NODELAY, &enable, sizeof(int) ) == -1 )
-    throw network_error( "setsockopt" );
+  int mode = fcntl( sock, F_GETFL, 0 );
+  mode = flag ? mode | O_NDELAY : mode & !O_NDELAY;
+  
+  if( fcntl( sock, F_SETFL, mode ) == -1 )
+    throw network_error( "fcntl" );
 }
 
 
