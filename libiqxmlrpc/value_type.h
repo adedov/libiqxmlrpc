@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.23 2004-11-02 17:00:25 adedov Exp $
+//  $Id: value_type.h,v 1.24 2005-03-23 18:24:27 bada Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -90,7 +90,6 @@ public:
 };
 
 
-
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
 /*! \see \ref array_usage */
 class iqxmlrpc::Array: public iqxmlrpc::Value_type {
@@ -127,6 +126,7 @@ public:
 
   Array& operator =( const Array& );
 
+  void swap(Array&) throw();
   Array* clone() const;
   void to_xml( xmlpp::Node* ) const;
   
@@ -243,6 +243,7 @@ public:
 
   Struct& operator =( const Struct& );
 
+  void swap(Struct&) throw();
   Struct* clone() const;
   void to_xml( xmlpp::Node* ) const;
 

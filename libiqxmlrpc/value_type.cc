@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.18 2004-11-02 16:59:08 adedov Exp $
+//  $Id: value_type.cc,v 1.19 2005-03-23 18:24:27 bada Exp $
 
 #include <string.h>
 #include <algorithm>
@@ -96,31 +96,32 @@ Array::Array( const Array& other )
 }
 
 
+Array::~Array()
+{
+  clear();
+}
+
+
 Array& Array::operator =( const Array& other )
 {
   if( this == &other )
     return *this;
-  
-  clear();
-  std::for_each( other.begin(), other.end(), Array_inserter(&values) );
-  
+
+  Array tmp(other);
+  tmp.swap(*this);
   return *this;
+}
+
+
+void Array::swap( Array& other) throw()
+{
+  values.swap(other.values);
 }
 
 
 Array* Array::clone() const
 {
-  Array *a = new Array;
-  for( const_iterator i = begin(); i != end(); ++i )
-    a->push_back( new Value(*i) );
-
-  return a;
-}
-
-
-Array::~Array()
-{
-  clear();
+  return new Array(*this);
 }
 
 
@@ -189,9 +190,9 @@ Struct& Struct::operator =( const Struct& other )
 {
   if( this == &other )
     return *this;
-  
-  clear();
-  std::for_each( other.begin(), other.end(), Struct_inserter(&values) );
+
+  Struct tmp(other);
+  tmp.swap(*this);
   return *this;
 }
 
@@ -202,13 +203,15 @@ Struct::~Struct()
 }
 
 
+void Struct::swap( Struct& other ) throw()
+{
+  values.swap(other.values);
+}
+
+
 Struct* Struct::clone() const
 {
-  Struct *s = new Struct;
-  for( const_iterator i = values.begin(); i != values.end(); ++i )
-    s->insert( i->first, new Value( *(i->second) ) );
-  
-  return s;
+  return new Struct(*this);
 }
 
 

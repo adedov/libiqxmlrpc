@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.cc,v 1.7 2004-07-27 08:20:52 adedov Exp $
+//  $Id: value.cc,v 1.8 2005-03-23 18:24:27 bada Exp $
 
 #include <stdexcept>
 #include "value.h"
@@ -110,8 +110,9 @@ Value::~Value()
 
 const Value& Value::operator =( const Value& v )
 {
+  Value_type* tmp = v.value->clone();
   delete value;
-  value = v.value->clone();
+  value = tmp;
   return *this;
 }
 
