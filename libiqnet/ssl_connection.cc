@@ -5,9 +5,9 @@
 using namespace iqnet;
 
 
-ssl::Connection::Connection( int s, const iqnet::Inet_addr& addr, ssl::Ctx* c ):
+ssl::Connection::Connection( int s, const iqnet::Inet_addr& addr ):
   iqnet::Connection( s, addr ),
-  ssl_ctx( c ? c : ssl::ctx )
+  ssl_ctx( ssl::ctx )
 {
   if( !ssl_ctx )
     throw ssl::not_initialized();
@@ -71,8 +71,8 @@ int ssl::Connection::recv( char* buf, int len )
 
 // ----------------------------------------------------------------------------
 ssl::Reaction_connection::Reaction_connection
-  ( int sock, const iqnet::Inet_addr& addr, ssl::Ctx* ctx, Reactor* r ):
-  ssl::Connection( sock, addr, ctx ),
+  ( int sock, const iqnet::Inet_addr& addr, Reactor* r ):
+  ssl::Connection( sock, addr ),
   reactor(r)
 {
 }
