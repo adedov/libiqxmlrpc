@@ -9,9 +9,8 @@
 
 namespace iqxmlrpc
 {
-  template <class Conn_type> class Reaction_conn_fabric;
   class Http_reaction_connection;
-
+  class Http_conn_fabric;
   class Http_server;
   class Http_client;
 };
@@ -21,25 +20,18 @@ namespace iqxmlrpc
 /*! Does the actual work for sending/receiving HTTP packets via network. 
     \see iqxmlrpc::Http_server
 */
-class iqxmlrpc::Http_reaction_connection: 
-  public iqnet::Connection, 
-  private http::Server 
-{
-private:
+class iqxmlrpc::Http_reaction_connection: public iqnet::Connection {
   iqnet::Reactor* reactor;
   http::Packet* response;
-  
-public:
-  Http_reaction_connection( 
-    int, 
-    const iqnet::Inet_addr&, 
-    iqnet::Reactor*, 
-    Method_dispatcher* 
-  );
+  http::Server* server;
 
+  friend class Http_conn_fabric;
+    
+public:
+  Http_reaction_connection( int, const iqnet::Inet_addr& );
   ~Http_reaction_connection();
 
-  void post_init();  
+  void post_accept();  
   void finish();
   
   void handle_input( bool& );
@@ -48,19 +40,20 @@ public:
 
 
 //! Fabric for Http_reaction_connection.
-template <class Conn_type>
-class iqxmlrpc::Reaction_conn_fabric: public iqnet::Connection_fabric {
+class iqxmlrpc::Http_conn_fabric: 
+  public iqnet::Serial_conn_fabric<Http_reaction_connection> 
+{
   Method_dispatcher *disp;
   iqnet::Reactor* reactor;
 
 public:
-  Reaction_conn_fabric( Method_dispatcher* d, iqnet::Reactor* r ):
+  Http_conn_fabric( Method_dispatcher* d, iqnet::Reactor* r ):
     disp(d), reactor(r) {}
   
-  void create_accepted( int fd, const iqnet::Inet_addr& addr )
+  void post_create( Http_reaction_connection* c )
   {
-    Conn_type *c = new Conn_type( fd, addr, reactor, disp );
-    c->post_init();
+    c->reactor = reactor;
+    c->server = new http::Server( disp );
   }
 };
 
@@ -70,7 +63,7 @@ public:
     Http_reaction_connection class for each one. 
     Then Http_reaction_connection does all real work. */
 class iqxmlrpc::Http_server {
-  typedef Reaction_conn_fabric<Http_reaction_connection> C_fabric;
+  typedef Http_conn_fabric C_fabric;
   
   iqnet::Reactor   reactor;
   iqnet::Acceptor *acceptor;
