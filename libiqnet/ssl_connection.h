@@ -17,15 +17,15 @@ namespace iqnet
   }
 };
   
-//! Server-side established TCP-connection 
-//! with Secure Socket Layer built under it.
+
+//! SSL connection class.
 class iqnet::ssl::Connection: public iqnet::Connection {
 protected:
   ssl::Ctx* ssl_ctx;
   SSL *ssl;
   
 public:
-  Connection( int sock, const iqnet::Inet_addr&, ssl::Ctx* = 0 );
+  Connection( int sock, const iqnet::Inet_addr& );
   ~Connection();
   
   int send( const char*, int );
@@ -44,6 +44,8 @@ protected:
 };
 
 
+//! Server-side established SSL-connection based on reactive model
+//! (with underlying non-blocking socket).
 class iqnet::ssl::Reaction_connection: public ssl::Connection {
   Reactor* reactor;
 
@@ -55,7 +57,7 @@ class iqnet::ssl::Reaction_connection: public ssl::Connection {
   int buf_len;
 
 public:
-  Reaction_connection( int, const iqnet::Inet_addr&, ssl::Ctx*, Reactor* = 0 );
+  Reaction_connection( int, const iqnet::Inet_addr&, Reactor* = 0 );
 
   //! A trick for supporting generic fabric.
   void set_reactor( Reactor* r )
@@ -82,21 +84,5 @@ protected:
   virtual void send_succeed( bool& terminate ) = 0;
 };
 
-
-template <class SSL_conn_type>
-class iqnet::ssl::Serial_conn_fabric: public iqnet::Accepted_conn_fabric {
-  ssl::Ctx* ctx;
-public:
-  Serial_conn_fabric( ssl::Ctx* ctx_ ): ctx(ctx_) {}
-    
-  void create_accepted( int sock, const Inet_addr& peer_addr )
-  {
-    SSL_conn_type* c = new SSL_conn_type( sock, peer_addr, ctx );
-    post_create( c );
-    c->post_accept();
-  }
-  
-  virtual void post_create( SSL_conn_type* ) {}
-};
 
 #endif
