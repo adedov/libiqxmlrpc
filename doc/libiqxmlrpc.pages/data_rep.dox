@@ -20,6 +20,8 @@ XML-RPC (http://www.xmlrpc.com) standard assumes following data types to use.
 - \b Compond \b types:
   - array
   - struct
+- \b XML-RPC \b extensions:
+  - nil (http://ontosys.com/xml-rpc/extensions.html)
 
 Library maps each XML-RPC type into a stand-alone class. Here is a piece of 
 code which declares libiqxmlrpc data type classes (value_type.h):
@@ -101,6 +103,18 @@ specific field. If anyone will try to access unexistent field then
 iqxmlrpc::Struct::No_field would be thrown.
 
 \see \ref value_usage
+
+\section nil_usage Nil usage
+One can use iqxmlrpc::Nil value to represent an unknown value or to represent 
+SQL's NULL value:
+
+\code
+  // Assign nil value
+  iqxmlrpc::Value v = iqxmlrpc::Nil;
+  
+  // Check whether v is nil
+  if( v.is_nil() ) //...
+\endcode
 */
 
 
