@@ -12,6 +12,7 @@ check_PROGRAMS = \
   http-server-thr \
   https-server \
   http-client \
+  http-client-get-file \
   http-client-i \
   https-client \
   https-client-i
@@ -45,6 +46,9 @@ https_server_LDADD = ../libiqxmlrpc/libiqxmlrpc-server.la
 
 http_client_SOURCES = client_general.h http_client.cc
 http_client_LDADD = ../libiqxmlrpc/libiqxmlrpc-client.la
+
+http_client_get_file_SOURCES = http_client_get_file.cc
+http_client_get_file_LDADD = ../libiqxmlrpc/libiqxmlrpc-client.la
 
 http_client_i_SOURCES = client_general.h http_client_i.cc
 http_client_i_LDADD = ../libiqxmlrpc/libiqxmlrpc-client.la

@@ -25,6 +25,7 @@ int main()
   try {
     server = new Server( 3344, new Serial_executor_fabric );
     server->register_method<Get_weather>( "get_weather" );
+    server->register_method<Get_file>( "get_file" );
     server->log_errors( &std::cerr );
     server->work<Http_server_connection>();
   }
