@@ -21,8 +21,6 @@ XML-RPC (http://www.xmlrpc.com) standard assumes following data types to use.
   - array
   - struct
 
-\todo Datetime is not supported in libiqxmlrpc yet.
-
 Library maps each XML-RPC type into a stand-alone class. Here is a piece of 
 code which declares libiqxmlrpc data type classes (value_type.h):
 
