@@ -16,6 +16,7 @@ namespace ssl
   extern Ctx* ctx;
 
   class exception;
+  class not_initialized;
   class io_error;
   class need_write;
   class need_read;
@@ -31,12 +32,17 @@ class ssl::Ctx {
   SSL_CTX* ctx;
   
 public:
-  Ctx( const std::string& cert_path, const std::string& key_path );
+  static Ctx* server_ctx( const std::string& cert_path, const std::string& key_path );
+  static Ctx* client_ctx();
+
   ~Ctx();
 
   SSL_CTX* context() { return ctx; }
   
 private:
+  Ctx( const std::string& cert_path, const std::string& key_path );
+  Ctx();
+
   void init_library();
 };
 
@@ -49,10 +55,18 @@ class ssl::exception: public std::exception {
 public:
   exception() throw();
   explicit exception( unsigned long ssl_err ) throw();
+  exception( const std::string& msg ) throw();
   virtual ~exception() throw() {}
 
   const char*   what() const throw() { return msg.c_str(); }
   unsigned long code() const throw() { return ssl_err; }
+};
+
+
+class ssl::not_initialized: public ssl::exception {
+public:
+  not_initialized():
+    exception( "Libiqnet::ssl not initialized." ) {}
 };
 
 

@@ -13,11 +13,23 @@ iqnet::ssl::Ctx* iqnet::ssl::ctx = 0;
 bool Ctx::initialized = false;
 
 
+Ctx* Ctx::server_ctx( const std::string& cert_path, const std::string& key_path )
+{
+  return new Ctx( cert_path, key_path );
+}
+
+
+Ctx* Ctx::client_ctx()
+{
+  return new Ctx;
+}
+
+
 Ctx::Ctx( const std::string& cert_path, const std::string& key_path )
 {
   init_library();
   
-  SSL_METHOD *meth = SSLv2_server_method();
+  SSL_METHOD *meth = SSLv23_server_method();
   ctx = SSL_CTX_new( meth );
   
   if( 
@@ -26,6 +38,15 @@ Ctx::Ctx( const std::string& cert_path, const std::string& key_path )
     !SSL_CTX_check_private_key( ctx ) 
   )
     throw exception();
+}
+
+
+Ctx::Ctx()
+{
+  init_library();
+  
+  SSL_METHOD *meth = SSLv23_client_method();
+  ctx = SSL_CTX_new( meth );
 }
 
 
@@ -56,6 +77,13 @@ exception::exception() throw():
 exception::exception( unsigned long err ) throw():
   ssl_err(err),
   msg( ERR_reason_error_string(ssl_err) )
+{
+}
+
+
+exception::exception( const std::string& msg_ ) throw():
+  ssl_err(0),
+  msg( msg_ )
 {
 }
 
