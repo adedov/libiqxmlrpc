@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.17 2004-10-20 09:30:23 adedov Exp $
+//  $Id: value_type.cc,v 1.18 2004-11-02 16:59:08 adedov Exp $
 
 #include <string.h>
 #include <algorithm>
@@ -135,42 +135,6 @@ void Array::to_xml( xmlpp::Node* p ) const
 }
 
 
-const Value& Array::operator []( unsigned i ) const
-{
-  try {
-    return (*values.at(i));
-  }
-  catch( const std::out_of_range& )
-  {
-    throw Out_of_range();
-  }
-}
-
-
-Value& Array::operator []( unsigned i )
-{
-  try {
-    return (*values.at(i));
-  }
-  catch( const std::out_of_range& )
-  {
-    throw Out_of_range();
-  }
-}
-
-
-void Array::push_back( Value* val )
-{
-  values.push_back( val );
-}
-
-
-void Array::push_back( const Value& val )
-{
-  values.push_back( new Value(val) );
-}
-
-
 void Array::clear()
 {
   for( iterator i = values.begin(); i != values.end(); ++i )
@@ -181,15 +145,19 @@ void Array::clear()
 }
 
 
-Array::const_iterator Array::begin() const
-{
-  return const_iterator(values.begin());
+// This member placed here because of mutual dependence of 
+// value_type.h and value.h
+void Array::push_back( Value* v )
+{ 
+  values.push_back(v); 
 }
 
 
-Array::const_iterator Array::end() const
-{
-  return const_iterator(values.end());
+// This member placed here because of mutual dependence of 
+// value_type.h and value.h
+void Array::push_back( const Value& v ) 
+{ 
+  values.push_back(new Value(v)); 
 }
 
 
