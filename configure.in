@@ -1,5 +1,5 @@
 AC_INIT( libiqxmlrpc/value.h )
-AM_INIT_AUTOMAKE( libiqxmlrpc, 0.4 )
+AM_INIT_AUTOMAKE( libiqxmlrpc, 0.4.1 )
 AM_CONFIG_HEADER( config.h )
 
 LIBIQXMLRPC_VERSION=0:0:0
@@ -20,6 +20,8 @@ AC_SUBST(LIBIQXMLRPC_VERSION)
 
 
 dnl Checks for programs.
+#CXX=/usr/local/bin/g++
+
 AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_CC
@@ -30,7 +32,7 @@ AC_LANG_CPLUSPLUS
 AC_PROG_LIBTOOL
 
 INCLUDES='-I${top_srcdir}'
-CXXFLAGS="-O2"
+CXXFLAGS="-O2 -Wall"
 
 AC_ARG_ENABLE( debug,
   [  --enable-debug   enables adding debug info into binaries],
