@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: inet_addr.h,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: inet_addr.h,v 1.2 2004-04-27 07:18:03 adedov Exp $
 
 #ifndef _libiqnet_inet_addr_h_
 #define _libiqnet_inet_addr_h_
@@ -23,7 +23,7 @@
 #include <string>
 #include "sysinc.h"
 
-//! Library's global namespace
+//! Object-oriented networking/multithreading infrastructure.
 namespace iqnet 
 {
   class Inet_addr;
