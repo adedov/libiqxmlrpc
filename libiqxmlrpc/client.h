@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.11 2004-08-17 03:57:28 adedov Exp $
+//  $Id: client.h,v 1.12 2004-10-04 23:31:35 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -71,7 +71,7 @@ protected:
 class iqxmlrpc::Client_base {
 public:
   virtual ~Client_base() {}
-
+ 
   //! Pure abstract execute() method
   virtual Response execute( const std::string&, const Param_list& ) = 0;
 };
@@ -81,10 +81,11 @@ public:
 template < class Transport >
 class iqxmlrpc::Client: public iqxmlrpc::Client_base {
   iqnet::Inet_addr addr;
-  std::string uri;
-  std::string vhost;
+  std::string      uri;
+  std::string      vhost;
   iqnet::Connector<Transport> ctr;
-  int timeout;
+
+  int  timeout;
   bool non_blocking_flag;
 
 public:
