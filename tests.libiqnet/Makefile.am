@@ -1,6 +1,5 @@
 LDADD = ../libiqnet/libiqnet.la
-#LDFLAGS = -g
-#CXXFLAGS = -g
+EXTRA_DIST = data
 
 check_PROGRAMS = st-server ssl-st-server client ssl-client
 
