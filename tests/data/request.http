@@ -1,4 +1,4 @@
-PUT /RPC2 HTTP/1.0
+POST /RPC2 HTTP/1.0
 User-Agent: Test Suite
 Host: exabiche.prgn.ru
 Content-type: text/xml
