@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.7 2004-08-11 05:53:15 adedov Exp $
+//  $Id: reactor.cc,v 1.8 2004-08-17 04:25:47 adedov Exp $
 
 #include <vector>
 #include <list>
@@ -119,8 +119,8 @@ private:
   void prepare_user_events();
   void prepare_system_events();
   void invoke_event_handler( Handler& );
-  void invoke_servers_handler( Handler&, bool& );
   void invoke_clients_handler( Handler&, bool& );
+  void invoke_servers_handler( Handler&, bool& );
   void handle_user_events();
   bool handle_system_events( Reactor::Timeout );
 };
@@ -234,22 +234,31 @@ void Reactor::Reactor_impl::prepare_system_events()
 }
 
 
-inline 
-void Reactor::Reactor_impl::invoke_servers_handler( Handler& h, bool& terminate )
+inline
+void Reactor::Reactor_impl::invoke_clients_handler( Handler& h, bool& terminate )
 {
   bool in  = h.revents & POLLIN;
   bool out = h.revents & POLLOUT || h.revents & POLLPRI;
-  bool err = h.revents & POLLHUP || h.revents & POLLERR || h.revents & POLLNVAL;
+  bool err = h.revents & POLLERR;
+  bool hup = h.revents & POLLHUP;
   
+  if( in && out )
+    h.handler->handle_io( terminate );
+  else if( in )
+    h.handler->handle_input( terminate );
+  else if( out )
+    h.handler->handle_output( terminate );
+  else if( err )
+    h.handler->handle_error( terminate );
+  else if( hup )
+    terminate = true;
+}
+
+
+void Reactor::Reactor_impl::invoke_servers_handler( Handler& h, bool& terminate )
+{
   try {
-    if( in && out )
-      h.handler->handle_io( terminate );
-    else if( in )
-      h.handler->handle_input( terminate );
-    else if( out )
-      h.handler->handle_output( terminate );
-    else if( err )
-      terminate = true;
+    invoke_clients_handler( h, terminate );
   }
   catch( const std::exception& e )
   {
@@ -261,24 +270,6 @@ void Reactor::Reactor_impl::invoke_servers_handler( Handler& h, bool& terminate 
     h.handler->log_unknown_exception();
     terminate = true;
   }
-}
-
-
-inline
-void Reactor::Reactor_impl::invoke_clients_handler( Handler& h, bool& terminate )
-{
-  bool in  = h.revents & POLLIN;
-  bool out = h.revents & POLLOUT || h.revents & POLLPRI;
-  bool err = h.revents & POLLHUP || h.revents & POLLERR || h.revents & POLLNVAL;
-  
-  if( in && out )
-    h.handler->handle_io( terminate );
-  else if( in )
-    h.handler->handle_input( terminate );
-  else if( out )
-    h.handler->handle_output( terminate );
-  else if( err )
-    terminate = true;
 }
 
 
