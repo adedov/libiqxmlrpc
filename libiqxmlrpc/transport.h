@@ -14,6 +14,7 @@ namespace iqxmlrpc
 };
 
 
+//! Transport independent XML-RPC server.
 class iqxmlrpc::Server {
   Method_dispatcher* disp;
   Request* request;
