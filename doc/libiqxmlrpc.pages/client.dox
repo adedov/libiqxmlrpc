@@ -6,12 +6,15 @@ parameter and to call an \b execute() method each time, when remote procedure
 execution is needed.
 
 Each time the user invokes \e Client<X>::execute(), a new connection is created 
-and HTTP request/response pair is passed through the network. When server 
-response was received, client closes the connection.
+unless user has turned on keep-alive connection via iqxmlrpc::Client::set_keep_alive().
+Then HTTP request/response pair is passed through the network. When server 
+response was received, client closes the connection (by default) or leaves
+it open (in case of keep-alive connection type).
 
-Both HTTP and HTTPS clients are implemented using non-blocking sockets. It 
-allows to set a timeout on network communications (see 
-iqxmlrpc::Client::set_timeout).
+User can specify client's connection timeout via iqxmlrpc::Client::set_timeout().
+In this case client's transport would use non-blocking sockets. If no timeout
+or a negative timeout were specified then client's transport would use blocking
+sockets.
 
 Class iqxmlrpc::Client inherits iqxmlrpc::Client_base. So we can create 
 relatively transport-independent code:
