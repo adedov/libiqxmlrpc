@@ -10,11 +10,28 @@
 #include <libiqxmlrpc/method.h>
 #include <libiqxmlrpc/http.h>
 
-/*! 
+/*!
 \mainpage libiqxmlrpc Documentation
-\section about About
+
+\section guide_content Users guide
+- \ref about
+- \ref features
+
+- <b>Data representation</b>
+  - \ref value_types
+  - \ref value_usage
+
+- \ref exceptions
+
+- <b>Writing XML-RPC server</b>
+  - \ref define_methods
+  - \ref network_server
+*/
+
+/*! 
+\page about About
 This library provides Object Oriented API for 
-<a href="http://www.xmlrpc.com>XML-RPC</a>.
+<a href="http://www.xmlrpc.com>XML-RPC</a> protocol.
 
 Main goals of project is to provide:
   -# Nice object oriented design;
@@ -24,11 +41,11 @@ Main goals of project is to provide:
   -# Comfortable way to extend library's functionality.
 
 \author Anton Dedov <adedov@iqmedia.com> for IQ Media, Inc.
-
-\htmlonly
-<b>See also:</b><dd><a href="pages.html">Related Pages</a>
-\endhtmlonly
 */
 
+/*!
+\page features Features
+\todo Features documentation
+*/
 
 #endif

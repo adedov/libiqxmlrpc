@@ -81,4 +81,19 @@ public:
 };
 
 
+/*!
+\page network_server Setting up network server
+Currently library supports two types transport to run XML-RPC services on:
+- HTTP over \b non-blocking connections in a \b single \b thread.
+- HTTPS over \b blocking connections, each connection runs its \b own \b thread.
+
+\todo HTTPS Not implemented yet.
+
+Such a difference beetwen these transports has a simple explanation: 
+non-blocking networking is quite simple to implement on a application layer but
+at the same time implementing SSL over non-blocking connections is much more 
+harder then just multithreading.
+
+*/
+
 #endif

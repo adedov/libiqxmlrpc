@@ -144,7 +144,7 @@ private:
 
 
 /*!
-\page value_types Library data types
+\page value_types Data types
 XML-RPC (http://www.xmlrpc.com) standard assumes following data types to use.
 
 - \b Scalars:

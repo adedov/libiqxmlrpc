@@ -139,7 +139,7 @@ private:
 
 
 /*! 
-\page value_usage Manipuling the values
+\page value_usage Manipulating with values
 \section value_class iqxmlrpc::Value class
 Users of the library should use objects of class iqxmlrpc::Value 
 to store/transfer their values. Value objects can contain values of various 
