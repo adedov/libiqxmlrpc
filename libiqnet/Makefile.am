@@ -14,7 +14,6 @@ iqnetinc_HEADERS = \
   connector.h \
   reactor.h \
   connection.h \
-  mt.h \
   ssl_lib.h \
   ssl_connection.h
 
@@ -24,6 +23,5 @@ libiqnet_la_SOURCES = \
   connector.cc \
   reactor.cc \
   connection.cc \
-  mt.cc \
   ssl_lib.cc \
   ssl_connection.cc
