@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_client.cc,v 1.4 2004-06-07 10:21:24 adedov Exp $
+//  $Id: http_client.cc,v 1.5 2004-06-10 04:31:30 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -25,12 +25,12 @@ using namespace iqxmlrpc;
 using namespace iqnet;
 
 
-Http_client_connection::Http_client_connection( const iqnet::Socket& s ):
+Http_client_connection::Http_client_connection( const iqnet::Socket& s, bool nb ):
   Client_connection( s ),
   reactor( new iqnet::Null_lock ),
   resp_packet(0)
 {
-  sock.set_non_blocking( true );
+  sock.set_non_blocking( nb );
 }
 
 
