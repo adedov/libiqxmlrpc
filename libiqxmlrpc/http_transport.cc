@@ -65,10 +65,24 @@ void Http_reaction_connection::handle_input( bool& terminate )
 
 void Http_reaction_connection::handle_output( bool& terminate )
 {
-  send_str( response->dump() );
-  delete response;
-  response = 0;
-  terminate = true;
+  if( out_str.empty() )
+  {
+    out_str = response->dump();
+    out_ptr = 0;
+    delete response;
+    response = 0;
+  }
+
+  unsigned send_sz = out_str.length() - out_ptr;
+  int sz = send( out_str.c_str() + out_ptr, send_sz );
+
+  if( sz == send_sz )
+  {
+    terminate = true;
+    return;
+  }
+  
+  out_ptr += sz;
 }
 
 

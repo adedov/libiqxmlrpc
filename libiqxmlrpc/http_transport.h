@@ -25,6 +25,9 @@ class iqxmlrpc::Http_reaction_connection: public iqnet::Connection {
   http::Packet* response;
   http::Server* server;
 
+  std::string out_str;
+  unsigned out_ptr;
+  
   friend class Http_conn_fabric;
     
 public:
