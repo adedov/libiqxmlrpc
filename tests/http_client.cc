@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdexcept>
-#include "libiqxmlrpc/http_transport.h"
+#include "libiqxmlrpc/libiqxmlrpc.h"
 #include "client_general.h"
 
 int main()

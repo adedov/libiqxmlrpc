@@ -1,6 +1,5 @@
 #include <signal.h>
-#include "libiqxmlrpc/server.h"
-#include "libiqxmlrpc/http_transport.h"
+#include "libiqxmlrpc/libiqxmlrpc.h"
 #include "server_general.h"
 
 using namespace iqnet;
