@@ -47,7 +47,8 @@ pkginclude_HEADERS = \
   http_server.h \
   https_client.h \
   https_server.h \
-  utf_conv.h
+  utf_conv.h \
+  util.h
 
 #  xml_util.h
 

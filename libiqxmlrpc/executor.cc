@@ -15,12 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.6 2005-03-23 18:26:00 bada Exp $
+//  $Id: executor.cc,v 1.7 2005-03-29 16:30:58 bada Exp $
 
 #include "executor.h"
 #include "except.h"
 #include "response.h"
 #include "server.h"
+#include "util.h"
 
 using namespace iqxmlrpc;
 
@@ -103,18 +104,6 @@ void Pool_executor_factory::Pool_thread::do_run()
 
 
 // ----------------------------------------------------------------------------
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-template < class T >
-class Deleter: public std::unary_function<T, void> {
-public:
-  void operator ()( T* t )
-  {
-    delete t;
-  }
-};
-#endif
-
-
 Pool_executor_factory::Pool_executor_factory( unsigned pool_size )
 {
   pool.reserve( pool_size );
@@ -125,12 +114,9 @@ Pool_executor_factory::Pool_executor_factory( unsigned pool_size )
 
 Pool_executor_factory::~Pool_executor_factory()
 {
-  std::for_each( pool.begin(), pool.end(), 
-                 Deleter<Pool_executor_factory::Pool_thread>() );
-
+  util::delete_ptrs(pool.begin(), pool.end());
   req_queue_cond.acquire_lock();
-
-  std::for_each( req_queue.begin(), req_queue.end(), Deleter<Executor>() );
+  util::delete_ptrs(req_queue.begin(), req_queue.end());
 }
 
 

@@ -1,4 +1,4 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
 //  
 //  This library is free software; you can redistribute it and/or
@@ -15,36 +15,46 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.cc,v 1.8 2005-03-29 16:30:58 bada Exp $
+//  $Id: util.h,v 1.1 2005-03-29 16:30:59 bada Exp $
 
-#include <algorithm>
-#include "method.h"
-#include "util.h"
+#ifndef _iqxmlrpc_util_h_
+#define _iqxmlrpc_util_h_
 
-using namespace iqxmlrpc;
+#include <functional>
 
-Method_dispatcher::~Method_dispatcher()
+namespace iqxmlrpc
 {
-  util::delete_ptrs( fs.begin(), fs.end(), 
-    util::Select2nd<Factory_map>());
+
+//! Utility stuff
+namespace util
+{
+
+template <class M>
+class Select2nd: 
+  public std::unary_function<typename M::value_type, typename M::mapped_type> 
+{
+public:
+  typename M::mapped_type operator ()(typename M::value_type& i)
+  {
+    return i.second;
+  }
+};
+
+template <class Iter>
+void delete_ptrs(Iter first, Iter last)
+{
+  for(; first != last; ++first)
+    delete *first;
 }
 
-
-void Method_dispatcher::register_method
-  ( const std::string& name, Method_factory_base* fb )
+template <class Iter, class AccessOp>
+void delete_ptrs(Iter first, Iter last, AccessOp op)
 {
-  fs[name] = fb;
+  for(; first != last; ++first)
+    delete op(*first);
 }
 
+} // namespace util
+} // namespace iqxmlrpc
 
-Method* Method_dispatcher::create_method( 
-  const std::string& name, const iqnet::Inet_addr& addr )
-{
-  if( fs.find(name) == fs.end() )
-    throw Unknown_method( name );
-
-  Method* m = fs[name]->create();
-  m->name_ = name;
-  m->peer_addr_ = addr;
-  return m;
-}
+#endif

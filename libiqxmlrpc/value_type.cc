@@ -15,13 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.19 2005-03-23 18:24:27 bada Exp $
+//  $Id: value_type.cc,v 1.20 2005-03-29 16:30:59 bada Exp $
 
 #include <string.h>
 #include <algorithm>
 #include "value_type.h"
 #include "value.h"
 #include "utf_conv.h"
+#include "util.h"
 
 using namespace iqxmlrpc;
 
@@ -138,8 +139,7 @@ void Array::to_xml( xmlpp::Node* p ) const
 
 void Array::clear()
 {
-  for( iterator i = values.begin(); i != values.end(); ++i )
-    delete *i;
+  util::delete_ptrs(values.begin(), values.end());
   
   // Clear and free memory
   std::vector<Value*>().swap( values );
@@ -259,8 +259,8 @@ Value& Struct::operator []( const std::string& f )
 
 void Struct::clear()
 {
-  for( iterator i = values.begin(); i != values.end(); ++i )
-    delete i->second;
+  util::delete_ptrs(values.begin(), values.end(), 
+    util::Select2nd<Value_stor>());
   
   values.clear();
 }
