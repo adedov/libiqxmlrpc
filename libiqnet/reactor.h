@@ -8,6 +8,7 @@ namespace iqnet
 };
 
 
+//! Base class for event-driven communication classes.
 class iqnet::Event_handler {
 public:
   virtual ~Event_handler() {}
@@ -31,6 +32,10 @@ public:
 };
 
 
+//! Reactor class. 
+/*! Invokes appropriate Event_handler's methods when the event, 
+    for which they were registered, has been happen.
+*/
 class iqnet::Reactor {
 public:
   enum Event_mask { INPUT=1, OUTPUT=2 };

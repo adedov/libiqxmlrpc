@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <string>
 
+//! Library's global namespace
 namespace iqnet 
 {
   class Inet_addr;
