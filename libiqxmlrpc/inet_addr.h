@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: inet_addr.h,v 1.3 2004-05-17 08:43:02 adedov Exp $
+//  $Id: inet_addr.h,v 1.4 2004-10-22 07:47:20 adedov Exp $
 
 #ifndef _libiqnet_inet_addr_h_
 #define _libiqnet_inet_addr_h_
@@ -45,7 +45,7 @@ public:
   Inet_addr() {}
   
   Inet_addr( const struct sockaddr_in& );
-  Inet_addr( const std::string& host, int port );
+  Inet_addr( const std::string& host, int port = 0 );
   Inet_addr( int port );
 
   virtual ~Inet_addr() {}
