@@ -1,5 +1,5 @@
-#ifndef _iqxmlrpc_server_h_
-#define _iqxmlrpc_server_h_
+#ifndef _iqxmlrpc_method_h_
+#define _iqxmlrpc_method_h_
 
 #include <string>
 #include <map>

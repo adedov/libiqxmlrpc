@@ -1,4 +1,4 @@
-#include <libiqxmlrpc/server.h>
+#include <libiqxmlrpc/method.h>
 
 using namespace iqxmlrpc;
 

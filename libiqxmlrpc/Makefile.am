@@ -9,7 +9,7 @@ pkginclude_HEADERS = \
   value_type.h \
   value.h \
   response.h \
-  server.h
+  method.h
 
 libiqxmlrpc_la_SOURCES = \
   except.cc \
@@ -19,4 +19,4 @@ libiqxmlrpc_la_SOURCES = \
   parser_specific.h	parser_specific.cc \
   request.h		request.cc \
   response.cc \
-  server.cc
+  method.cc
