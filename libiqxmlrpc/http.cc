@@ -181,12 +181,9 @@ void Header::read_eol( std::istringstream& ss )
 
 std::string Header::read_option_content( std::istringstream& ss )
 {
-  char c = ' ';
-  for( ; ss && (c == ' ' || c == '\t'); c = ss.get() );
+  for( ; ss && (ss.peek() == ' ' || ss.peek() == '\t'); ss.get() )
   
-  if( ss )
-    ss.putback(c);
-  else
+  if( !ss )
     throw Bad_request();
   
   std::string option;
@@ -292,7 +289,7 @@ Request_header::~Request_header()
 
 std::string Request_header::dump() const
 {
-  return "PUT " + uri() + " " + version() + "\r\n" + Header::dump();
+  return "POST " + uri() + " " + version() + "\r\n" + Header::dump();
 }
 
 
@@ -509,7 +506,7 @@ void Server::read_header( const std::string& s )
   if( i == std::string::npos )
     return;
   
-  std::istringstream ss( s );
+  std::istringstream ss( header_cache );
   header = new Request_header( ss );
   
   for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
