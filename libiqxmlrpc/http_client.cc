@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_client.cc,v 1.6 2004-07-23 08:50:22 adedov Exp $
+//  $Id: http_client.cc,v 1.7 2004-10-26 04:12:03 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -69,8 +69,11 @@ void Http_client_connection::handle_input( bool& )
   for( unsigned sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
   {
     read_buf[0] = 0;
-    sz = recv( read_buf, read_buf_sz );
-    resp_packet = read_response( sz ? std::string(read_buf, sz) : "" );
+    
+    if( !(sz = recv( read_buf, read_buf_sz )) )
+      throw iqnet::network_error( "Http_client_connection::handle_input" );
+    
+    resp_packet = read_response( std::string(read_buf, sz) );
   }
   
   if( resp_packet )
