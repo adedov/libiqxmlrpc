@@ -1,5 +1,10 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.5.4 - 0.5.5
+  * Fix uninitialized Client::non_blocking_flag.
+  * Improve treatment of socket related errors.
+  * Minor clean ups.
+
 0.5.3 - 0.5.4
   Implemented copy constructors and = operators for Array and Struct
 	calsses.
