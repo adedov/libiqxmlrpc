@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.13 2004-09-19 17:45:14 adedov Exp $
+//  $Id: server.cc,v 1.14 2004-10-04 23:32:17 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -156,7 +156,7 @@ void Server::schedule_response(
   std::auto_ptr<Executor> executor_to_delete(exec);
 
   std::auto_ptr<xmlpp::Document> xmldoc( resp.to_xml() );
-  std::string resp_str = xmldoc->write_to_string_formatted();
+  std::string resp_str = xmldoc->write_to_string_formatted( "utf-8" );
   
   http::Packet *packet = new http::Packet( new http::Response_header(), resp_str );
   conn->schedule_response( packet );
