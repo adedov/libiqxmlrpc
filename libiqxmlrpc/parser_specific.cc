@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser_specific.cc,v 1.7 2004-09-19 17:33:47 adedov Exp $
+//  $Id: parser_specific.cc,v 1.8 2004-10-04 23:38:31 adedov Exp $
 
 #include <iostream>
 #include <sstream>
@@ -23,6 +23,7 @@
 #include "value_type.h"
 #include "value.h"
 #include "except.h"
+#include "utf_conv.h"
 
 using namespace xmlpp;
 using namespace iqxmlrpc;
@@ -68,7 +69,10 @@ Value_type* String_parser::parse_value( const Node* node ) const
   const TextNode *text = el->get_child_text();
   
   if( text )
-    return new String( text->get_content() );
+  {
+    using iqxmlrpc::config::cs_conv;
+    return new String( cs_conv->from_utf(text->get_content()) );
+  }
   else
     return new String( std::string() );
 }
