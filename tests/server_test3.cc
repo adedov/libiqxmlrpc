@@ -37,7 +37,7 @@ void Get_weather::execute(
 
 // ---------------------------------------------------
 class Server_connection: public Connection, private http::Server {
-  http::Packet *response;
+  http::Packet* response;
   
 public:
   Server_connection( int fd, const iqnet::Inet_addr& addr ):
@@ -57,14 +57,22 @@ public:
 
 
 void Server_connection::handle_input( bool& )
-{
-  char buf[256];
-  int n = recv( buf, sizeof(buf) );
-  
-  if( !read_request( std::string(buf, n) ) )
-    return;
-  
-  response = execute();
+{ 
+  try {
+    char buf[256];
+    int n = recv( buf, sizeof(buf) );
+    
+    if( !read_request( std::string(buf, n) ) )
+      return;
+    
+    response = execute();
+  }
+  catch( const http::Error_response& e )
+  {
+    delete response;
+    response = new http::Packet(e);
+  }
+
   reactor.register_handler( this, Reactor::OUTPUT );
 }
 
