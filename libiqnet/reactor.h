@@ -25,7 +25,7 @@ public:
   
   //! Invoked by Reactor when handle_X() 
   //! sets terminate variable to true.
-  virtual void finish() = 0;
+  virtual void finish() {};
   
   virtual int get_fd() const = 0;
 };
