@@ -1,7 +1,7 @@
 LDFLAGS += -version-info @LIBIQXMLRPC_VERSION@
 
 noinst_LTLIBRARIES = libiqxmlrpc-general.la
-libiqxmlrpc_general_la_LIBADD = @LIBXMLPP@ @OPENSSL@
+libiqxmlrpc_general_la_LIBADD = ${LIBXMLPP_LIBS} ${OPENSSL_LIBS}
 
 lib_LTLIBRARIES = libiqxmlrpc-client.la libiqxmlrpc-server.la libiqxmlrpc.la
 
