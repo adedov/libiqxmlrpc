@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.cc,v 1.3 2004-10-15 09:42:55 adedov Exp $
+//  $Id: acceptor.cc,v 1.4 2004-10-25 04:32:43 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -72,7 +72,8 @@ void Acceptor::accept()
   {
     if( !firewall->grant( new_sock.get_peer_addr() ) )
     {
-      // new_sock.shutdown();
+      // Just close socket. 
+      // So client should receive "connection reset by peer" message.
       new_sock.close();
       return;
     }
