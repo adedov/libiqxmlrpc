@@ -25,6 +25,9 @@ See an entire example text \ref https_server_ex
 There is global variable iqnet::ssl::ctx in underlying network library,
 it must be initialized with appropriate iqnet::ssl::Ctx object (server-only 
 orientedc ontext in our case).
+
+\note You also may want to ignore \b SIGPIPE signal. HTTPS-related code of
+library can cause a signal invocation.
 */
 
 
