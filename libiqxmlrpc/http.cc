@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <iostream>
 #include <functional>
+#include <memory>
 #include <libiqxmlrpc/http.h>
 #include <libiqxmlrpc/method.h>
 
@@ -561,9 +562,8 @@ bool Server::read_request( const std::string& s )
 Packet* Server::execute()
 {
   iqxmlrpc::Response resp( iqxmlrpc::Server::execute(packet->content()) );
-  xmlpp::Document* xmldoc = resp.to_xml();
+  std::auto_ptr<xmlpp::Document> xmldoc( resp.to_xml() );
   std::string resp_str = xmldoc->write_to_string_formatted();
-  delete xmldoc;
   
   return new Packet( new Response_header(), resp_str );
 }
@@ -588,18 +588,24 @@ Client::~Client()
 
 std::string Client::do_execute( const Request& req )
 {
-  Request_header* req_h = new Request_header( uri_, host_ );
-  Packet req_p( req_h, req.to_xml()->write_to_string_formatted() );
+  std::auto_ptr<xmlpp::Document> xmldoc( req.to_xml() );
+  std::string req_xml_str( xmldoc->write_to_string_formatted() );
+  Packet req_p( new Request_header( uri_, host_ ), req_xml_str );
+
   send_request( req_p );
   recv_response();
   
+  // Received packet
+  std::auto_ptr<Packet> p( packet );
+  packet = 0;
+  
   const Response_header* res_h = 
-    static_cast<const Response_header*>(packet->header());
+    static_cast<const Response_header*>(p->header());
   
   if( res_h->code() != 200 )
     throw Error_response( res_h->phrase(), res_h->code() );
 
-  return packet->content();
+  return p->content();
 }
 
 
