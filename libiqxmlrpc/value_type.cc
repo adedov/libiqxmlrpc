@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.16 2004-10-19 07:28:42 adedov Exp $
+//  $Id: value_type.cc,v 1.17 2004-10-20 09:30:23 adedov Exp $
 
 #include <string.h>
 #include <algorithm>
@@ -76,13 +76,13 @@ void iqxmlrpc::String::to_xml( xmlpp::Node* p ) const
 
 // --------------------------------------------------------------------------
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-class Array::Array_inserter: public std::unary_function<Value*,void> {
+class Array::Array_inserter: public std::unary_function<Value,void> {
   Array::Val_vector* vv;
   
 public:
   Array_inserter( Array::Val_vector* v ): vv(v) {}
     
-  void operator ()( Value* v )
+  void operator ()( const Value& v )
   {
     vv->push_back( new Value(v) );
   }
@@ -92,8 +92,7 @@ public:
 
 Array::Array( const Array& other )
 {
-  std::for_each( other.values.begin(), other.values.end(), 
-    Array_inserter(&values) );
+  std::for_each( other.begin(), other.end(), Array_inserter(&values) );
 }
 
 
@@ -103,8 +102,7 @@ Array& Array::operator =( const Array& other )
     return *this;
   
   clear();
-  std::for_each( other.values.begin(), other.values.end(), 
-    Array_inserter(&values) );
+  std::for_each( other.begin(), other.end(), Array_inserter(&values) );
   
   return *this;
 }
