@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.24 2005-03-23 18:24:27 bada Exp $
+//  $Id: value_type.h,v 1.25 2005-04-03 09:29:43 bada Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -159,12 +159,13 @@ public:
   
   void clear();
   
+  //! Clears array and assigns from specified container's interval.
   template <class In>
   void assign( In first, In last )
   {
     clear();
-    for( In i = first; i != last; ++i )
-      values.push_back( new Value(*i) );
+    for( ; first != last; ++first )
+      values.push_back( new Value(*first) );
   }
 
   Array::const_iterator begin() const;
