@@ -1,7 +1,15 @@
-lib_LTLIBRARIES = libiqxmlrpc.la
+LDFLAGS += -version-info @LIBIQXMLRPC_VERSION@
 
-libiqxmlrpc_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
-libiqxmlrpc_la_LIBADD =  @LIBXMLPP@ @OPENSSL@
+noinst_LTLIBRARIES = libiqxmlrpc-general.la
+libiqxmlrpc_general_la_LIBADD = @LIBXMLPP@ @OPENSSL@
+
+lib_LTLIBRARIES = libiqxmlrpc-client.la libiqxmlrpc-server.la libiqxmlrpc.la
+
+libiqxmlrpc_client_la_LIBADD = libiqxmlrpc-general.la
+libiqxmlrpc_server_la_LIBADD = libiqxmlrpc-general.la
+
+libiqxmlrpc_la_SOURCES = libiqxmlrpc.h
+libiqxmlrpc_la_LIBADD = libiqxmlrpc-general.la libiqxmlrpc-client.la libiqxmlrpc-server.la
 
 pkginclude_HEADERS = \
   libiqxmlrpc.h \
@@ -40,16 +48,13 @@ pkginclude_HEADERS = \
 #  xml_util.h
 
 
-libiqxmlrpc_la_SOURCES = \
+libiqxmlrpc_general_la_SOURCES = \
   inet_addr.cc \
   net_except.cc \
   socket.cc \
   acceptor.cc \
   reactor.cc \
   connection.cc \
-  mt_synch.cc \
-  thread.cc \
-  sigsock.cc \
   ssl_lib.cc \
   ssl_connection.cc \
   except.cc \
@@ -59,15 +64,22 @@ libiqxmlrpc_la_SOURCES = \
   parser_specific.cc \
   request.cc \
   response.cc \
-  http.cc \
+  http.cc
+
+libiqxmlrpc_client_la_SOURCES = \
   http_client.cc \
-  http_server.cc \
   https_client.cc \
+  client.cc
+  
+libiqxmlrpc_server_la_SOURCES = \
+  mt_synch.cc \
+  thread.cc \
+  sigsock.cc \
+  http_server.cc \
   https_server.cc \
   method.cc \
   executor.cc \
-  server.cc \
-  client.cc
+  server.cc
 
 #  xml_util.cc
 
