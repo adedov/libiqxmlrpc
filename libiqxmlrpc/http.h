@@ -6,7 +6,7 @@
 #include <map>
 #include <list>
 #include <libiqxmlrpc/except.h>
-#include <libiqxmlrpc/transport.h>
+#include <libiqxmlrpc/null_transport.h>
 
 
 namespace iqxmlrpc

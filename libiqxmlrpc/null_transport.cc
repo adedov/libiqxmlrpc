@@ -1,5 +1,5 @@
 #include <libxml++/libxml++.h>
-#include <libiqxmlrpc/transport.h>
+#include <libiqxmlrpc/null_transport.h>
 #include <libiqxmlrpc/method.h>
 
 using namespace iqxmlrpc;

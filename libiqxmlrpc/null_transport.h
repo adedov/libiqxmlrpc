@@ -1,5 +1,5 @@
-#ifndef _libiqxmlrpc_transport_h_
-#define _libiqxmlrpc_transport_h_
+#ifndef _libiqxmlrpc_null_transport_h_
+#define _libiqxmlrpc_null_transport_h_
 
 #include <string>
 #include <libiqxmlrpc/request.h>
