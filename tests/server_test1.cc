@@ -1,6 +1,6 @@
 #include <iostream>
 #include <libiqxmlrpc/except.h>
-#include <libiqxmlrpc/server.h>
+#include <libiqxmlrpc/method.h>
 #include <libiqxmlrpc/request.h>
 #include <libiqxmlrpc/response.h>
 
