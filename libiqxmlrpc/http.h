@@ -56,7 +56,9 @@ private:
 public:
   Header();
   virtual ~Header();
-   
+
+  virtual Header* clone() const { return new Header(*this); }
+  
   const std::string& version()        const { return version_; }
   unsigned           content_length() const { return content_length_; }
   
@@ -108,6 +110,8 @@ public:
 
   ~Request_header();
 
+  Request_header* clone() const { return new Request_header(*this); }
+
   const std::string& uri()   const { return uri_; }
   const std::string& host()  const { return host_; }
   const std::string& agent() const { return user_agent_; }
@@ -135,6 +139,8 @@ public:
 
   ~Response_header();
 
+  Response_header* clone() const { return new Response_header(*this); }
+
   int                code()   const { return code_; }
   const std::string& phrase() const { return phrase_; }
   const std::string& server() const { return server_; }
@@ -156,8 +162,11 @@ protected:
   std::string content_;
   
 public:
+  Packet( const Packet& );
   Packet( http::Header* header, const std::string& content );
   virtual ~Packet();
+
+  Packet& operator =( const Packet& );
 
   const http::Header* header()  const { return header_; }
   const std::string&  content() const { return content_; }
@@ -165,7 +174,7 @@ public:
   virtual std::string dump() const
   {
     return header_->dump() + content_;
-  }
+  }  
 };
 
 

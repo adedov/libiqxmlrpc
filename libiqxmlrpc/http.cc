@@ -418,9 +418,26 @@ Packet::Packet( Header* h, const std::string& co ):
 }
 
 
+Packet::Packet( const Packet& p ):
+  header_(p.header_->clone()),
+  content_(p.content_)
+{
+}
+
+
 Packet::~Packet() 
 {
   delete header_;
+}
+
+
+Packet& Packet::operator =( const Packet& p )
+{
+  delete header_;
+  header_  = p.header_->clone();
+  content_ = p.content_;
+  
+  return *this;
 }
 
   
