@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.6 2004-07-20 05:41:20 adedov Exp $
+//  $Id: reactor.cc,v 1.7 2004-08-11 05:53:15 adedov Exp $
 
 #include <vector>
 #include <list>
@@ -314,6 +314,9 @@ void Reactor::Reactor_impl::handle_user_events()
   
 bool Reactor::Reactor_impl::handle_system_events( Reactor::Timeout to_ms )
 {
+  if( begin() == end() )
+    return true;
+  
   prepare_system_events();
   unsigned hsz = size();
   int code = 0;
