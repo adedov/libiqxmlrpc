@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.3 2004-04-21 06:14:00 adedov Exp $
+//  $Id: client.h,v 1.4 2004-04-21 09:54:09 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -63,6 +63,8 @@ protected:
 class iqxmlrpc::Client_base {
 public:
   virtual ~Client_base() {}
+
+  //! Pure abstract execute() method
   virtual Response execute( const std::string&, const Param_list& ) = 0;
 };
 
@@ -76,6 +78,7 @@ class iqxmlrpc::Client: public iqxmlrpc::Client_base {
   iqnet::Connector<Transport> ctr;
   
 public:
+  //! Construct the client
   /*! \param addr_ Actual server address;
       \param uri_  Requested URI (default "/RPC");
       \param host_ Requested virtual host (default "")
@@ -92,8 +95,11 @@ public:
   {
   }
   
-  //! Perform Remote Procedure Call.
+  //! Perform Remote Procedure Call
   Response execute( const std::string& method_name, const Param_list& pl );
+  
+  //! Perform Remote Procedure Call with only one parameter transfered
+  Response execute( const std::string& method, const Value& val );
 };
 
 
@@ -104,6 +110,16 @@ iqxmlrpc::Response iqxmlrpc::Client<T>::execute(
   Request req( method, pl );
   std::auto_ptr<T> conn( ctr.connect() );
   return conn->process_session( req, uri, vhost );
+}
+
+
+template <class T>
+iqxmlrpc::Response iqxmlrpc::Client<T>::execute( 
+  const std::string& method, const Value& val )
+{
+  Param_list pl;
+  pl.push_back( val );
+  return execute( method, pl );
 }
 
 #endif
