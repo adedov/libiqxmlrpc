@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.13 2004-07-22 10:12:41 adedov Exp $
+//  $Id: server.h,v 1.14 2004-09-19 17:47:26 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -28,6 +28,7 @@
 #include "executor.h"
 #include "method.h"
 #include "http.h"
+#include "builtins.h"
 
 namespace iqxmlrpc
 {
@@ -103,31 +104,36 @@ protected:
   unsigned max_req_sz;
 
 public:
-  //! Construct a server.
   /*! \param port Port to accept connections on.
       \param executor_fabric Executor fabric to use to create needed Executor.
   */
   Server( int port, Executor_fabric_base* executor_fabric );
   virtual ~Server();
 
-  //! \group Users interface
-  //! \{
-  //! Ask server to exit from work() event handle loop.
-  void set_exit_flag() { exit_flag = true; }
-  
+  //! \name Server configuration methods
+  /*! \{ */
   //! Register specific method class with server.
-  template <class Method_class> void register_method( const std::string& name );
-  
-  //! Process accepting connections and methods dispatching.
-  template <class Transport> void work();
+  template <class Method_class> 
+  void register_method( const std::string& name );
+
+  void enable_introspection();
 
   //! Set stream to log errors. Transfer NULL to turn loggin off.
   void log_errors( std::ostream* );
-  
+
   //! Set maximum size of incoming client's request in bytes.
   void set_max_request_sz( unsigned );
-  //! \}
+  /*! \} */
 
+  //! \name Run/stop server
+  /*! \{ */
+  //! Process accepting connections and methods dispatching.
+  template <class Transport> void work();
+
+  //! Ask server to exit from work() event handle loop.
+  void set_exit_flag() { exit_flag = true; }
+  /*! \} */
+  
   iqnet::Reactor* get_reactor() { return &reactor; }
 
   void schedule_execute( http::Packet*, Server_connection* );
@@ -141,7 +147,9 @@ public:
 template <class Method_class>
 void iqxmlrpc::Server::register_method( const std::string& meth_name )
 {
+  typedef typename Method_class::Help Help;
   disp.register_method( meth_name, new Method_factory<Method_class> );
+  iqxmlrpc::Introspector::register_help_obj( meth_name, new Help );
 }
 
 
