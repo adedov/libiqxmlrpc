@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: request.cc,v 1.4 2004-04-14 08:51:39 adedov Exp $
+//  $Id: request.cc,v 1.5 2004-09-19 17:42:38 adedov Exp $
 
 #include <libxml++/libxml++.h>
 #include "request.h"
@@ -28,11 +28,17 @@ using namespace iqxmlrpc;
 
 Request* iqxmlrpc::parse_request( const std::string& request_string )
 {
-  xmlpp::DomParser parser;
-  parser.set_substitute_entities();
-  parser.parse_memory( request_string );
-
-  return new Request( parser.get_document() );
+  try {
+    xmlpp::DomParser parser;
+    parser.set_substitute_entities();
+    parser.parse_memory( request_string );
+    
+    return new Request( parser.get_document() );
+  }
+  catch( xmlpp::exception& e )
+  {
+    throw Parse_error( e.what() );
+  }
 }
 
 
@@ -93,11 +99,11 @@ xmlpp::Document* Request::to_xml() const
 inline void Request::parse( const xmlpp::Node* node )
 {
   if( node->get_name() != "methodCall" )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
   
   xmlpp::Node::NodeList nlist = Parser::instance()->elements_only( node );
   if( nlist.size() != 2 )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
 
   parse_name( nlist.front() );
   parse_params( nlist.back() );
@@ -109,15 +115,15 @@ inline void Request::parse_name( const xmlpp::Node* node )
   using namespace xmlpp;
 
   if( node->get_name() != "methodName" )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
   
   Node::NodeList childs = node->get_children();
   if( childs.size() != 1 )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
   
   const TextNode *text = dynamic_cast<const TextNode*>(childs.front());
   if( !text )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
   
   name = text->get_content();
 }
@@ -129,13 +135,13 @@ inline void Request::parse_params( const xmlpp::Node* node )
   Parser* parser = Parser::instance();
   
   if( node->get_name() != "params" )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
   
   Node::NodeList childs = parser->elements_only( node );
   for( Node::NodeList::const_iterator i=childs.begin(); i!=childs.end(); ++i )
   {
     if( (*i)->get_name() != "param" )
-      throw Parse_error::at_node(*i);
+      throw XML_RPC_violation::at_node(*i);
     
     Node* param = parser->single_element( *i );
     Value* value = parser->parse_value(param);
