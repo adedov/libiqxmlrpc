@@ -15,9 +15,17 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: libiqxmlrpc.h,v 1.9 2004-04-28 08:42:21 adedov Exp $
+//  $Id: libiqxmlrpc.h,v 1.10 2004-07-01 07:35:21 adedov Exp $
 
-/*! \file libiqxmlrpc.h */
+/*! 
+  \file libiqxmlrpc.h
+  \note You should include appropriate client or server header separately.
+  Example: 
+  \code
+    #include <libiqxmlrpc/libiqxmlrpc.h>
+    #include <libiqxmlrpc/https_client.h>
+  \endcode
+*/
 
 #ifndef _libiqxmlrpc_h_
 #define _libiqxmlrpc_h_
@@ -26,11 +34,5 @@
 #include "value.h"
 #include "response.h"
 #include "method.h"
-#include "server.h"
-#include "client.h"
-#include "http_server.h"
-#include "http_client.h"
-#include "https_server.h"
-#include "https_client.h"
 
 #endif

@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include "libiqxmlrpc/libiqxmlrpc.h"
+#include "libiqxmlrpc/http_client.h"
 #include "client_general.h"
 
 int main()
