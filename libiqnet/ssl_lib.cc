@@ -115,7 +115,10 @@ void iqnet::ssl::throw_io_exception( SSL* ssl, int ret )
       throw need_write();
     
     case SSL_ERROR_SYSCALL:
-      throw iqnet::network_error( "iqnet::ssl::throw_io_exception" );
+      if( !ret )
+        throw connection_close( false );
+      else
+        throw iqnet::network_error( "iqnet::ssl::throw_io_exception" );
     
     case SSL_ERROR_SSL:
       throw exception();

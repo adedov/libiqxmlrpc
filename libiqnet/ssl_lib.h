@@ -87,7 +87,10 @@ public:
 class iqnet::ssl::connection_close: public ssl::exception {
   bool clean;
 public:
-  connection_close( bool clean_ ): clean(clean_) {}
+  connection_close( bool clean_ ): 
+    exception( "Connection has been closed." ),
+    clean(clean_) {}
+      
   bool is_clean() const { return clean; }
 };
 
