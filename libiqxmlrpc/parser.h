@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser.h,v 1.2 2004-03-29 06:23:18 adedov Exp $
+//  $Id: parser.h,v 1.3 2004-07-27 08:14:54 adedov Exp $
 
 #ifndef _iqxmlrpc_parser_h_
 #define _iqxmlrpc_parser_h_
@@ -45,19 +45,9 @@ public:
 class iqxmlrpc::Parser {
   struct Type_desc 
   {
-    std::string   type_name;
     std::string   xmlrpc_name;
     Value_parser *parser;
     
-    template <class T> 
-    static Type_desc create( const std::string& xn, Value_parser* pr )
-    {
-      Type_desc td( xn, pr );
-      td.type_name = typeid(T).name();
-      return td;
-    }
-    
-  private:
     Type_desc( const std::string& xn, Value_parser* pr ):
       xmlrpc_name(xn), parser(pr) {}
   };
@@ -74,10 +64,9 @@ public:
   Value* parse_value( const xmlpp::Node* );
 
   //! Registers Value_parser for specified type.
-  template <class T>
   void register_parser( const std::string& xmlrpc_type_name, Value_parser* p )
   {
-    types.push_back( Type_desc::create<T>( xmlrpc_type_name, p ) );
+    types.push_back( Type_desc(xmlrpc_type_name, p) );
   }
 
   //! \name Various parsers interface
