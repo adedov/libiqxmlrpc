@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: lock.h,v 1.1 2004-04-14 07:23:09 adedov Exp $
+//  $Id: lock.h,v 1.2 2004-04-14 08:00:44 adedov Exp $
 
 #ifndef _libiqnet_lock_h_
 #define _libiqnet_lock_h_
@@ -28,6 +28,7 @@ namespace iqnet
 };
 
 
+//! Abstract synchronization class.
 class iqnet::Lock {
 public:
   virtual ~Lock() {}
@@ -37,6 +38,7 @@ public:
 };
 
 
+//! Class which provides null synchronization.
 class iqnet::Null_lock: public iqnet::Lock {
 public:
   void acquire() {}
@@ -44,15 +46,18 @@ public:
 };
 
 
+//! Auto lock/unlock.
 class iqnet::Auto_lock {
   iqnet::Lock* lock;
   
 public:
+  //! Aquire lock during the construction.
   Auto_lock( iqnet::Lock* lock_ ): lock(lock_) 
   {
     lock->acquire();
   }
   
+  //! Release lock when object is destroyed.
   ~Auto_lock()
   {
     lock->release();
