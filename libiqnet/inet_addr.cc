@@ -5,6 +5,16 @@
 using namespace iqnet;
 
 
+std::string iqnet::get_host_name()
+{
+  char buf[256];
+  bzero( buf, 256 );
+  ::gethostname( buf, 255 );
+ 
+  return buf;
+}
+
+
 Inet_addr::Inet_addr( const std::string& host_, int port_ ):
   host(host_), port(port_)
 {

@@ -10,6 +10,9 @@
 namespace iqnet 
 {
   class Inet_addr;
+  
+  //! Returns host.domain of local processor.
+  std::string get_host_name();
 };
 
 
