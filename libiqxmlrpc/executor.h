@@ -15,13 +15,18 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.h,v 1.2 2004-04-22 09:25:56 adedov Exp $
+//  $Id: executor.h,v 1.3 2004-04-27 04:19:56 adedov Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
 
+#include <vector>
+#include <deque>
 #include "lock.h"
 #include "method.h"
+#include "sigsock.h"
+#include "thread.h"
+
 
 namespace iqxmlrpc 
 {
@@ -31,9 +36,12 @@ namespace iqxmlrpc
 
   class Executor;
   class Serial_executor;
+//  class Threaded_executor;
+  class Pool_executor;
 
   class Executor_fabric_base;
   template <class Executor_type> class Executor_fabric;
+  class Pool_executor_fabric;
 };
 
 
@@ -100,6 +108,46 @@ public:
     Executor( m, s, c ) {}
 
   void execute( const Param_list& params );
+};
+
+
+class iqxmlrpc::Pool_executor: public iqxmlrpc::Executor {
+  static iqnet::Alarm_socket* alarm_sock;
+
+  Pool_executor_fabric* pool;
+  Param_list params;
+
+public:
+  typedef iqnet::Mutex_lock Lock;
+
+  Pool_executor( Pool_executor_fabric*, Method*, Server*, Server_connection* );
+  ~Pool_executor();
+
+  void execute( const Param_list& params );
+  void process_actual_execution();
+};
+
+
+class iqxmlrpc::Pool_executor_fabric: 
+  public iqxmlrpc::Executor_fabric<Pool_executor>
+{
+  class Pool_thread;
+  friend class Pool_thread;
+
+  std::vector<Pool_thread*> pool;
+  std::deque<Pool_executor*> req_queue;
+  iqnet::Cond req_queue_cond;
+  
+public:
+  Pool_executor_fabric( unsigned pool_size );
+  ~Pool_executor_fabric();
+
+  Executor* create( Method* m, Server* s, Server_connection* c )
+  {
+    return new Pool_executor( this, m, s, c );
+  }
+  
+  void register_executor( Pool_executor* );
 };
 
 

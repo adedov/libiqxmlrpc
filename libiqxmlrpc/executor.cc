@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.2 2004-04-22 07:43:19 adedov Exp $
+//  $Id: executor.cc,v 1.3 2004-04-27 04:19:56 adedov Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -56,5 +56,134 @@ void Serial_executor::execute( const Param_list& params )
   catch( const Fault& f )
   {
     schedule_response( Response( f.code(), f.what() ) );
+  }
+}
+
+
+// ----------------------------------------------------------------------------
+class Pool_executor_fabric::Pool_thread: public iqnet::Thread {
+  unsigned name;
+  Pool_executor_fabric* pool;
+
+public:
+  Pool_thread( unsigned name_, Pool_executor_fabric* pool_ ):
+    name(name_),
+    pool(pool_) 
+  {
+  }
+
+protected:
+  void do_run();
+};
+
+
+void Pool_executor_fabric::Pool_thread::do_run()
+{
+  Pool_executor_fabric::Pool_thread* obj = 
+    static_cast<Pool_executor_fabric::Pool_thread*>(this);
+  
+  Pool_executor_fabric* pool = obj->pool;
+
+  for(;;)
+  {
+    pool->req_queue_cond.wait();
+
+    if( pool->req_queue.empty() )
+      continue;
+
+    Pool_executor* executor = pool->req_queue.front();
+    pool->req_queue.pop_front();
+    pool->req_queue_cond.release_lock();
+
+    executor->process_actual_execution();
+  }
+}
+
+
+// ----------------------------------------------------------------------------
+template < class T >
+class Deleter: public std::unary_function<T, void> {
+public:
+  void operator ()( T* t )
+  {
+    delete t;
+  }
+};
+
+
+Pool_executor_fabric::Pool_executor_fabric( unsigned pool_size )
+{
+  pool.reserve( pool_size );
+  for( int i = 0; i < pool_size; ++i )
+    pool.push_back( new Pool_thread(i, this) );
+}
+
+
+Pool_executor_fabric::~Pool_executor_fabric()
+{
+  std::for_each( pool.begin(), pool.end(), 
+                 Deleter<Pool_executor_fabric::Pool_thread>() );
+
+  req_queue_cond.acquire_lock();
+
+  std::for_each( req_queue.begin(), req_queue.end(), Deleter<Executor>() );
+}
+
+
+void Pool_executor_fabric::register_executor( Pool_executor* executor )
+{
+  req_queue_cond.acquire_lock();
+  req_queue.push_back( executor );
+  req_queue_cond.signal();
+  req_queue_cond.release_lock();
+}
+
+
+// ----------------------------------------------------------------------------
+iqnet::Alarm_socket* Pool_executor::alarm_sock = 0;
+
+
+Pool_executor::Pool_executor( 
+    Pool_executor_fabric* p, Method* m, Server* s, Server_connection* c 
+  ):
+    Executor( m, s, c ),
+    pool(p)
+{
+  if( !alarm_sock )
+    alarm_sock = new iqnet::Alarm_socket( s->get_reactor(), new Lock );
+}
+
+
+Pool_executor::~Pool_executor()
+{
+  alarm_sock->send_alarm();
+}
+
+
+void Pool_executor::execute( const Param_list& params_ )
+{
+  params = params_;
+  pool->register_executor( this );
+}
+
+
+void Pool_executor::process_actual_execution()
+{
+  try {
+    Value result(0);
+    method->execute( params, result );
+    schedule_response( Response(result) );
+  }
+  catch( const Fault& f )
+  {
+    schedule_response( Response( f.code(), f.what() ) );
+  }
+  catch( const std::exception& e )
+  {
+    schedule_response( Response( -1, e.what() ) );
+  }
+  catch( ... )
+  {
+    schedule_response( Response( -1, "Unknown Error" ) );
   }
 }
