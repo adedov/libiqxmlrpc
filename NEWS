@@ -1,5 +1,10 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.6.4 - 0.6.5
+  * Distribution now includes configure made by autoconf-2.57.
+  * An argument --disable-docs for configure has been added.
+  * Some compilation fixes for win32 were made as well.
+  
 0.6.3 - 0.6.4
   * Better support for standard algorithms usage with iqxmlrpc::Array added.
     I.e. now one can use std::back_inserter, std::front_inserter 
