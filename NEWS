@@ -1,3 +1,10 @@
+Look into ChangeLog file for full list of changes generated from CVS.
+
+0.4.1 - 0.4.2
+  * Make it portable on Solaris.
+  * Fix some minor errors.
+  * Client's code uses non-blocking socket only when timeout has been specified.
+
 0.4 - 0.4.1
   * Fix compilation problem on G++ 3.4
   * Get rid of several compiler's warnings.
