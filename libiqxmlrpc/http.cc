@@ -515,3 +515,21 @@ void Server::read_header( const std::string& s )
   for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
     content_cache += c;
 }
+
+
+// ---------------------------------------------------------------------------
+std::string Client::do_execute( const Request& req )
+{
+  Request_header* req_h = new Request_header( uri_, host_ );
+  Packet req_p( req_h, req.to_xml()->write_to_string_formatted() );
+  send_request( req_p );
+  
+  Packet res_p( recv_response() );
+  const Response_header* res_h = 
+    static_cast<const Response_header*>(res_p.header());
+  
+  if( res_h->code() != 200 )
+    throw Error_response( res_h->phrase(), res_h->code() );
+
+  return res_p.content();
+}

@@ -26,6 +26,7 @@ namespace http
   class Unsupported_content_type;
     
   class Server;
+  class Client;
 };
 
 
@@ -207,6 +208,33 @@ public:
 
 private:
   void read_header( const std::string& );
+};
+
+
+//! HTTP XML-RPC client code independet from 
+//! low-level transport implementation.
+class http::Client: public iqxmlrpc::Client {
+  std::string uri_;
+  std::string host_;
+  
+public:
+  Client( const std::string& uri = "/RPC" ):
+    uri_(uri), host_() {}
+
+  //! Real client should use this function to
+  //! set client's host name sent to server.
+  void set_client_host( const std::string& h )
+  {
+    host_ = h;
+  }
+
+protected:
+  //! Is called from Client::execute().
+  //! Can throw Error_response.
+  std::string do_execute( const Request& );
+
+  virtual void send_request( const http::Packet& ) = 0;
+  virtual http::Packet recv_response() = 0;
 };
 
 
