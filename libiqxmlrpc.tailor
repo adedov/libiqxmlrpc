@@ -1,0 +1,19 @@
+[DEFAULT]
+verbose = True
+
+[project]
+target = bzr:target
+start-revision = INITIAL
+root-directory = /home/bada/projects/libiqxmlrpc/libiqxmlrpc-bzr
+state-file = tailor.state
+source = cvs:source
+subdir = .
+
+[bzr:target]
+module = /
+repository = .
+
+[cvs:source]
+module = libiqxmlrpc
+repository = /home/bada/projects/libiqxmlrpc/libiqxmlrpc-cvs
+
