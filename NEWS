@@ -1,0 +1,5 @@
+0.1.0 - 0.1.1
+  * Fix some build problems;
+  * Documentation update;
+  * Make documentation be installed on 'make install';
+  * Create RPM .spec file.
