@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<methodResponse>
+  <params>
+    <param>
+      <value>
+        <struct>
+	  <member>
+	    <name>weather</name>
+	    <value>Clean</value>
+	  </member>
+	  <member>
+	    <name>temp.C</name>
+	    <value><double>-7</double></value>
+	  </member>
+	</struct>
+      </value>	
+    </param>
+  </params>
+</methodResponse>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<methodCall>
+  <methodName>get_weather</methodName>
+  <params>
+    <param>
+      <value>
+        <string>Ney-York</string>
+      </value>
+    </param>
+    <param>
+      <value>now</value>
+    </param>
+  </params>
+</methodCall>

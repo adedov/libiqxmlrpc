@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<methodResponse>
+    <fault>
+      <value>
+        <struct>
+	  <member>
+	    <name>faultCode</name>
+	    <value><int>12</int></value>
+	  </member>
+	  <member>
+	    <name>faultString</name>
+	    <value>Weather server is down.</value>
+	  </member>
+	</struct>
+      </value>	
+    </fault>
+</methodResponse>
