@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.1 2004-04-14 08:44:03 adedov Exp $
+//  $Id: client.h,v 1.2 2004-04-21 05:15:34 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -31,7 +31,7 @@ namespace iqxmlrpc
 {
   class Client_connection;
   class Client_base;
-  class Client;
+  template <class Transport> class Client;
 };
 
 
