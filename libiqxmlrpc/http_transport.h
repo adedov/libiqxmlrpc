@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_transport.h,v 1.10 2004-04-22 09:25:56 adedov Exp $
+//  $Id: http_transport.h,v 1.11 2004-04-28 04:20:03 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_transport_h_
 #define _libiqxmlrpc_http_transport_h_
@@ -52,9 +52,15 @@ public:
 
 //! XML-RPC \b HTTP client's connection (works in blocking mode).
 class iqxmlrpc::Http_client_connection: public iqxmlrpc::Client_connection {
+  iqnet::Reactor reactor;
+  std::string out_str;
+  http::Packet* resp_packet;
+
 public:
-  Http_client_connection( int sock, const iqnet::Inet_addr& peer ):
-    Client_connection( sock, peer ) {}
+  Http_client_connection( int sock, const iqnet::Inet_addr& peer );
+
+  void handle_input( bool& );
+  void handle_output( bool& );
 
 protected:
   http::Packet* do_process_session( const std::string& );
