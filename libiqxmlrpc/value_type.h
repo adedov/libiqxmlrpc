@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.14 2004-08-02 05:04:12 adedov Exp $
+//  $Id: value_type.h,v 1.15 2004-08-12 06:43:54 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -91,6 +91,7 @@ public:
 class iqxmlrpc::Array: public iqxmlrpc::Value_type {
   typedef std::vector<Value*> Val_vector;
   typedef Val_vector::iterator iterator;
+  friend class Array_inserter;
 
 public:
   class const_iterator;
@@ -107,8 +108,11 @@ private:
   Val_vector values;
   
 public:
+  Array( const Array& );
   Array() {}
   ~Array();
+
+  Array& operator =( const Array& );
 
   Array* clone() const;
   void to_xml( xmlpp::Node* ) const;
@@ -133,10 +137,6 @@ public:
 
   const_iterator begin() const;
   const_iterator end() const;
-
-private:
-  Array( const Array& ) {}
-  const Array& operator =( const Array& ) { return *this; }
 };
 
 
@@ -180,14 +180,19 @@ public:
   };
 
 private:
-  typedef std::map<std::string, Value*>::const_iterator const_iterator;
-  typedef std::map<std::string, Value*>::iterator iterator;
+  typedef std::map<std::string, Value*> Value_stor;
+  typedef Value_stor::const_iterator const_iterator;
+  typedef Value_stor::iterator iterator;
+  friend class Struct_inserter;
 
-  std::map<std::string, Value*> values;
+  Value_stor values;
   
 public:
+  Struct( const Struct& );
   Struct() {}
   ~Struct();
+
+  Struct& operator =( const Struct& );
 
   Struct* clone() const;
   void to_xml( xmlpp::Node* ) const;
@@ -200,10 +205,10 @@ public:
   void clear();
   void insert( const std::string&, Value* );
   void insert( const std::string&, const Value& );
-
+    
 private:
-  Struct( const Struct& ) {}
-  const Struct& operator =( const Struct& ) { return *this; }
+  const_iterator begin() const { return values.begin(); }
+  const_iterator end()   const { return values.end(); }
 };
 
 

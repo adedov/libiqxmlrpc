@@ -15,10 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.10 2004-08-02 05:04:12 adedov Exp $
+//  $Id: value_type.cc,v 1.11 2004-08-12 06:43:54 adedov Exp $
 
 #include <string.h>
 #include <sstream>
+#include <algorithm>
 #include "value_type.h"
 #include "value.h"
 
@@ -73,6 +74,39 @@ void String::to_xml( xmlpp::Node* p ) const
 
 
 // --------------------------------------------------------------------------
+class Array_inserter: public std::unary_function<Value*,void> {
+  Array::Val_vector* vv;
+  
+public:
+  Array_inserter( Array::Val_vector* v ): vv(v) {}
+    
+  void operator ()( Value* v )
+  {
+    vv->push_back( new Value(v) );
+  }
+};
+
+
+Array::Array( const Array& other )
+{
+  std::for_each( other.values.begin(), other.values.end(), 
+    Array_inserter(&values) );
+}
+
+
+Array& Array::operator =( const Array& other )
+{
+  if( this == &other )
+    return *this;
+  
+  clear();
+  std::for_each( other.values.begin(), other.values.end(), 
+    Array_inserter(&values) );
+  
+  return *this;
+}
+
+
 Array* Array::clone() const
 {
   Array *a = new Array;
@@ -159,6 +193,38 @@ Array::const_iterator Array::end() const
 
 
 // --------------------------------------------------------------------------
+class Struct_inserter: 
+  public std::unary_function<std::pair<std::string, Value*>,void> 
+{
+  Struct::Value_stor* vs;
+  
+public:
+  Struct_inserter( Struct::Value_stor* v ): vs(v) {}
+    
+  void operator ()( const std::pair<std::string, Value*>& vp )
+  {
+    vs->insert( std::make_pair(vp.first, new Value(*vp.second)) );
+  }
+};
+
+
+Struct::Struct( const Struct& other )
+{
+  std::for_each( other.begin(), other.end(), Struct_inserter(&values) );
+}
+
+
+Struct& Struct::operator =( const Struct& other )
+{
+  if( this == &other )
+    return *this;
+  
+  clear();
+  std::for_each( other.begin(), other.end(), Struct_inserter(&values) );
+  return *this;
+}
+
+
 Struct::~Struct()
 {
   clear();
