@@ -64,9 +64,4 @@ namespace iqxmlrpc
 };
 
 
-/*!
-\page exceptions Library exceptions
-\todo Exceptions documentation
-*/
-
 #endif
