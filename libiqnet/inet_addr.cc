@@ -15,8 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: inet_addr.cc,v 1.3 2004-03-29 06:20:15 adedov Exp $
+//  $Id: inet_addr.cc,v 1.4 2004-03-31 05:32:14 adedov Exp $
 
+#include <unistd.h>
 #include <netdb.h>
 #include "inet_addr.h"
 #include "net_except.h"
