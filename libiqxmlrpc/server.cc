@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.17 2004-10-23 06:08:51 maxim Exp $
+//  $Id: server.cc,v 1.18 2004-10-25 02:48:12 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -164,7 +164,8 @@ void Server::schedule_response(
   conn->schedule_response( packet );
 }
 
-void Server::set_firewall(iqnet::Firewall_base* _firewall)
+
+void Server::set_firewall( iqnet::Firewall_base* _firewall )
 {
-  firewall=_firewall;
+   firewall = _firewall;
 }
