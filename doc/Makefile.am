@@ -1,2 +1,3 @@
 EXTRA_DIST = \
-  libiqxmlrpc.doxygen
+  libiqxmlrpc.doxygen \
+  libiqnet.doxygen
