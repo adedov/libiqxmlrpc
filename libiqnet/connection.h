@@ -27,8 +27,8 @@ public:
   Connection( int socket_d, const iqnet::Inet_addr& peer_addr );
   virtual ~Connection();
 
-  //! Do some init actions. May be used by child classes.
-  virtual void post_init() {}
+  virtual void post_accept() {}
+  virtual void post_connect() {}
   
   const iqnet::Inet_addr& get_peer_addr() const { return peer_addr; }
   
