@@ -35,4 +35,4 @@ libiqxmlrpc_net_la_SOURCES = \
   http_transport.cc
   
 libiqxmlrpc_net_la_LDFLAGS = -version-info @LIBIQXMLRPC_VERSION@
-libiqxmlrpc_net_la_LIBADD = libiqxmlrpc.la ../libiqnet/libiqnet.la
+libiqxmlrpc_net_la_LIBADD = ../libiqnet/libiqnet.la libiqxmlrpc.la 
