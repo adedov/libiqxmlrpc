@@ -1,3 +1,6 @@
+0.3.1 - 0.3.2
+  * Added support for XML-RPC base64 datatype.
+
 0.3 - 0.3.1
   * Move HTTP(S) clients to non-blocking socket. This allows to set timeout to
     client.
