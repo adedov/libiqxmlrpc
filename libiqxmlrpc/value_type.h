@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.19 2004-10-12 03:44:26 adedov Exp $
+//  $Id: value_type.h,v 1.20 2004-10-14 03:14:58 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -47,15 +47,6 @@ namespace iqxmlrpc
   
   class Binary_data;
   class Date_time;
-    
-  namespace config
-  {
-    //! Current charset converter
-    extern iqxmlrpc::Utf_conv_base* cs_conv;
-    
-    //! Change current charset converter
-    void set_encoding( const std::string&, unsigned max_sym_len = 3 );
-  }  
 };
 
 

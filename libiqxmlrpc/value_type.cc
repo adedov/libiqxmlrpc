@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.14 2004-10-12 03:44:26 adedov Exp $
+//  $Id: value_type.cc,v 1.15 2004-10-14 03:14:58 adedov Exp $
 
 #include <string.h>
 #include <algorithm>
@@ -26,17 +26,6 @@
 using namespace iqxmlrpc;
 
 
-iqxmlrpc::Utf_conv_base* iqxmlrpc::config::cs_conv = new Utf_null_conv;
-
-
-void iqxmlrpc::config::set_encoding( const std::string& enc, unsigned m )
-{
-  delete iqxmlrpc::config::cs_conv;
-  iqxmlrpc::config::cs_conv = new Utf_conv( enc, m );
-}
-
-
-// --------------------------------------------------------------------------
 Value_type* Nil::clone() const
 {
   return new Nil();
@@ -86,6 +75,7 @@ void iqxmlrpc::String::to_xml( xmlpp::Node* p ) const
 
 
 // --------------------------------------------------------------------------
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 class Array::Array_inserter: public std::unary_function<Value*,void> {
   Array::Val_vector* vv;
   
@@ -97,6 +87,7 @@ public:
     vv->push_back( new Value(v) );
   }
 };
+#endif
 
 
 Array::Array( const Array& other )
@@ -205,6 +196,7 @@ Array::const_iterator Array::end() const
 
 
 // --------------------------------------------------------------------------
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 class Struct::Struct_inserter: 
   public std::unary_function<std::pair<std::string, Value*>,void> 
 {
@@ -218,6 +210,7 @@ public:
     vs->insert( std::make_pair(vp.first, new Value(*vp.second)) );
   }
 };
+#endif
 
 
 Struct::Struct( const Struct& other )
