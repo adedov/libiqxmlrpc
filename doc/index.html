@@ -1,0 +1,193 @@
+<html>
+<head>
+  <title>Libiqxmlrpc Home</title>
+
+  <style type="text/css">
+    body {
+      position: absolute;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  
+    #banner {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 38px;
+      border-bottom: 1px solid #000;
+		}
+    
+    #banner #title {
+      position: absolute; 
+      height: 38px; 
+      top: 1px; 
+      font-size: 25;
+      font-weight: bold;
+    }
+    
+    #banner #sf_img {
+       position: absolute; 
+       right: 5px; 
+       top: 0px;
+     }
+     
+    #div_menu {
+      position: absolute;
+      left: 0px;
+      top: 50px;
+      width: 20%;
+      padding: 5px;
+    }
+    
+    .div_item {
+      position: absolute;
+      top: 39px;
+      left: 20%;
+      width: 80%;
+      visibility: hidden;
+      display: none;
+    }
+  </style>
+</head>
+
+<script language="JavaScript">
+  curr_item = "";
+  
+  function hide( name )
+  {
+    var m;
+
+    if (document.layers) 
+    {
+      m=window.document.getElementById(name);
+    }
+    else
+    {
+      m=document.getElementById(name);
+    }
+    
+    m.style.visibility='hidden';
+    m.style.display='none';
+  }
+  
+  function show( name )
+  {
+    var m;
+    
+    if (document.layers) 
+    {
+      m=window.document.getElementById(name);
+    }
+    else
+    {
+      m=document.getElementById(name);
+    }
+    
+    hide( curr_item );
+    m.style.visibility='visible';
+    m.style.display='block';
+    curr_item = name;
+  }
+</script>
+
+<body onLoad="curr_item='about_div'; show('about_div');">
+
+<div id="banner">
+  <div id="title">
+    Libiqxmlrpc Home
+  </div>
+
+  <div id="sf_img">
+    <a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=105514&amp;type=4" align="right" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>
+  </div>
+</div>
+
+<div id="div_menu">
+  <b>
+  <a href="#" onClick="show('about_div');">About</a><br>
+  <a href="#" onClick="show('author_div')">Author</a><br>
+  <a href="#" onClick="show('license_div');">License</a><br>
+  <a href="#" onClick="show('depend_div');">Dependencies</a><br>
+  <a href="#" onClick="show('docs_div');">Documentation</a><br>
+  <a href="#" onClick="show('download_div');">Downloads</a><br>
+  <a href="http://sourceforge.net/projects/libiqxmlrpc">Project page</a><br>
+  </b>
+</div>
+
+<div class="div_item" id="about_div">
+<h2>About</h2>
+
+<em>Libiqxmlrpc</em> is an object-oriented library,
+which represents simple <a href="http://www.xmlrpc.com">XML-RPC</a> 
+solution both for client and server sides.
+
+<p><b>Main goal of project is to provide:</b>
+  <ul>
+  <li>Nice object oriented design;
+  <li>Maximum separation of code which operates with XML-RPC structures 
+      from that part, which provides transport functionality;
+  <li>HTTP, HTTPS as standart transports;
+  <li>Comfortable way to extend library's functionality.
+  </ul>
+  
+<p><b>Language:</b> C++
+<p><b>Platforms:</b>
+  <ul>
+  <li>Linux;
+  <li>Other Unices <em>(untested yet)</em>;
+  <li>Win32 <em>(in progress)</em>.
+  </ul>
+
+<p><em>(c) Copyright 2004 Anton Dedov</em>
+</div>
+
+<div class="div_item" id="author_div">
+  <h2>Author</h2>
+  Anton Dedov<br>
+  E-mail me: adedov at iqmedia.com
+</div>
+
+<div class="div_item" id="license_div">
+<h2>License</h2>
+Library is distributed under <em>GNU Lesser General Public License</em>,
+version 2.1.
+</div>
+
+<div class="div_item" id="depend_div">
+<h2>Dependencies</h2>
+  <ul>
+  <li><a href="http://libxmlplusplus.sourceforge.net">libxml++-1.0</a>
+  <li><a href="http://www.openssl.org">OpenSSL</a>
+  </ul>
+</div>
+
+<div class="div_item" id="docs_div">
+<h2>Documentation</h2>
+The whole project consists of two subprojects: <b>Libiqxmlrpc</b> itself and
+<b>Libiqnet</b>.
+  <ul type="none">
+  <li>Libiqxmlrpc is having a deal with XML-RPC.
+  <li>Libiqnet is an object-oriented wrapper around network communications.
+  </ul>
+<p>
+Usually you may want to read Libiqxmlrpc's documentation only, because Libiqnet 
+is being invoked by libiqxmlrpc in an implicit way. Also there is brief tutorial
+for Libiqxmlrpc.
+<p>
+You can read doxygen-generated docs here:
+  <ul>
+  <li><a href="libiqxmlrpc.html/index.html">Libiqxmlrpc</a> (contains tutorial)
+  <li><a href="libiqnet.html/index.html">Libiqnet</a>
+  </ul>
+</div>
+
+<div class="div_item" id="download_div">
+  <h2>Downloads</h2>
+  You can download the library from sourceforge site 
+  <a href="http://sourceforge.net/project/showfiles.php?group_id=105514">
+  here</a>.
+</div>
+
+</body>
