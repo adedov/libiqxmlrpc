@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.8 2004-04-22 09:25:56 adedov Exp $
+//  $Id: server.h,v 1.9 2004-04-23 02:21:31 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -31,7 +31,7 @@
 namespace iqxmlrpc
 {
   class Server_connection;
-  class Server_conn_fabric;
+  template <class Transport> class Server_conn_fabric;
   class Server_base;
   class Server;
 };
