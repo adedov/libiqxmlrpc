@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.11 2004-08-12 06:43:54 adedov Exp $
+//  $Id: value_type.cc,v 1.12 2004-08-17 03:56:12 adedov Exp $
 
 #include <string.h>
 #include <sstream>
@@ -360,6 +360,9 @@ const std::string& Binary_data::get_base64() const
 
 inline void Binary_data::add_base64_char( int idx ) const
 {
+  if( !(base64.length() % chars_in_line) )
+    base64 += '\n';
+    
   base64 += base64_alpha[idx];
 }
 

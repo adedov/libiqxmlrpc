@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.15 2004-08-12 06:43:54 adedov Exp $
+//  $Id: value_type.h,v 1.16 2004-08-17 03:56:12 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -224,6 +224,7 @@ public:
   
 private:
   static const char base64_alpha[64];
+  enum { chars_in_line = 64 };
 
   std::string data;
   mutable std::string base64;
