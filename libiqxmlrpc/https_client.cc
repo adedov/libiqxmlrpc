@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_client.cc,v 1.5 2004-07-23 08:50:22 adedov Exp $
+//  $Id: https_client.cc,v 1.6 2004-10-26 05:15:03 adedov Exp $
 
 #include <iostream>
 #include "https_client.h"
@@ -63,7 +63,10 @@ void Https_client_connection::send_succeed( bool& )
 
 void Https_client_connection::recv_succeed( bool&, int req_len, int sz )
 {
-  std::string s( sz ? std::string(read_buf, sz) : "" );
+  if( !sz )
+    throw iqnet::network_error( "Connection closed by peer.", false );
+  
+  std::string s( read_buf, sz );
   resp_packet = read_response( s );
   
   if( !resp_packet )
