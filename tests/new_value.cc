@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <libiqxmlrpc/value.h>
 
 using namespace iqxmlrpc;
@@ -39,6 +40,17 @@ int main()
     
     v[2] = "Hello";
     std::cout << "v[2]=" << v[2].get_string() << std::endl << std::endl;
+    
+    std::vector<int> vec;
+    vec.push_back(10);
+    vec.push_back(20);
+    vec.push_back(30);
+    
+    std::cout << "assign():" << std::endl;
+    a.assign( vec.begin(), vec.end() );
+    for( int i = 0; i < a.size(); i++ )
+      std::cout << "a[" << i << "]=" << a[i].get_int() << std::endl;
+    std::cout << std::endl;    
     
     std::cout << "Struct testing:" << std::endl;
     Struct s;
