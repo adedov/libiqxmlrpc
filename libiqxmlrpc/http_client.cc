@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_client.cc,v 1.5 2004-06-10 04:31:30 adedov Exp $
+//  $Id: http_client.cc,v 1.6 2004-07-23 08:50:22 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -26,7 +26,8 @@ using namespace iqnet;
 
 
 Http_client_connection::Http_client_connection( const iqnet::Socket& s, bool nb ):
-  Client_connection( s ),
+  Client_connection(),
+  Connection( s ),
   reactor( new iqnet::Null_lock ),
   resp_packet(0)
 {

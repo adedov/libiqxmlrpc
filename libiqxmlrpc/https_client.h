@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_client.h,v 1.3 2004-06-10 04:31:30 adedov Exp $
+//  $Id: https_client.h,v 1.4 2004-07-23 08:50:22 adedov Exp $
 
 #ifndef _libiqxmlrpc_https_client_h_
 #define _libiqxmlrpc_https_client_h_
@@ -32,8 +32,8 @@ namespace iqxmlrpc
 
 //! XML-RPC \b HTTPS client's connection (in blocking mode).
 class iqxmlrpc::Https_client_connection: 
-  public iqnet::ssl::Reaction_connection,
-  virtual public iqxmlrpc::Client_connection 
+  public iqxmlrpc::Client_connection,
+  public iqnet::ssl::Reaction_connection
 {
   iqnet::Reactor reactor;
   http::Packet* resp_packet;

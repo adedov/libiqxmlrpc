@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_client.h,v 1.3 2004-06-10 04:31:30 adedov Exp $
+//  $Id: http_client.h,v 1.4 2004-07-23 08:50:22 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_client_h_
 #define _libiqxmlrpc_http_client_h_
@@ -30,7 +30,10 @@ namespace iqxmlrpc
 
 
 //! XML-RPC \b HTTP client's connection (works in blocking mode).
-class iqxmlrpc::Http_client_connection: public iqxmlrpc::Client_connection {
+class iqxmlrpc::Http_client_connection: 
+  public iqxmlrpc::Client_connection,
+  public iqnet::Connection
+{
   iqnet::Reactor reactor;
   std::string out_str;
   http::Packet* resp_packet;
