@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.14 2004-11-14 17:29:17 adedov Exp $
+//  $Id: client.h,v 1.15 2004-11-15 07:19:55 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -62,9 +62,9 @@ public:
     timeout = seconds;
   }
   
-  void set_keep_alive( bool ka )
+  void set_keep_alive( bool keep_alive_ )
   {
-    keep_alive = ka;
+    keep_alive = keep_alive_;
   }
 
   bool get_keep_alive() const 
@@ -153,9 +153,9 @@ public:
   }
   
   //! Set connection keep-alive
-  void set_keep_alive( bool ka )
+  void set_keep_alive( bool keep_alive_ )
   {
-    keep_alive = ka;
+    keep_alive = keep_alive_;
     
     if( !keep_alive && tpt )
     {
