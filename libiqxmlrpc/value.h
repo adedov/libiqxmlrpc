@@ -77,6 +77,9 @@ public:
   unsigned size() const { return cast<Array>()->size(); }
   const Value& operator []( int ) const;
   Value&       operator []( int );
+  
+  void push_back( Value* v )       { cast<Array>()->push_back(v); }
+  void push_back( const Value& v ) { cast<Array>()->push_back(v); }
   //! \}
   
   //! \name Struct functions
@@ -90,6 +93,16 @@ public:
   Value&       operator []( const char* );
   const Value& operator []( const std::string& ) const;
   Value&       operator []( const std::string& );
+  
+  void insert( const std::string& n, Value* v )       
+  { 
+    cast<Struct>()->insert(n,v); 
+  }
+  
+  void insert( const std::string& n, const Value& v ) 
+  { 
+    cast<Struct>()->insert(n,v); 
+  }
   //! \}
   
   //! \name XML building
