@@ -1,8 +1,5 @@
 #include <signal.h>
 #include <iostream>
-#include <libiqnet/acceptor.h>
-#include <libiqnet/connection.h>
-#include <libiqnet/conn_fabric.h>
 #include <libiqxmlrpc/libiqxmlrpc.h>
 #include <libiqxmlrpc/http_transport.h>
 
