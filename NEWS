@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.4.2 - 0.4.3
+  * Port client part of library on Win32 (use MS VS 2003).
+
 0.4.1 - 0.4.2
   * Make it portable on Solaris.
   * Fix some minor errors.
