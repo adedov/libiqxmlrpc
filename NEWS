@@ -1,3 +1,8 @@
+0.2.1 - 0.2.2
+  * Merge inner subproject libiqnet into main code.
+  * Simplify library exceptions system.
+  * Added facility to log exceptions into Server class.
+
 0.2 - 0.2.1
   * Some fixes for HTTP protocol.
   * Minor interface fixes/improvements.
