@@ -9,6 +9,7 @@
 
 namespace iqxmlrpc
 {
+  //! Vector of Value objects.
   typedef std::vector<Value> Param_list;
 
   class Method;
