@@ -6,28 +6,23 @@ using namespace iqxmlrpc;
 using namespace iqnet;
 
 
-Http_reaction_connection::Http_reaction_connection
-(
-  int sock,
-  const Inet_addr& addr,
-  Reactor* rctr,
-  Method_dispatcher* disp
-):
-  Connection( sock, addr ),
-  Server( disp ),
-  reactor( rctr ),
-  response(0)
+Http_reaction_connection::Http_reaction_connection( int fd, const Inet_addr& addr ):
+  Connection( fd, addr ),
+  reactor(0),
+  response(0),
+  server(0)
 {
 }
     
 
 Http_reaction_connection::~Http_reaction_connection()
 {
+  delete server;
   delete response;
 }
 
 
-void Http_reaction_connection::post_init()
+void Http_reaction_connection::post_accept()
 {
   set_non_blocking(true);
   reactor->register_handler( this, Reactor::INPUT );
@@ -52,10 +47,10 @@ void Http_reaction_connection::handle_input( bool& terminate )
       return;
     }
     
-    if( !read_request( std::string(buf, n) ) )
+    if( !server->read_request( std::string(buf, n) ) )
       return;
     
-    response = execute();
+    response = server->execute();
   }
   catch( const http::Error_response& e )
   {
