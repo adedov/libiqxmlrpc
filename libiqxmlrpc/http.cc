@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.cc,v 1.17 2004-04-07 06:33:43 adedov Exp $
+//  $Id: http.cc,v 1.18 2004-04-14 08:46:16 adedov Exp $
 
 #include <time.h>
 #include <locale.h>
@@ -23,8 +23,8 @@
 #include <iostream>
 #include <functional>
 #include <memory>
-#include <libiqxmlrpc/http.h>
-#include <libiqxmlrpc/method.h>
+#include "http.h"
+#include "method.h"
 #include "../config.h"
 
 using namespace iqxmlrpc::http;
@@ -468,169 +468,4 @@ void Packet::set_keep_alive( bool keep_alive )
     header_->set_option( "connection:", "keep-alive" );
   else
     header_->set_option( "connection:", "close" );
-}
-
-  
-// ---------------------------------------------------------------------------
-template <class Header_type>
-class iqxmlrpc::http::Packet_reader {
-  std::string header_cache;
-  std::string content_cache;
-  Header* header;
-  bool constructed;
-  
-public:
-  Packet_reader():
-    header(0), constructed(false) {}
-      
-  ~Packet_reader()
-  {
-    if( !constructed )
-      delete header;
-  }
-      
-  Packet* read_packet( const std::string& );
-
-private:
-  void clear();
-  void read_header( const std::string& );
-};
-
-
-template <class Header_type>
-inline void Packet_reader<Header_type>::clear()
-{
-  header = 0;
-  content_cache.erase();
-  header_cache.erase();
-  constructed = false;
-}
-
-
-template <class Header_type>
-Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
-{
-  if( constructed )
-    clear();
-  
-  if( !header )
-    read_header(s);
-  else
-    content_cache += s;
-  
-  if( header && content_cache.length() >= header->content_length() )  
-  {
-    content_cache.erase( header->content_length(), std::string::npos );
-    Packet* packet = new Packet( header, content_cache );
-    constructed = true;
-    return packet;
-  }
-  
-  return 0;
-}
-
-
-template <class Header_type>
-void Packet_reader<Header_type>::read_header( const std::string& s )
-{
-  header_cache += s;
-  unsigned i = header_cache.find( "\r\n\r\n" );
-  
-  if( i == std::string::npos )
-    i = header_cache.find( "\n\n" );
-  
-  if( i == std::string::npos )
-    return;
-  
-  std::istringstream ss( header_cache );
-  header = new Header_type( ss );
-  
-  for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
-    content_cache += c;
-}
-
-
-// ---------------------------------------------------------------------------
-Server::Server( Method_dispatcher* d ):
-  iqxmlrpc::Server(d),
-  preader(new Packet_reader<Request_header>),
-  packet(0)
-{
-}
-
-
-Server::~Server()
-{
-  delete packet;
-  delete preader;
-}
-
-
-bool Server::read_request( const std::string& s )
-{
-  try {
-    packet = preader->read_packet( s );
-    return packet;
-  }
-  catch( const Malformed_packet& )
-  {
-    throw Bad_request();
-  }
-}
-
-
-Packet* Server::execute()
-{
-  iqxmlrpc::Response resp( iqxmlrpc::Server::execute(packet->content()) );
-  std::auto_ptr<xmlpp::Document> xmldoc( resp.to_xml() );
-  std::string resp_str = xmldoc->write_to_string_formatted();
-  
-  return new Packet( new Response_header(), resp_str );
-}
-
-
-// ---------------------------------------------------------------------------
-Client::Client( const std::string& uri ):
-  uri_(uri), 
-  host_(), 
-  preader(new Packet_reader<Response_header>), 
-  packet(0) 
-{
-}
-    
-
-Client::~Client()
-{
-  delete packet;
-  delete preader;
-}
-
-
-std::string Client::do_execute( const Request& req )
-{
-  std::auto_ptr<xmlpp::Document> xmldoc( req.to_xml() );
-  std::string req_xml_str( xmldoc->write_to_string_formatted() );
-  Packet req_p( new Request_header( uri_, host_ ), req_xml_str );
-
-  send_request( req_p );
-  recv_response();
-  
-  // Received packet
-  std::auto_ptr<Packet> p( packet );
-  packet = 0;
-  
-  const Response_header* res_h = 
-    static_cast<const Response_header*>(p->header());
-  
-  if( res_h->code() != 200 )
-    throw Error_response( res_h->phrase(), res_h->code() );
-
-  return p->content();
-}
-
-
-bool Client::read_response( const std::string& s )
-{
-  packet = preader->read_packet( s );
-  return packet;
 }

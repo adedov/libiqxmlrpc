@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.h,v 1.12 2004-03-29 06:23:18 adedov Exp $
+//  $Id: http.h,v 1.13 2004-04-14 08:46:16 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -24,8 +24,7 @@
 #include <sstream>
 #include <map>
 #include <list>
-#include <libiqxmlrpc/except.h>
-#include <libiqxmlrpc/null_transport.h>
+#include "except.h"
 
 
 namespace iqxmlrpc
@@ -211,57 +210,28 @@ public:
 };
 
 
-//! HTTP XML-RPC server independet from 
-//! low level transport implementation.
-class iqxmlrpc::http::Server: private iqxmlrpc::Server {
-  http::Packet_reader<Request_header>* preader;
-  http::Packet* packet;
-
-public:
-  Server( Method_dispatcher* );
-  ~Server();
-
-  //! Considers parameter as a piece of request.
-  //! \return true if whole request has been read,
-  //! \return false if more data is needed.
-  bool read_request( const std::string& );
-
-  //! Executes request which has been read.
-  http::Packet* execute();
-};
-
-
-//! HTTP XML-RPC client code independet from 
-//! low-level transport implementation.
-class iqxmlrpc::http::Client: public iqxmlrpc::Client {
-  std::string uri_;
-  std::string host_;
-  Packet_reader<Response_header>* preader;
-  Packet* packet;
+template <class Header_type>
+class iqxmlrpc::http::Packet_reader {
+  std::string header_cache;
+  std::string content_cache;
+  Header* header;
+  bool constructed;
   
 public:
-  Client( const std::string& uri );
-  ~Client();
+  Packet_reader():
+    header(0), constructed(false) {}
       
-  //! Real client should use this function to
-  //! set client's host name sent to server.
-  void set_client_host( const std::string& h )
+  ~Packet_reader()
   {
-    host_ = h;
+    if( !constructed )
+      delete header;
   }
+      
+  Packet* read_packet( const std::string& );
 
-protected:
-  //! Is called from Client::execute().
-  //! Can throw Error_response.
-  std::string do_execute( const Request& );
-
-  //! Considers parameter as a piece of response.
-  //! \return true if whole response has been read,
-  //! \return false if more data is needed.
-  bool read_response( const std::string& );
-
-  virtual void send_request( const http::Packet& ) = 0;
-  virtual void recv_response() = 0;
+private:
+  void clear();
+  void read_header( const std::string& );
 };
 
 
@@ -281,7 +251,9 @@ public:
     Packet( new Response_header(code, phrase), "" ),
     Exception( "HTTP: " + phrase ) {}
   
-  virtual ~Error_response() throw() {}
+  ~Error_response() throw() {};
+
+  std::string dump_error_response() const { return dump(); }
 };
 
 
@@ -311,5 +283,64 @@ public:
     Error_response( "Unsupported media type", 415 ) {}
 };
 
+
+// ------------ Packet_reader's code --------------
+namespace iqxmlrpc
+{
+  namespace http 
+  {
+    template <class Header_type>
+    inline void Packet_reader<Header_type>::clear()
+    {
+      header = 0;
+      content_cache.erase();
+      header_cache.erase();
+      constructed = false;
+    }
+    
+    
+    template <class Header_type>
+    Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
+    {
+      if( constructed )
+        clear();
+      
+      if( !header )
+        read_header(s);
+      else
+        content_cache += s;
+      
+      if( header && content_cache.length() >= header->content_length() )  
+      {
+        content_cache.erase( header->content_length(), std::string::npos );
+        Packet* packet = new Packet( header, content_cache );
+        constructed = true;
+        return packet;
+      }
+      
+      return 0;
+    }
+    
+    
+    template <class Header_type>
+    void Packet_reader<Header_type>::read_header( const std::string& s )
+    {
+      header_cache += s;
+      unsigned i = header_cache.find( "\r\n\r\n" );
+      
+      if( i == std::string::npos )
+        i = header_cache.find( "\n\n" );
+      
+      if( i == std::string::npos )
+        return;
+      
+      std::istringstream ss( header_cache );
+      header = new Header_type( ss );
+      
+      for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
+        content_cache += c;
+    }
+  };
+};
 
 #endif
