@@ -42,6 +42,7 @@ int main( int argc, char **argv )
       << "  bool:   " << v["type.tests"][2].get_bool() << std::endl
       << "  string: " << v["type.tests"][3].get_string() << std::endl
       << "  base64: " << v["type.tests"][4].get_binary().get_data() << std::endl
+      << "  datetime: " << v["type.tests"][5].get_datetime().to_string() << std::endl
       << std::endl;
 
     // Build document

@@ -60,6 +60,7 @@
           <value><boolean>true</boolean></value>
           <value>String without &lt;string&gt; tag.</value>
 	  <value><base64>eW91IGNhbid0IHJlYWQgdGhpcyE=</base64></value>
+	  <value><dateTime.iso8601>20040921T15:45:00</dateTime.iso8601></value>
         </data>
         </array>
       </value>
