@@ -46,12 +46,6 @@ void Https_reaction_connection::recv_succeed
 {
   try 
   {
-    if( !real_len )
-    {
-      terminate = true;
-      return;
-    }
-    
     std::string s(recv_buf, real_len);
     if( !server->read_request( s ) )
     {
@@ -77,10 +71,10 @@ void Https_reaction_connection::recv_succeed
 void Https_reaction_connection::send_succeed( bool& terminate )
 {
   delete[] send_buf;
-  send_buf = 0;
   delete response;
+  send_buf = 0;
   response = 0;
-  terminate = true;
+  terminate = reg_shutdown();
 }
 
 
@@ -136,13 +130,22 @@ void Https_client::send_request( const http::Packet& packet )
 
 void Https_client::recv_response()
 {
-  int sum = 0;
-  
-  for( bool r = false; !r; )
+  try {
+    int sum = 0;
+    
+    for( bool r = false; !r; )
+    {
+      char buf[256];
+      bzero( buf, 256 );
+      unsigned sz = conn->recv( buf, 255 );
+      r = read_response( sz ? std::string(buf, sz) : std::string("") );
+    }
+    
+    conn->shutdown();
+  }
+  catch( const ssl::connection_close& e )
   {
-    char buf[256];
-    bzero( buf, 256 );
-    unsigned sz = conn->recv( buf, 255 );
-    r = read_response( sz ? std::string(buf, sz) : std::string("") );
+    if( e.is_clean() )
+      conn->shutdown();
   }
 }
