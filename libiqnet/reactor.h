@@ -53,6 +53,8 @@ public:
   void unregister_handler( Event_handler*, Event_mask );
   void unregister_handler( Event_handler* );
 
+  void fake_event( Event_handler*, Event_mask );
+
   //! \return true if any handle was invoked, false on timeout.
   bool handle_events( Timeout ms = -1 );
 };
