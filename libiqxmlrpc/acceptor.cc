@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.cc,v 1.5 2004-10-25 07:12:22 adedov Exp $
+//  $Id: acceptor.cc,v 1.6 2004-10-25 07:58:48 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -75,13 +75,11 @@ void Acceptor::accept()
       // Just close socket. 
       // So client should receive "connection reset by peer" message.
       new_sock.close();
-      sock.listen();
       return;
     }
   }
   
   fabric->create_accepted( new_sock );
-  sock.listen();
 }
 
 
