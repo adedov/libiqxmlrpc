@@ -1,3 +1,7 @@
+0.2 - 0.2.1
+  * Some fixes for HTTP protocol.
+  * Minor interface fixes/improvements.
+  
 0.1.1 - 0.2
   * Library architecture refactoring. Add ability to add alternative method's
     execution policies. Got rid of useless classes.
