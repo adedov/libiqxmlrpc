@@ -15,8 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.7 2004-04-22 09:25:56 adedov Exp $
+//  $Id: server.cc,v 1.8 2004-04-27 04:19:02 adedov Exp $
 
+#include <memory>
 #include "reactor.h"
 #include "server.h"
 #include "request.h"
@@ -115,8 +116,14 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
   }
   catch( const std::exception& e )
   {
-    log_err_msg( e.what() );
+    log_err_msg( std::string("Server: ") + e.what() );
     Response err_r( -1, e.what() );
+    schedule_response( err_r, conn, executor );
+  }
+  catch( ... )
+  {
+    log_err_msg( "Server: Unknown exception" );
+    Response err_r( -1, "Unknown Error" );
     schedule_response( err_r, conn, executor );
   }
 }
@@ -125,7 +132,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 void Server::schedule_response( 
   const Response& resp, Server_connection* conn, Executor* exec )
 {
-  delete exec;
+  std::auto_ptr<Executor> executor_to_delete(exec);
 
   std::auto_ptr<xmlpp::Document> xmldoc( resp.to_xml() );
   std::string resp_str = xmldoc->write_to_string_formatted();
