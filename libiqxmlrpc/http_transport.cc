@@ -15,50 +15,39 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_transport.cc,v 1.9 2004-03-29 06:23:18 adedov Exp $
+//  $Id: http_transport.cc,v 1.10 2004-04-14 08:49:16 adedov Exp $
 
 #include <unistd.h>
 #include <iostream>
-#include <libiqxmlrpc/http_transport.h>
+#include "http_transport.h"
 
 using namespace iqxmlrpc;
 using namespace iqnet;
 
 
-Http_reaction_connection::Http_reaction_connection( int fd, const Inet_addr& addr ):
-  Connection( fd, addr ),
-  reactor(0),
-  response(0),
-  server(0)
+Http_server_connection::Http_server_connection( int fd, const Inet_addr& addr ):
+  Server_connection( fd, addr )
 {
 }
     
 
-Http_reaction_connection::~Http_reaction_connection()
-{
-  delete server;
-  delete response;
-}
-
-
-void Http_reaction_connection::post_accept()
+void Http_server_connection::post_accept()
 {
   set_non_blocking(true);
   reactor->register_handler( this, Reactor::INPUT );
 }
 
 
-void Http_reaction_connection::finish()
+void Http_server_connection::finish()
 {
   delete this;
 }
 
 
-void Http_reaction_connection::handle_input( bool& terminate )
+void Http_server_connection::handle_input( bool& terminate )
 {   
   try {
-    char buf[256];
-    int n = recv( buf, sizeof(buf) );
+    int n = recv( read_buf, read_buf_sz );
     
     if( !n )
     {
@@ -66,109 +55,56 @@ void Http_reaction_connection::handle_input( bool& terminate )
       return;
     }
     
-    if( !server->read_request( std::string(buf, n) ) )
+    http::Packet* packet = read_request( std::string(read_buf, n) );
+    if( !packet )
       return;
     
-    response = server->execute();
+    reactor->unregister_handler( this, Reactor::INPUT );
+    server->schedule_execute( packet, this );
   }
   catch( const http::Error_response& e )
   {
-    delete response;
-    response = new http::Packet(e);
+    schedule_response( new http::Packet(e) );
   }
-
-  reactor->unregister_handler( this, Reactor::INPUT );
-  reactor->register_handler( this, Reactor::OUTPUT );
 }
 
 
-void Http_reaction_connection::handle_output( bool& terminate )
+void Http_server_connection::handle_output( bool& terminate )
 {
-  if( out_str.empty() )
-  {
-    out_str = response->dump();
-    out_ptr = 0;
-    delete response;
-    response = 0;
-  }
+  int sz = send( response.c_str(), response.length() );
 
-  unsigned send_sz = out_str.length() - out_ptr;
-  int sz = send( out_str.c_str() + out_ptr, send_sz );
-
-  if( sz == send_sz )
+  if( sz == response.length() )
   {
     terminate = true;
     return;
   }
+
+  response.erase( 0, sz );
+}
+
+
+void Http_server_connection::schedule_response( http::Packet* pkt )
+{
+  Server_connection::schedule_response( pkt );
+  reactor->register_handler( this, iqnet::Reactor::OUTPUT );
+}
+
+
+// --------------------------------------------------------------------------
+http::Packet* Http_client_connection::do_process_session( const std::string& s )
+{
+  send( s.c_str(), s.length() );
   
-  out_ptr += sz;
-}
-
-
-// --------------------------------------------------------------------------
-Http_server::Http_server( int port, Method_dispatcher* disp ):
-  reactor(),
-  acceptor(0),
-  cfabric( new C_fabric( disp, &reactor ) ),
-  exit_flag(false) 
-{
-  acceptor = new Acceptor( port, cfabric, &reactor );
-}
-
-
-Http_server::~Http_server()
-{
-  delete acceptor;
-  delete cfabric;
-}
-
-
-void Http_server::work()
-{
-  while( !exit_flag )
-    reactor.handle_events();
-}
-
-
-// --------------------------------------------------------------------------
-Http_client::Http_client( const iqnet::Inet_addr& a, const std::string& uri ):
-  http::Client( uri ),
-  addr(a),
-  conn(0),
-  ctr(a)
-{
-  set_client_host( iqnet::get_host_name() );
-}
-
-
-Http_client::~Http_client()
-{
-  delete conn;
-}
-
-
-void Http_client::send_request( const http::Packet& packet )
-{
-  conn = ctr.connect();
-  std::string req( packet.dump() );
-  conn->send( req.c_str(), req.length() );
-}
-
-
-void Http_client::recv_response()
-{
-  for( bool r = false; !r; )
+  for(;;)
   {
-    char buf[256];
-    bzero( buf, sizeof(buf) );
-    unsigned sz = conn->recv( buf, sizeof(buf) );
+    read_buf[0] = 0;
+    unsigned sz = recv( read_buf, read_buf_sz-1  );
     
     if( !sz )
       throw http::Malformed_packet();
     
-    r = read_response( std::string(buf, sz) );
+    http::Packet* pkt = read_response( std::string(read_buf, sz) );
+    if( pkt )
+      return pkt;
   }
-  
-  delete conn;
-  conn = 0;
 }

@@ -15,113 +15,49 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_transport.h,v 1.8 2004-03-29 06:23:18 adedov Exp $
+//  $Id: http_transport.h,v 1.9 2004-04-14 08:49:16 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_transport_h_
 #define _libiqxmlrpc_http_transport_h_
 
-#include <libiqxmlrpc/http.h>
-#include <libiqnet/acceptor.h>
-#include <libiqnet/connection.h>
-#include <libiqnet/conn_fabric.h>
-#include <libiqnet/connector.h>
+#include "libiqnet/connector.h"
+#include "server.h"
+#include "client.h"
 
 namespace iqxmlrpc
 {
-  class Http_reaction_connection;
-  class Http_conn_fabric;
-  class Http_server;
-  class Http_client;
+  class Http_server_connection;
+  class Http_client_connection;
 };
 
 
 //! Represents server-side \b HTTP non-blocking connection.
-/*! Does the actual work for sending/receiving HTTP packets via network. 
-    \see iqxmlrpc::Http_server
-*/
-class iqxmlrpc::Http_reaction_connection: public iqnet::Connection {
+class iqxmlrpc::Http_server_connection: public iqxmlrpc::Server_connection {
   iqnet::Reactor* reactor;
-  http::Packet* response;
-  http::Server* server;
 
-  std::string out_str;
-  unsigned out_ptr;
-  
-  friend class Http_conn_fabric;
-    
 public:
-  Http_reaction_connection( int, const iqnet::Inet_addr& );
-  ~Http_reaction_connection();
+  Http_server_connection( int, const iqnet::Inet_addr& );
+
+  void set_reactor( iqnet::Reactor* r ) { reactor = r; }
 
   void post_accept();  
   void finish();
   
   void handle_input( bool& );
   void handle_output( bool& );
+
+  void schedule_response( http::Packet* packet );
 };
 
 
-//! Fabric for Http_reaction_connection.
-class iqxmlrpc::Http_conn_fabric: 
-  public iqnet::Serial_conn_fabric<Http_reaction_connection> 
-{
-  Method_dispatcher *disp;
-  iqnet::Reactor* reactor;
-
+//! XML-RPC \b HTTP client's connection (works in blocking mode).
+class iqxmlrpc::Http_client_connection: public iqxmlrpc::Client_connection {
 public:
-  Http_conn_fabric( Method_dispatcher* d, iqnet::Reactor* r ):
-    disp(d), reactor(r) {}
-  
-  void post_create( Http_reaction_connection* c )
-  {
-    c->reactor = reactor;
-    c->server = new http::Server( disp );
-  }
-};
-
-
-//! Single thread XML-RPC \b HTTP server based on reactive model.
-/*! It just accepts new connections and creates objects of
-    Http_reaction_connection class for each one. 
-    Then Http_reaction_connection does all real work. */
-class iqxmlrpc::Http_server {
-  typedef Http_conn_fabric C_fabric;
-  
-  iqnet::Reactor   reactor;
-  iqnet::Acceptor *acceptor;
-  C_fabric        *cfabric;
-
-  bool  exit_flag;
-
-public:
-  Http_server( int port, Method_dispatcher* );
-  ~Http_server();
-
-  void set_exit_flag()
-  {
-    exit_flag = true;
-  }
-  
-  void work();
-};
-
-
-//! Single thread XML-RPC \b HTTP client based on blocking connection.
-/*! Implements functions for real network collaboration,
-    sending/receiving HTTP packets.
-*/
-class iqxmlrpc::Http_client: public iqxmlrpc::http::Client {
-  iqnet::Inet_addr addr;
-  iqnet::Connection* conn;
-  iqnet::Connector<iqnet::Connection> ctr;
-  
-public:
-  Http_client( const iqnet::Inet_addr&, const std::string& uri="/RPC" );
-  virtual ~Http_client();
+  Http_client_connection( int sock, const iqnet::Inet_addr& peer ):
+    Client_connection( sock, peer ) {}
 
 protected:
-  void send_request( const http::Packet& );
-  void recv_response();
+  http::Packet* do_process_session( const std::string& );
 };
 
 

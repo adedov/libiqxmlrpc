@@ -15,48 +15,38 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_transport.h,v 1.6 2004-03-29 06:23:18 adedov Exp $
+//  $Id: https_transport.h,v 1.7 2004-04-14 08:49:16 adedov Exp $
 
 #ifndef _libiqxmlrpc_https_transport_h_
 #define _libiqxmlrpc_https_transport_h_
 
-#include <libiqxmlrpc/http.h>
-#include <libiqnet/acceptor.h>
-#include <libiqnet/ssl_connection.h>
-#include <libiqnet/conn_fabric.h>
-#include <libiqnet/connector.h>
+#include "libiqnet/connector.h"
+#include "libiqnet/ssl_connection.h"
+#include "server.h"
+#include "client.h"
 
 namespace iqxmlrpc
 {
-  class Https_reaction_connection;
-  class Https_conn_fabric;
-  class Https_server;
-  class Https_client;
+  class Https_server_connection;
+  class Https_client_connection;
 };
 
 
 //! Represents server-side \b HTTPS non-blocking connection.
-/*! Does the actual work for sending/receiving HTTP packets via SSL.
-    \see iqxmlrpc::Https_server
-*/
-class iqxmlrpc::Https_reaction_connection: 
-  public iqnet::ssl::Reaction_connection 
+class iqxmlrpc::Https_server_connection: 
+  public iqnet::ssl::Reaction_connection,
+  virtual public iqxmlrpc::Server_connection
 {
-  http::Server* server;
-  http::Packet* response;
-
-  const int recv_buf_sz;
-  char* recv_buf;
   char* send_buf;
-  
-  friend class Https_conn_fabric;
-    
-public:
-  Https_reaction_connection( int, const iqnet::Inet_addr& );
-  ~Https_reaction_connection();
 
+public:
+  Https_server_connection( int, const iqnet::Inet_addr& );
+
+  void post_accept() { Reaction_connection::post_accept(); }
   void finish() { delete this; }
 
+  void schedule_response( http::Packet* );
+  
 protected:
   void my_reg_recv();
   void accept_succeed();
@@ -65,66 +55,22 @@ protected:
 };
 
 
-//! Fabric for Https_reaction_connection.
-class iqxmlrpc::Https_conn_fabric: 
-  public iqnet::Serial_conn_fabric<Https_reaction_connection> 
+//! XML-RPC \b HTTPS client's connection (in blocking mode).
+class iqxmlrpc::Https_client_connection: 
+  public iqnet::ssl::Connection,
+  virtual public iqxmlrpc::Client_connection 
 {
-  Method_dispatcher *disp;
-  iqnet::Reactor* reactor;
-
 public:
-  Https_conn_fabric( Method_dispatcher* d, iqnet::Reactor* r ):
-    disp(d), reactor(r) {}
-  
-  void post_create( Https_reaction_connection* c )
+  Https_client_connection( int sock, const iqnet::Inet_addr& peer ):
+    iqnet::ssl::Connection( sock, peer ),
+    Client_connection( sock, peer )
   {
-    c->set_reactor( reactor );
-    c->server = new http::Server( disp );
   }
-};
 
-
-//! Single thread XML-RPC \b HTTPS server based on reactive model.
-/*! It just accepts new connections and creates objects of
-    Https_reaction_connection class for each one. 
-    Then Https_reaction_connection does all real work. */
-class iqxmlrpc::Https_server {
-  typedef Https_conn_fabric C_fabric;
+  void post_connect() { iqnet::ssl::Connection::post_connect(); }
   
-  iqnet::Reactor   reactor;
-  iqnet::Acceptor *acceptor;
-  C_fabric        *cfabric;
-
-  bool  exit_flag;
-
-public:
-  Https_server( int port, Method_dispatcher* );
-  ~Https_server();
-
-  void set_exit_flag()
-  {
-    exit_flag = true;
-  }
-  
-  void work();
-};
-
-//! Single thread XML-RPC \b HTTPS client based on blocking connection.
-/*! Implements functions for real network collaboration,
-    sending/receiving HTTPS packets using SSL.
-*/
-class iqxmlrpc::Https_client: public iqxmlrpc::http::Client {
-  iqnet::Inet_addr addr;
-  iqnet::ssl::Connection* conn;
-  iqnet::Connector<iqnet::ssl::Connection> ctr;
-  
-public:
-  Https_client( const iqnet::Inet_addr&, const std::string& uri="/RPC" );
-  virtual ~Https_client();
-
 protected:
-  void send_request( const http::Packet& );
-  void recv_response();
+  http::Packet* do_process_session( const std::string& );
 };
 
 
