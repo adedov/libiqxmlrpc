@@ -11,7 +11,9 @@ some steps of building and testing of the library.
 Build library
 -------------
 
+## If you build it from CVS
 $ ./autogen.sh
+
 $ ./configure
 $ make
 
@@ -38,7 +40,6 @@ $ doxygen libiqxmlrpc.doxygen
 When you will done it, two directories with HTML docs must appear here:
   libiqnet.html/ 
   libiqxmlrpc.html/
-
 
 
 Good luck,
