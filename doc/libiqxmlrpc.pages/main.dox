@@ -1,11 +1,14 @@
 /*!
 \mainpage libiqxmlrpc Documentation
 
-\section guide_content Users guide
 - \ref about
 - \ref features
 
+<b>Library architecture </b>
+- \ref architecture
 - \ref exceptions
+
+<b>Library Usage</b>
 - \ref data_rep
 - \ref server_prog
 - \ref client_prog

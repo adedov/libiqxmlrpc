@@ -1,4 +1,42 @@
 /*!
-\page http_server Writing HTTP server
+\page http_server Writing XML-RPC HTTP server
 
+Use iqxmlrpc::Http_server class to embed HTTP server within your application:
+
+\dontinclude http_server.cc
+\skipline Http_server
+
+\dontinclude server_general.h
+\skipline Get_weather
+\skipline public:
+\until }
+
+\dontinclude http_server.cc
+\skipline main
+\skipline {
+\skipline try
+\until ####EOF
+
+See an entire example text \ref http_server_ex
+*/
+
+
+/*!
+\page http_server_ex Http_server example
+\e server_general.h
+\include server_general.h
+\e http_server.cc
+\include http_server.cc
+*/
+
+
+/*!
+\page http_client Writing XML-RPC HTTP client
+Use iqxmlrpc::Http_client objects to perform XML-RPC client requests over HTTP.
+Here is example of Http_client usage. See also \ref client_prog page for source 
+of the show_weather function.
+
+\include http_client.cc
+\note When iqnet::Inet_addr class is constructed from port value only, it 
+becames a localhost address with specific port number.
 */
