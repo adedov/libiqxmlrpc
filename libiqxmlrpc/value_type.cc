@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.9 2004-07-27 08:20:52 adedov Exp $
+//  $Id: value_type.cc,v 1.10 2004-08-02 05:04:12 adedov Exp $
 
 #include <string.h>
 #include <sstream>
@@ -76,8 +76,8 @@ void String::to_xml( xmlpp::Node* p ) const
 Array* Array::clone() const
 {
   Array *a = new Array;
-  for( const_iterator i = values.begin(); i != values.end(); ++i )
-    a->push_back( new Value(**i) );
+  for( const_iterator i = begin(); i != end(); ++i )
+    a->push_back( new Value(*i) );
 
   return a;
 }
@@ -143,6 +143,18 @@ void Array::clear()
   
   // Clear and free memory
   std::vector<Value*>().swap( values );
+}
+
+
+Array::const_iterator Array::begin() const
+{
+  return const_iterator(values.begin());
+}
+
+
+Array::const_iterator Array::end() const
+{
+  return const_iterator(values.end());
 }
 
 

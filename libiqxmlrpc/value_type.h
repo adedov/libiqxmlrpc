@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.13 2004-07-27 08:20:52 adedov Exp $
+//  $Id: value_type.h,v 1.14 2004-08-02 05:04:12 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -89,7 +89,13 @@ public:
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
 /*! \see \ref array_usage */
 class iqxmlrpc::Array: public iqxmlrpc::Value_type {
+  typedef std::vector<Value*> Val_vector;
+  typedef Val_vector::iterator iterator;
+
 public:
+  class const_iterator;
+  friend class Array::const_iterator;
+
   //! Exception which is being thrown on array range violation.
   class Out_of_range: public Exception {
   public:
@@ -98,10 +104,7 @@ public:
   };
 
 private:
-  typedef std::vector<Value*>::const_iterator const_iterator;
-  typedef std::vector<Value*>::iterator iterator;
-
-  std::vector<Value*> values;
+  Val_vector values;
   
 public:
   Array() {}
@@ -128,9 +131,39 @@ public:
       values.push_back( new Value(*i) );
   }
 
+  const_iterator begin() const;
+  const_iterator end() const;
+
 private:
   Array( const Array& ) {}
   const Array& operator =( const Array& ) { return *this; }
+};
+
+
+//! Const interator for iqxmlrpc::Array
+class iqxmlrpc::Array::const_iterator {
+  Array::Val_vector::const_iterator i;
+
+public:
+  const_iterator( Array::Val_vector::const_iterator i_ ):
+    i(i_) {}
+  ~const_iterator() {}
+    
+  const Value& operator *() const { return *(*i); }
+  const Value* operator ->() const { return *i; }
+  
+  const_iterator& operator ++() { ++i; return *this; }
+  const_iterator& operator --() { --i; return *this; }
+  
+  bool operator ==( const const_iterator& ci ) const 
+  {
+    return i == ci.i;
+  }
+
+  bool operator !=( const const_iterator& ci ) const 
+  {
+    return !(*this == ci );
+  }
 };
 
 
