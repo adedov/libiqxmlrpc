@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.3 2004-04-14 08:44:03 adedov Exp $
+//  $Id: server.cc,v 1.4 2004-04-16 07:15:50 adedov Exp $
 
 #include "libiqnet/reactor.h"
 #include "server.h"
@@ -69,8 +69,7 @@ void Server_connection::schedule_response( http::Packet* pkt )
 
 
 //-----------------------------------------------------------------------------
-Server::Server( int p, Method_dispatcher* d, Executor_fabric_base* f ):
-  disp(d),
+Server::Server( int p, Executor_fabric_base* f ):
   exec_fabric(f),
   port(p),
   reactor( f->create_lock() ),
@@ -93,7 +92,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 {
   std::auto_ptr<http::Packet> packet(pkt);
   std::auto_ptr<Request> req( parse_request( packet->content() ) );
-  Method* meth = disp->create_method( req->get_name() );
+  Method* meth = disp.create_method( req->get_name() );
   Executor* executor = exec_fabric->create( meth, this, conn );
   executor->execute( req->get_params() );
 }

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.4 2004-04-14 09:08:12 adedov Exp $
+//  $Id: server.h,v 1.5 2004-04-16 07:15:50 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -24,6 +24,7 @@
 #include "libiqnet/connection.h"
 #include "libiqnet/conn_fabric.h"
 #include "executor.h"
+#include "method.h"
 #include "http.h"
 
 namespace iqxmlrpc
@@ -87,7 +88,7 @@ public:
 //! XML-RPC server.
 class iqxmlrpc::Server {
 protected:
-  Method_dispatcher* disp;
+  Method_dispatcher disp;
   Executor_fabric_base* exec_fabric;
 
   int port;
@@ -98,10 +99,13 @@ protected:
   bool exit_flag;
 
 public:
-  Server( int port, Method_dispatcher*, Executor_fabric_base* );
+  Server( int port, Executor_fabric_base* );
   virtual ~Server();
 
   void set_exit_flag() { exit_flag = true; }
+  
+  //! Register specific method class with server.
+  template <class Method_class> void register_method( const std::string& name );
   
   //! Process accepting connections and methods dispatching.
   template <class Transport> void work();
@@ -109,6 +113,13 @@ public:
   void schedule_execute( http::Packet*, Server_connection* );
   void schedule_response( const Response&, Server_connection*, Executor* );
 };
+
+
+template <class Method_class>
+void iqxmlrpc::Server::register_method( const std::string& meth_name )
+{
+  disp.register_method( meth_name, new Method_factory<Method_class> );
+}
 
 
 template <class Transport>
