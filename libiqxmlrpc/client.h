@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.10 2004-07-23 08:46:38 adedov Exp $
+//  $Id: client.h,v 1.11 2004-08-17 03:57:28 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -102,7 +102,8 @@ public:
     uri(uri_),
     vhost(host_.empty() ? addr_.get_host_name() : host_),
     ctr(addr),
-    timeout(-1)
+    timeout(-1),
+    non_blocking_flag(false)
   {
   }
   
