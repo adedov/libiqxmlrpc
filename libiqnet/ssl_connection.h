@@ -28,19 +28,23 @@ public:
   Connection( int sock, const iqnet::Inet_addr& );
   ~Connection();
   
+  void shutdown();
   int send( const char*, int );
   int recv( char*, int );
 
   //! Does ssl_accept()
-  void post_accept() { ssl_accept(); }
-  //! Does  ssl_connect()
-  void post_connect() { ssl_connect(); }
+  void post_accept();
+  //! Does ssl_connect()
+  void post_connect();
 
 protected:
   //! Performs SSL accepting
   virtual void ssl_accept();
   //! Performs SSL connecting
   virtual void ssl_connect();
+
+  bool shutdown_recved();
+  bool shutdown_sent();
 };
 
 
@@ -49,7 +53,7 @@ protected:
 class iqnet::ssl::Reaction_connection: public ssl::Connection {
   Reactor* reactor;
 
-  enum State { EMPTY, ACCEPTING, READING, WRITING };
+  enum State { EMPTY, ACCEPTING, READING, WRITING, SHUTDOWN };
   State state;
   
   char* recv_buf;
@@ -66,7 +70,6 @@ public:
   }
   
   void post_accept();
-  //void post_connect();
   void handle_input( bool& );
   void handle_output( bool& );
 
@@ -76,6 +79,8 @@ private:
 
 protected:
   void ssl_accept();
+  //! Returns true if shutdown already performed.
+  bool reg_shutdown();
   void reg_send( const char*, int );
   void reg_recv( char*, int );
 
