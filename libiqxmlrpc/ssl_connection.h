@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_connection.h,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: ssl_connection.h,v 1.2 2004-04-28 07:35:33 adedov Exp $
 
 #ifndef _libiqnet_ssl_connection_
 #define _libiqnet_ssl_connection_
@@ -72,7 +72,7 @@ protected:
 class iqnet::ssl::Reaction_connection: public ssl::Connection {
   Reactor* reactor;
 
-  enum State { EMPTY, ACCEPTING, READING, WRITING, SHUTDOWN };
+  enum State { EMPTY, ACCEPTING, CONNECTING, READING, WRITING, SHUTDOWN };
   State state;
   
   char* recv_buf;
@@ -89,22 +89,30 @@ public:
   }
   
   void post_accept();
+  void post_connect();
   void handle_input( bool& );
   void handle_output( bool& );
 
 private:
+  void switch_state( bool& terminate );
   void try_send();
   int  try_recv();
 
 protected:
   void ssl_accept();
+  void ssl_connect();
   //! Returns true if shutdown already performed.
   bool reg_shutdown();
   void reg_accept();
+  void reg_connect();
   void reg_send( const char*, int );
   void reg_recv( char*, int );
 
-  virtual void accept_succeed() = 0;
+  //! Overwrite it for server connection.
+  virtual void accept_succeed()  {};
+  //! Overwrite it for client connection.
+  virtual void connect_succeed() {};
+    
   virtual void recv_succeed( bool& terminate, int req_len, int real_len ) = 0;
   virtual void send_succeed( bool& terminate ) = 0;
 };

@@ -15,9 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_connection.cc,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: ssl_connection.cc,v 1.2 2004-04-28 07:35:33 adedov Exp $
 
-#include <iostream>
+//#include <iostream>
 #include <openssl/err.h>
 #include "ssl_connection.h"
 
@@ -149,6 +149,12 @@ void ssl::Reaction_connection::post_accept()
 }
 
 
+void ssl::Reaction_connection::post_connect()
+{
+  reg_connect();
+}
+
+
 void ssl::Reaction_connection::ssl_accept()
 {
   ssl::Connection::ssl_accept();
@@ -156,16 +162,27 @@ void ssl::Reaction_connection::ssl_accept()
 }
 
 
-void ssl::Reaction_connection::handle_input( bool& terminate )
+void ssl::Reaction_connection::ssl_connect()
 {
-  reactor->unregister_handler( this, Reactor::INPUT );
-  
-  try {
+  ssl::Connection::ssl_connect();
+  state = EMPTY;
+}
+
+
+void ssl::Reaction_connection::switch_state( bool& terminate )
+{
+  try 
+  {
     switch( state )
     {
       case ACCEPTING:
         ssl_accept();
         accept_succeed();
+        break;
+  
+      case CONNECTING:
+        ssl_connect();
+        connect_succeed();
         break;
       
       case READING:
@@ -176,7 +193,7 @@ void ssl::Reaction_connection::handle_input( bool& terminate )
         try_send();
         send_succeed( terminate );
         break;
-      
+  
       case SHUTDOWN:
         ssl::Connection::shutdown();
         terminate = true;
@@ -184,75 +201,38 @@ void ssl::Reaction_connection::handle_input( bool& terminate )
           
       case EMPTY:
       default:
-        std::cout << "hi: EMPTY" << std::endl;
         terminate = true;
     }
   }
   catch( const ssl::need_read& )
   {
-    std::cout << "hi: need_read" << std::endl;   
+//    std::cout << "need_read" << std::endl;
     reactor->register_handler( this, Reactor::INPUT );
   }
   catch( const ssl::need_write& )
   {
-    std::cout << "hi: need_write" << std::endl;    
+//    std::cout << "need_write" << std::endl;
     reactor->register_handler( this, Reactor::OUTPUT );
   }  
   catch( const ssl::connection_close& e )
   {
-    std::cout << "hi: connection_close " << e.is_clean() << std::endl;
+//    std::cout << "connection_close " << e.is_clean() << std::endl;
     reg_shutdown();
   }
+}
+
+
+void ssl::Reaction_connection::handle_input( bool& terminate )
+{
+  reactor->unregister_handler( this, Reactor::INPUT );
+  switch_state( terminate );
 }
 
 
 void ssl::Reaction_connection::handle_output( bool& terminate )
 {
   reactor->unregister_handler( this, Reactor::OUTPUT );
-  
-  try {
-    switch( state )
-    {
-      case ACCEPTING:
-        ssl_accept();
-        accept_succeed();
-        break;
-      
-      case READING:
-        recv_succeed( terminate, buf_len, try_recv() );
-        break;
-      
-      case WRITING:
-        try_send();
-        send_succeed( terminate );
-        break;
-
-      case SHUTDOWN:
-        ssl::Connection::shutdown();
-        terminate = true;
-        break;
-          
-      case EMPTY:
-      default:
-        std::cout << "hi: EMPTY" << std::endl;
-        terminate = true;
-    }
-  }
-  catch( const ssl::need_read& )
-  {
-    std::cout << "ho: need_read" << std::endl;
-    reactor->register_handler( this, Reactor::INPUT );
-  }
-  catch( const ssl::need_write& )
-  {
-    std::cout << "ho: need_write" << std::endl;
-    reactor->register_handler( this, Reactor::OUTPUT );
-  }  
-  catch( const ssl::connection_close& e )
-  {
-    std::cout << "hi: connection_close " << e.is_clean() << std::endl;
-    reg_shutdown();
-  }
+  switch_state( terminate );  
 }
 
 
@@ -298,6 +278,13 @@ void ssl::Reaction_connection::reg_accept()
 {
   state = ACCEPTING;
   reactor->register_handler( this, Reactor::INPUT );
+}
+
+
+void ssl::Reaction_connection::reg_connect()
+{
+  state = CONNECTING;
+  reactor->register_handler( this, Reactor::OUTPUT );
 }
 
 
