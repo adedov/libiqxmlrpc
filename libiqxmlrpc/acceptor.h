@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.h,v 1.3 2004-10-15 09:42:55 adedov Exp $
+//  $Id: acceptor.h,v 1.4 2004-10-25 07:11:29 adedov Exp $
 
 #ifndef _libiqnet_acceptor_h_
 #define _libiqnet_acceptor_h_
@@ -43,7 +43,7 @@ public:
   virtual ~Firewall_base() {}
 
   //! Must return bool to grant client to send request.
-  virtual bool grant( const iqnet::Inet_addr& ) const = 0;
+  virtual bool grant( const iqnet::Inet_addr& ) = 0;
 };
 
 
