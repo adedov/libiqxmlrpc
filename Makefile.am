@@ -1,6 +1,13 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = libiqxmlrpc tests doc
+EXTRA_DIST = autogen.sh
+
+SUBDIRS = \
+  libiqnet \
+  libiqxmlrpc \
+  tests.libiqnet \
+  tests \
+  doc
  
 rpm:	dist
 	cp $(PACKAGE)-$(VERSION).tar.gz /usr/src/redhat/SOURCES

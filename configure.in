@@ -1,8 +1,11 @@
 AC_INIT( libiqxmlrpc/value.h )
 AM_INIT_AUTOMAKE( libiqxmlrpc, 0.1 )
 
-LIBRARY_VERSION=0:0:0
-AC_SUBST(LIBRARY_VERSION)
+LIBIQNET_VERSION=0:0:0
+AC_SUBST(LIBIQNET_VERSION)
+
+LIBIQXMLRPC_VERSION=0:0:0
+AC_SUBST(LIBIQXMLRPC_VERSION)
 
 # GENERIC_LIBRARY_VERSION=X:Y:Z
 #                         | | |
@@ -26,7 +29,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_LANG_CPLUSPLUS
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
 INCLUDES='-I${top_srcdir}'
 CXXFLAGS="-O2"
@@ -35,8 +38,18 @@ AC_ARG_ENABLE( debug,
   [  --enable-debug   enables adding debug info into binaries],
   [CXXFLAGS="$CXXFLAGS -g"] )
 
+
+AC_CHECK_LIB(crypto, main, true, AC_MSG_ERROR([libcrypto not found]))
+AC_CHECK_LIB(ssl, main, true, AC_MSG_ERROR([libssl not found]))
+OPENSSL="-lcrypto -lssl"
+AC_SUBST(OPENSSL)
+
 INCLUDES="$INCLUDES `pkg-config --cflags libxml++-1.0`"
-LDFLAGS="$LDFLAGS `pkg-config --libs libxml++-1.0`"
+LDFLAGS="$LDFLAGS `pkg-config --libs-only-L libxml++-1.0`"
+LIBXMLPP=`pkg-config --libs-only-l libxml++-1.0`
+AC_SUBST(LIBXMLPP)
+
+test "-z" "${LIBXMLPP}" && AC_MSG_ERROR([No pkg-config configuration for libxml++-1.0])
 
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
@@ -44,7 +57,9 @@ AC_SUBST(LDFLAGS)
 
 AC_OUTPUT(
   Makefile
+  libiqnet/Makefile
   libiqxmlrpc/Makefile
+  tests.libiqnet/Makefile
   tests/Makefile
   doc/Makefile
 )
