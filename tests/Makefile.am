@@ -7,7 +7,10 @@ check_PROGRAMS = \
   parse-request \
   parse-response \
   server-test1 \
-  server-test2
+  server-test2 \
+  parse-http \
+  new-http-resp \
+  new-http-req
 
 parse_value_SOURCES = parse_value.cc
 
@@ -21,3 +24,9 @@ server_test1_SOURCES = server_test1.cc
 
 server_test2_SOURCES = server_test2.cc
 server_test2_LDADD = ../libiqnet/libiqnet.la ${LDADD}
+
+parse_http_SOURCES = parse_http.cc
+
+new_http_resp_SOURCES = new_http_resp.cc
+
+new_http_req_SOURCES = new_http_req.cc
