@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.6 2004-04-22 09:25:56 adedov Exp $
+//  $Id: client.h,v 1.7 2004-04-28 04:18:31 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -32,6 +32,8 @@ namespace iqxmlrpc
   class Client_connection;
   class Client_base;
   template <class Transport> class Client;
+
+  class Client_timeout;
 };
 
 
@@ -42,6 +44,7 @@ class iqxmlrpc::Client_connection: public iqnet::Connection {
 protected:
   unsigned read_buf_sz;
   char *read_buf;
+  int timeout;
 
 public:
   Client_connection( int sock, const iqnet::Inet_addr& peer );
@@ -52,6 +55,11 @@ public:
     const std::string& uri,
     const std::string& vhost
   );
+
+  void set_timeout( int seconds )
+  {
+    timeout = seconds;
+  }
 
 protected:
   http::Packet* read_response( const std::string& );
@@ -76,6 +84,7 @@ class iqxmlrpc::Client: public iqxmlrpc::Client_base {
   std::string uri;
   std::string vhost;
   iqnet::Connector<Transport> ctr;
+  int timeout;
   
 public:
   //! Construct the client
@@ -91,8 +100,19 @@ public:
     addr(addr_), 
     uri(uri_),
     vhost(host_.empty() ? addr_.get_host_name() : host_),
-    ctr(addr)
+    ctr(addr),
+    timeout(-1)
   {
+  }
+  
+  //! Set timeout for silence on network in seconds.
+  /*! \param seconds TO value in seconds, negative number means infinity.
+      \note It is not summary timeout.
+      \note Timeout gives no effect on connection process.
+  */
+  void set_timeout( int seconds )
+  {
+    timeout = seconds;
   }
   
   //! Perform Remote Procedure Call
@@ -109,6 +129,7 @@ iqxmlrpc::Response iqxmlrpc::Client<T>::execute(
 {
   Request req( method, pl );
   std::auto_ptr<T> conn( ctr.connect() );
+  conn->set_timeout( timeout );
   return conn->process_session( req, uri, vhost );
 }
 
@@ -121,5 +142,13 @@ iqxmlrpc::Response iqxmlrpc::Client<T>::execute(
   pl.push_back( val );
   return execute( method, pl );
 }
+
+
+//! Exception which be thrown by client when timeout occured.
+class iqxmlrpc::Client_timeout: public iqxmlrpc::Exception {
+public:
+  Client_timeout():
+    Exception( "Broken connection." ) {}
+};
 
 #endif
