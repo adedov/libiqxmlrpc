@@ -59,6 +59,7 @@
           <value><double>+3.14</double></value>
           <value><boolean>true</boolean></value>
           <value>String without &lt;string&gt; tag.</value>
+	  <value><base64>eW91IGNhbid0IHJlYWQgdGhpcyE=</base64></value>
         </data>
         </array>
       </value>
