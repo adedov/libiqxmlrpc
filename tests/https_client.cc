@@ -7,6 +7,7 @@ int main()
   try {
     iqnet::ssl::ctx = iqnet::ssl::Ctx::client_only();
     iqxmlrpc::Client<iqxmlrpc::Https_client_connection> client( iqnet::Inet_addr(3344) );
+    client.set_timeout( 3 );
 
     show_weather( client, "Krasnoyarsk" );
     show_weather( client, "New York" );

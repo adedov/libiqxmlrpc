@@ -13,6 +13,8 @@ void Get_weather::execute(
 {
   std::cout << "Get_weather method invoked." << std::endl;
 
+//  sleep(10);
+
   if( args[0].get_string() != "Krasnoyarsk" )
     throw iqxmlrpc::Fault( 0, "Unknown town." );
   
