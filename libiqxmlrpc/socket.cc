@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.cc,v 1.3 2004-06-25 08:08:57 adedov Exp $
+//  $Id: socket.cc,v 1.4 2004-08-02 05:57:37 adedov Exp $
 
 #include "sysinc.h"
 #include "socket.h"
@@ -74,12 +74,14 @@ void Socket::set_non_blocking( bool flag )
 
 
 #ifndef MSG_NOSIGNAL
+#ifndef WINDOWS_
 // MSG_NOSIGNAL tells send() and recv() not to generate SIGPIPE when
 // the other side closes the connection.  This is a nice feature, but
 // unfortunately not portable.
 #warning "Allowing Broken Pipe signals (SIGPIPE) due to lack of MSG_NOSIGNAL."
 #warning "If you get unwanted Broken Pipe signals, consider ignoring them:"
 #warning "signal(SIGPIPE, SIG_IGN);"
+#endif // WINDOWS_
 #define MSG_NOSIGNAL 0
 #endif
 
