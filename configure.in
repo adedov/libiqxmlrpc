@@ -37,7 +37,7 @@ CXXFLAGS="-O2"
 
 AC_ARG_ENABLE( debug,
   [  --enable-debug   enables adding debug info into binaries],
-  [CXXFLAGS="$CXXFLAGS -g"] )
+  [CXXFLAGS="$CXXFLAGS -ggdb"] )
 
 AC_CHECK_FUNCS(poll)
 
