@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.h,v 1.13 2004-07-27 08:20:52 adedov Exp $
+//  $Id: value.h,v 1.14 2004-08-02 05:04:50 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -113,6 +113,9 @@ public:
   
   void push_back( Value* v )       { cast<Array>()->push_back(v); }
   void push_back( const Value& v ) { cast<Array>()->push_back(v); }
+  
+  Array::const_iterator arr_begin() const { return cast<Array>()->begin(); }
+  Array::const_iterator arr_end()   const { return cast<Array>()->end(); }
   //! \}
   
   //! \name Struct functions
