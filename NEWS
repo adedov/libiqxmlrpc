@@ -1,5 +1,10 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.5 - 0.5.1
+  * Added ability to specify maximum size of HTTP request 
+    in Server class interface vi Server::set_max_request_sz().
+  * Code clean.
+
 0.4.3 - 0.5
   * Remove client's and server's headers from libiqxmlrpc.h.
     So one must include extra headers in addition to libiqxmlrpc.h.
