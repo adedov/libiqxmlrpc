@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser_specific.cc,v 1.6 2004-07-27 08:20:52 adedov Exp $
+//  $Id: parser_specific.cc,v 1.7 2004-09-19 17:33:47 adedov Exp $
 
 #include <iostream>
 #include <sstream>
@@ -39,7 +39,7 @@ Value_type* Int_parser::parse_value( const Node* node ) const
 {  
   const Element *el = dynamic_cast<const Element*>(node);
   if( !el )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
     
   const TextNode *text = el->get_child_text();
   if( text )
@@ -49,13 +49,13 @@ Value_type* Int_parser::parse_value( const Node* node ) const
     ss >> i;
     
     if( !ss || !ss.eof() )
-      throw Parse_error::caused( "bad int representation", node );
+      throw XML_RPC_violation::caused( "bad int representation", node );
     
     Value_type *v = new Int( i );
     return v;
   }
   
-  throw Parse_error::at_node(node);
+  throw XML_RPC_violation::at_node(node);
 }
 
 
@@ -63,7 +63,7 @@ Value_type* String_parser::parse_value( const Node* node ) const
 {
   const Element *el = dynamic_cast<const Element*>(node);
   if( !el )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
     
   const TextNode *text = el->get_child_text();
   
@@ -78,7 +78,7 @@ Value_type* Boolean_parser::parse_value( const Node* node ) const
 {
   const Element *el = dynamic_cast<const Element*>(node);
   if( !el )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
     
   const TextNode *text = el->get_child_text();
   
@@ -91,13 +91,13 @@ Value_type* Boolean_parser::parse_value( const Node* node ) const
     else if( s == "0" || s == "false" )
       b = false;
     else
-      throw Parse_error::caused( "bad bool representation", node );
+      throw XML_RPC_violation::caused( "bad bool representation", node );
     
     Value_type *v = new Bool( b );
     return v;
   }
   
-  throw Parse_error::at_node(node);
+  throw XML_RPC_violation::at_node(node);
 }
 
 
@@ -105,7 +105,7 @@ Value_type* Double_parser::parse_value( const Node* node ) const
 {
   const Element *el = dynamic_cast<const Element*>(node);
   if( !el )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
     
   const TextNode *text = el->get_child_text();
   
@@ -116,13 +116,13 @@ Value_type* Double_parser::parse_value( const Node* node ) const
     ss >> d;
     
     if( !ss || !ss.eof() )
-      throw Parse_error::caused( "bad double representation", node );
+      throw XML_RPC_violation::caused( "bad double representation", node );
     
     Value_type *v = new Double( d );
     return v;
   }
   
-  throw Parse_error::at_node(node);
+  throw XML_RPC_violation::at_node(node);
 }
 
 
@@ -130,7 +130,7 @@ Value_type* Base64_parser::parse_value( const Node* node ) const
 {
   const Element *el = dynamic_cast<const Element*>(node);
   if( !el )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
     
   const TextNode *text = el->get_child_text();
   
@@ -145,7 +145,7 @@ Value_type* Date_time_parser::parse_value( const Node* node ) const
 {
   const Element *el = dynamic_cast<const Element*>(node);
   if( !el )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
     
   const TextNode *text = el->get_child_text();
   
@@ -160,7 +160,7 @@ Value_type* Array_parser::parse_value( const Node* node ) const
 {
   Node* data = Parser::instance()->single_element( node );
   if( data->get_name() != "data" )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
   
   Node::NodeList value_arr = Parser::instance()->elements_only( data );
   Array retval;
@@ -185,11 +185,11 @@ Value_type* Struct_parser::parse_value( const Node* node ) const
   for( CI i = members.begin(); i != members.end(); i++ )
   {
     if( (*i)->get_name() != "member" )
-      throw Parse_error::at_node(*i);
+      throw XML_RPC_violation::at_node(*i);
     
     Node::NodeList mbr = Parser::instance()->elements_only( *i );
     if( mbr.front()->get_name() != "name" )
-      throw Parse_error::at_node(mbr.front());
+      throw XML_RPC_violation::at_node(mbr.front());
     
     std::string name = get_member_name( mbr.front() );
     Value* value = Parser::instance()->parse_value( mbr.back() );
@@ -204,15 +204,15 @@ inline std::string Struct_parser::get_member_name( const Node* node ) const
 {
   Node::NodeList nlist = node->get_children();
   if( nlist.size() != 1 )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
   
   const Element *el = dynamic_cast<const Element*>(node);
   if( !el )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
   
   std::string name = el->get_child_text()->get_content();
   if( name.find_first_not_of( "\t\n\r " ) == std::string::npos )
-    throw Parse_error::at_node(el);
+    throw XML_RPC_violation::at_node(el);
   
   return name;
 }

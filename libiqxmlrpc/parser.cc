@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser.cc,v 1.7 2004-07-27 08:17:29 adedov Exp $
+//  $Id: parser.cc,v 1.8 2004-09-19 17:33:47 adedov Exp $
 
 #include <stdexcept>
 #include "sysinc.h"
@@ -72,7 +72,7 @@ Value* Parser::parse_value( const xmlpp::Node* node )
   using namespace xmlpp;
   
   if( node->get_name() != "value" )
-    throw Parse_error::at_node( node );
+    throw XML_RPC_violation::at_node( node );
   
   Node *valnode = 0;
   std::string tname;
@@ -84,7 +84,7 @@ Value* Parser::parse_value( const xmlpp::Node* node )
       return new Value( i->parser->parse_value(valnode) );
   }
   
-  throw Parse_error::caused( "unknown XML-RPC value type '" + tname + "'" );
+  throw XML_RPC_violation::caused( "unknown XML-RPC value type '" + tname + "'" );
 }
 
 
@@ -103,7 +103,7 @@ xmlpp::Node::NodeList Parser::elements_only( const xmlpp::Node* node )
     {
       std::string s( text->get_content() );
       if( s.find_first_not_of("\t\n\r ") != std::string::npos )
-        throw Parse_error::at_node(*i);
+        throw XML_RPC_violation::at_node(*i);
       else
         continue;
     }
@@ -121,7 +121,7 @@ xmlpp::Element* Parser::single_element( const xmlpp::Node* node )
 {
   xmlpp::Node::NodeList lst = elements_only( node );
   if( lst.size() != 1 )
-    throw Parse_error::at_node(node);
+    throw XML_RPC_violation::at_node(node);
   
   return dynamic_cast<xmlpp::Element*>(lst.front());
 }

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.cc,v 1.4 2004-07-23 08:46:38 adedov Exp $
+//  $Id: client.cc,v 1.5 2004-09-19 17:33:47 adedov Exp $
 
 #include "client.h"
 #include "http.h"
@@ -64,7 +64,7 @@ Response Client_connection::process_session(
   }
   catch( const xmlpp::exception& e )
   {
-    throw Parse_error::caused( e.what() );
+    throw Parse_error( e.what() );
   }
 }
 
