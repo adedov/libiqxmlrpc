@@ -2,8 +2,8 @@
 
 aclocal
 libtoolize --force
-automake --foreign --add-missing
 autoheader
+automake --foreign --add-missing
 autoconf
 
 echo Please run ./configure now.
