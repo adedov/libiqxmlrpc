@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.20 2004-10-14 03:14:58 adedov Exp $
+//  $Id: value_type.h,v 1.21 2004-10-20 09:29:13 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -101,7 +101,6 @@ class iqxmlrpc::Array: public iqxmlrpc::Value_type {
   friend class Array_inserter;
   
 public:
-
   class const_iterator;
   friend class Array::const_iterator;
 
@@ -143,8 +142,8 @@ public:
       values.push_back( new Value(*i) );
   }
 
-  const_iterator begin() const;
-  const_iterator end() const;
+  Array::const_iterator begin() const;
+  Array::const_iterator end() const;
 };
 
 
@@ -160,6 +159,9 @@ public:
   const Value& operator *() const { return *(*i); }
   const Value* operator ->() const { return *i; }
   
+  const_iterator operator ++( int ) { return const_iterator(i++); }
+  const_iterator operator --( int ) { return const_iterator(i--); }
+
   const_iterator& operator ++() { ++i; return *this; }
   const_iterator& operator --() { --i; return *this; }
   
