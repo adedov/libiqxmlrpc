@@ -11,32 +11,35 @@
 
 namespace iqxmlrpc
 {
-
-//! XML-RPC HTTP infrastructure.
-namespace http
-{
-  class Header;
-  class Request_header;
-  class Response_header;
-  class Packet;
-  
-  template <class Header_type>
-  class Packet_reader;
+  //! XML-RPC HTTP transport-independent infrastructure.
+  /*! Contains classes which responsible for transport-indepenent 
+      HTTP collaboration functionality. Such as packet parsing/constructing, 
+      wrapping XML-RPC message into HTTP-layer one and vice versa.
+  */
+  namespace http
+  {
+    class Header;
+    class Request_header;
+    class Response_header;
+    class Packet;
     
-  class Malformed_packet;
-  class Error_response;
-  class Bad_request;
-  class Method_not_allowed;
-  class Unsupported_content_type;
-    
-  class Server;
-  class Client;
+    template <class Header_type>
+    class Packet_reader;
+      
+    class Malformed_packet;
+    class Error_response;
+    class Bad_request;
+    class Method_not_allowed;
+    class Unsupported_content_type;
+      
+    class Server;
+    class Client;
+  };
 };
-
 
 //! HTTP header. Responsible for parsing, 
 //! creating generic HTTP headers.
-class http::Header {
+class iqxmlrpc::http::Header {
 public:
   typedef void (*Parser)( Header*, std::istringstream& );
   typedef std::map<std::string, Parser> Parsers_box;
@@ -105,7 +108,7 @@ private:
 
 
 //! HTTP request's header.
-class http::Request_header: public http::Header {
+class iqxmlrpc::http::Request_header: public http::Header {
   std::string uri_;
   std::string host_;
   std::string user_agent_;
@@ -134,7 +137,7 @@ private:
 
 
 //! HTTP response's header.
-class http::Response_header: public http::Header {
+class iqxmlrpc::http::Response_header: public http::Header {
   int code_;
   std::string phrase_;
   std::string server_;
@@ -163,7 +166,7 @@ private:
 
 
 //! HTTP packet: Header + Content.
-class http::Packet {
+class iqxmlrpc::http::Packet {
 protected:
   http::Header* header_;
   std::string content_;
@@ -191,7 +194,7 @@ public:
 
 //! HTTP XML-RPC server independet from 
 //! low level transport implementation.
-class http::Server: private iqxmlrpc::Server {
+class iqxmlrpc::http::Server: private iqxmlrpc::Server {
   http::Packet_reader<Request_header>* preader;
   http::Packet* packet;
 
@@ -211,7 +214,7 @@ public:
 
 //! HTTP XML-RPC client code independet from 
 //! low-level transport implementation.
-class http::Client: public iqxmlrpc::Client {
+class iqxmlrpc::http::Client: public iqxmlrpc::Client {
   std::string uri_;
   std::string host_;
   Packet_reader<Response_header>* preader;
@@ -244,7 +247,7 @@ protected:
 
 
 //! Exception which is thrown on syntax error during HTTP packet parsing.
-class http::Malformed_packet: public Exception {
+class iqxmlrpc::http::Malformed_packet: public Exception {
 public:
   Malformed_packet():
     Exception( "Malformed HTTP packet received." ) {}
@@ -253,7 +256,7 @@ public:
 
 //! Exception related to HTTP protocol. 
 //! Can be sent as error response to client.
-class http::Error_response: public http::Packet, public Exception {
+class iqxmlrpc::http::Error_response: public http::Packet, public Exception {
 public:
   Error_response( const std::string& phrase, int code ):
     Packet( new Response_header(code, phrase), "" ),
@@ -264,7 +267,7 @@ public:
 
 
 //! HTTP/1.1 400 Bad request
-class http::Bad_request: public http::Error_response {
+class iqxmlrpc::http::Bad_request: public http::Error_response {
 public:
   Bad_request():
     Error_response( "Bad request", 400 ) {}
@@ -272,7 +275,7 @@ public:
 
 
 //! HTTP/1.1 405 Method not allowed
-class http::Method_not_allowed: public http::Error_response {
+class iqxmlrpc::http::Method_not_allowed: public http::Error_response {
 public:
   Method_not_allowed():
     Error_response( "Method not allowed", 405 )
@@ -283,12 +286,11 @@ public:
 
 
 //! HTTP/1.1 415 Unsupported media type
-class http::Unsupported_content_type: public http::Error_response {
+class iqxmlrpc::http::Unsupported_content_type: public http::Error_response {
 public:
   Unsupported_content_type():
     Error_response( "Unsupported media type", 415 ) {}
 };
 
-};
 
 #endif
