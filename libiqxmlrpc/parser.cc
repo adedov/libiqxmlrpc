@@ -15,9 +15,10 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser.cc,v 1.8 2004-09-19 17:33:47 adedov Exp $
+//  $Id: parser.cc,v 1.9 2004-10-21 06:18:46 adedov Exp $
 
 #include <stdexcept>
+#include <functional>
 #include "sysinc.h"
 #include "parser.h"
 #include "except.h"
@@ -27,8 +28,6 @@
 
 using namespace iqxmlrpc;
 
-
-Parser::Types_list Parser::types;
 Parser* Parser::instance_ = 0;
 
 
@@ -43,27 +42,32 @@ Parser* Parser::instance()
 
 Parser::Parser()
 {
-  if( types.empty() )
-  {
-    Value_parser* i4p = new Int_parser;
-    register_parser( "i4", i4p );
-    register_parser( "int", i4p );
-    register_parser( "boolean", new Boolean_parser );
-    register_parser( "double", new Double_parser );
-    register_parser( "string", new String_parser );
-    register_parser( "", new String_parser ); // default type
-    register_parser( "nil", new Nil_parser );    
-    register_parser( "base64", new Base64_parser );
-    register_parser( "dateTime.iso8601", new Date_time_parser );
-    register_parser( "array", new Array_parser );
-    register_parser( "struct", new Struct_parser );
-  }
+  Value_parser* i4p = new Int_parser;
+  register_parser( "i4", i4p );
+  register_parser( "int", i4p );
+  register_parser( "boolean", new Boolean_parser );
+  register_parser( "double", new Double_parser );
+  register_parser( "string", new String_parser );
+  register_parser( "", new String_parser ); // default type
+  register_parser( "nil", new Nil_parser );    
+  register_parser( "base64", new Base64_parser );
+  register_parser( "dateTime.iso8601", new Date_time_parser );
+  register_parser( "array", new Array_parser );
+  register_parser( "struct", new Struct_parser );
 }
 
 
 Parser::~Parser()
 {
+  clean_types();
   instance_ = 0;
+}
+
+
+void Parser::clean_types()
+{
+  std::for_each( types.begin(), types.end(), 
+    std::mem_fun_ref(&Type_desc::clean) );
 }
 
 

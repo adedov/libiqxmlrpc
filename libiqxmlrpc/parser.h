@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser.h,v 1.3 2004-07-27 08:14:54 adedov Exp $
+//  $Id: parser.h,v 1.4 2004-10-21 06:18:46 adedov Exp $
 
 #ifndef _iqxmlrpc_parser_h_
 #define _iqxmlrpc_parser_h_
@@ -48,17 +48,20 @@ class iqxmlrpc::Parser {
     std::string   xmlrpc_name;
     Value_parser *parser;
     
+    void clean() { delete parser; }
+    
     Type_desc( const std::string& xn, Value_parser* pr ):
       xmlrpc_name(xn), parser(pr) {}
   };
   
   typedef std::vector< Type_desc > Types_list;
-  
-  static Types_list types;
+  Types_list types;
+
   static Parser* instance_;
   
 public:
   static Parser* instance();
+
   ~Parser();
 
   Value* parse_value( const xmlpp::Node* );
@@ -78,6 +81,7 @@ public:
 private:
   Parser();
 
+  void clean_types();
   void get_value_node( const xmlpp::Node*, xmlpp::Node*&, std::string& );
 };
 
