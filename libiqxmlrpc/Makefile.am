@@ -8,15 +8,21 @@ pkginclude_HEADERS = \
   except.h \
   value_type.h \
   value.h \
+  parser.h \
+  parser_specific.h \
+  request.h \
   response.h \
-  method.h
+  method.h \
+  transport.h
+  
 
 libiqxmlrpc_la_SOURCES = \
   except.cc \
   value_type.cc \
   value.cc \
-  parser.h		parser.cc \
-  parser_specific.h	parser_specific.cc \
-  request.h		request.cc \
+  parser.cc \
+  parser_specific.cc \
+  request.cc \
   response.cc \
-  method.cc
+  method.cc \
+  transport.cc
