@@ -52,6 +52,7 @@ void Server::parse_request( const std::string& request_string )
   parser.parse_memory( request_string );
 
   delete request;
+  request = 0;
   request = new Request( parser.get_document() );
 }
 
@@ -66,11 +67,18 @@ void Server::execute()
 // --------------------------------------------------------------------------
 Response Client::execute( const std::string& name, const Param_list& pl )
 {
-  std::string resp_str = do_execute( Request( name, pl ) );
-
-  xmlpp::DomParser parser;
-  parser.set_substitute_entities();
-  parser.parse_memory( resp_str );
-
-  return Response( parser.get_document() );
+  try 
+  {
+    std::string resp_str = do_execute( Request( name, pl ) );
+  
+    xmlpp::DomParser parser;
+    parser.set_substitute_entities();
+    parser.parse_memory( resp_str );
+  
+    return Response( parser.get_document() );
+  }
+  catch( const xmlpp::exception& e )
+  {
+    throw Parse_error::caused( e.what() );
+  }
 }
