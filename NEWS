@@ -1,5 +1,11 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.4.3 - 0.5
+  * Remove client's and server's headers from libiqxmlrpc.h.
+    So one must include extra headers in addition to libiqxmlrpc.h.
+  * Fix server's crash on exception in its particular connection object.
+  * Minor architecture refactoring and code cleaning.
+
 0.4.2 - 0.4.3
   * Port client part of library on Win32 (use MS VS 2003).
 
