@@ -20,6 +20,9 @@ namespace http
   class Response_header;
   class Packet;
   
+  template <class Header_type>
+  class Packet_reader;
+    
   class Error_response;
   class Bad_request;
   class Method_not_allowed;
@@ -188,10 +191,7 @@ public:
 //! HTTP XML-RPC server independet from 
 //! low level transport implementation.
 class http::Server: private iqxmlrpc::Server {
-  std::string header_cache;
-  std::string content_cache;
-  
-  http::Header* header;
+  http::Packet_reader<Request_header>* preader;
   http::Packet* packet;
 
 public:
@@ -205,9 +205,6 @@ public:
 
   //! Executes request which has been read.
   http::Packet* execute();
-
-private:
-  void read_header( const std::string& );
 };
 
 
@@ -216,11 +213,13 @@ private:
 class http::Client: public iqxmlrpc::Client {
   std::string uri_;
   std::string host_;
+  Packet_reader<Response_header>* preader;
+  Packet* packet;
   
 public:
-  Client( const std::string& uri = "/RPC" ):
-    uri_(uri), host_() {}
-
+  Client( const std::string& uri );
+  ~Client();
+      
   //! Real client should use this function to
   //! set client's host name sent to server.
   void set_client_host( const std::string& h )
@@ -233,8 +232,13 @@ protected:
   //! Can throw Error_response.
   std::string do_execute( const Request& );
 
+  //! Considers parameter as a piece of response.
+  //! \return true if whole response has been read,
+  //! \return false if more data is needed.
+  bool read_response( const std::string& );
+
   virtual void send_request( const http::Packet& ) = 0;
-  virtual http::Packet recv_response() = 0;
+  virtual void recv_response() = 0;
 };
 
 

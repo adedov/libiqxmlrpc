@@ -450,25 +450,33 @@ void Packet::set_keep_alive( bool keep_alive )
 
   
 // ---------------------------------------------------------------------------
-Server::Server( Method_dispatcher* d ):
-  iqxmlrpc::Server(d),
-  packet(0),
-  header(0)
-{
-}
+template <class Header_type>
+class iqxmlrpc::http::Packet_reader {
+  std::string header_cache;
+  std::string content_cache;
+  Header* header;
+  bool constructed;
+  
+public:
+  Packet_reader():
+    header(0), constructed(false) {}
+      
+  ~Packet_reader()
+  {
+    if( !constructed )
+      delete header;
+  }
+      
+  Packet* read_packet( const std::string& );
+
+private:
+  void read_header( const std::string& );
+};
 
 
-Server::~Server()
-{
-  if( !packet )
-    delete header;
-  else
-    delete packet;
-}
-
-
-bool Server::read_request( const std::string& s )
-{
+template <class Header_type>
+Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
+{  
   if( !header )
     read_header(s);
   else
@@ -477,12 +485,56 @@ bool Server::read_request( const std::string& s )
   if( header && content_cache.length() >= header->content_length() )  
   {
     content_cache.erase( header->content_length(), std::string::npos );
-    packet = new Packet( header, content_cache );
+    Packet* packet = new Packet( header, content_cache );
     content_cache = header_cache = "";
-    return true;
+    constructed = true;
+    return packet;
   }
   
-  return false;
+  return 0;
+}
+
+
+template <class Header_type>
+void Packet_reader<Header_type>::read_header( const std::string& s )
+{
+  header_cache += s;
+  unsigned i = header_cache.find( "\r\n\r\n" );
+  
+  if( i == std::string::npos )
+    i = header_cache.find( "\n\n" );
+  
+  if( i == std::string::npos )
+    return;
+  
+  std::istringstream ss( header_cache );
+  header = new Header_type( ss );
+  
+  for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
+    content_cache += c;
+}
+
+
+// ---------------------------------------------------------------------------
+Server::Server( Method_dispatcher* d ):
+  iqxmlrpc::Server(d),
+  preader(new Packet_reader<Request_header>),
+  packet(0)
+{
+}
+
+
+Server::~Server()
+{
+  delete packet;
+  delete preader;
+}
+
+
+bool Server::read_request( const std::string& s )
+{
+  packet = preader->read_packet( s );
+  return packet;
 }
 
 
@@ -495,38 +547,42 @@ Packet* Server::execute()
 }
 
 
-void Server::read_header( const std::string& s )
+// ---------------------------------------------------------------------------
+Client::Client( const std::string& uri ):
+  uri_(uri), 
+  host_(), 
+  preader(new Packet_reader<Response_header>), 
+  packet(0) 
 {
-  header_cache += s;
-  unsigned i = header_cache.find( "\r\n\r\n" );
-  
-  if( i == std::string::npos )
-    i = header_cache.find( "\n\n" );
-  
-  if( i == std::string::npos )
-    return;
-  
-  std::istringstream ss( header_cache );
-  header = new Request_header( ss );
-  
-  for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
-    content_cache += c;
+}
+    
+
+Client::~Client()
+{
+  delete packet;
+  delete preader;
 }
 
 
-// ---------------------------------------------------------------------------
 std::string Client::do_execute( const Request& req )
 {
   Request_header* req_h = new Request_header( uri_, host_ );
   Packet req_p( req_h, req.to_xml()->write_to_string_formatted() );
   send_request( req_p );
+  recv_response();
   
-  Packet res_p( recv_response() );
   const Response_header* res_h = 
-    static_cast<const Response_header*>(res_p.header());
+    static_cast<const Response_header*>(packet->header());
   
   if( res_h->code() != 200 )
     throw Error_response( res_h->phrase(), res_h->code() );
 
-  return res_p.content();
+  return packet->content();
+}
+
+
+bool Client::read_response( const std::string& s )
+{
+  packet = preader->read_packet( s );
+  return packet;
 }
