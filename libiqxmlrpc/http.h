@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.h,v 1.17 2004-07-23 08:48:35 adedov Exp $
+//  $Id: http.h,v 1.18 2004-09-19 09:37:26 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -290,6 +290,7 @@ public:
 };
 
 
+//! HTTP/1.1 413 Request Entity Too Large
 class iqxmlrpc::http::Request_too_large: public http::Error_response {
 public:
   Request_too_large():
