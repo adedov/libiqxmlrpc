@@ -12,7 +12,7 @@
 using namespace iqnet;
 
 
-Acceptor::Acceptor( int port, Connection_fabric* fabric_, Reactor* reactor_ ):
+Acceptor::Acceptor( int port, Accepted_conn_fabric* fabric_, Reactor* reactor_ ):
   fabric(fabric_),
   reactor(reactor_)
 {

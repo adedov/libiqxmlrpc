@@ -7,7 +7,7 @@
 
 namespace iqnet 
 {
-  class Connection_fabric;  
+  class Accepted_conn_fabric;
   class Connection;
   class Acceptor;
 };
@@ -22,11 +22,11 @@ namespace iqnet
 */
 class iqnet::Acceptor: public iqnet::Event_handler {
   int sock;
-  Connection_fabric *fabric;
+  Accepted_conn_fabric *fabric;
   Reactor *reactor;
     
 public:
-  Acceptor( int port, Connection_fabric*, Reactor* );
+  Acceptor( int port, Accepted_conn_fabric*, Reactor* );
   virtual ~Acceptor();
 
   const iqnet::Inet_addr get_addr_listening() const;
