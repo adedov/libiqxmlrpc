@@ -15,12 +15,24 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: utf_conv.cc,v 1.3 2004-10-04 23:34:50 adedov Exp $
+//  $Id: utf_conv.cc,v 1.4 2004-10-14 03:18:42 adedov Exp $
 
 #include <errno.h>
 #include "utf_conv.h"
 
 using namespace iqxmlrpc;
+
+
+iqxmlrpc::Utf_conv_base* iqxmlrpc::config::cs_conv = new Utf_null_conv;
+
+void iqxmlrpc::config::set_encoding( const std::string& enc, unsigned m )
+{
+  delete iqxmlrpc::config::cs_conv;
+  iqxmlrpc::config::cs_conv = new Utf_conv( enc, m );
+}
+
+
+// --------------------------------------------------------------------------
 
 
 Utf_conv::Utf_conv( const std::string& enc, unsigned m ):
@@ -43,6 +55,7 @@ Utf_conv::~Utf_conv()
 }
 
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace 
 {
   class auto_iconv_arg {
@@ -67,6 +80,7 @@ namespace
     }    
   };
 };
+#endif
 
 std::string Utf_conv::convert( iconv_t cd, const std::string& s )
 {

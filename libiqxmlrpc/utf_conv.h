@@ -15,14 +15,15 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: utf_conv.h,v 1.4 2004-10-11 11:02:50 maxim Exp $
+//  $Id: utf_conv.h,v 1.5 2004-10-14 03:18:42 adedov Exp $
 
 #ifndef _libiqxmlrpc_utf_conv_h_
 #define _libiqxmlrpc_utf_conv_h_
 
 #include <string>
+
 extern "C" {
-#include <iconv.h>
+  #include <iconv.h>
 }
 
 #include "except.h"
@@ -34,31 +35,42 @@ namespace iqxmlrpc
   class Utf_conv_base;
   class Utf_null_conv;
   class Utf_conv;
+    
+  //! Library's run-time configuration specific stuff
+  namespace config
+  {
+    //! Current charset converter
+    extern iqxmlrpc::Utf_conv_base* cs_conv;
+    
+    //! Change current charset converter
+    void set_encoding( const std::string&, unsigned max_sym_len = 3 );
+  };
 };
 
 
+//! Base class for charset conversion utilities.
 class iqxmlrpc::Utf_conv_base {
 public:
-  class Unknown_charset_conversion;
-  class Charset_conversion_failed;
-  
-public:
   virtual ~Utf_conv_base() {}
- 
+
+  //! Convert specified string to UTF-8    
   virtual std::string to_utf( const std::string& ) = 0;
+  
+  //! Convert UTF-8 string to some application specific encoding
   virtual std::string from_utf( const std::string& ) = 0;
 };
 
 
+//! No charset conversion class.
 class iqxmlrpc::Utf_null_conv: public iqxmlrpc::Utf_conv_base {
 public:
-  //! No conversion
+  //! Returns string without any conversion
   std::string to_utf( const std::string& s ) 
   {
     return s;
   }
   
-  //! No conversion
+  //! Returns string without any conversion
   std::string from_utf( const std::string& s ) 
   {
     return s;
@@ -67,25 +79,35 @@ public:
 
 
 //! Charset conversion utility class.
-/*! Converts only from/to UTF-8. 
-*/
+/*! Converts strings to/from UTF-8 using GNU iconv. */
 class iqxmlrpc::Utf_conv: public iqxmlrpc::Utf_conv_base {
+public:
+  class Unknown_charset_conversion;
+  class Charset_conversion_failed;
+  
+private:
   iconv_t cd_to_utf;
   iconv_t cd_from_utf;
   unsigned max_sym_len;
 //  char unknown_sym;
     
 public:
+  /*! \param enc_name application specific encoding
+      \param max_sym_len maximum number of bytes to represent one symbol 
+                         of enc_name's encoding in UTF-8
+  */
   Utf_conv( const std::string& enc_name, unsigned max_sym_len );
   ~Utf_conv();
 
 //  void set_unknown_sym( char c ) { unknown_sym = c; }
 
+  //! Convert specified string to UTF-8
   std::string to_utf( const std::string& s )
   {
     return convert( cd_to_utf, s );
   }
   
+  //! Convert specified string from UTF-8 to specific encoding
   std::string from_utf( const std::string& s )
   {
     return convert( cd_from_utf, s );
@@ -96,7 +118,8 @@ private:
 };
 
 
-class iqxmlrpc::Utf_conv_base::Unknown_charset_conversion: 
+//! No such conversion exception class
+class iqxmlrpc::Utf_conv::Unknown_charset_conversion: 
   public iqxmlrpc::Exception 
 {
 public:
@@ -105,7 +128,8 @@ public:
 };
 
 
-class iqxmlrpc::Utf_conv_base::Charset_conversion_failed: 
+//! Conversion fault exception class
+class iqxmlrpc::Utf_conv::Charset_conversion_failed: 
   public iqxmlrpc::Exception 
 {
 public:
