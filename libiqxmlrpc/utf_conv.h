@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: utf_conv.h,v 1.2 2004-10-03 16:33:13 adedov Exp $
+//  $Id: utf_conv.h,v 1.3 2004-10-04 23:34:50 adedov Exp $
 
 #ifndef _libiqxmlrpc_utf_conv_h_
 #define _libiqxmlrpc_utf_conv_h_
@@ -23,57 +23,90 @@
 #include <string>
 #include <iconv.h>
 #include "except.h"
+#include "value.h"
 
 
 namespace iqxmlrpc 
 {
+  class Utf_conv_base;
+  class Utf_null_conv;
   class Utf_conv;
+};
+
+
+class iqxmlrpc::Utf_conv_base {
+public:
+  class Unknown_charset_conversion;
+  class Charset_conversion_failed;
+  
+public:
+  virtual ~Utf_conv_base() {}
+ 
+  virtual std::string to_utf( const std::string& ) = 0;
+  virtual std::string from_utf( const std::string& ) = 0;
+};
+
+
+class iqxmlrpc::Utf_null_conv: public iqxmlrpc::Utf_conv_base {
+public:
+  //! No conversion
+  std::string to_utf( const std::string& s ) 
+  {
+    return s;
+  }
+  
+  //! No conversion
+  std::string from_utf( const std::string& s ) 
+  {
+    return s;
+  }  
 };
 
 
 //! Charset conversion utility class.
 /*! Converts only from/to UTF-8. 
 */
-class iqxmlrpc::Utf_conv {
-public:
-  class Unknown_charset_conversion;
-  class Charest_conversion_failed;
-  
-private:
-  iconv_t cd;
+class iqxmlrpc::Utf_conv: public iqxmlrpc::Utf_conv_base {
+  iconv_t cd_to_utf;
+  iconv_t cd_from_utf;
+  unsigned max_sym_len;
 //  char unknown_sym;
     
 public:
-  //! Create instance for conversion from UTF-8 to another encoding.
-  static Utf_conv* from_utf( const std::string& to );
-  //! Create instance for conversion from some encoding to UTF-8.
-  static Utf_conv* to_utf( const std::string& from );
-
+  Utf_conv( const std::string& enc_name, unsigned max_sym_len );
   ~Utf_conv();
 
 //  void set_unknown_sym( char c ) { unknown_sym = c; }
+
+  std::string to_utf( const std::string& s )
+  {
+    return convert( cd_to_utf, s );
+  }
   
-  //! Process conversion.
-  /*! \param str string to convert
-      \param max_sym_len points how much reserve memory for output string
-  */
-  std::string convert( const std::string& str, unsigned max_sym_len=3 );
+  std::string from_utf( const std::string& s )
+  {
+    return convert( cd_from_utf, s );
+  }
 
 private:
-  Utf_conv( bool from_utf, const std::string& );
+  std::string convert( iconv_t, const std::string& );
 };
 
 
-class iqxmlrpc::Utf_conv::Unknown_charset_conversion: public iqxmlrpc::Exception {
+class iqxmlrpc::Utf_conv_base::Unknown_charset_conversion: 
+  public iqxmlrpc::Exception 
+{
 public:
-  Unknown_conversion( const std::string& cs ):
+  Unknown_charset_conversion( const std::string& cs ):
     Exception( "iconv not aware about charset " + cs ) {}
 };
 
 
-class iqxmlrpc::Utf_conv::Charest_conversion_failed: public iqxmlrpc::Exception {
+class iqxmlrpc::Utf_conv_base::Charset_conversion_failed: 
+  public iqxmlrpc::Exception 
+{
 public:
-  Conversion_failed():
+  Charset_conversion_failed():
     Exception( "Charset conversion failed." ) {}
 };
 

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: utf_conv.cc,v 1.2 2004-10-03 16:33:13 adedov Exp $
+//  $Id: utf_conv.cc,v 1.3 2004-10-04 23:34:50 adedov Exp $
 
 #include <errno.h>
 #include "utf_conv.h"
@@ -23,31 +23,23 @@
 using namespace iqxmlrpc;
 
 
-Utf_conv* Utf_conv::from_utf( const std::string& to )
+Utf_conv::Utf_conv( const std::string& enc, unsigned m ):
+  max_sym_len(m)
 {
-  return new Utf_conv( true, to );
-}
+  cd_to_utf = iconv_open( "utf-8", enc.c_str() );
+  if( cd_to_utf == (iconv_t)-1 )
+    throw Unknown_charset_conversion( enc + " to utf-8" );
 
-
-Utf_conv* Utf_conv::to_utf( const std::string& from )
-{
-  return new Utf_conv( false, from );
-}
-
-
-Utf_conv::Utf_conv( bool from_utf, const std::string& enc )
-{
-  cd = iconv_open( from_utf ? enc.c_str() : "utf-8", 
-                   from_utf ? "utf-8" : enc.c_str() );
-  
-  if( cd == (iconv_t)-1 )
-    throw Unknown_charset_conversion( enc );
+  cd_from_utf = iconv_open( enc.c_str(), "utf-8" );
+  if( cd_from_utf == (iconv_t)-1 )
+    throw Unknown_charset_conversion( "utf-8 to " + enc );
 }
 
 
 Utf_conv::~Utf_conv()
 {
-  iconv_close( cd );
+  iconv_close( cd_to_utf );
+  iconv_close( cd_from_utf );
 }
 
 
@@ -76,7 +68,7 @@ namespace
   };
 };
 
-std::string Utf_conv::convert( const std::string& s, unsigned max_sym_len )
+std::string Utf_conv::convert( iconv_t cd, const std::string& s )
 {
   size_t ilen  = s.length();
   size_t olen  = ilen*max_sym_len;
@@ -87,7 +79,7 @@ std::string Utf_conv::convert( const std::string& s, unsigned max_sym_len )
   auto_iconv_arg obuf( new char[olen] );
 
   int code = iconv( cd, &ibuf, &ileft, obuf.ptr2(), &oleft );
-  if( code == (size_t)-1 )
+  if( code == -1 )
     throw Charset_conversion_failed();
     
   return std::string( obuf.ptr1(), olen - oleft );
