@@ -110,6 +110,7 @@
   <a href="#" onClick="show('author_div')">Author</a><br>
   <a href="#" onClick="show('license_div');">License</a><br>
   <a href="#" onClick="show('depend_div');">Dependencies</a><br>
+  <a href="#" onClick="show('features_div');">Features</a><br>
   <a href="#" onClick="show('docs_div');">Documentation</a><br>
   <a href="#" onClick="show('download_div');">Downloads</a><br>
   <a href="http://sourceforge.net/projects/libiqxmlrpc">Project page</a><br>
@@ -165,6 +166,25 @@ You need modern enough C++ compiler, e.g. GNU g++ of version 3.2 and above.
   <ul>
   <li><a href="http://libxmlplusplus.sourceforge.net">libxml++-1.0</a>
   <li><a href="http://www.openssl.org">OpenSSL</a>
+  </ul>
+</div>
+
+<div class="div_item" id="features_div">
+  <h2>Features</h2>
+  <h3>Currently implemented</h3>
+  <ul>
+    <li>HTTP server (non-blocking socket);
+    <li>HTTP-over-SLL server (non-blocking socket);
+    <li>HTTP client (blocking socket);
+    <li>HTTP-over-SSL client (blocking socket);
+  </ul>
+  
+  <h3>Not yet implemented</h3>
+  <ul>
+    <li>Datetime and Base64 datatypes;
+    <li>Clients code over non-blocking sockets;
+    <li>Multithreading model, which compatible 
+        with non-blocking socket servers;
   </ul>
 </div>
 
