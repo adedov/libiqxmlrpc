@@ -9,7 +9,9 @@ check_PROGRAMS = \
   http-server \
   https-server \
   http-client \
-  https-client 
+  http-client-i \
+  https-client \
+  https-client-i
 
 parse_value_SOURCES = parse_value.cc
 
@@ -25,4 +27,8 @@ https_server_SOURCES = server_general.h https_server.cc
 
 http_client_SOURCES = client_general.h http_client.cc
 
+http_client_i_SOURCES = client_general.h http_client_i.cc
+
 https_client_SOURCES = client_general.h https_client.cc
+
+https_client_i_SOURCES = client_general.h https_client_i.cc
