@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: response.h,v 1.2 2004-03-29 06:23:18 adedov Exp $
+//  $Id: response.h,v 1.3 2004-04-27 08:10:55 adedov Exp $
 
 #ifndef _iqxmlrpc_response_h_
 #define _iqxmlrpc_response_h_
@@ -47,11 +47,14 @@ public:
 
   xmlpp::Document* to_xml() const;
 
-  //! Returns response value or throws Fault in case of fault.
+  //! Returns response value or throws iqxmlrpc::Fault in case of fault.
   const Value& value() const;
 
+  //! Check whether response is an XML-RPC Fault Reponse.
   bool is_fault()   const { return !value_; }
+  //! Returns fault code of Fault Response.
   int  fault_code() const { return fault_code_; }
+  //! Returns fault string of Fault Response.
   const std::string& fault_string() const { return fault_string_; }
   
 private:
