@@ -19,7 +19,7 @@
 /*! 
 \page about About
 This library provides Object Oriented API for 
-<a href="http://www.xmlrpc.com>XML-RPC</a> protocol.
+<a href="http://www.xmlrpc.com">XML-RPC</a> protocol.
 
 Main goal of project is to provide:
   -# Nice object oriented design;
