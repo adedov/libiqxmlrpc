@@ -12,7 +12,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: builtins.h,v 1.1 2004-09-19 09:39:05 adedov Exp $
+//  $Id: builtins.h,v 1.2 2004-10-14 03:09:22 adedov Exp $
 
 #ifndef _iqxmlrpc_buildins_h_
 #define _iqxmlrpc_buildins_h_
@@ -28,6 +28,11 @@ namespace iqxmlrpc
 };
 
 
+//! Class which stores introspection information about XML-RPC 
+//! methods configured in server application.
+/*! It stores all data in static structures to allow
+    its children access an information.
+*/
 class iqxmlrpc::Introspector {
 protected:
   typedef std::map<std::string, Method::Help*> Meth_info_map;
@@ -49,6 +54,7 @@ public:
 };
 
 
+//! Class which represents built-in server's method "system.listMethods"
 class iqxmlrpc::List_methods_m: 
   public iqxmlrpc::Method, 
   public iqxmlrpc::Introspector 
@@ -63,6 +69,7 @@ public:
 };
 
 
+//! Class which represents built-in server's method "system.methodSignature"
 class iqxmlrpc::Method_signature_m: 
   public iqxmlrpc::Method, 
   public iqxmlrpc::Introspector 
@@ -77,6 +84,7 @@ public:
 };
 
 
+//! Class which represents built-in server's method "system.methodHelp"
 class iqxmlrpc::Method_help_m: 
   public iqxmlrpc::Method, 
   public iqxmlrpc::Introspector 

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.11 2004-09-19 17:32:35 adedov Exp $
+//  $Id: method.h,v 1.12 2004-10-14 03:09:22 adedov Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -42,11 +42,17 @@ namespace iqxmlrpc
 //! Inherit it to create actual server method.
 class iqxmlrpc::Method {
 public:
+  //! Introspection interface class. 
+  /*! Create appropriate nested class for each of your method classes
+      if you want to support an introspection in your appliaction.
+  */
   class Help {
   public:
     virtual ~Help() {}
+    //! Returns methods signature
     virtual iqxmlrpc::Value signature() const { return iqxmlrpc::Nil(); }
-    virtual std::string help()          const { return ""; }
+    //! Returns methods help string
+    virtual std::string help() const { return ""; }
   };
   
 private:
