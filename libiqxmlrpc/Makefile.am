@@ -38,6 +38,7 @@ pkginclude_HEADERS = \
   request.h \
   response.h \
   method.h \
+  builtins.h \
   executor.h \
   http.h \
   server.h \
@@ -80,6 +81,7 @@ libiqxmlrpc_server_la_SOURCES = \
   http_server.cc \
   https_server.cc \
   method.cc \
+  builtins.cc \
   executor.cc \
   server.cc
 
@@ -89,6 +91,7 @@ libiqxmlrpc_server_la_SOURCES = \
 #  thread.*
 #  sigsock.*
 #  method.*
+#  builtins.*
 #  executor.*
 #  server.*
 #  http_server.*
