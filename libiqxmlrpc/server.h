@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.5 2004-04-16 07:15:50 adedov Exp $
+//  $Id: server.h,v 1.6 2004-04-16 07:36:08 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -99,9 +99,14 @@ protected:
   bool exit_flag;
 
 public:
-  Server( int port, Executor_fabric_base* );
+  //! Construct a server.
+  /*! \param port Port to accept connections on.
+      \param executor_fabric Executor fabric to use to create needed Executor.
+  */
+  Server( int port, Executor_fabric_base* executor_fabric );
   virtual ~Server();
 
+  //! Ask server to exit from work() event handle loop.
   void set_exit_flag() { exit_flag = true; }
   
   //! Register specific method class with server.
