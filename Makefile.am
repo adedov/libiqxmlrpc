@@ -8,22 +8,19 @@ EXTRA_DIST = \
   autogen.sh \
   libiqxmlrpc.pc.in \
   libiqxmlrpc.pc \
-  libiqnet.pc.in \
-  libiqnet.pc \
   libiqxmlrpc.spec.in \
   libiqxmlrpc.spec
 
 pkgconfigdir = ${libdir}/pkgconfig
-pkgconfig_DATA = \
-  libiqxmlrpc.pc \
-  libiqnet.pc
+pkgconfig_DATA = libiqxmlrpc.pc
 
 SUBDIRS = \
-  libiqnet \
   libiqxmlrpc \
   tests.libiqnet \
   tests \
   doc
+
+#  libiqnet
  
 rpm:	dist
 	cp $(PACKAGE)-$(VERSION).tar.gz /usr/src/redhat/SOURCES
