@@ -11,6 +11,7 @@ iqnetinc_HEADERS = \
   net_except.h \
   inet_addr.h \
   acceptor.h \
+  connector.h \
   reactor.h \
   connection.h \
   mt.h \
@@ -20,6 +21,7 @@ iqnetinc_HEADERS = \
 libiqnet_la_SOURCES = \
   inet_addr.cc \
   acceptor.cc \
+  connector.cc \
   reactor.cc \
   connection.cc \
   mt.cc \
