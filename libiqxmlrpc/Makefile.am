@@ -46,7 +46,8 @@ pkginclude_HEADERS = \
   http_client.h \
   http_server.h \
   https_client.h \
-  https_server.h
+  https_server.h \
+  utf_conv.h
 
 #  xml_util.h
 
@@ -67,7 +68,8 @@ libiqxmlrpc_general_la_SOURCES = \
   parser_specific.cc \
   request.cc \
   response.cc \
-  http.cc
+  http.cc \
+  utf_conv.cc
 
 libiqxmlrpc_client_la_SOURCES = \
   http_client.cc \
