@@ -51,10 +51,8 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files devel
 %defattr(-,root,root)
-%{prefix}/include/libiqnet
 %{prefix}/include/libiqxmlrpc
 %{prefix}/lib/*.a
 %{prefix}/lib/*.la
 %{prefix}/lib/pkgconfig
-%{prefix}/share/doc/libiqxmlrpc/libiqnet.html
 %{prefix}/share/doc/libiqxmlrpc/libiqxmlrpc.html
