@@ -15,18 +15,35 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.5 2004-03-29 06:20:15 adedov Exp $
+//  $Id: reactor.cc,v 1.6 2004-04-07 06:30:38 adedov Exp $
 
 #include <iostream>
 #include <vector>
 #include <list>
 #include <deque>
 #include <functional>
-#include <sys/poll.h>
+#include "../config.h"
+
+#ifdef HAVE_POLL
+  #include <sys/poll.h>
+#else
+  #include <sys/time.h>
+  #include <sys/types.h>
+  #include <unistd.h>
+
+  #define POLLIN      0x0001    /* There is data to read */
+  #define POLLPRI     0x0002    /* There is urgent data to read */
+  #define POLLOUT     0x0004    /* Writing now will not block */
+  #define POLLERR     0x0008    /* Error condition */
+  #define POLLHUP     0x0010    /* Hung up */
+  #define POLLNVAL    0x0020    /* Invalid request: fd not open */
+#endif
+
 #include <libiqnet/reactor.h>
 #include <libiqnet/net_except.h>
 
 using namespace iqnet;
+
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 class Reactor::Reactor_impl {
@@ -63,7 +80,13 @@ public:
 private:
   Handlers_box handlers;
   Handlers_box called_by_user;
-  Pollfd_vec   pfd;
+
+#ifdef HAVE_POLL
+  Pollfd_vec pfd;
+#else
+  int max_fd;
+  fd_set read_set, write_set, err_set;
+#endif
   
 public:
   unsigned       size()  const { return handlers.size(); }
@@ -160,14 +183,32 @@ void Reactor::Reactor_impl::prepare_user_events()
 
 void Reactor::Reactor_impl::prepare_system_events()
 {
+#ifdef HAVE_POLL
   pfd.clear();
+#else
+  max_fd = 0;
+  FD_ZERO( &read_set );
+  FD_ZERO( &write_set );
+  FD_ZERO( &err_set );
+#endif
     
   for( const_iterator i = begin(); i != end(); ++i )
   {
+#ifdef HAVE_POLL    
     short events = i->mask & INPUT ? POLLIN|POLLPRI : 0;
     events |= i->mask & OUTPUT ? POLLOUT : 0;
     struct pollfd sfd = { i->fd, events, 0 };
     pfd.push_back( sfd );
+#else
+    if( i->mask )
+      FD_SET( i->fd, &err_set );
+    if( i->mask & INPUT )
+      FD_SET( i->fd, &read_set );
+    if( i->mask & OUTPUT )
+      FD_SET( i->fd, &write_set );
+    
+    max_fd = i->fd > max_fd ? i->fd : max_fd;
+#endif    
   }
 }
 
@@ -213,15 +254,33 @@ bool Reactor::Reactor_impl::handle_system_events( Reactor::Timeout to_ms )
 {
   prepare_system_events();
   unsigned hsz = size();
+  int code = 0;
   
-  int code = poll( &pfd[0], hsz, to_ms );
+#ifdef HAVE_POLL
+  code = poll( &pfd[0], hsz, to_ms );
+#else
+  struct timeval tv;
+  struct timeval *ptv = 0;
+    
+  if( to_ms >= 0 )
+  {
+    tv.tv_sec = 0;
+    tv.tv_usec = to_ms * 1000;
+    ptv = &tv;
+  }
+
+  code = select( max_fd+1, &read_set, &write_set, &err_set, ptv );
+#endif
+
   if( code < 0 )
-    throw network_error( "poll" );
+    throw network_error( "poll/select" );
   
   if( !code )
     return false;
-  
+
   std::deque<Handler> active_hs;
+  
+#ifdef HAVE_POLL    
   for( int i = 0; i < hsz; i++ )
   {
     if( pfd[i].revents )
@@ -232,6 +291,22 @@ bool Reactor::Reactor_impl::handle_system_events( Reactor::Timeout to_ms )
       active_hs.push_back( h );
     }
   }
+#else
+  for( iterator i = begin(); i != end(); ++i )
+  {
+    short revents = 0;
+    revents |= FD_ISSET( i->fd, &read_set ) ? POLLIN : 0;
+    revents |= FD_ISSET( i->fd, &write_set ) ? POLLOUT : 0;
+    revents |= FD_ISSET( i->fd, &err_set ) ? POLLERR : 0;
+    
+    if( revents )
+    {
+      Handler h( *i );
+      h.revents = revents;
+      active_hs.push_back( h );
+    }
+  }
+#endif
   
   while( !active_hs.empty() )
   {
