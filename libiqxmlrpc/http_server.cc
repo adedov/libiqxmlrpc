@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.cc,v 1.5 2004-11-14 16:58:28 adedov Exp $
+//  $Id: http_server.cc,v 1.6 2005-03-23 18:13:22 bada Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -74,7 +74,7 @@ void Http_server_connection::handle_input( bool& terminate )
 
 void Http_server_connection::handle_output( bool& terminate )
 {
-  int sz = send( response.c_str(), response.length() );
+  unsigned sz = send( response.c_str(), response.length() );
 
   if( sz == response.length() )
   {
