@@ -62,7 +62,7 @@ int ssl::Connection::recv( char* buf, int len )
 {
   int ret = SSL_read( ssl, buf, len );
 
-  if( ret < 0 )
+  if( ret < 0 ) //! ret <= 0
     throw_io_exception( ssl, ret );
 
   return ret;
@@ -186,7 +186,6 @@ void ssl::Reaction_connection::handle_output( bool& terminate )
 
 void ssl::Reaction_connection::try_send()
 {
-  state = WRITING;
   send( send_buf, buf_len );
   state = EMPTY;
 }
@@ -194,7 +193,6 @@ void ssl::Reaction_connection::try_send()
 
 int ssl::Reaction_connection::try_recv()
 {
-  state = READING;
   int ln = recv( recv_buf, buf_len );
   state = EMPTY;
   
@@ -217,4 +215,7 @@ void ssl::Reaction_connection::reg_recv( char* buf, int len )
   recv_buf = buf;
   buf_len = len;
   reactor->register_handler( this, Reactor::INPUT );
+  
+  if( SSL_pending(ssl) )
+    reactor->fake_event( this, Reactor::INPUT );
 }
