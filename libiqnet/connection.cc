@@ -92,15 +92,12 @@ void Connection::set_non_blocking( bool flag )
   mode = flag ? mode | O_NDELAY : mode & !O_NDELAY;
   
   if( fcntl( sock, F_SETFL, mode ) == -1 )
-    throw network_error( "fcntl" );
+    throw network_error( "fcntl( F_SETFL )" );
 }
 
 
 bool Connection::get_non_blocking() const
 {
-  socklen_t len;
-  int flag;
-  
-  ::getsockopt( sock, SOL_TCP, TCP_NODELAY, &flag, &len );
-  return flag;
+  int mode = fcntl( sock, F_GETFL, 0 );
+  return mode & O_NDELAY;
 }
