@@ -2,7 +2,7 @@
 \page client_prog Writing XML-RPC client.
 It is pretty easy to use libiqxmlrpc on client side. One must create instance of
 client class with corresponding transport and to call an \b execute() method 
-each time, when he want to perform remote procedure execution. All concrete 
+each time, when he wants to perform remote procedure execution. All concrete 
 client transport classes (Http_client, Https_client) inherit single 
 iqxmlrpc::Client class. So the way to call the remote procedure is general and
 transport independent.

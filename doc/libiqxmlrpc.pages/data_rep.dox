@@ -105,7 +105,7 @@ iqxmlrpc::Struct::No_field would be thrown.
 \section value_class iqxmlrpc::Value class
 Users of the library should use objects of class iqxmlrpc::Value 
 to store/transfer their values. Value objects can contain values of various 
-types defined in libiqxmlrpc and represents an interface for 
+types defined in libiqxmlrpc and represent an interface for 
 retrieving/storing value of particular type as well as special methods 
 specific for iqxmlrpc::Array and iqxmlrpc::Struct only.
 

@@ -3,9 +3,10 @@
 
 - \ref about
 - \ref features
+- \ref requirements
 
 <b>Library architecture </b>
-- \ref architecture
+- \ref arch_overview
 - \ref exceptions
 
 <b>Library Usage</b>
@@ -20,10 +21,10 @@
 This library provides Object Oriented API for 
 <a href="http://www.xmlrpc.com>XML-RPC</a> protocol.
 
-Main goals of project is to provide:
+Main goal of project is to provide:
   -# Nice object oriented design;
   -# Maximum separation of code which operates with XML-RPC structures
-     from that one, which provides transport functionality;
+     from that part, which provides transport functionality;
   -# HTTP, HTTPS as standart transports;
   -# Comfortable way to extend library's functionality.
 
@@ -34,4 +35,16 @@ Main goals of project is to provide:
 /*!
 \page features Features
 \todo Features documentation
+*/
+
+
+/*!
+\page requirements Requirements
+
+Libiqxmlrpc uses \b libxml++-1.0 as XML parser.<br>
+<i>You can find it at http://libxmlplusplus.sourceforge.net/</i>
+
+Libiqxmlrpc also uses its co-project \b Libiqnet as 
+Object Oriented network infrastructure.<br>
+<i>It is distributed with Libiqxmlrpc. It also requires <b>OpenSSL</b>.</i>
 */
