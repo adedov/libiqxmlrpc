@@ -135,4 +135,7 @@ void Http_client::recv_response()
     
     r = read_response( std::string(buf, sz) );
   }
+  
+  delete conn;
+  conn = 0;
 }

@@ -142,6 +142,8 @@ void Https_client::recv_response()
     }
     
     conn->shutdown();
+    delete conn;
+    conn = 0;
   }
   catch( const ssl::connection_close& e )
   {

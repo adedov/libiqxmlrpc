@@ -90,7 +90,6 @@ public:
   void work();
 };
 
-
 //! Single thread XML-RPC \b HTTPS client based on blocking connection.
 /*! Implements functions for real network collaboration,
     sending/receiving HTTPS packets using SSL.
@@ -108,5 +107,6 @@ protected:
   void send_request( const http::Packet& );
   void recv_response();
 };
+
 
 #endif
