@@ -5,6 +5,7 @@ libiqnet_la_LIBADD = @OPENSSL@
 
 iqnetincdir = ${includedir}/libiqnet
 iqnetinc_HEADERS = \
+  sysinc.h \
   conn_fabric.h \
   net_except.h \
   inet_addr.h \
