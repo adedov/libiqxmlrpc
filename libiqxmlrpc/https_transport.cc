@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_transport.cc,v 1.9 2004-04-21 07:22:50 adedov Exp $
+//  $Id: https_transport.cc,v 1.10 2004-04-28 07:37:14 adedov Exp $
 
 #include <iostream>
 #include "https_transport.h"
@@ -90,17 +90,53 @@ void Https_server_connection::schedule_response( http::Packet* pkt )
 
 
 // --------------------------------------------------------------------------
+Https_client_connection::Https_client_connection( 
+    int sock, const iqnet::Inet_addr& peer 
+  ):
+    iqnet::ssl::Reaction_connection( sock, peer ),
+    Client_connection( sock, peer ),
+    resp_packet(0)
+{
+  Reaction_connection::set_non_blocking( true );
+}
+
+
 http::Packet* Https_client_connection::do_process_session( const std::string& s )
 {
-  ssl::Connection::send( s.c_str(), s.length() );
+  out_str = s;
+
+  do {
+    int to = timeout >= 0 ? timeout*1000 : -1;
+    if( !reactor.handle_events(to) )
+      throw Client_timeout();
+  }
+  while( !resp_packet );
+    
+  return resp_packet;
+}
+
+
+void Https_client_connection::connect_succeed()
+{
+  reg_send( out_str.c_str(), out_str.length() );
+}
+
+
+void Https_client_connection::send_succeed( bool& )
+{
+  read_buf[0] = 0;
+  reg_recv( read_buf, read_buf_sz );
+}
+
+
+void Https_client_connection::recv_succeed( bool&, int req_len, int sz )
+{
+  std::string s( sz ? std::string(read_buf, sz) : "" );
+  resp_packet = read_response( s );
   
-  for(;;)
+  if( !resp_packet )
   {
     read_buf[0] = 0;
-    unsigned sz = ssl::Connection::recv( read_buf, read_buf_sz-1  );
-    
-    http::Packet* pkt = read_response( sz ? std::string(read_buf, sz) : "" );
-    if( pkt )
-      return pkt;
+    reg_recv( read_buf, read_buf_sz );
   }
 }
