@@ -561,7 +561,9 @@ bool Server::read_request( const std::string& s )
 Packet* Server::execute()
 {
   iqxmlrpc::Response resp( iqxmlrpc::Server::execute(packet->content()) );
-  std::string resp_str = resp.to_xml()->write_to_string_formatted();
+  xmlpp::Document* xmldoc = resp.to_xml();
+  std::string resp_str = xmldoc->write_to_string_formatted();
+  delete xmldoc;
   
   return new Packet( new Response_header(), resp_str );
 }

@@ -1,3 +1,4 @@
+#include <memory>
 #include <libxml++/libxml++.h>
 #include <libiqxmlrpc/null_transport.h>
 #include <libiqxmlrpc/method.h>
@@ -57,9 +58,8 @@ void Server::parse_request( const std::string& request_string )
 
 void Server::execute()
 {
-  Method* m = disp->create_method( request->get_name() );
+  std::auto_ptr<Method> m( disp->create_method(request->get_name()) );
   m->execute( request->get_params(), resp_value );
-  delete m;
 }
 
 
