@@ -1,7 +1,5 @@
 lib_LTLIBRARIES = libiqnet.la
 
-#CXXFLAGS = -g
-#LDFLAGS = -g
 libiqnet_la_LDFLAGS = -version-info @LIBIQNET_VERSION@
 libiqnet_la_LIBADD = @OPENSSL@
 
@@ -12,6 +10,7 @@ iqnetinc_HEADERS = \
   inet_addr.h \
   acceptor.h \
   connector.h \
+  lock.h \
   reactor.h \
   connection.h \
   ssl_lib.h \
