@@ -4,48 +4,84 @@
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h> 
-#include "ssl_lib.h"
+#include <libiqnet/net_except.h>
+#include <libiqnet/ssl_lib.h>
+
+using namespace iqnet::ssl;
+
+iqnet::ssl::Ctx* iqnet::ssl::ctx = 0;
+bool Ctx::initialized = false;
 
 
-SSL_CTX* SSL_lib::ctx = 0;
-
-
-void SSL_lib::init( const std::string& cert_path, const std::string& key_path )
+Ctx::Ctx( const std::string& cert_path, const std::string& key_path )
 {
-  SSL_load_error_strings();
-  SSL_library_init();
+  init_library();
   
   SSL_METHOD *meth = SSLv2_server_method();
-  ctx  = SSL_CTX_new( meth );
+  ctx = SSL_CTX_new( meth );
   
-  if( !ctx )
-    throw error();
-      
-  if( SSL_CTX_use_certificate_file(ctx, cert_path.c_str(), SSL_FILETYPE_PEM) <= 0 ) 
-    throw error();
+  if( 
+    !SSL_CTX_use_certificate_file( ctx, cert_path.c_str(), SSL_FILETYPE_PEM ) ||
+    !SSL_CTX_use_PrivateKey_file( ctx, key_path.c_str(), SSL_FILETYPE_PEM ) ||
+    !SSL_CTX_check_private_key( ctx ) 
+  )
+    throw exception();
+}
+
+
+Ctx::~Ctx()
+{
+}
+
+
+void Ctx::init_library()
+{
+  if( !Ctx::initialized )
+  {
+    SSL_load_error_strings();
+    SSL_library_init();
+    Ctx::initialized = true;
+  }
+}
+
+
+// ----------------------------------------------------------------------------
+exception::exception() throw():
+  ssl_err( ERR_get_error() ),
+  msg( ERR_reason_error_string(ssl_err) )
+{
+}
+
+
+exception::exception( unsigned long err ) throw():
+  ssl_err(err),
+  msg( ERR_reason_error_string(ssl_err) )
+{
+}
+
+
+// ----------------------------------------------------------------------------
+void iqnet::ssl::throw_io_exception( SSL* ssl, int ret )
+{
+  int code = SSL_get_error( ssl, ret );
+  switch( code )
+  {
+    case SSL_ERROR_NONE:
+      return;
     
-  if( SSL_CTX_use_PrivateKey_file(ctx, key_path.c_str(), SSL_FILETYPE_PEM) <= 0 )
-    throw error();
-      
-  if( !SSL_CTX_check_private_key(ctx) ) 
-    throw error();
-}
-
-
-// --------- SSL::error -----------
-SSL_lib::error::error():
-  std::runtime_error( ERR_error_string( SSL_get_error( 0, 0 ), 0 ) ) // ??
-{
-}
-
-
-SSL_lib::error::error( int ssl_err ):
-  std::runtime_error( ERR_error_string( ssl_err, 0 ) ) // not thread-safe!
-{
-}
-
-
-SSL_lib::error::error( SSL* ssl, int ret ):
-  std::runtime_error( ERR_error_string( SSL_get_error(ssl, ret), 0 ) ) // not thread-safe!
-{
+    case SSL_ERROR_WANT_READ:
+      throw need_read();
+    
+    case SSL_ERROR_WANT_WRITE:
+      throw need_write();
+    
+    case SSL_ERROR_SYSCALL:
+      throw iqnet::network_error( "iqnet::ssl::throw_io_exception" );
+    
+    case SSL_ERROR_SSL:
+      throw exception();
+    
+    default:
+      throw io_error( code );
+  }
 }
