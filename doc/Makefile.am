@@ -1,1 +1,2 @@
-EXTRA_DIST = doxygen.conf
+EXTRA_DIST = \
+  libiqxmlrpc.doxygen
