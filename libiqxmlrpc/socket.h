@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.h,v 1.4 2004-10-14 03:09:22 adedov Exp $
+//  $Id: socket.h,v 1.5 2004-10-25 04:31:18 adedov Exp $
 
 #ifndef _libiqnet_socket_h_
 #define _libiqnet_socket_h_
@@ -52,6 +52,7 @@ public:
 
   Handler get_handler() const { return sock; }
 
+  void shutdown();
   void close();
   
   //! \note Does not disable non-blocking mode under UNIX.
