@@ -1,5 +1,27 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.6.1 - 0.6.2
+  New features:
+    * Added support for optional user's firewall classes. They may decide
+      whether Server should accept request from specific inet address
+      (see iqnet::Firewall_base).
+    * Added postfix version of ++ and -- operators to	Array::const_iterator.
+    * Added libiqxmlrpc-server.pc, libiqxmlrpc-client.pc in addition to just
+      libiqxmlrpc.pc.
+
+  Fixed:
+    * Client now throws iqxmlrpc::Exception rather then iqxmlrpc::Fault when
+      in receives fault response from server.
+    * Fixes incorrect copy constructor and operator = of class Array.
+      So now one can safely do things like that:
+        Array a = some_value.the_array();
+    * Fix incorrect Response's copy constructor and operator =. Now one can
+      safely use single Response object many times:
+        Response r = client.execute( ... );
+        //...
+        r = client.execute( ... );
+    * Got rid of some static staff which gaves errors in some conditions.
+        
 0.6 - 0.6.1
   * Fix compilation error on Windows.
 
