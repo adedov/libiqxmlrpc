@@ -83,4 +83,18 @@ public:
 };
 
 
+class iqxmlrpc::Https_client: public iqxmlrpc::http::Client {
+  iqnet::Inet_addr addr;
+  iqnet::ssl::Connection* conn;
+  iqnet::Connector<iqnet::ssl::Connection> ctr;
+  
+public:
+  Https_client( const iqnet::Inet_addr&, const std::string& uri="/RPC" );
+  virtual ~Https_client();
+
+protected:
+  void send_request( const http::Packet& );
+  void recv_response();
+};
+
 #endif
