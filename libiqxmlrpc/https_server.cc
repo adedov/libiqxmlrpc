@@ -15,9 +15,8 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_server.cc,v 1.3 2004-06-07 09:45:43 adedov Exp $
+//  $Id: https_server.cc,v 1.4 2004-07-20 05:45:50 adedov Exp $
 
-#include <iostream>
 #include "https_server.h"
 
 using namespace iqxmlrpc;
@@ -25,7 +24,6 @@ using namespace iqnet;
 
 
 Https_server_connection::Https_server_connection( const iqnet::Socket& s ):
-  Server_connection( s ),
   ssl::Reaction_connection( s ),
   send_buf(0)
 {
@@ -83,4 +81,18 @@ void Https_server_connection::schedule_response( http::Packet* pkt )
   send_buf = new char[response.length()];
   response.copy( send_buf, std::string::npos );
   reg_send( send_buf, response.length() );
+}
+
+
+void Https_server_connection::log_exception( const std::exception& ex )
+{
+  std::string s( "iqxmlrpc::Https_server_connection: " );
+  s += ex.what();
+  server->log_err_msg( s );
+}
+
+
+void Https_server_connection::log_unknown_exception()
+{
+  server->log_err_msg( "iqxmlrpc::Https_server_connection: unknown exception." );
 }
