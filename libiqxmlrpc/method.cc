@@ -20,7 +20,7 @@ void Method_dispatcher::register_method
 Method* Method_dispatcher::create_method( const std::string& name )
 {
   if( fs.find(name) == fs.end() )
-    return 0;
+    throw Unknown_method( name );
 
   return fs[name]->create();
 }

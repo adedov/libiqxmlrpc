@@ -53,9 +53,11 @@ public:
 class iqxmlrpc::Array: public iqxmlrpc::Value_type {
 public:
   class Out_of_range: public Exception {
+    enum { code = Fault_code::xmlrpc_usage };
+    
   public:
     Out_of_range():
-      Exception( "iqxmlrpc::Array: index out of range." ) {}
+      Exception( "iqxmlrpc::Array: index out of range.", code ) {}
   };
 
 private:
@@ -89,9 +91,11 @@ private:
 class iqxmlrpc::Struct: public iqxmlrpc::Value_type {
 public:
   class No_field: public Exception {
+    enum { code = Fault_code::xmlrpc_usage };
+    
   public:
     No_field( const std::string& f ):
-      Exception( "iqxmlrpc::Struct: field '" + f + "' not exist." ) {}
+      Exception( "iqxmlrpc::Struct: field '" + f + "' not exist.", code ) {}
   };
 
 private:

@@ -22,9 +22,11 @@ public:
   //! Bad_cast is being thrown on illegal 
   //! type conversion or Value::get_X() call.
   class Bad_cast: public Exception {
+    enum { code = Fault_code::xmlrpc_usage };
+    
   public:
     Bad_cast():
-      Exception( "iqxmlrpc::Value: incorrect type was requested." ) {}
+      Exception( "iqxmlrpc::Value: incorrect type was requested.", code ) {}
   };
   
 private:

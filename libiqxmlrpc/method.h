@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <libiqxmlrpc/value.h>
+#include <libiqxmlrpc/except.h>
 
 
 namespace iqxmlrpc
@@ -66,6 +67,15 @@ public:
     \endcode
 */
 class iqxmlrpc::Method_dispatcher {
+public:
+  class Unknown_method: public Exception {
+    enum { code = Fault_code::unknown_method };
+  public:
+    Unknown_method( const std::string& name ): 
+      Exception( "Unknown method '" + name + "'.", code ) {}
+  };
+  
+private:
   typedef std::map<std::string, Method_factory_base*> Factory_map;
   Factory_map fs;
   
