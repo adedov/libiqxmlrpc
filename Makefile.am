@@ -17,7 +17,8 @@ pkgconfig_DATA = libiqxmlrpc.pc
 SUBDIRS = \
   libiqxmlrpc \
   tests \
-  doc
+  doc \
+  win32
 
 #  libiqnet
  

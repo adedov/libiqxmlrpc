@@ -65,8 +65,11 @@ AC_SUBST(LDFLAGS)
 AC_OUTPUT(
   Makefile
   libiqxmlrpc/Makefile
+  libiqxmlrpc/version.h
   tests/Makefile
   doc/Makefile
+  win32/Makefile
+  win32/res/Makefile
   doc/libiqxmlrpc.doxygen
   libiqxmlrpc.pc
   libiqxmlrpc.spec
