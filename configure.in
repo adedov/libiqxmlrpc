@@ -1,5 +1,6 @@
 AC_INIT( libiqxmlrpc/value.h )
 AM_INIT_AUTOMAKE( libiqxmlrpc, 0.1.1 )
+AM_CONFIG_HEADER( config.h )
 
 LIBIQNET_VERSION=0:0:0
 AC_SUBST(LIBIQNET_VERSION)
@@ -38,6 +39,7 @@ AC_ARG_ENABLE( debug,
   [  --enable-debug   enables adding debug info into binaries],
   [CXXFLAGS="$CXXFLAGS -g"] )
 
+AC_CHECK_FUNCS(poll)
 
 AC_CHECK_LIB(crypto, main, true, AC_MSG_ERROR([libcrypto not found]))
 AC_CHECK_LIB(ssl, main, true, AC_MSG_ERROR([libssl not found]))
@@ -62,6 +64,7 @@ AC_OUTPUT(
   tests.libiqnet/Makefile
   tests/Makefile
   doc/Makefile
+  config.h
   libiqxmlrpc.pc
   libiqnet.pc
   libiqxmlrpc.spec
