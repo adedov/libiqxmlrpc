@@ -3,15 +3,15 @@
 
 Brief example for XML-RPC server application, which uses HTTP as transport:
 
-\dontinclude http_server.cc
+\dontinclude tests/http_server.cc
 \skipline Server
 
-\dontinclude server_general.h
+\dontinclude tests/server_general.h
 \skipline Get_weather
 \skipline public:
 \until }
 
-\dontinclude http_server.cc
+\dontinclude tests/http_server.cc
 \skipline main
 \skipline {
 \skipline try
@@ -23,10 +23,10 @@ See an entire example text \ref http_server_ex
 
 /*!
 \page http_server_ex Http_server example
-\e server_general.h
-\include server_general.h
-\e http_server.cc
-\include http_server.cc
+\e tests/server_general.h
+\include tests/server_general.h
+\e tests/http_server.cc
+\include tests/http_server.cc
 */
 
 
@@ -36,15 +36,15 @@ See an entire example text \ref http_server_ex
 Brief example for XML-RPC server application, which uses HTTP as transport and
 thread pool:
 
-\dontinclude http_server_thr.cc
+\dontinclude tests/http_server_thr.cc
 \skipline Server
 
-\dontinclude server_general.h
+\dontinclude tests/server_general.h
 \skipline Get_weather
 \skipline public:
 \until }
 
-\dontinclude http_server_thr.cc
+\dontinclude tests/http_server_thr.cc
 \skipline main
 \skipline {
 \skipline try
@@ -55,10 +55,10 @@ See an entire example text \ref http_server_thr_ex
 
 /*!
 \page http_server_thr_ex Http_server_thr example
-\e server_general.h
-\include server_general.h
-\e http_server_thr.cc
-\include http_server_thr.cc
+\e tests/server_general.h
+\include tests/server_general.h
+\e tests/http_server_thr.cc
+\include tests/http_server_thr.cc
 */
 
 /*!
@@ -66,7 +66,7 @@ See an entire example text \ref http_server_thr_ex
 Use iqxmlrpc::Http_client_connection as template's parameter for iqxmlrpc::Client
 when you want to perform XML-RPC client's requests over HTTP.
 
-\include http_client.cc
+\include tests/http_client.cc
 
 \note When iqnet::Inet_addr class is constructed from port value only, it 
 becames a localhost address with specific port number.

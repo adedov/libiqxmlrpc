@@ -212,11 +212,11 @@ iqxmlrpc::Value::the_array() or iqxmlrpc::Value::the_struct().
 
 /*! 
   \page base64_cc tests/base64.cc:  base64 encoding/decoding
-  \include base64.cc
+  \include tests/base64.cc
 */
 
 
 /*! 
   \page parse_value_cc tests/parse_value.cc: access Value's content
-  \include parse_value.cc
+  \include tests/parse_value.cc
 */

@@ -53,7 +53,7 @@ server's code.
 Method must be registered on iqxmlrpc::Server object to be able to execute.<br>
 See an example:
 
-\dontinclude http_server.cc
+\dontinclude tests/http_server.cc
 \skipline server->register_method
 
 Template parameter (Get_weather, here) is an actual method's class name. And 
@@ -84,13 +84,13 @@ Currently, libraray provides two execution policies:
  - Execution in a pool of threads.
  
 An example for creating Server with serial execution model:
-\dontinclude http_server.cc
+\dontinclude tests/http_server.cc
 \skip main()
 \skipline Server
 
 An example for creating Server with multithreaded execution model, using a
 pool of 10 threads:
-\dontinclude http_server_thr.cc
+\dontinclude tests/http_server_thr.cc
 \skip main()
 \skipline Server
 */

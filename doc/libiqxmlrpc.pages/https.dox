@@ -5,15 +5,15 @@ Libiqxmlrpc provides ability to run XML-RPC server over secure connection.
 You just need Https_server_connection template parameter instead of
 Http_server_connection:
 
-\dontinclude https_server.cc
+\dontinclude tests/https_server.cc
 \skipline Server
 
-\dontinclude server_general.h
+\dontinclude tests/server_general.h
 \skipline Get_weather
 \skipline public:
 \until }
 
-\dontinclude https_server.cc
+\dontinclude tests/https_server.cc
 \skipline main
 \skipline {
 \skipline try
@@ -33,10 +33,10 @@ library can cause a signal invocation.
 
 /*!
 \page https_server_ex Https_server example
-\e server_general.h
-\include server_general.h
-\e https_server.cc
-\include https_server.cc
+\e tests/server_general.h
+\include tests/server_general.h
+\e tests/https_server.cc
+\include tests/https_server.cc
 */
 
 
@@ -45,7 +45,7 @@ library can cause a signal invocation.
 Use iqxmlrpc::Https_client_connection as template's parameter for 
 iqxmlrpc::Client when you want to perform XML-RPC client's requests over HTTP.
 
-\include https_client.cc
+\include tests/https_client.cc
 
 \note This example is pretty like in \ref http_client but here we must also 
 initialize OpenSSL library. This can be achieved by assigning global variable 
