@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.cc,v 1.3 2004-05-17 08:43:02 adedov Exp $
+//  $Id: client.cc,v 1.4 2004-07-23 08:46:38 adedov Exp $
 
 #include "client.h"
 #include "http.h"
@@ -23,8 +23,7 @@
 using namespace iqxmlrpc;
 
 
-Client_connection::Client_connection( const iqnet::Socket& s ):
-  Connection( s ),
+Client_connection::Client_connection():
   read_buf_sz(1024),
   read_buf(new char[read_buf_sz])
 {

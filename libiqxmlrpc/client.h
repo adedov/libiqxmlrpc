@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.h,v 1.9 2004-06-10 04:34:20 adedov Exp $
+//  $Id: client.h,v 1.10 2004-07-23 08:46:38 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -38,7 +38,7 @@ namespace iqxmlrpc
 
 
 //! Transport independent base class for XML-RPC client's connection.
-class iqxmlrpc::Client_connection: public iqnet::Connection {
+class iqxmlrpc::Client_connection {
   http::Packet_reader<http::Response_header> preader;
 
 protected:
@@ -47,8 +47,8 @@ protected:
   int timeout;
 
 public:
-  Client_connection( const iqnet::Socket& );
-  ~Client_connection();
+  Client_connection();
+  virtual ~Client_connection();
 
   Response process_session( 
     const Request&, 
