@@ -6,16 +6,17 @@ EXTRA_DIST = \
   README.win32
 
 DOCDIR=${prefix}/share/doc/@PACKAGE@
+MKDOC=X@MAKEDOCS@
 
 all: libiqxmlrpc.html index.html
 
 libiqxmlrpc.html:
-	doxygen libiqxmlrpc.doxygen
+	[ ${MKDOC} == Xyes ] && doxygen libiqxmlrpc.doxygen || true
 
 install-data-local: libiqxmlrpc.html index.html
-	mkdir -p ${DOCDIR}/libiqxmlrpc.html
-	install -m 644 index.html ${DOCDIR}
-	install -m 644 libiqxmlrpc.html/* ${DOCDIR}/libiqxmlrpc.html
+	[ ${MKDOC} == Xyes ] && mkdir -p ${DOCDIR}/libiqxmlrpc.html || true
+	[ ${MKDOC} == Xyes ] && install -m 644 index.html ${DOCDIR} || true
+	[ ${MKDOC} == Xyes ] && install -m 644 libiqxmlrpc.html/* ${DOCDIR}/libiqxmlrpc.html || true
 
 uninstall-local:
 	rm -f ${DOCDIR}/index.html
