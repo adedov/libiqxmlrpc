@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.12 2004-05-11 10:11:46 adedov Exp $
+//  $Id: value_type.h,v 1.13 2004-07-27 08:20:52 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -32,6 +32,7 @@ namespace iqxmlrpc
 {
   class Value;
   class Value_type;
+  class Nil;
   class Array;
   class Struct;
 
@@ -54,6 +55,17 @@ public:
   
   virtual Value_type*  clone()  const = 0;
   virtual void to_xml( xmlpp::Node* parent ) const = 0;
+};
+
+
+//! XML-RPC extension: Nil type.
+/*! \see http://ontosys.com/xml-rpc/extensions.html */
+class iqxmlrpc::Nil: public iqxmlrpc::Value_type {
+ int nope;
+
+public:
+  Value_type* clone() const;
+  void to_xml( xmlpp::Node* ) const;
 };
 
 

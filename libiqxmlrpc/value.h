@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.h,v 1.12 2004-05-11 10:11:46 adedov Exp $
+//  $Id: value.h,v 1.13 2004-07-27 08:20:52 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -54,6 +54,7 @@ private:
 public:
   Value( Value_type* );
   Value( const Value& );
+  Value( Nil );
   Value( int );
   Value( bool );
   Value( double );
@@ -71,6 +72,7 @@ public:
 
   //! \name Type identification
   //! \{
+  bool is_nil()    const { return can_cast<Nil>(); }
   bool is_int()    const { return can_cast<Int>(); }
   bool is_bool()   const { return can_cast<Bool>(); }
   bool is_double() const { return can_cast<Double>(); }

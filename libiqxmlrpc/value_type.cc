@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.8 2004-06-07 09:45:43 adedov Exp $
+//  $Id: value_type.cc,v 1.9 2004-07-27 08:20:52 adedov Exp $
 
 #include <string.h>
 #include <sstream>
@@ -25,6 +25,19 @@
 using namespace iqxmlrpc;
 
 
+Value_type* Nil::clone() const
+{
+  return new Nil();
+}
+
+
+void Nil::to_xml( xmlpp::Node* p ) const
+{
+  p->add_child( "nil" );
+}
+
+
+// --------------------------------------------------------------------------
 void Int::to_xml( xmlpp::Node* p ) const 
 {
   xmlpp::Element* el = p->add_child( "i4" );

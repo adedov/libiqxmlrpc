@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.cc,v 1.6 2004-05-11 10:11:46 adedov Exp $
+//  $Id: value.cc,v 1.7 2004-07-27 08:20:52 adedov Exp $
 
 #include <stdexcept>
 #include "value.h"
@@ -32,6 +32,12 @@ Value::Value( Value_type* v ):
 
 Value::Value( const Value& v ):
   value( v.value->clone() )
+{
+}
+
+
+Value::Value( Nil n ):
+  value( n.clone() )
 {
 }
 
