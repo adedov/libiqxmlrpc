@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.8 2004-04-19 08:39:53 adedov Exp $
+//  $Id: reactor.cc,v 1.9 2004-04-19 08:43:10 adedov Exp $
 
 #include <iostream>
 #include <vector>
@@ -23,6 +23,7 @@
 #include <deque>
 #include <functional>
 #include <algorithm>
+#include "../config.h"
 #include "sysinc.h"
 
 #ifndef HAVE_POLL
