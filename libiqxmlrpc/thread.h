@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: thread.h,v 1.1 2004-04-27 04:10:52 adedov Exp $
+//  $Id: thread.h,v 1.2 2004-04-27 05:25:09 adedov Exp $
 
 #ifndef _libiqnet_thread_h_
 #define _libiqnet_thread_h_
@@ -30,8 +30,10 @@ namespace iqnet
 };
 
 
+//! Thread wrapper.
 class iqnet::Thread {
 public:
+  //! Unable to create a thread exception.
   class Create_failed: public std::runtime_error {
   public:
     Create_failed():

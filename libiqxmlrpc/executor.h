@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.h,v 1.3 2004-04-27 04:19:56 adedov Exp $
+//  $Id: executor.h,v 1.4 2004-04-27 05:25:09 adedov Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -36,7 +36,6 @@ namespace iqxmlrpc
 
   class Executor;
   class Serial_executor;
-//  class Threaded_executor;
   class Pool_executor;
 
   class Executor_fabric_base;
@@ -111,6 +110,7 @@ public:
 };
 
 
+//! An Executor which plans request to be executed by a pool of threads.
 class iqxmlrpc::Pool_executor: public iqxmlrpc::Executor {
   static iqnet::Alarm_socket* alarm_sock;
 
@@ -128,6 +128,7 @@ public:
 };
 
 
+//! Fabric for Pool_executor objects. It is also serves as a pool of threads.
 class iqxmlrpc::Pool_executor_fabric: 
   public iqxmlrpc::Executor_fabric<Pool_executor>
 {

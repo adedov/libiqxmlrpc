@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.3 2004-04-27 04:19:56 adedov Exp $
+//  $Id: executor.cc,v 1.4 2004-04-27 05:25:09 adedov Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -61,6 +61,7 @@ void Serial_executor::execute( const Param_list& params )
 
 
 // ----------------------------------------------------------------------------
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 class Pool_executor_fabric::Pool_thread: public iqnet::Thread {
   unsigned name;
   Pool_executor_fabric* pool;
@@ -75,6 +76,7 @@ public:
 protected:
   void do_run();
 };
+#endif
 
 
 void Pool_executor_fabric::Pool_thread::do_run()
@@ -101,6 +103,7 @@ void Pool_executor_fabric::Pool_thread::do_run()
 
 
 // ----------------------------------------------------------------------------
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 template < class T >
 class Deleter: public std::unary_function<T, void> {
 public:
@@ -109,6 +112,7 @@ public:
     delete t;
   }
 };
+#endif
 
 
 Pool_executor_fabric::Pool_executor_fabric( unsigned pool_size )
