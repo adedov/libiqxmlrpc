@@ -7,6 +7,8 @@ using namespace iqxmlrpc;
 
 int main()
 {
+/*! \page Using of Value */
+
   try
   {
     {
@@ -30,7 +32,7 @@ int main()
     Array a;
     a.push_back( 1 );
     a.push_back( 2 );
-    a.push_back( 3 ); //v[2]
+    a.push_back( 3 ); //.
     
     Value v(a);
     std::cout << "type of v[0]: " << v[0].type_debug() << std::endl;
@@ -46,10 +48,10 @@ int main()
     vec.push_back(20);
     vec.push_back(30);
     
-    std::cout << "assign():" << std::endl;
-    a.assign( vec.begin(), vec.end() );
-    for( int i = 0; i < a.size(); i++ )
-      std::cout << "a[" << i << "]=" << a[i].get_int() << std::endl;
+    std::cout << "v.the_array().assign(...):" << std::endl;
+    v.the_array().assign( vec.begin(), vec.end() );
+    for( int i = 0; i < v.size(); i++ )
+      std::cout << "v[" << i << "]=" << v[i].get_int() << std::endl;
     std::cout << std::endl;    
     
     std::cout << "Struct testing:" << std::endl;
