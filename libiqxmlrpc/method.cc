@@ -22,5 +22,7 @@ Method* Method_dispatcher::create_method( const std::string& name )
   if( fs.find(name) == fs.end() )
     throw Unknown_method( name );
 
-  return fs[name]->create();
+  Method* m = fs[name]->create();
+  m->name_ = name;
+  return m;
 }

@@ -21,9 +21,14 @@ namespace iqxmlrpc
 //! Abstract base for server method. 
 //! Inherit it to create actual server method.
 class iqxmlrpc::Method {
+  friend class Method_dispatcher;
+  std::string name_;
+  
 public:
   virtual ~Method() {}
 
+  const std::string& name() const { return name_; }
+  
   //! Replace it with your actual code.
   virtual void execute( const Param_list& params, Value& response ) = 0;
 };
