@@ -23,10 +23,6 @@ $ make check
 ## Install
 $ make install
 
-Directories libiqnet and libiqxmlrpc contain project sources/headers. Directory
-tests contains tests/examples for libiqxmlrpc library. Directory tests.libiqnet 
-contains tests for libiqnet subproject.
-
 
 Good luck,
 Anton Dedov <adedov@iqmedia.com>
