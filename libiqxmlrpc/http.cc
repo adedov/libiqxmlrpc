@@ -22,7 +22,8 @@ public:
 };
 #endif
 
-Header::Header()
+Header::Header():
+  content_length_(0)
 {
   init_parser();
   
