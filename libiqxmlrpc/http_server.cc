@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.cc,v 1.3 2004-07-20 05:45:28 adedov Exp $
+//  $Id: http_server.cc,v 1.4 2004-10-22 04:13:27 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -26,7 +26,8 @@ using namespace iqnet;
 
 
 Http_server_connection::Http_server_connection( const iqnet::Socket& s ):
-  Connection( s )
+  Connection( s ),
+  Server_connection( s.get_peer_addr() )
 {
 }
     

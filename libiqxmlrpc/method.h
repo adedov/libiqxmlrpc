@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.12 2004-10-14 03:09:22 adedov Exp $
+//  $Id: method.h,v 1.13 2004-10-22 04:13:27 adedov Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -24,7 +24,7 @@
 #include <map>
 #include "value.h"
 #include "except.h"
-
+#include "inet_addr.h"
 
 namespace iqxmlrpc
 {
@@ -58,11 +58,13 @@ public:
 private:
   friend class Method_dispatcher;
   std::string name_;
+  iqnet::Inet_addr peer_addr_;
   
 public:
   virtual ~Method() {}
 
-  const std::string& name() const { return name_; }
+  const std::string&      name()      const { return name_; }
+  const iqnet::Inet_addr& peer_addr() const { return peer_addr_; }
   
   //! Replace it with your actual code.
   virtual void execute( const Param_list& params, Value& response ) = 0;
@@ -119,7 +121,7 @@ public:
 
   //! Create method object according to specified name. 
   //! Returns 0 if no Method registered for name.
-  Method* create_method( const std::string& name );
+  Method* create_method( const std::string& name, const iqnet::Inet_addr& peer );
 };
 
 

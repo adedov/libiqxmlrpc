@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.15 2004-10-15 09:42:55 adedov Exp $
+//  $Id: server.cc,v 1.16 2004-10-22 04:13:27 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -26,7 +26,8 @@
 using namespace iqxmlrpc;
 
 
-Server_connection::Server_connection():
+Server_connection::Server_connection( const iqnet::Inet_addr& a ):
+  peer_addr(a),
   server(0),
   read_buf_sz(1024),
   read_buf(new char[1024])
@@ -126,7 +127,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
   try {
     std::auto_ptr<http::Packet> packet(pkt);
     std::auto_ptr<Request> req( parse_request( packet->content() ) );
-    Method* meth = disp.create_method( req->get_name() );
+    Method* meth = disp.create_method( req->get_name(), conn->get_peer_addr() );
     executor = exec_fabric->create( meth, this, conn );
     executor->execute( req->get_params() );
   }

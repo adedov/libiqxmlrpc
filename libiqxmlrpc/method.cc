@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.cc,v 1.6 2004-09-19 17:34:22 adedov Exp $
+//  $Id: method.cc,v 1.7 2004-10-22 04:13:27 adedov Exp $
 
 #include "method.h"
 
@@ -35,12 +35,14 @@ void Method_dispatcher::register_method
 }
 
 
-Method* Method_dispatcher::create_method( const std::string& name )
+Method* Method_dispatcher::create_method( 
+  const std::string& name, const iqnet::Inet_addr& addr )
 {
   if( fs.find(name) == fs.end() )
     throw Unknown_method( name );
 
   Method* m = fs[name]->create();
   m->name_ = name;
+  m->peer_addr_ = addr;
   return m;
 }
