@@ -30,7 +30,7 @@ int main()
     iqxmlrpc::Client<iqxmlrpc::Http_client_connection> client( iqnet::Inet_addr(3344) );
 //    client.set_timeout( 3 );
 
-    get_file( client, "bigfile" );    
+    get_file( client, "data/bigfile" );
   }
   catch ( const std::exception& e )
   {

@@ -7,6 +7,12 @@ int main()
 {
   try {
     iqnet::ssl::ctx = iqnet::ssl::Ctx::client_only();
+
+    // Set server authentication parameters.    
+    // SSL_CTX* ctx = iqnet::ssl::ctx->context();
+    // SSL_CTX_load_verify_locations( ctx, "data/cacert.pem", 0 );
+    // SSL_CTX_set_verify( ctx, SSL_VERIFY_PEER, 0 );
+
     iqxmlrpc::Client<iqxmlrpc::Https_client_connection> client( iqnet::Inet_addr(3344) );
     client.set_timeout( 3 );
 
