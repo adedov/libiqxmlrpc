@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.12 2004-07-23 08:48:35 adedov Exp $
+//  $Id: server.cc,v 1.13 2004-09-19 17:45:14 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -91,6 +91,14 @@ Server::~Server()
 }
 
 
+void Server::enable_introspection()
+{
+  register_method<List_methods_m>( "system.listMethods" );
+  register_method<Method_signature_m>( "system.methodSignature" );
+  register_method<Method_help_m>( "system.methodHelp" );
+}
+
+
 void Server::log_errors( std::ostream* log_ )
 {
   log = log_;
@@ -121,16 +129,22 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
     executor = exec_fabric->create( meth, this, conn );
     executor->execute( req->get_params() );
   }
+  catch( const iqxmlrpc::Exception& e )
+  {
+    log_err_msg( std::string("Server: ") + e.what() );
+    Response err_r( e.code(), e.what() );
+    schedule_response( err_r, conn, executor );
+  }
   catch( const std::exception& e )
   {
     log_err_msg( std::string("Server: ") + e.what() );
-    Response err_r( -1, e.what() );
+    Response err_r( -32500 /*application error*/, e.what() );
     schedule_response( err_r, conn, executor );
   }
   catch( ... )
   {
     log_err_msg( "Server: Unknown exception" );
-    Response err_r( -1, "Unknown Error" );
+    Response err_r( -32500  /*application error*/, "Unknown Error" );
     schedule_response( err_r, conn, executor );
   }
 }
