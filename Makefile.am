@@ -24,4 +24,4 @@ rpm:	dist
 	rpmbuild -ba $(PACKAGE).spec
 
 clog:
-	cvs --fsf -P -S
+	cvs2cl --fsf -P -S
