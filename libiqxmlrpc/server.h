@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.3 2004-04-14 08:44:02 adedov Exp $
+//  $Id: server.h,v 1.4 2004-04-14 09:08:12 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -84,8 +84,8 @@ public:
 };
 
 
-//! Transport independent XML-RPC server class.
-class iqxmlrpc::Server_base {
+//! XML-RPC server.
+class iqxmlrpc::Server {
 protected:
   Method_dispatcher* disp;
   Executor_fabric_base* exec_fabric;
@@ -98,32 +98,21 @@ protected:
   bool exit_flag;
 
 public:
-  Server_base( int port, Method_dispatcher*, Executor_fabric_base* );
-  virtual ~Server_base();
+  Server( int port, Method_dispatcher*, Executor_fabric_base* );
+  virtual ~Server();
 
   void set_exit_flag() { exit_flag = true; }
   
-  virtual void work() = 0;
+  //! Process accepting connections and methods dispatching.
+  template <class Transport> void work();
 
   void schedule_execute( http::Packet*, Server_connection* );
   void schedule_response( const Response&, Server_connection*, Executor* );
 };
 
 
-//! Template for concete XML-RPC server class.
 template <class Transport>
-class iqxmlrpc::Server: public iqxmlrpc::Server_base {
-public:
-  Server( int port, Method_dispatcher* disp, Executor_fabric_base* fabric ):
-    Server_base( port, disp, fabric ) {}
-
-  //! Process accepting connections and methods dispatching.
-  void work();
-};
-
-
-template <class Transport>
-void iqxmlrpc::Server<Transport>::work()
+void iqxmlrpc::Server::work()
 {
   if( !conn_fabric )
   {
