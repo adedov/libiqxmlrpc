@@ -15,13 +15,39 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.cc,v 1.8 2005-03-29 16:30:58 bada Exp $
+//  $Id: method.cc,v 1.9 2005-04-10 18:20:18 bada Exp $
 
 #include <algorithm>
 #include "method.h"
+#include "server.h" // Server_feedback
+#include "except.h"
 #include "util.h"
 
 using namespace iqxmlrpc;
+
+void Server_feedback::set_exit_flag()
+{
+  if (!server_) // should never be
+    throw Exception("Server_feedback: null pointer access.");
+
+  server_->set_exit_flag();
+}
+
+void Server_feedback::log_message( const std::string& msg )
+{
+  if (!server_) // should never be
+    throw Exception("Server_feedback: null pointer access.");
+
+  server_->log_err_msg(msg);
+}
+
+
+// ----------------------------------------------------------------------------
+Method_dispatcher::Method_dispatcher( Server* s ):
+  server(s)
+{
+}
+
 
 Method_dispatcher::~Method_dispatcher()
 {
@@ -44,7 +70,7 @@ Method* Method_dispatcher::create_method(
     throw Unknown_method( name );
 
   Method* m = fs[name]->create();
-  m->name_ = name;
-  m->peer_addr_ = addr;
+  Method::Data data = { name, addr, Server_feedback(server) };
+  m->data_ = data;
   return m;
 }
