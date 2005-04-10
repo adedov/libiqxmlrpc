@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.8 2004-08-17 04:25:47 adedov Exp $
+//  $Id: reactor.cc,v 1.9 2005-04-10 18:24:22 bada Exp $
 
 #include <vector>
 #include <list>
@@ -306,7 +306,7 @@ void Reactor::Reactor_impl::handle_user_events()
 bool Reactor::Reactor_impl::handle_system_events( Reactor::Timeout to_ms )
 {
   if( begin() == end() )
-    return true;
+    throw Reactor::No_handlers();
   
   prepare_system_events();
   unsigned hsz = size();
@@ -419,7 +419,8 @@ void Reactor::fake_event( Event_handler* eh, Event_mask mask )
 }
 
 
-bool Reactor::handle_events( Reactor::Timeout to_ms )
+bool Reactor::handle_events( Reactor::Timeout to_ms ) 
+  throw (Reactor::No_handlers)
 {
   return impl->handle_events( to_ms );
 }

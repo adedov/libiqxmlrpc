@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.4 2004-08-17 04:24:42 adedov Exp $
+//  $Id: reactor.h,v 1.5 2005-04-10 18:24:22 bada Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
 
+#include "net_except.h"
 #include "lock.h"
 #include "socket.h"
 
@@ -69,6 +70,12 @@ public:
 */
 class iqnet::Reactor {
 public:
+  class No_handlers: iqnet::network_error {
+  public:
+    No_handlers():
+      network_error( "iqnet::Reactor: no handlers given.", false ) {}
+  };
+
   enum Event_mask { INPUT=1, OUTPUT=2 };
   typedef int Timeout;
 
@@ -87,7 +94,8 @@ public:
   void fake_event( Event_handler*, Event_mask );
 
   //! \return true if any handle was invoked, false on timeout.
-  bool handle_events( Timeout ms = -1 );
+  /*! Throws Reactor::No_handlers when no one handler has been registered. */
+  bool handle_events( Timeout ms = -1 ) throw (No_handlers);
 };
 
 #endif

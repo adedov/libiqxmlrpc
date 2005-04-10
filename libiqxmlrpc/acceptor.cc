@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.cc,v 1.7 2005-03-23 18:26:00 bada Exp $
+//  $Id: acceptor.cc,v 1.8 2005-04-10 18:24:22 bada Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -35,12 +35,13 @@ Acceptor::Acceptor( int port, Accepted_conn_factory* factory_, Reactor* reactor_
 {
   sock.bind( port );
   listen();
-  reactor_->register_handler( this, Reactor::INPUT );
+  reactor->register_handler( this, Reactor::INPUT );
 }
 
 
 Acceptor::~Acceptor()
 {
+  reactor->unregister_handler(this);
   sock.close();
 }
 

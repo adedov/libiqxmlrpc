@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.19 2005-03-23 18:26:00 bada Exp $
+//  $Id: server.h,v 1.20 2005-04-10 18:24:22 bada Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -107,6 +107,7 @@ protected:
   iqnet::Firewall_base* firewall;
 
   bool exit_flag;
+  bool soft_exit; // Soft exit in process
   std::ostream* log;
   unsigned max_req_sz;
 
@@ -153,6 +154,9 @@ public:
   
   void log_err_msg( const std::string& );
   unsigned get_max_request_sz() const { return max_req_sz; }
+
+private:
+  void perform_soft_exit();
 };
 
 
@@ -174,9 +178,20 @@ void iqxmlrpc::Server::work()
     acceptor = new iqnet::Acceptor( port, conn_factory, &reactor );
     acceptor->set_firewall( firewall );
   }
-  
-  while( !exit_flag )
-    reactor.handle_events();
+
+  try {
+    for(;;)
+    {
+      if( exit_flag && !soft_exit )
+        perform_soft_exit();
+
+      reactor.handle_events();
+    }
+  } 
+  catch ( const iqnet::Reactor::No_handlers& )
+  {
+    // Soft exit performed.
+  }
 }
 
 #endif

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.20 2005-03-23 18:21:07 bada Exp $
+//  $Id: server.cc,v 1.21 2005-04-10 18:24:22 bada Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -79,6 +79,7 @@ void Server_connection::schedule_response( http::Packet* pkt )
 
 //-----------------------------------------------------------------------------
 Server::Server( int p, Executor_factory_base* f ):
+  disp(this),
   exec_factory(f),
   port(p),
   reactor( f->create_lock() ),
@@ -86,6 +87,7 @@ Server::Server( int p, Executor_factory_base* f ):
   acceptor(0),
   firewall(0),
   exit_flag(false),
+  soft_exit(false),
   log(0),
   max_req_sz(0)
 {
@@ -97,6 +99,14 @@ Server::~Server()
   delete acceptor;
   delete conn_factory;
   delete exec_factory;
+}
+
+
+void Server::perform_soft_exit()
+{
+  delete acceptor;
+  acceptor = 0;
+  soft_exit = true;
 }
 
 
