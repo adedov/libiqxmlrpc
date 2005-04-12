@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.5 2005-04-10 18:24:22 bada Exp $
+//  $Id: reactor.h,v 1.6 2005-04-12 17:17:08 bada Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
@@ -95,7 +95,7 @@ public:
 
   //! \return true if any handle was invoked, false on timeout.
   /*! Throws Reactor::No_handlers when no one handler has been registered. */
-  bool handle_events( Timeout ms = -1 ) throw (No_handlers);
+  bool handle_events( Timeout ms = -1 );
 };
 
 #endif
