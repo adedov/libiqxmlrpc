@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.20 2005-03-29 16:30:59 bada Exp $
+//  $Id: value_type.cc,v 1.21 2005-06-06 17:03:01 bada Exp $
 
 #include <string.h>
 #include <algorithm>
@@ -148,9 +148,9 @@ void Array::clear()
 
 // This member placed here because of mutual dependence of 
 // value_type.h and value.h
-void Array::push_back( Value* v )
+void Array::push_back( Value_ptr v )
 { 
-  values.push_back(v); 
+  values.push_back(v.release());
 }
 
 
@@ -266,9 +266,9 @@ void Struct::clear()
 }
 
 
-void Struct::insert( const std::string& f, Value* val )
+void Struct::insert( const std::string& f, Value_ptr val )
 {
-  values[f] = val;
+  values[f] = val.release();
 }
 
 

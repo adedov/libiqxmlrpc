@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: util.h,v 1.1 2005-03-29 16:30:59 bada Exp $
+//  $Id: util.h,v 1.2 2005-06-06 17:03:01 bada Exp $
 
 #ifndef _iqxmlrpc_util_h_
 #define _iqxmlrpc_util_h_
@@ -53,6 +53,31 @@ void delete_ptrs(Iter first, Iter last, AccessOp op)
   for(; first != last; ++first)
     delete op(*first);
 }
+
+template <class Ptr>
+class ExplicitPtr {
+  Ptr p_;
+
+public:
+  explicit ExplicitPtr(Ptr p): p_(p) {}
+
+  ExplicitPtr(ExplicitPtr& ep):
+    p_(ep.release())
+  {
+  }
+
+  ~ExplicitPtr()
+  {
+    delete release();
+  }
+
+  Ptr release()
+  {
+    Ptr p(p_);
+    p_ = 0;
+    return p;
+  }
+};
 
 } // namespace util
 } // namespace iqxmlrpc

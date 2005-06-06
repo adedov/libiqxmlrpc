@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.25 2005-04-03 09:29:43 bada Exp $
+//  $Id: value_type.h,v 1.26 2005-06-06 17:03:02 bada Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -26,6 +26,7 @@
 #include <sstream>
 #include <libxml++/libxml++.h>
 #include "except.h"
+#include "util.h"
 
 
 //! XML-RPC library
@@ -47,6 +48,8 @@ namespace iqxmlrpc
   
   class Binary_data;
   class Date_time;
+
+  typedef util::ExplicitPtr<Value*> Value_ptr;
 };
 
 
@@ -154,8 +157,8 @@ public:
     }
   }
   
-  void push_back( Value* );
   void push_back( const Value& );
+  void push_back( Value_ptr );
   
   void clear();
   
@@ -254,7 +257,7 @@ public:
   Value&       operator []( const std::string& );
 
   void clear();
-  void insert( const std::string&, Value* );
+  void insert( const std::string&, Value_ptr );
   void insert( const std::string&, const Value& );
     
 private:

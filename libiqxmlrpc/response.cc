@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: response.cc,v 1.8 2004-10-21 04:43:59 adedov Exp $
+//  $Id: response.cc,v 1.9 2005-06-06 17:03:01 bada Exp $
 
 #include <memory>
 #include "response.h"
@@ -134,21 +134,19 @@ inline void Response::parse_param( const xmlpp::Node* node )
 inline void Response::parse_fault( const xmlpp::Node* node )
 {
   xmlpp::Node* valnode = Parser::instance()->single_element(node);
-  Value* fault_ = Parser::instance()->parse_value(valnode);
-  Value& fault = *fault_;
+  std::auto_ptr<Value> fault_(Parser::instance()->parse_value(valnode));
+  Value& fault = *fault_.get();
   
-  std::string err( "malformed structure of fault response." );
-  
+  static std::string err( "malformed structure of fault response." );
+
   if( !fault.has_field("faultCode") || !fault.has_field("faultString") )
     throw XML_RPC_violation::caused( err );
-  
+
   if( !fault["faultCode"].is_int() || !fault["faultString"].is_string() )
     throw XML_RPC_violation::caused( err );
-  
+
   fault_code_   = fault["faultCode"];
   fault_string_ = fault["faultString"].get_string();
-  
-  delete fault_;
 }
 
 

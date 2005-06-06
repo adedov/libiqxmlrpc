@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.h,v 1.17 2004-08-02 07:11:51 adedov Exp $
+//  $Id: value.h,v 1.18 2005-06-06 17:03:01 bada Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -31,8 +31,7 @@
 namespace iqxmlrpc 
 {
   class Value;
-};
-
+}
 
 //! Proxy class to access XML-RPC values by users.
 /*! For more documentation please look into \ref value_usage .
@@ -112,7 +111,6 @@ public:
   const Value& operator []( int ) const;
   Value&       operator []( int );
   
-  void push_back( Value* v )       { cast<Array>()->push_back(v); }
   void push_back( const Value& v ) { cast<Array>()->push_back(v); }
   
   Array::const_iterator arr_begin() const { return cast<Array>()->begin(); }
@@ -134,11 +132,6 @@ public:
   Value&       operator []( const char* );
   const Value& operator []( const std::string& ) const;
   Value&       operator []( const std::string& );
-  
-  void insert( const std::string& n, Value* v )       
-  { 
-    cast<Struct>()->insert(n,v); 
-  }
   
   void insert( const std::string& n, const Value& v ) 
   { 
@@ -169,6 +162,5 @@ private:
     return dynamic_cast<T*>( value );
   }
 };
-
 
 #endif

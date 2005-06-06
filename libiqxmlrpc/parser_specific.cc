@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: parser_specific.cc,v 1.8 2004-10-04 23:38:31 adedov Exp $
+//  $Id: parser_specific.cc,v 1.9 2005-06-06 17:03:00 bada Exp $
 
 #include <iostream>
 #include <sstream>
@@ -172,7 +172,7 @@ Value_type* Array_parser::parse_value( const Node* node ) const
   typedef Node::NodeList::const_iterator CI;
   for( CI i = value_arr.begin(); i != value_arr.end(); ++i )
   {
-    Value *v = Parser::instance()->parse_value(*i);
+    Value_ptr v( Parser::instance()->parse_value(*i) );
     retval.push_back( v );
   }
 
@@ -196,7 +196,7 @@ Value_type* Struct_parser::parse_value( const Node* node ) const
       throw XML_RPC_violation::at_node(mbr.front());
     
     std::string name = get_member_name( mbr.front() );
-    Value* value = Parser::instance()->parse_value( mbr.back() );
+    Value_ptr value( Parser::instance()->parse_value(mbr.back()) );
     s.insert( name, value );
   }
   
