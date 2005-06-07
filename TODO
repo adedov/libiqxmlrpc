@@ -12,4 +12,4 @@ Test suite tasks
 	* get_file, get_weather test
 
 Documentation
-	* move all documentaion pages except index.html into sources (?)
+	* sync documentation with current project state, renew examples	  
