@@ -1,0 +1,15 @@
+Library
+	* port server part to win32
+	* ability to listen of multiple ports
+	* ability to configure and recognize various HTTP resources (/RPC2, etc)
+	* gzip compression of HTTP content 
+	* explicit control of XML-RPC extensions configuration
+	* parse XML in client's thread (?)
+
+Test suite tasks
+	* introspection test
+	* base64 test
+	* get_file, get_weather test
+
+Documentation
+	* move all documentaion pages except index.html into sources (?)
