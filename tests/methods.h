@@ -6,7 +6,7 @@
 //! Register actual test methods in specified server object.
 void register_user_methods(iqxmlrpc::Server& server);
 
-class Get_weather: public iqxmlrpc::Method {
+class Echo: public iqxmlrpc::Method {
 public:
   void execute( const iqxmlrpc::Param_list&, iqxmlrpc::Value& );
 };

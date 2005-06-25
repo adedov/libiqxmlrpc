@@ -24,5 +24,6 @@ function start_server
 
 start_server server-test 3344 1 
 exec_test value-usage
-exec_test client-test localhost 3344
-exec_test stop-test-server localhost 3344
+exec_test client-test --host=localhost --port=3344
+exec_test client-stress-test --host=localhost --port=3344 --numthreads=10 --client-threads=15 --calls-per-thread=2
+exec_test stop-test-server --host=localhost --port=3344

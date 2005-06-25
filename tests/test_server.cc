@@ -14,6 +14,7 @@
 */
 
 #include <signal.h>
+#include <iostream>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test.hpp>
 #include "server_classes.h"
@@ -31,6 +32,7 @@ void test_server_sig_handler(int)
 // Tests.
 void start_test_server()
 {
+  BOOST_REQUIRE(test_server);
   test_server->work();
 }
 
@@ -46,9 +48,23 @@ test_suite* init_unit_test_suite(int argc, char* argv[])
   
     return test;
   }
+  catch(const iqxmlrpc::Exception& e)
+  {
+    std::cerr << "iqxmlrpc E: " << e.what() << std::endl;
+    throw;
+  }
+  catch(const iqnet::network_error& e)
+  {
+    std::cerr << "iqnet E: " << e.what() << std::endl;
+    throw;
+  }
   catch(const Test_server_config::Malformed_config& e)
   {
     std::cerr << e.what() << std::endl;
     return 0;
+  }
+  catch(...)
+  {
+    std::cerr << "Unexpected exception" << std::endl;
   }
 }

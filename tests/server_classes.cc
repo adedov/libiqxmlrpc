@@ -16,8 +16,19 @@ public:
 protected:
   void do_run()
   {
-    User_test_server serv(conf_);
-    serv.work();
+    try {
+      BOOST_MESSAGE("Server_thread started.");
+      User_test_server serv(conf_);
+      serv.work();
+    }
+    catch(const std::exception& e)
+    {
+      BOOST_WARN_MESSAGE(false, e.what());
+    }
+    catch(...)
+    {
+      BOOST_WARN_MESSAGE(false, "Unexpected exception");
+    }
   }
 };
 
@@ -46,6 +57,7 @@ Test_server_base::Test_server_base(const Test_server_config& conf):
   impl_(conf_.port, conf_.exec_factory)
 {
   impl_.log_errors( &std::cerr );
+  impl_.enable_introspection();
   impl_.register_method<serverctl_stop>( "serverctl.stop" );
 }
 

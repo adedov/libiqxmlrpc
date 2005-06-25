@@ -1,28 +1,34 @@
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <openssl/md5.h>
 #include <boost/test/test_tools.hpp>
 #include "libiqxmlrpc/server.h"
 #include "methods.h"
 
+using namespace iqxmlrpc;
+
 void register_user_methods(iqxmlrpc::Server& s)
 {
-  s.register_method<Get_weather>( "get_weather" );
+  s.register_method<Echo>( "echo" );
   s.register_method<Get_file>( "get_file" );
 }
 
-void Get_weather::execute( 
+void Echo::execute( 
   const iqxmlrpc::Param_list& args, iqxmlrpc::Value& retval )
 {
-  BOOST_MESSAGE("Get_weather method invoked.");
+  BOOST_MESSAGE("Echo method invoked.");
+  retval = args[0];
+}
 
-  if( args[0].get_string() != "Krasnoyarsk" )
-    throw iqxmlrpc::Fault( 0, "Unknown town." );
-  
-  iqxmlrpc::Struct s;
-  s.insert( "weather", "Snow" );
-  s.insert( "temp.C", -8.0 );
-  
-  retval = s;
+namespace 
+{
+
+inline char brand()
+{
+  return rand()%255;
+}
+
 }
 
 void Get_file::execute( 
@@ -30,13 +36,25 @@ void Get_file::execute(
 {
   BOOST_MESSAGE("Get_file method invoked.");
 
-  std::ifstream f( args[0].get_string().c_str(), std::ios_base::binary );
-  if( !f )
-    throw iqxmlrpc::Fault( 0, "File read error." );
-    
-  std::string s;
-  for( int c = f.get(); f && c != EOF; c = f.get() )
-    s += c;
-    
-  retval = iqxmlrpc::Binary_data::from_data( s );
+  int retsize = args[0]["requested-size"]; 
+  if (retsize <= 0)
+	  throw Fault( 0, "requested-size must be > 0" );
+
+  BOOST_MESSAGE("Generating data...");
+  srand(time(0));
+  std::string s(retsize, '\0');
+  std::generate(s.begin(), s.end(), brand);
+
+  retval = Struct();
+  retval.insert("data", Binary_data::from_data(s));
+
+  BOOST_MESSAGE("Calculating MD5 checksum...");
+  typedef const unsigned char md5char;
+  typedef const char strchar;
+
+  unsigned char md5[16];
+  MD5(reinterpret_cast<md5char*>(s.data()), s.length(), md5);
+  
+  retval.insert("md5", Binary_data::from_data(
+    reinterpret_cast<strchar*>(md5), sizeof(md5)));
 }
