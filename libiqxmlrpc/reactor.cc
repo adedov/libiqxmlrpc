@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.10 2005-04-12 17:17:08 bada Exp $
+//  $Id: reactor.cc,v 1.11 2005-07-11 19:07:24 bada Exp $
 
 #include <vector>
 #include <list>
@@ -127,10 +127,11 @@ private:
 #endif
 
 
-inline Reactor::Reactor_impl::iterator 
+Reactor::Reactor_impl::iterator 
   Reactor::Reactor_impl::find_handler( Event_handler* eh )
 {
   S_fd fd = eh->get_handler();
+  Auto_lock a( lock );
   return std::find_if( begin(), end(), Handler_fd_eq(fd) );
 }
 
@@ -220,6 +221,7 @@ void Reactor::Reactor_impl::prepare_system_events()
     events |= i->mask & OUTPUT ? POLLOUT : 0;
     struct pollfd sfd = { i->fd, events, 0 };
     pfd.push_back( sfd );
+
 #else
     if( i->mask )
       FD_SET( i->fd, &err_set );
@@ -311,7 +313,7 @@ bool Reactor::Reactor_impl::handle_system_events( Reactor::Timeout to_ms )
   prepare_system_events();
   unsigned hsz = size();
   int code = 0;
-  
+
 #ifdef HAVE_POLL
   code = poll( &pfd[0], hsz, to_ms );
 #else
