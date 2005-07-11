@@ -15,9 +15,8 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: connection.cc,v 1.4 2004-10-25 04:32:25 adedov Exp $
+//  $Id: connection.cc,v 1.5 2005-07-11 19:08:10 bada Exp $
 
-#include <iostream>
 #include "sysinc.h"
 #include "connection.h"
 #include "net_except.h"
