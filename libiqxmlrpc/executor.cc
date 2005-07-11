@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.7 2005-03-29 16:30:58 bada Exp $
+//  $Id: executor.cc,v 1.8 2005-07-11 19:02:50 bada Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -89,11 +89,15 @@ void Pool_executor_factory::Pool_thread::do_run()
 
   for(;;)
   {
-    pool->req_queue_cond.wait();
+    if (pool->req_queue.empty()) {
+      pool->req_queue_cond.wait();
 
-    if( pool->req_queue.empty() )
-      continue;
-
+      if (pool->req_queue.empty()) {
+        pool->req_queue_cond.release_lock();
+        continue;
+      }
+    }
+    
     Pool_executor* executor = pool->req_queue.front();
     pool->req_queue.pop_front();
     pool->req_queue_cond.release_lock();
