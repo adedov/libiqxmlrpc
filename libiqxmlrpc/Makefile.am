@@ -70,7 +70,8 @@ libiqxmlrpc_general_la_SOURCES = \
   request.cc \
   response.cc \
   http.cc \
-  utf_conv.cc
+  utf_conv.cc \
+  util.cc
 
 libiqxmlrpc_client_la_SOURCES = \
   http_client.cc \

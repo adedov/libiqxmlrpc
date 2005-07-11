@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.21 2005-04-10 18:24:22 bada Exp $
+//  $Id: server.cc,v 1.22 2005-07-11 19:10:19 bada Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -86,7 +86,7 @@ Server::Server( int p, Executor_factory_base* f ):
   conn_factory(0),
   acceptor(0),
   firewall(0),
-  exit_flag(false),
+  exit_flag(false, f->create_lock()),
   soft_exit(false),
   log(0),
   max_req_sz(0)

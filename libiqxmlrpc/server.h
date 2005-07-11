@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.20 2005-04-10 18:24:22 bada Exp $
+//  $Id: server.h,v 1.21 2005-07-11 19:10:19 bada Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -29,6 +29,7 @@
 #include "method.h"
 #include "http.h"
 #include "builtins.h"
+#include "util.h"
 
 namespace iqxmlrpc
 {
@@ -106,7 +107,7 @@ protected:
   iqnet::Acceptor* acceptor;
   iqnet::Firewall_base* firewall;
 
-  bool exit_flag;
+  util::LockedBool exit_flag;
   bool soft_exit; // Soft exit in process
   std::ostream* log;
   unsigned max_req_sz;
