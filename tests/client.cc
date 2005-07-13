@@ -16,28 +16,7 @@ using namespace iqxmlrpc;
 Client_opts test_config;
 Client_base* test_client = 0;
 
-void stop_main_server()
-{
-  BOOST_REQUIRE(test_config.main_client());
-  Stop_server_proxy stop(test_config.main_client());
-  Response retval( stop() );
-  BOOST_CHECK(!retval.is_fault());
-}
-
-void start_http_server()
-{
-  BOOST_REQUIRE(test_config.main_client());
-  Start_server_proxy start(test_config.main_client());
-  Response retval( start(test_config.port()+1, false, 1) );
-  BOOST_REQUIRE(!retval.is_fault());
-
-  iqnet::Inet_addr addr(test_config.host(), test_config.port()+1);
-  test_config.client_factory()->set_addr(addr);
-  test_client = test_config.client_factory()->create();
-  BOOST_CHECK(test_client);
-}
-
-void stop_http_server()
+void stop_server()
 {
   BOOST_REQUIRE(test_client);
   Stop_server_proxy stop(test_client);
@@ -91,24 +70,12 @@ test_suite* init_unit_test_suite(int argc, char* argv[])
     test_config.configure(argc, argv);
     test_client = test_config.client_factory()->create();
    
-    std::string prg_name(argv[0]);
-    test_suite* test = 0;
-    
-    if (prg_name.find("stop-test-server") != std::string::npos)
-    {
-      test = BOOST_TEST_SUITE("Stop management server test");
-      test->add( BOOST_TEST_CASE(&stop_main_server) );
-    }
-    else
-    {
-      test = BOOST_TEST_SUITE("Client test");
-      test->add( BOOST_TEST_CASE(&start_http_server) );
-      test->add( BOOST_TEST_CASE(&introspection_test) );
-      test->add( BOOST_TEST_CASE(&get_file_test) );
-      test->add( BOOST_TEST_CASE(&stop_http_server) );
-  //  test->add( BOOST_TEST_CASE(&test_failed_call) );
-  //  test->add( BOOST_TEST_CASE(&stop_server) );
-    }
+    test_suite* test = BOOST_TEST_SUITE("Client test");
+    test->add( BOOST_TEST_CASE(&introspection_test) );
+    test->add( BOOST_TEST_CASE(&get_file_test) );
+
+    if (test_config.stop_server())
+      test->add( BOOST_TEST_CASE(&stop_server) );
 
     return test;
   }

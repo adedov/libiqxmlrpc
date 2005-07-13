@@ -1,28 +1,53 @@
-/*! The framework for testing XML-RPC server side.
-    This application runs simple single-threaded
-    XML-RPC server that supports only two methods:
-
-      * serverctl.start
-          Creates new thread of execution and starts
-          an XML-RPC server within it. This server
-          supports all user defined "test" methods.
-
-      * serverctl.stop
-          Stops the application. This method also
-          is supported by every server started by
-          serverctl.start.
-*/
-
 #include <signal.h>
 #include <iostream>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test.hpp>
-#include "server_classes.h"
+#include "libiqxmlrpc/libiqxmlrpc.h"
+#include "libiqxmlrpc/http_server.h"
+#include "libiqxmlrpc/https_server.h"
+#include "server_config.h"
+#include "methods.h"
 
 using namespace boost::unit_test_framework;
 
-Test_suite_server* test_server = 0;
+class Test_server {
+  Test_server_config conf_;
+  iqxmlrpc::Server impl_;
 
+public:
+  Test_server(const Test_server_config&);
+
+  iqxmlrpc::Server& impl() { return impl_; }
+
+  void work();
+};
+
+Test_server::Test_server(const Test_server_config& conf):
+  conf_(conf),
+  impl_(conf_.port, conf_.exec_factory)
+{
+  impl_.log_errors( &std::cerr );
+  impl_.enable_introspection();
+  register_user_methods(impl());
+
+  if (conf.use_ssl && !iqnet::ssl::ctx)
+  {
+    namespace ssl = iqnet::ssl;
+    ssl::ctx = ssl::Ctx::server_only("data/cert.pem", "data/pk.pem");
+  }
+}
+
+void Test_server::work()
+{
+  if (conf_.use_ssl)
+    impl_.work<iqxmlrpc::Https_server_connection>();
+  else
+    impl_.work<iqxmlrpc::Http_server_connection>();
+}
+
+Test_server* test_server = 0;
+
+// Ctrl-C handler
 void test_server_sig_handler(int)
 {
   if (test_server)
@@ -40,7 +65,7 @@ test_suite* init_unit_test_suite(int argc, char* argv[])
 {
   try {
     Test_server_config conf = Test_server_config::create(argc, argv);
-    test_server = new Test_suite_server(conf);
+    test_server = new Test_server(conf);
     ::signal(SIGINT, &test_server_sig_handler);
   
     test_suite* test = BOOST_TEST_SUITE("Server test");
@@ -66,5 +91,6 @@ test_suite* init_unit_test_suite(int argc, char* argv[])
   catch(...)
   {
     std::cerr << "Unexpected exception" << std::endl;
+    throw;
   }
 }

@@ -10,9 +10,19 @@ using namespace iqxmlrpc;
 
 void register_user_methods(iqxmlrpc::Server& s)
 {
+  s.register_method<serverctl_stop>( "serverctl.stop");
   s.register_method<Echo>( "echo" );
   s.register_method<Get_file>( "get_file" );
 }
+
+void serverctl_stop::execute( 
+  const iqxmlrpc::Param_list&, iqxmlrpc::Value& )
+{
+  BOOST_MESSAGE("Stop_server method invoked.");
+  server().log_message( "Stopping the server." );
+  server().set_exit_flag();
+}
+
 
 void Echo::execute( 
   const iqxmlrpc::Param_list& args, iqxmlrpc::Value& retval )
@@ -23,12 +33,10 @@ void Echo::execute(
 
 namespace 
 {
-
-inline char brand()
-{
-  return rand()%255;
-}
-
+  inline char brand()
+  {
+    return rand()%255;
+  }
 }
 
 void Get_file::execute( 

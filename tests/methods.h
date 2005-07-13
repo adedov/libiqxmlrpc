@@ -6,6 +6,11 @@
 //! Register actual test methods in specified server object.
 void register_user_methods(iqxmlrpc::Server& server);
 
+class serverctl_stop: public iqxmlrpc::Method {
+public:
+  void execute( const iqxmlrpc::Param_list&, iqxmlrpc::Value& );
+};
+
 class Echo: public iqxmlrpc::Method {
 public:
   void execute( const iqxmlrpc::Param_list&, iqxmlrpc::Value& );

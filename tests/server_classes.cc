@@ -6,33 +6,6 @@
 #include "server_classes.h"
 #include "methods.h"
 
-class Server_thread: public iqnet::Thread {
-  Test_server_config conf_;
-
-public:
-  Server_thread(const Test_server_config& conf):
-    conf_(conf) {}
-
-protected:
-  void do_run()
-  {
-    try {
-      BOOST_MESSAGE("Server_thread started.");
-      User_test_server serv(conf_);
-      serv.work();
-    }
-    catch(const std::exception& e)
-    {
-      BOOST_WARN_MESSAGE(false, e.what());
-    }
-    catch(...)
-    {
-      BOOST_WARN_MESSAGE(false, "Unexpected exception");
-    }
-  }
-};
-
-// ----------------------------------------------------------------------------
 void serverctl_stop::execute( 
   const iqxmlrpc::Param_list&, iqxmlrpc::Value& )
 {
@@ -42,43 +15,21 @@ void serverctl_stop::execute(
 }
 
 // ----------------------------------------------------------------------------
-void serverctl_start::execute( 
-  const iqxmlrpc::Param_list& params, iqxmlrpc::Value& retval )
-{
-  BOOST_MESSAGE("Start_server method invoked.");
-  server().log_message( "Starting the server." );
-  Test_server_config conf = Test_server_config::create(params.front());
-  Server_thread* sthr = new Server_thread(conf);
-}
-
-// ----------------------------------------------------------------------------
-Test_server_base::Test_server_base(const Test_server_config& conf):
+Test_server::Test_server(const Test_server_config& conf):
   conf_(conf),
   impl_(conf_.port, conf_.exec_factory)
 {
   impl_.log_errors( &std::cerr );
   impl_.enable_introspection();
   impl_.register_method<serverctl_stop>( "serverctl.stop" );
+
+  register_user_methods(impl());
 }
 
-void Test_server_base::work()
+void Test_server::work()
 {
   if (conf_.use_ssl)
     impl_.work<iqxmlrpc::Https_server_connection>();
   else
     impl_.work<iqxmlrpc::Http_server_connection>();
-}
-
-// ----------------------------------------------------------------------------
-Test_suite_server::Test_suite_server(const Test_server_config& conf):
-  Test_server_base(conf)
-{
-  impl().register_method<serverctl_start>( "serverctl.start" );
-}
-
-// ----------------------------------------------------------------------------
-User_test_server::User_test_server(const Test_server_config& conf):
-  Test_server_base(conf)
-{
-  register_user_methods(impl());
 }

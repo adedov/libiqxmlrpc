@@ -15,22 +15,6 @@ public:
   iqxmlrpc::Response operator ()(const iqxmlrpc::Value&);
 };
 
-class Start_server_proxy: public Method_proxy {
-public:
-  Start_server_proxy(iqxmlrpc::Client_base* cb):
-    Method_proxy(cb, "serverctl.start") {}
-
-  iqxmlrpc::Response operator ()(int port, bool use_ssl, int numthreads)
-  {
-    iqxmlrpc::Struct param;
-    param.insert("port", port);
-    param.insert("use-ssl", use_ssl);
-    param.insert("numthreads", numthreads);
-
-    return Method_proxy::operator ()(param);
-  }
-};
-
 class Stop_server_proxy: public Method_proxy {
 public:
    Stop_server_proxy(iqxmlrpc::Client_base* cb):
