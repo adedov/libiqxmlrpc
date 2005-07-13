@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.6 2005-04-12 17:17:08 bada Exp $
+//  $Id: reactor.h,v 1.7 2005-07-13 18:44:22 bada Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
@@ -70,7 +70,7 @@ public:
 */
 class iqnet::Reactor {
 public:
-  class No_handlers: iqnet::network_error {
+  class No_handlers: public iqnet::network_error {
   public:
     No_handlers():
       network_error( "iqnet::Reactor: no handlers given.", false ) {}
