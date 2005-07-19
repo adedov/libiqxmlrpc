@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.8 2005-07-11 19:02:50 bada Exp $
+//  $Id: executor.cc,v 1.9 2005-07-19 15:45:46 bada Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -63,24 +63,24 @@ void Serial_executor::execute( const Param_list& params )
 
 // ----------------------------------------------------------------------------
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-class Pool_executor_factory::Pool_thread: public iqnet::Thread {
-  unsigned name;
+class Pool_executor_factory::Pool_thread {
+  unsigned id;
   Pool_executor_factory* pool;
 
 public:
-  Pool_thread( unsigned name_, Pool_executor_factory* pool_ ):
-    name(name_),
+  Pool_thread( unsigned id_, Pool_executor_factory* pool_ ):
+    id(id_),
     pool(pool_) 
   {
   }
 
-protected:
-  void do_run();
+  // thread's entry point
+  void operator ()();
 };
 #endif
 
 
-void Pool_executor_factory::Pool_thread::do_run()
+void Pool_executor_factory::Pool_thread::operator ()()
 {
   Pool_executor_factory::Pool_thread* obj = 
     static_cast<Pool_executor_factory::Pool_thread*>(this);
@@ -112,7 +112,11 @@ Pool_executor_factory::Pool_executor_factory( unsigned pool_size )
 {
   pool.reserve( pool_size );
   for( unsigned i = 0; i < pool_size; ++i )
-    pool.push_back( new Pool_thread(i, this) );
+  {
+    Pool_thread* t = new Pool_thread(i, this);
+    pool.push_back(t);
+    threads.create_thread(*t);
+  }
 }
 
 

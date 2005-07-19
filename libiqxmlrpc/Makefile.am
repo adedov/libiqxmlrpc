@@ -6,7 +6,7 @@ libiqxmlrpc_general_la_LIBADD = ${LIBXMLPP_LIBS} ${OPENSSL_LIBS}
 lib_LTLIBRARIES = libiqxmlrpc-client.la libiqxmlrpc-server.la libiqxmlrpc.la
 
 libiqxmlrpc_client_la_LIBADD = libiqxmlrpc-general.la
-libiqxmlrpc_server_la_LIBADD = libiqxmlrpc-general.la
+libiqxmlrpc_server_la_LIBADD = libiqxmlrpc-general.la -lboost_thread
 
 libiqxmlrpc_la_SOURCES = libiqxmlrpc.h
 libiqxmlrpc_la_LIBADD = libiqxmlrpc-general.la libiqxmlrpc-client.la libiqxmlrpc-server.la
@@ -24,7 +24,6 @@ pkginclude_HEADERS = \
   connector.h \
   lock.h \
   mt_synch.h \
-  thread.h \
   reactor.h \
   connection.h \
   sigsock.h \
@@ -80,7 +79,6 @@ libiqxmlrpc_client_la_SOURCES = \
   
 libiqxmlrpc_server_la_SOURCES = \
   mt_synch.cc \
-  thread.cc \
   sigsock.cc \
   http_server.cc \
   https_server.cc \
@@ -92,7 +90,6 @@ libiqxmlrpc_server_la_SOURCES = \
 #  xml_util.cc
 
 # Server only sources:
-#  thread.*
 #  sigsock.*
 #  method.*
 #  builtins.*
