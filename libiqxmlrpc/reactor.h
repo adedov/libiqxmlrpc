@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.7 2005-07-13 18:44:22 bada Exp $
+//  $Id: reactor.h,v 1.8 2005-07-19 16:26:50 bada Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
@@ -36,6 +36,9 @@ namespace iqnet
 class iqnet::Event_handler {
 public:
   virtual ~Event_handler() {}
+
+  //! If this handler used as Reactor stopper.
+  virtual bool is_stopper() const { return false; }
 
   virtual void handle_input( bool& terminate ) {}
   virtual void handle_output( bool& terminate ) {}

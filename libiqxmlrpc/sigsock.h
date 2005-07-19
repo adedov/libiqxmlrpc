@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sigsock.h,v 1.3 2004-05-17 08:43:02 adedov Exp $
+//  $Id: sigsock.h,v 1.4 2005-07-19 16:26:51 bada Exp $
 
 #ifndef _libiqnet_sigsock_h_
 #define _libiqnet_sigsock_h_
@@ -43,6 +43,7 @@ public:
 
   void handle_input( bool& );
 
+  bool is_stopper() const { return true; }
   Socket::Handler get_handler() const { return sock[0]; }
 
   void send_alarm();

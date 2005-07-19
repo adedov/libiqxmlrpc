@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.cc,v 1.12 2005-07-13 19:13:39 bada Exp $
+//  $Id: reactor.cc,v 1.13 2005-07-19 16:26:50 bada Exp $
 
 #include <vector>
 #include <list>
@@ -85,6 +85,7 @@ private:
   iqnet::Lock *lock;
   Handlers_box handlers;
   Handlers_box called_by_user;
+  unsigned     num_stoppers;
 
 #ifdef HAVE_POLL
   Pollfd_vec pfd;
@@ -94,7 +95,8 @@ private:
 #endif
   
 public:
-  Reactor_impl( iqnet::Lock* lck ): lock(lck) {}
+  Reactor_impl( iqnet::Lock* lck ): 
+    lock(lck), num_stoppers(0) {}
 
   ~Reactor_impl()
   {
@@ -138,6 +140,9 @@ Reactor::Reactor_impl::iterator
 
 void Reactor::Reactor_impl::register_handler( Event_handler* eh, Event_mask mask )
 {
+  if (eh->is_stopper())
+    num_stoppers++;
+
   iterator i = find_handler( eh );
   Auto_lock a( lock );
   
@@ -158,7 +163,12 @@ void Reactor::Reactor_impl::unregister_handler( Event_handler* eh, Event_mask ma
     int newmask = (i->mask &= !mask);
 
     if( !newmask )
+    {
       handlers.erase(i);
+
+      if (eh->is_stopper())
+        num_stoppers--;
+    }
   }
 }
 
@@ -171,6 +181,9 @@ void Reactor::Reactor_impl::unregister_handler( Event_handler* eh )
   {
     Auto_lock a( lock );
     handlers.erase(i);
+
+    if (eh->is_stopper())
+      num_stoppers--;
   }
 }
 
@@ -307,11 +320,14 @@ void Reactor::Reactor_impl::handle_user_events()
   
 bool Reactor::Reactor_impl::handle_system_events( Reactor::Timeout to_ms )
 {
-  if( begin() == end() )
-    return true;
-  
-  prepare_system_events();
   unsigned hsz = size();
+  if( !hsz )
+    return true;
+
+  if( hsz - num_stoppers <= 0)
+    throw Reactor::No_handlers();
+
+  prepare_system_events();
   int code = 0;
 
 #ifdef HAVE_POLL
