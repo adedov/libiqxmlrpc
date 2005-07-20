@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.h,v 1.7 2005-07-19 15:45:46 bada Exp $
+//  $Id: executor.h,v 1.8 2005-07-20 17:09:04 bada Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -23,6 +23,8 @@
 #include <vector>
 #include <deque>
 #include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/condition.hpp>
 #include "lock.h"
 #include "method.h"
 #include "sigsock.h"
@@ -130,13 +132,14 @@ class iqxmlrpc::Pool_executor_factory: public iqxmlrpc::Executor_factory_base {
   class Pool_thread;
   friend class Pool_thread;
 
-  boost::thread_group threads;
+  boost::thread_group       threads;
   std::vector<Pool_thread*> pool;
 
   // Objects Pool_thread works with
   std::deque<Pool_executor*> req_queue;
-  iqnet::Cond req_queue_cond;
-  
+  boost::mutex               req_queue_lock;
+  boost::condition           req_queue_cond;
+ 
 public:
   Pool_executor_factory( unsigned pool_size );
   ~Pool_executor_factory();

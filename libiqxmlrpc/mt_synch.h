@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: mt_synch.h,v 1.1 2004-05-14 06:57:49 adedov Exp $
+//  $Id: mt_synch.h,v 1.2 2005-07-20 17:09:03 bada Exp $
 
 #ifndef _libiqnet_mt_synch_h_
 #define _libiqnet_mt_synch_h_
@@ -25,9 +25,7 @@
 namespace iqnet
 {
   class Mutex_lock;
-  class Cond;    
 };
-
 
 //! Thread synchronization via mutex
 class iqnet::Mutex_lock: public iqnet::Lock {
@@ -39,23 +37,6 @@ public:
 
   void acquire();
   void release();
-};
-
-
-//! Conditional variable.
-class iqnet::Cond {
-  pthread_cond_t cond;
-  pthread_mutex_t mutex;
-
-public:
-  Cond();
-  virtual ~Cond();
-
-  void acquire_lock();
-  void release_lock();  
-
-  void wait();
-  void signal();
 };
 
 #endif

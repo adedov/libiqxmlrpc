@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: mt_synch.cc,v 1.1 2004-05-14 06:57:49 adedov Exp $
+//  $Id: mt_synch.cc,v 1.2 2005-07-20 17:09:04 bada Exp $
 
 #include "mt_synch.h"
 
@@ -44,44 +44,4 @@ void Mutex_lock::acquire()
 void Mutex_lock::release()
 {
   pthread_mutex_unlock( &mutex );
-}
-
-
-// ----------------------------------------------------------------------------
-Cond::Cond()
-{
-  pthread_mutex_init( &mutex, 0 );
-  pthread_cond_init( &cond, 0 );
-}
-
-
-Cond::~Cond()
-{
-  pthread_cond_destroy( &cond );
-  pthread_mutex_destroy( &mutex );
-}
-
-
-void Cond::acquire_lock()
-{
-  pthread_mutex_lock( &mutex );
-}
-
-
-void Cond::release_lock()
-{
-  pthread_mutex_unlock( &mutex );
-}
-
-
-void Cond::wait()
-{
-  acquire_lock();
-  pthread_cond_wait( &cond, &mutex );
-}
-
-
-void Cond::signal()
-{
-  pthread_cond_signal( &cond );
 }

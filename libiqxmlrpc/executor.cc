@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.9 2005-07-19 15:45:46 bada Exp $
+//  $Id: executor.cc,v 1.10 2005-07-20 17:09:04 bada Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -24,7 +24,7 @@
 #include "util.h"
 
 using namespace iqxmlrpc;
-
+typedef boost::mutex::scoped_lock scoped_lock;
 
 Executor::Executor( Method* m, Server* s, Server_connection* cb ):
   method(m),
@@ -89,18 +89,19 @@ void Pool_executor_factory::Pool_thread::operator ()()
 
   for(;;)
   {
-    if (pool->req_queue.empty()) {
-      pool->req_queue_cond.wait();
+    scoped_lock lk(pool->req_queue_lock);
+    
+    if (pool->req_queue.empty()) 
+    {
+      pool->req_queue_cond.wait(lk);
 
-      if (pool->req_queue.empty()) {
-        pool->req_queue_cond.release_lock();
+      if (pool->req_queue.empty())
         continue;
-      }
     }
     
     Pool_executor* executor = pool->req_queue.front();
     pool->req_queue.pop_front();
-    pool->req_queue_cond.release_lock();
+    lk.unlock();
 
     executor->process_actual_execution();
   }
@@ -123,17 +124,16 @@ Pool_executor_factory::Pool_executor_factory( unsigned pool_size )
 Pool_executor_factory::~Pool_executor_factory()
 {
   util::delete_ptrs(pool.begin(), pool.end());
-  req_queue_cond.acquire_lock();
+  scoped_lock lk(req_queue_lock);
   util::delete_ptrs(req_queue.begin(), req_queue.end());
 }
 
 
 void Pool_executor_factory::register_executor( Pool_executor* executor )
 {
-  req_queue_cond.acquire_lock();
-  req_queue.push_back( executor );
-  req_queue_cond.signal();
-  req_queue_cond.release_lock();
+  scoped_lock lk(req_queue_lock);
+  req_queue.push_back(executor);
+  req_queue_cond.notify_all();
 }
 
 
