@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include "libiqxmlrpc/executor.h"
 #include "server_config.h"
 
 Test_server_config::Malformed_cmd_line::Malformed_cmd_line():
@@ -25,12 +24,7 @@ Test_server_config Test_server_config::create(int argc, char** argv)
 
   Test_server_config conf;
   conf.port = atoi(argv[1]);
-  int numthreads = atoi(argv[2]);
-
-  if (numthreads > 1)
-    conf.exec_factory = new iqxmlrpc::Pool_executor_factory(numthreads);
-  else
-    conf.exec_factory = new iqxmlrpc::Serial_executor_factory;
+  conf.numthreads = atoi(argv[2]);
 
   if (argc == 4)
     conf.use_ssl = true;
@@ -45,12 +39,7 @@ Test_server_config Test_server_config::create(const iqxmlrpc::Value& v)
   try {
     conf.port      = v["port"];
     conf.use_ssl   = v["use-ssl"];
-    int numthreads = v["numthreads"];
-    
-    if (numthreads > 1)
-      conf.exec_factory = new iqxmlrpc::Pool_executor_factory(numthreads);
-    else
-      conf.exec_factory = new iqxmlrpc::Serial_executor_factory;
+    conf.numthreads = int(v["numthreads"]);
   } 
   catch (const iqxmlrpc::Struct::No_field&) 
   {

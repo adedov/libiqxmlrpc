@@ -4,23 +4,18 @@
 #include <stdexcept>
 #include "libiqxmlrpc/value.h"
 
-namespace iqxmlrpc {
-  class Executor_factory_base; 
-}
-
 //! Test server configuration structure
 struct Test_server_config {
   class Malformed_config;
   class Malformed_cmd_line;
   class Malformed_xmlrpc_arg;
   
-  // not owned by this structure
-  iqxmlrpc::Executor_factory_base* exec_factory;
   bool use_ssl;
   int port;
+  unsigned numthreads;
 
   Test_server_config():
-    exec_factory(0), use_ssl(false), port(0) {}
+    use_ssl(false), port(0), numthreads(1) {}
 
   ~Test_server_config();
 

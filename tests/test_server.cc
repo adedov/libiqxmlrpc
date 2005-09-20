@@ -1,48 +1,66 @@
 #include <signal.h>
+#include <memory>
 #include <iostream>
+#include <boost/utility.hpp>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test.hpp>
 #include "libiqxmlrpc/libiqxmlrpc.h"
 #include "libiqxmlrpc/http_server.h"
 #include "libiqxmlrpc/https_server.h"
+#include "libiqxmlrpc/server.h"
+#include "libiqxmlrpc/executor.h"
 #include "server_config.h"
 #include "methods.h"
 
 using namespace boost::unit_test_framework;
+using namespace iqxmlrpc;
 
-class Test_server {
+class Test_server: boost::noncopyable {
   Test_server_config conf_;
-  iqxmlrpc::Server impl_;
+  std::auto_ptr<Executor_factory_base> ef_;
+  std::auto_ptr<Server> impl_;
 
 public:
   Test_server(const Test_server_config&);
 
-  iqxmlrpc::Server& impl() { return impl_; }
+  Server& impl() { return *impl_.get(); }
 
   void work();
 };
 
 Test_server::Test_server(const Test_server_config& conf):
   conf_(conf),
-  impl_(conf_.port, conf_.exec_factory)
+  ef_(0),
+  impl_(0)
 {
-  impl_.log_errors( &std::cerr );
-  impl_.enable_introspection();
-  register_user_methods(impl());
-
-  if (conf.use_ssl && !iqnet::ssl::ctx)
+  if (conf.numthreads > 1) 
+  {
+    ef_.reset(new Pool_executor_factory(conf.numthreads));
+  }
+  else
+  {
+    ef_.reset(new Serial_executor_factory);
+  }
+  
+  if (conf.use_ssl)
   {
     namespace ssl = iqnet::ssl;
     ssl::ctx = ssl::Ctx::server_only("data/cert.pem", "data/pk.pem");
+    impl_.reset(new Https_server(conf.port, ef_.get()));
   }
+  else
+  {
+    impl_.reset(new Http_server(conf.port, ef_.get()));
+  }
+  
+  impl_->log_errors( &std::cerr );
+  impl_->enable_introspection();
+  register_user_methods(impl());
 }
 
 void Test_server::work()
 {
-  if (conf_.use_ssl)
-    impl_.work<iqxmlrpc::Https_server_connection>();
-  else
-    impl_.work<iqxmlrpc::Http_server_connection>();
+  impl_->work();
 }
 
 Test_server* test_server = 0;
