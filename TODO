@@ -1,16 +1,16 @@
 Library
-	* port server part to win32
+  * port server part to win32
     - migrate threads, mt-synch to boost (DONE)
     - implement alternative Reactor_impl using WaitForMultipleObjects, either
       implement win32 Alarm_socket
-	* ability to listen of multiple ports (NEVER?)
-	* ability to configure and recognize various HTTP resources (/RPC2, etc)
-	* gzip compression of HTTP content 
-	* explicit control of XML-RPC extensions configuration
-	* parse XML in client's thread (DOES IT NEEDED?)
-	* empty value, Value::Value() that causes <value/> output (?)
+  * ability to listen of multiple ports (NEVER?)
+  * ability to configure and recognize various HTTP resources (/RPC2, etc)
+  * gzip compression of HTTP content 
+  * explicit control of XML-RPC extensions configuration
+  * parse XML in client's thread (DOES IT NEEDED?)
+  * empty value, Value::Value() that causes <value/> output (?)
   * get rid of iqnet namespace
   * system.multicall
 
 Documentation
-	* sync documentation with current project state, renew examples	  
+  * sync documentation with current project state, renew examples	  
