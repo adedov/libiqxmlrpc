@@ -34,66 +34,16 @@
        top: 1px;
      }
      
-    #div_menu {
-      position: absolute;
-      left: 0px;
-      top: 50px;
-      width: 20%;
-      padding: 5px;
-    }
-    
-    .div_item {
+    #doc_body {
       position: absolute;
       top: 39px;
-      left: 20%;
-      width: 80%;
-      visibility: hidden;
-      display: none;
+      left: 5%;
+      width: 70%;
     }
   </style>
 </head>
 
-<script language="JavaScript">
-  curr_item = "";
-  
-  function hide( name )
-  {
-    var m;
-
-    if (document.layers) 
-    {
-      m=window.document.getElementById(name);
-    }
-    else
-    {
-      m=document.getElementById(name);
-    }
-    
-    m.style.visibility='hidden';
-    m.style.display='none';
-  }
-  
-  function show( name )
-  {
-    var m;
-    
-    if (document.layers) 
-    {
-      m=window.document.getElementById(name);
-    }
-    else
-    {
-      m=document.getElementById(name);
-    }
-    
-    hide( curr_item );
-    m.style.visibility='visible';
-    m.style.display='block';
-    curr_item = name;
-  }
-</script>
-
-<body onLoad="curr_item='about_div'; show('about_div');">
+<body>
 
 <div id="banner">
   <div id="title">
@@ -101,111 +51,81 @@
   </div>
 
   <div id="sf_img">
-    <a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=105514&amp;type=2" align="right" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=105514&amp;type=2" align="right" width="125" height="37" border="0" alt="SourceForge.net Logo" />
+    </a>
   </div>
 </div>
 
-<div id="div_menu">
-  <b>
-  <a href="#" onClick="show('about_div');">About</a><br>
-  <a href="#" onClick="show('author_div')">Author</a><br>
-  <a href="#" onClick="show('license_div');">License</a><br>
-  <a href="#" onClick="show('depend_div');">Dependencies</a><br>
-  <a href="#" onClick="show('features_div');">Features</a><br>
-  <a href="libiqxmlrpc.html/index.html">Documentation...</a><br>
-  <a href="http://sourceforge.net/project/showfiles.php?group_id=105514">Downloads...</a><br>
-  <a href="http://sourceforge.net/projects/libiqxmlrpc">Project page...</a><br>
-  <p>
-  <a href="#" onClick="show('thanks_div');">Gratitude</a>
-  </b>
-</div>
+<div id="doc_body">
 
-<div class="div_item" id="about_div">
 <h2>About</h2>
 
-<em>Libiqxmlrpc</em> is an object-oriented library,
-which represents simple <a href="http://www.xmlrpc.com">XML-RPC</a> 
-solution both for client and server sides.
+<em>Libiqxmlrpc</em> is free, object-oriented <a href="http://www.xmlrpc.com">XML-RPC</a> engine
+library written in C++.
 
-<p><b>Main goal of project is to provide:</b>
-  <ul>
-  <li>Nice object oriented design;
-  <li>Maximum separation of code which operates with XML-RPC structures 
-      from that part, which provides transport functionality;
-  <li>HTTP, HTTPS as standart transports;
-  <li>Comfortable way to extend library's functionality.
-  </ul>
+<p><b>Project's ambitions...</b>
+<ul>
+  <li>Be object-oriented library that corresponds modern C++ level.
+  <li>Provide high quality product; prove it with regression testing and real-world applications
+</ul>
   
+<h3>Features</h3>
+<b>XML-RPC support:</b>
+<ul>
+  <li>XML-RPC standard support;
+  <li>Support for Nil values.
+</ul>
+
+<b>Other features:</b>
+<ul>
+  <li>HTTP and HTTPS server over non-blocking socket;
+  <li>HTTP and HTTPS client over non-blocking socket;
+  <li>Either synhronous and multithreading server-side execution strategies;
+  <li>
+    <a href="http://xmlrpc.usefulinc.com/doc/reserved.html">Introspection</a> support;
+  </li>
+  <li><a href="http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php">FCI</a> conformance;
+  <li>Support for transparent charset conversion;
+  <li>Support for HTTP persistent connections.
+</ul>
+
 <p><b>Language:</b> C++
 <p><b>Platforms:</b>
-  <ul>
+<ul>
   <li>Linux, Solaris;
   <li>Cygwin (client's code works well);
   <li>Win32 (client only).
-  </ul>
+</ul>
+<p><b>License:</b> LGPL v2.1
 
-<p><em>(c) Copyright 2004 Anton Dedov</em>
-</div>
-
-<div class="div_item" id="author_div">
-  <h2>Author</h2>
-  Anton Dedov<br>
-  E-mail me: adedov at users.sourceforge.net
-</div>
-
-<div class="div_item" id="license_div">
-<h2>License</h2>
-Library is distributed under <em>GNU Lesser General Public License</em>,
-version 2.1.
-</div>
-
-<div class="div_item" id="depend_div">
-<h2>Dependencies</h2>
-You need modern enough C++ compiler, e.g. GNU g++ of version 3.2 and above.
-<p>
-<b>Libraries required:</b>
-  <ul>
+<h3>Library Requirements</h3>
+You need modern enough C++ compiler, e.g. GNU g++ 3.2 and higher.
+<p><b>Libraries required:</b>
+<ul>
   <li><a href="http://libxmlplusplus.sourceforge.net">libxml++-1.0</a>
   <li><a href="http://www.openssl.org">OpenSSL</a>
-  </ul>
-</div>
+  <li><a href="http://www.boost.org">Boost</a>
+</ul>
+<hr>
 
-<div class="div_item" id="features_div">
-  <h2>Features</h2>
-  <h3>XML-RPC support:</h3>
-  <ul>
-    <li>Basic XML-RPC standard support;
-    <li>Support for Nil values.
-  </ul>
-  
-  <h3>Other features:</h3>
-  <ul>
-    <li>HTTP and HTTPS server transports (over non-blocking socket);
-    <li>HTTP and HTTPS client transports (over non-blocking socket);
-    <li>Serial and multithreading server method's execution functionality;
-    <li>Support for server's 
-        <a href="http://xmlrpc.usefulinc.com/doc/reserved.html">introspection;
-        </a></li>
-    <li><a href="http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php">
-        FCI</a> conformance;
-    <li>Support for transparent charset conversion.
-    <li>Support for persistent connections.
-  </ul>
-  
-  I am trying to make library classes to be STL-compatible where it possible. 
-  I.e. to use similar method names when I want to express similar semantic as well
-  as make to some classes compatible with standard algorithms.
-</div>
+<h2>SourceForge</h2>
+Project's page at SourceForge: <a href="http://sourceforge.net/projects/libiqxmlrpc">here</a>.<br>
+Or one can also download it directly 
+<a href="http://sourceforge.net/project/showfiles.php?group_id=105514">this way</a>.
+<hr>
+ 
+<h2>Gratitudes</h2>
+I would like to say "a big thanks" to Pavel Kroujiline, the president of <a href="http://www.iqmedia.com">IQ Media, Inc</a>.
+He has permitted to publish this library as Open Source product.
 
-<div class="div_item" id="thanks_div">
-  <h2>Gratitude</h2>
-  The project's origin: <a href="http://www.iqmedia.com">IQ Media, Inc</a>.
-  
-  <h3 style="margin-bottom: 0; padding-bottom: 0;">Also thanks to</h3>
-  <ul style="margin-top: 0; padding-top: 3px;">
-    <li><em>John Tobey</em> - helped with port on Solaris, gave good advises;
-    <li><em>Maxim Koshelev</em> - ported client's code on win32. Helps me keep development up.
-  </ul>
-</div>
+<h3>Also thanks to</h3>
+<ul>
+  <li><em>John Tobey</em> - helped with port on Solaris, gave good advises;
+  <li><em>Maxim Koshelev</em> - ported client's code on win32.
+</ul>
+<hr>
 
+<p>
+<em>(c) Copyright 2005 Anton Dedov</em>
 </body>
