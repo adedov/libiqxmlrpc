@@ -32,12 +32,12 @@ AC_LANG_CPLUSPLUS
 AC_PROG_LIBTOOL
 
 INCLUDES='-I${top_srcdir}'
-CXXFLAGS="-O2 -Wall"
+CXXFLAGS="-O2 -Wall -pthread"
 MAKEDOCS="yes"
 
 AC_ARG_ENABLE( debug,
   [  --enable-debug   enables adding debug info into binaries],
-  [CXXFLAGS="$CXXFLAGS -ggdb"] )
+  [CXXFLAGS="$CXXFLAGS -g"] )
 
 AC_ARG_ENABLE( profile,
   [  --enable-profile enables support for gprof],
