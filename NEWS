@@ -1,5 +1,38 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.6.5 - 0.7
+  This release incorporates big code changes. I believe that quality of 
+  code have been greatly improved since new test suite had been intoduced.
+  It allowed me to find quite interesting bugs.
+
+  Unfortunately, the win32 port is not up-to-date. But that fact that
+  I have replaced my "threads stuff" with boost::thread allows one 
+  to port the whole library to Windows without much pain 
+  (Alarm_sock is still an issue).
+
+  Documentation is not in sync now too. It is related to guides embeded into
+  doxygen docs. But I dont think that it is big issue: there is great test
+  suite.
+
+  New features:
+    * Major test suite improvement: now there is automatic regression test
+      based on boost unit test framework. It also includes stress test.
+    * Now boost::thread used instead of home-made threads implementation.
+    * Improved server-side interface: user methods can access server via
+      special restricted interface (e.g. user's method can stop the whole
+      server now, etc).
+
+  Interface changes:
+    * English refining: all words/names "fabric" replaced with "factory".
+    * Now one should not use Server class directly but its children:
+      Http_server or Https_server.
+    * Value, Array, Struct interface changed a bit.
+
+  Fixes:
+    * Multithreading bug founded by stress test.
+    * Exception safety improved.
+    * Other minor fixes.
+
 0.6.4 - 0.6.5
   * Distribution now includes configure made by autoconf-2.57.
   * An argument --disable-docs for configure has been added.
