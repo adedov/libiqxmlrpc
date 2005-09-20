@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.10 2005-07-20 17:09:04 bada Exp $
+//  $Id: executor.cc,v 1.11 2005-09-20 16:02:56 bada Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -109,15 +109,9 @@ void Pool_executor_factory::Pool_thread::operator ()()
 
 
 // ----------------------------------------------------------------------------
-Pool_executor_factory::Pool_executor_factory( unsigned pool_size )
+Pool_executor_factory::Pool_executor_factory(unsigned numthreads)
 {
-  pool.reserve( pool_size );
-  for( unsigned i = 0; i < pool_size; ++i )
-  {
-    Pool_thread* t = new Pool_thread(i, this);
-    pool.push_back(t);
-    threads.create_thread(*t);
-  }
+  add_threads(numthreads);
 }
 
 
@@ -126,6 +120,17 @@ Pool_executor_factory::~Pool_executor_factory()
   util::delete_ptrs(pool.begin(), pool.end());
   scoped_lock lk(req_queue_lock);
   util::delete_ptrs(req_queue.begin(), req_queue.end());
+}
+
+
+void Pool_executor_factory::add_threads( unsigned num )
+{
+  for( unsigned i = 0; i < num; ++i )
+  {
+    Pool_thread* t = new Pool_thread(i, this);
+    pool.push_back(t);
+    threads.create_thread(*t);
+  }
 }
 
 
@@ -148,7 +153,7 @@ Pool_executor::Pool_executor(
     pool(p)
 {
   if( !alarm_sock )
-    alarm_sock = new iqnet::Alarm_socket( s->get_reactor(), new Lock );
+    alarm_sock = new iqnet::Alarm_socket( s->get_reactor() );
 }
 
 

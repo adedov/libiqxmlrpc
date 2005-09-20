@@ -15,9 +15,10 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_server.cc,v 1.6 2004-11-14 17:24:54 adedov Exp $
+//  $Id: https_server.cc,v 1.7 2005-09-20 16:02:58 bada Exp $
 
 #include "https_server.h"
+#include "server.h"
 
 using namespace iqxmlrpc;
 using namespace iqnet;

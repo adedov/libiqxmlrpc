@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.15 2005-04-10 18:20:18 bada Exp $
+//  $Id: method.h,v 1.16 2005-09-20 16:02:58 bada Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -29,6 +29,7 @@
 namespace iqxmlrpc
 {
   class Server;
+  class Server_config;
 
   //! Vector of Value objects.
   typedef std::vector<Value> Param_list;

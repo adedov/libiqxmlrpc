@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.cc,v 1.6 2005-03-23 18:13:22 bada Exp $
+//  $Id: http_server.cc,v 1.7 2005-09-20 16:02:57 bada Exp $
 
 #include <iostream>
 #include "sysinc.h"
 #include "http_server.h"
+#include "server.h"
 
 using namespace iqxmlrpc;
 using namespace iqnet;
@@ -35,7 +36,7 @@ Http_server_connection::Http_server_connection( const iqnet::Socket& s ):
 void Http_server_connection::post_accept()
 {
   sock.set_non_blocking(true);
-  reactor->register_handler( this, Reactor::INPUT );
+  reactor->register_handler( this, Reactor_base::INPUT );
 }
 
 
@@ -60,7 +61,7 @@ void Http_server_connection::handle_input( bool& terminate )
     if( !packet )
       return;
     
-    reactor->unregister_handler( this, Reactor::INPUT );
+    reactor->unregister_handler( this, Reactor_base::INPUT );
     server->schedule_execute( packet, this );
   }
   catch( const http::Error_response& e )
@@ -80,8 +81,8 @@ void Http_server_connection::handle_output( bool& terminate )
   {
     if( keep_alive )
     {
-      reactor->unregister_handler( this, Reactor::OUTPUT );
-      reactor->register_handler( this, Reactor::INPUT );
+      reactor->unregister_handler( this, Reactor_base::OUTPUT );
+      reactor->register_handler( this, Reactor_base::INPUT );
     }
     else 
       terminate = true;
@@ -96,7 +97,7 @@ void Http_server_connection::handle_output( bool& terminate )
 void Http_server_connection::schedule_response( http::Packet* pkt )
 {
   Server_connection::schedule_response( pkt );
-  reactor->register_handler( this, iqnet::Reactor::OUTPUT );
+  reactor->register_handler( this, iqnet::Reactor_base::OUTPUT );
 }
 
 

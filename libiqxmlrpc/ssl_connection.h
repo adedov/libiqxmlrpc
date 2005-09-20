@@ -15,12 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: ssl_connection.h,v 1.4 2005-03-23 18:26:00 bada Exp $
+//  $Id: ssl_connection.h,v 1.5 2005-09-20 16:03:00 bada Exp $
 
 #ifndef _libiqnet_ssl_connection_
 #define _libiqnet_ssl_connection_
 
 #include <openssl/ssl.h>
+#include "reactor.h"
 #include "connection.h"
 #include "ssl_lib.h"
 #include "conn_factory.h"
@@ -70,7 +71,7 @@ protected:
 //! Server-side established SSL-connection based on reactive model
 //! (with underlying non-blocking socket).
 class iqnet::ssl::Reaction_connection: public ssl::Connection {
-  Reactor* reactor;
+  Reactor_base* reactor;
 
   enum State { EMPTY, ACCEPTING, CONNECTING, READING, WRITING, SHUTDOWN };
   State state;
@@ -80,10 +81,10 @@ class iqnet::ssl::Reaction_connection: public ssl::Connection {
   int buf_len;
 
 public:
-  Reaction_connection( const Socket&, Reactor* = 0 );
+  Reaction_connection( const Socket&, Reactor_base* = 0 );
 
   //! A trick for supporting generic factory.
-  void set_reactor( Reactor* r )
+  void set_reactor( Reactor_base* r )
   {
     reactor = r;
   }

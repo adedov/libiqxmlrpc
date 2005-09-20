@@ -15,11 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_client.h,v 1.4 2004-07-23 08:50:22 adedov Exp $
+//  $Id: http_client.h,v 1.5 2005-09-20 16:02:57 bada Exp $
 
 #ifndef _libiqxmlrpc_http_client_h_
 #define _libiqxmlrpc_http_client_h_
 
+#include <memory>
+#include "reactor.h"
 #include "connector.h"
 #include "client.h"
 
@@ -34,7 +36,7 @@ class iqxmlrpc::Http_client_connection:
   public iqxmlrpc::Client_connection,
   public iqnet::Connection
 {
-  iqnet::Reactor reactor;
+  std::auto_ptr<iqnet::Reactor_base> reactor;
   std::string out_str;
   http::Packet* resp_packet;
 

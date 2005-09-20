@@ -15,39 +15,35 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sigsock.h,v 1.5 2005-09-20 16:03:00 bada Exp $
+//  $Id: reactor_select_impl.h,v 1.1 2005-09-20 16:02:59 bada Exp $
 
-#ifndef _libiqnet_sigsock_h_
-#define _libiqnet_sigsock_h_
+#ifndef _iqxmlrpc_reactor_select_impl_h_
+#define _iqxmlrpc_reactor_select_impl_h_
 
-#include <boost/thread/mutex.hpp>
-#include "socket.h"
+#include "config.h"
+
+#ifndef HAVE_POLL
+#include <boost/utility.hpp>
 #include "reactor.h"
-#include "lock.h"
+#include "sysinc.h"
 
-namespace iqnet 
+namespace iqnet
 {
-  class Alarm_socket;
-};
 
-
-//! Helper pair of sockets which allows to reset poll/select
-//! state from another thread.
-class iqnet::Alarm_socket: public iqnet::Event_handler {
-  Socket::Handler sock[2];
-  Reactor_base* reactor;
-  boost::mutex lock;
+class iqnet::Reactor_select_impl: boost::noncopyable {
+  Socket::Handler max_fd;
+  fd_set read_set, write_set, err_set;
+  Reactor_base::HandlerStateList hs;
 
 public:
-  Alarm_socket( Reactor_base* );
-  ~Alarm_socket();
-
-  void handle_input( bool& );
-
-  bool is_stopper() const { return true; }
-  Socket::Handler get_handler() const { return sock[0]; }
-
-  void send_alarm();
+  Reactor_select_impl();
+  virtual ~Reactor_select_impl();
+  
+  void reset(const Reactor_base::HandlerStateList&);
+  bool poll(Reactor_base::HandlerStateList& out, Reactor_base::Timeout);
 };
 
+} // namespace iqnet
+
+#endif // not defined HAVE_POLL
 #endif

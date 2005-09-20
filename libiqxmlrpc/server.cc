@@ -15,78 +15,30 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.22 2005-07-11 19:10:19 bada Exp $
+//  $Id: server.cc,v 1.23 2005-09-20 16:02:59 bada Exp $
 
 #include <memory>
 #include "reactor.h"
 #include "server.h"
 #include "request.h"
 #include "response.h"
+#include "server_conn.h"
 
 using namespace iqxmlrpc;
 
-
-Server_connection::Server_connection( const iqnet::Inet_addr& a ):
-  peer_addr(a),
-  server(0),
-  read_buf_sz(1024),
-  read_buf(new char[1024]),
-  keep_alive(false)
-{
-}
-
-
-Server_connection::~Server_connection()
-{
-  delete[] read_buf;
-}
-
-
-void Server_connection::set_read_sz( unsigned rsz )
-{
-  delete[] read_buf;
-  read_buf_sz = rsz;
-  read_buf = new char[read_buf_sz];
-}
-
-
-http::Packet* Server_connection::read_request( const std::string& s )
-{
-  try 
-  {
-    preader.set_max_size( server->get_max_request_sz() );
-    http::Packet* r = preader.read_packet(s);
-    
-    if( r )
-      keep_alive = r->header()->conn_keep_alive();
-    
-    return r;
-  }
-  catch( const http::Malformed_packet& )
-  {
-    throw http::Bad_request();
-  }
-}
-
-
-void Server_connection::schedule_response( http::Packet* pkt )
-{
-  std::auto_ptr<http::Packet> p(pkt);
-  p->set_keep_alive( keep_alive );
-  response = p->dump();
-}
-
-
-//-----------------------------------------------------------------------------
-Server::Server( int p, Executor_factory_base* f ):
+Server::Server(
+  int p, 
+  iqnet::Accepted_conn_factory* cf,
+  Executor_factory_base* ef
+):
   disp(this),
-  exec_factory(f),
+  exec_factory(ef),
   port(p),
-  reactor( f->create_lock() ),
-  conn_factory(0),
+  reactor(ef->create_reactor()),
+  conn_factory(cf),
   acceptor(0),
   firewall(0),
-  exit_flag(false, f->create_lock()),
+  exit_flag(false),
   soft_exit(false),
   log(0),
   max_req_sz(0)
@@ -96,16 +48,12 @@ Server::Server( int p, Executor_factory_base* f ):
 
 Server::~Server()
 {
-  delete acceptor;
-  delete conn_factory;
-  delete exec_factory;
 }
 
 
 void Server::perform_soft_exit()
 {
-  delete acceptor;
-  acceptor = 0;
+  delete acceptor.release();
   soft_exit = true;
 }
 
@@ -186,3 +134,29 @@ void Server::set_firewall( iqnet::Firewall_base* _firewall )
 {
    firewall = _firewall;
 }
+
+
+void Server::work()
+{
+  if( !acceptor.get() )
+  {
+    acceptor.reset(new iqnet::Acceptor( port, conn_factory.get(), reactor.get()));
+    acceptor->set_firewall( firewall );
+  }
+
+  try {
+    for(;;)
+    {
+      if( exit_flag && !soft_exit )
+        perform_soft_exit();
+
+      reactor->handle_events();
+    }
+  } 
+  catch ( const iqnet::Reactor_base::No_handlers& )
+  {
+    // Soft exit performed.
+  }
+}
+
+

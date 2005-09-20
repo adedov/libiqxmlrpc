@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.8 2005-07-19 16:26:50 bada Exp $
+//  $Id: reactor.h,v 1.9 2005-09-20 16:02:58 bada Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
 
+#include <list>
 #include "net_except.h"
 #include "lock.h"
 #include "socket.h"
@@ -28,7 +29,7 @@
 namespace iqnet
 {
   class Event_handler;
-  class Reactor;
+  class Reactor_base;
 };
 
 
@@ -42,16 +43,7 @@ public:
 
   virtual void handle_input( bool& terminate ) {}
   virtual void handle_output( bool& terminate ) {}
-  virtual void handle_error( bool& terminate ) { terminate = true; }
-
-  virtual void handle_io( bool& terminate )
-  {
-    handle_input( terminate );
-    
-    if( !terminate )
-      handle_output( terminate );
-  }
-  
+   
   //! Invoked by Reactor when handle_X() 
   //! sets terminate variable to true.
   virtual void finish() {};
@@ -67,38 +59,46 @@ public:
 };
 
 
-//! Reactor class. 
-/*! Invokes appropriate Event_handler's methods when the event, 
-    for which they were registered, has been happen.
-*/
-class iqnet::Reactor {
+class iqnet::Reactor_base {
 public:
   class No_handlers: public iqnet::network_error {
   public:
     No_handlers():
       network_error( "iqnet::Reactor: no handlers given.", false ) {}
   };
-
+  
   enum Event_mask { INPUT=1, OUTPUT=2 };
+
+  struct HandlerState {
+    Socket::Handler fd;
+    short           mask;
+    short           revents;
+    
+    HandlerState( Socket::Handler fd_ = 0 ):
+      fd(fd_), mask(0), revents(0) {}
+    
+    HandlerState( Socket::Handler fd_, Event_mask m ):
+      fd(fd_), mask(m), revents(0) {}
+
+    bool operator ==(const HandlerState& hs)
+    {
+      return fd == hs.fd;
+    }
+  };
+
+  typedef std::list<HandlerState> HandlerStateList;
   typedef int Timeout;
 
-private:
-  class Reactor_impl;
-  Reactor_impl* impl;
+  virtual ~Reactor_base() {};
 
-public:
-  Reactor( iqnet::Lock* = new Null_lock );
-  virtual ~Reactor();
-
-  void register_handler( Event_handler*, Event_mask );
-  void unregister_handler( Event_handler*, Event_mask );
-  void unregister_handler( Event_handler* );
-
-  void fake_event( Event_handler*, Event_mask );
+  virtual void register_handler( Event_handler*, Event_mask )   = 0;
+  virtual void unregister_handler( Event_handler*, Event_mask ) = 0;
+  virtual void unregister_handler( Event_handler* ) = 0;
+  virtual void fake_event( Event_handler*, Event_mask ) = 0;
 
   //! \return true if any handle was invoked, false on timeout.
   /*! Throws Reactor::No_handlers when no one handler has been registered. */
-  bool handle_events( Timeout ms = -1 );
+  virtual bool handle_events( Timeout ms = -1 ) = 0;
 };
 
 #endif

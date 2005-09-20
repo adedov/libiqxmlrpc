@@ -23,8 +23,10 @@ pkginclude_HEADERS = \
   acceptor.h \
   connector.h \
   lock.h \
-  mt_synch.h \
   reactor.h \
+  reactor_impl.h \
+  reactor_poll_impl.h \
+  reactor_select_impl.h \
   connection.h \
   sigsock.h \
   ssl_lib.h \
@@ -40,6 +42,7 @@ pkginclude_HEADERS = \
   builtins.h \
   executor.h \
   http.h \
+  server_conn.h \
   server.h \
   client.h \
   http_client.h \
@@ -55,9 +58,10 @@ pkginclude_HEADERS = \
 libiqxmlrpc_general_la_SOURCES = \
   inet_addr.cc \
   net_except.cc \
+  reactor_poll_impl.cc \
+  reactor_select_impl.cc \
   socket.cc \
   acceptor.cc \
-  reactor.cc \
   connection.cc \
   ssl_lib.cc \
   ssl_connection.cc \
@@ -69,8 +73,7 @@ libiqxmlrpc_general_la_SOURCES = \
   request.cc \
   response.cc \
   http.cc \
-  utf_conv.cc \
-  util.cc
+  utf_conv.cc 
 
 libiqxmlrpc_client_la_SOURCES = \
   http_client.cc \
@@ -78,16 +81,14 @@ libiqxmlrpc_client_la_SOURCES = \
   client.cc
   
 libiqxmlrpc_server_la_SOURCES = \
-  mt_synch.cc \
   sigsock.cc \
+	server_conn.cc \
   http_server.cc \
   https_server.cc \
   method.cc \
   builtins.cc \
   executor.cc \
   server.cc
-
-#  xml_util.cc
 
 # Server only sources:
 #  sigsock.*

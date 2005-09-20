@@ -15,11 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_client.h,v 1.5 2004-11-14 17:24:54 adedov Exp $
+//  $Id: https_client.h,v 1.6 2005-09-20 16:02:57 bada Exp $
 
 #ifndef _libiqxmlrpc_https_client_h_
 #define _libiqxmlrpc_https_client_h_
 
+#include <memory>
+#include "reactor.h"
 #include "connector.h"
 #include "ssl_connection.h"
 #include "client.h"
@@ -35,7 +37,7 @@ class iqxmlrpc::Https_client_connection:
   public iqxmlrpc::Client_connection,
   public iqnet::ssl::Reaction_connection
 {
-  iqnet::Reactor reactor;
+  std::auto_ptr<iqnet::Reactor_base> reactor;
   http::Packet* resp_packet;
   std::string out_str;
   bool established;
@@ -45,7 +47,7 @@ public:
 
   void post_connect() 
   { 
-    set_reactor( &reactor );
+    set_reactor( reactor.get() );
     iqnet::ssl::Reaction_connection::post_connect(); 
   }
 

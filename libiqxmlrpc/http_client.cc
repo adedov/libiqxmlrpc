@@ -15,10 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_client.cc,v 1.9 2004-11-14 16:58:28 adedov Exp $
+//  $Id: http_client.cc,v 1.10 2005-09-20 16:02:57 bada Exp $
 
 #include <iostream>
 #include "sysinc.h"
+#include "reactor_impl.h"
 #include "http_client.h"
 
 using namespace iqxmlrpc;
@@ -28,7 +29,7 @@ using namespace iqnet;
 Http_client_connection::Http_client_connection( const iqnet::Socket& s, bool nb ):
   Client_connection(),
   Connection( s ),
-  reactor( new iqnet::Null_lock ),
+  reactor( new Reactor<Null_lock> ),
   resp_packet(0)
 {
   sock.set_non_blocking( nb );
@@ -39,11 +40,11 @@ http::Packet* Http_client_connection::do_process_session( const std::string& s )
 {
   out_str = s;
   resp_packet = 0;
-  reactor.register_handler( this, iqnet::Reactor::OUTPUT );
+  reactor->register_handler( this, Reactor_base::OUTPUT );
   
   do {
     int to = timeout >= 0 ? timeout*1000 : -1;
-    if( !reactor.handle_events(to) )
+    if( !reactor->handle_events(to) )
       throw Client_timeout();
   }
   while( !resp_packet );
@@ -59,8 +60,8 @@ void Http_client_connection::handle_output( bool& )
   
   if( out_str.empty() )
   {
-    reactor.unregister_handler( this, iqnet::Reactor::OUTPUT );
-    reactor.register_handler( this, iqnet::Reactor::INPUT );
+    reactor->unregister_handler( this, Reactor_base::OUTPUT );
+    reactor->register_handler( this, Reactor_base::INPUT );
   }
 }
 
@@ -78,5 +79,5 @@ void Http_client_connection::handle_input( bool& )
   }
   
   if( resp_packet )
-    reactor.unregister_handler( this );
+    reactor->unregister_handler( this );
 }

@@ -15,13 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: util.h,v 1.3 2005-07-11 19:10:19 bada Exp $
+//  $Id: util.h,v 1.4 2005-09-20 16:03:00 bada Exp $
 
 #ifndef _iqxmlrpc_util_h_
 #define _iqxmlrpc_util_h_
 
 #include <functional>
 #include <memory>
+#include <boost/utility.hpp>
 #include "libiqxmlrpc/lock.h"
 
 namespace iqxmlrpc
@@ -82,20 +83,28 @@ public:
 };
 
 //! Provides serialized access to some bool value
-class LockedBool {
+template <class Lock>
+class LockedBool: boost::noncopyable {
   bool val;
-  std::auto_ptr<iqnet::Lock> lock;
+  Lock lock;
 
 public:
-  LockedBool(bool def, iqnet::Lock*);
-  ~LockedBool();
+  LockedBool(bool default_):
+    val(default_) {}
 
-  operator bool();
-  void operator =(bool);
+  ~LockedBool() {}
 
-private:
-  LockedBool(const LockedBool&);
-  LockedBool& operator =(const LockedBool&);
+  operator bool()
+  {
+    typename Lock::scoped_lock lk(lock);
+    return val;
+  }
+
+  void operator =(bool b)
+  {
+    typename Lock::scoped_lock lk(lock);
+    val = b;
+  }
 };
 
 } // namespace util

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http.h,v 1.19 2004-11-14 16:58:28 adedov Exp $
+//  $Id: http.h,v 1.20 2005-09-20 16:02:57 bada Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -24,6 +24,7 @@
 #include <sstream>
 #include <map>
 #include <list>
+#include <vector>
 #include "except.h"
 
 
@@ -72,7 +73,7 @@ private:
       name(n), value(v) {}
   };
 
-  typedef std::list<Option> Options_box;
+  typedef std::vector<Option> Options_box;
   class Option_eq;
 
 private:

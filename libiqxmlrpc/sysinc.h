@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sysinc.h,v 1.5 2004-11-25 12:10:44 maxim Exp $
+//  $Id: sysinc.h,v 1.6 2005-09-20 16:03:00 bada Exp $
 
 /*! \file sysinc.h 
     This file should help to port library.
@@ -47,9 +47,5 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
-
-#ifdef HAVE_POLL
-  #include <sys/poll.h>
-#endif
 
 #endif

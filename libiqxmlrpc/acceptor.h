@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.h,v 1.5 2005-03-23 18:26:00 bada Exp $
+//  $Id: acceptor.h,v 1.6 2005-09-20 16:02:56 bada Exp $
 
 #ifndef _libiqnet_acceptor_h_
 #define _libiqnet_acceptor_h_
@@ -58,11 +58,11 @@ public:
 class iqnet::Acceptor: public iqnet::Event_handler {
   Socket sock;
   Accepted_conn_factory *factory;
-  Reactor *reactor;
+  Reactor_base *reactor;
   Firewall_base* firewall;
     
 public:
-  Acceptor( int port, Accepted_conn_factory*, Reactor* );
+  Acceptor( int port, Accepted_conn_factory*, Reactor_base* );
   virtual ~Acceptor();
 
   void set_firewall( iqnet::Firewall_base* );

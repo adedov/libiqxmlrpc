@@ -15,31 +15,29 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.h,v 1.3 2004-07-20 05:45:28 adedov Exp $
+//  $Id: http_server.h,v 1.4 2005-09-20 16:02:57 bada Exp $
 
 #ifndef _libiqxmlrpc_http_server_h_
 #define _libiqxmlrpc_http_server_h_
 
 #include "connector.h"
+#include "server_conn.h"
 #include "server.h"
 
 namespace iqxmlrpc
 {
-  class Http_server_connection;
-};
-
 
 //! Represents server-side \b HTTP non-blocking connection.
-class iqxmlrpc::Http_server_connection: 
+class Http_server_connection: 
   public iqnet::Connection,
-  public iqxmlrpc::Server_connection 
+  public Server_connection 
 {
-  iqnet::Reactor* reactor;
+  iqnet::Reactor_base* reactor;
 
 public:
   Http_server_connection( const iqnet::Socket& );
 
-  void set_reactor( iqnet::Reactor* r ) { reactor = r; }
+  void set_reactor( iqnet::Reactor_base* r ) { reactor = r; }
 
   void post_accept();  
   void finish();
@@ -54,5 +52,17 @@ public:
   void log_unknown_exception();  
 };
 
+class Http_server: public Server {
+  typedef Server_conn_factory<Http_server_connection> Conn_factory;
+
+public:
+  Http_server(int port, Executor_factory_base* ef):
+    Server(port, new Conn_factory, ef)
+  {
+    static_cast<Conn_factory*>(conn_factory.get())->post_init(this, reactor.get());
+  }
+};
+
+} // namespace iqxmlrpc
 
 #endif

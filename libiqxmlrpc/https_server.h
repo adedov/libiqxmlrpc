@@ -15,19 +15,17 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_server.h,v 1.3 2004-07-20 05:45:50 adedov Exp $
+//  $Id: https_server.h,v 1.4 2005-09-20 16:02:58 bada Exp $
 
 #ifndef _libiqxmlrpc_https_server_h_
 #define _libiqxmlrpc_https_server_h_
 
 #include "ssl_connection.h"
+#include "server_conn.h"
 #include "server.h"
 
 namespace iqxmlrpc
 {
-  class Https_server_connection;
-};
-
 
 //! Represents server-side \b HTTPS non-blocking connection.
 class iqxmlrpc::Https_server_connection: 
@@ -55,5 +53,17 @@ protected:
   void send_succeed( bool& terminate );
 };
 
+class Https_server: public Server {
+  typedef Server_conn_factory<Https_server_connection> Conn_factory;
+
+public:
+  Https_server(int port, Executor_factory_base* ef):
+    Server(port, new Conn_factory, ef)
+  {
+    static_cast<Conn_factory*>(conn_factory.get())->post_init(this, reactor.get());
+  }
+};
+
+} // namespace iqxmlrpc
 
 #endif

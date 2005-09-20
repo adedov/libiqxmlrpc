@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: sigsock.cc,v 1.2 2004-06-09 09:23:03 adedov Exp $
+//  $Id: sigsock.cc,v 1.3 2005-09-20 16:03:00 bada Exp $
 
 #include "sigsock.h"
 #include "sysinc.h"
@@ -27,9 +27,8 @@ using namespace iqnet;
 #define AF_LOCAL AF_UNIX
 #endif
 
-Alarm_socket::Alarm_socket( Reactor* r, Lock* lck ):
-  reactor(r),
-  lock(lck)
+Alarm_socket::Alarm_socket( Reactor_base* r ):
+  reactor(r)
 {
   socketpair( AF_LOCAL, SOCK_STREAM, 0, sock );
   int mode = fcntl( sock[0], F_GETFL, 0 );
@@ -37,7 +36,7 @@ Alarm_socket::Alarm_socket( Reactor* r, Lock* lck ):
   if( fcntl( sock[0], F_SETFL, mode | O_NDELAY ) == -1 )
     throw network_error( "Alarm_socket: fcntl( F_SETFL )" );
 
-  r->register_handler( this, Reactor::INPUT );
+  r->register_handler( this, Reactor_base::INPUT );
 }
 
 
@@ -45,7 +44,6 @@ Alarm_socket::~Alarm_socket()
 {
   close( sock[0] );
   close( sock[1] );
-  delete lock;
 }
 
 
@@ -58,6 +56,6 @@ void Alarm_socket::handle_input( bool& )
 
 void Alarm_socket::send_alarm()
 {
-  Auto_lock a( lock );
+  boost::mutex::scoped_lock lk(lock);
   ::write( sock[1], "\0", 1 );
 }

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.h,v 1.8 2005-07-20 17:09:04 bada Exp $
+//  $Id: executor.h,v 1.9 2005-09-20 16:02:56 bada Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -28,13 +28,16 @@
 #include "lock.h"
 #include "method.h"
 #include "sigsock.h"
-#include "mt_synch.h"
+#include "reactor_impl.h"
 
 namespace iqxmlrpc 
 {
   class Server;
   class Server_connection;
   class Response;
+
+  struct Serial_executor_traits;
+  struct Pool_executor_traits;
 
   class Executor;
   class Serial_executor;
@@ -45,6 +48,18 @@ namespace iqxmlrpc
   class Pool_executor_factory;
 };
 
+
+struct iqxmlrpc::Serial_executor_traits 
+{
+  typedef Serial_executor_factory Executor_factory;
+  typedef iqnet::Null_lock Lock;
+};
+
+struct iqxmlrpc::Pool_executor_traits 
+{
+  typedef Pool_executor_factory Executor_factory;
+  typedef boost::mutex Lock;
+};
 
 //! Abstract executor class. Defines the policy for method execution.
 class iqxmlrpc::Executor {
@@ -78,15 +93,13 @@ public:
     Server_connection* 
   ) = 0;
 
-  virtual iqnet::Lock* create_lock() = 0;
+  virtual iqnet::Reactor_base* create_reactor() = 0;
 };
 
 
 //! Single thread executor.
 class iqxmlrpc::Serial_executor: public iqxmlrpc::Executor {
 public:
-  typedef iqnet::Null_lock Lock;
-
   Serial_executor( Method* m, Server* s, Server_connection* c ):
     Executor( m, s, c ) {}
 
@@ -101,10 +114,10 @@ public:
   {
     return new Serial_executor( m, s, c );
   }
-  
-  iqnet::Lock* create_lock()
+
+  iqnet::Reactor_base* create_reactor()
   {
-    return new Serial_executor::Lock;
+    return new iqnet::Reactor<iqnet::Null_lock>;
   }
 };
 
@@ -117,8 +130,6 @@ class iqxmlrpc::Pool_executor: public iqxmlrpc::Executor {
   Param_list params;
 
 public:
-  typedef iqnet::Mutex_lock Lock;
-
   Pool_executor( Pool_executor_factory*, Method*, Server*, Server_connection* );
   ~Pool_executor();
 
@@ -141,21 +152,23 @@ class iqxmlrpc::Pool_executor_factory: public iqxmlrpc::Executor_factory_base {
   boost::condition           req_queue_cond;
  
 public:
-  Pool_executor_factory( unsigned pool_size );
+  Pool_executor_factory(unsigned num_threads);
   ~Pool_executor_factory();
+
+  //! Add some threads to the pool.
+  void add_threads(unsigned num);
 
   Executor* create( Method* m, Server* s, Server_connection* c )
   {
     return new Pool_executor( this, m, s, c );
   }
-  
-  iqnet::Lock* create_lock()
+
+  iqnet::Reactor_base* create_reactor()
   {
-    return new Pool_executor::Lock;
+    return new iqnet::Reactor<boost::mutex>;
   }
 
   void register_executor( Pool_executor* );
 };
-
 
 #endif

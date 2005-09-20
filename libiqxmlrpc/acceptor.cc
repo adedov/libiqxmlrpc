@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: acceptor.cc,v 1.8 2005-04-10 18:24:22 bada Exp $
+//  $Id: acceptor.cc,v 1.9 2005-09-20 16:02:56 bada Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -28,14 +28,14 @@
 using namespace iqnet;
 
 
-Acceptor::Acceptor( int port, Accepted_conn_factory* factory_, Reactor* reactor_ ):
+Acceptor::Acceptor( int port, Accepted_conn_factory* factory_, Reactor_base* reactor_ ):
   factory(factory_),
   reactor(reactor_),
   firewall(0)
 {
   sock.bind( port );
   listen();
-  reactor->register_handler( this, Reactor::INPUT );
+  reactor->register_handler( this, Reactor_base::INPUT );
 }
 
 

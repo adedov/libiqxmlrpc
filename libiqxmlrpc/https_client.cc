@@ -15,10 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_client.cc,v 1.7 2004-11-14 17:24:54 adedov Exp $
+//  $Id: https_client.cc,v 1.8 2005-09-20 16:02:57 bada Exp $
 
 #include <iostream>
 #include "https_client.h"
+#include "reactor_impl.h"
 
 using namespace iqxmlrpc;
 using namespace iqnet;
@@ -27,6 +28,7 @@ using namespace iqnet;
 Https_client_connection::Https_client_connection( const iqnet::Socket& s, bool nb ):
   Client_connection(),
   iqnet::ssl::Reaction_connection( s ),
+  reactor( new Reactor<Null_lock> ),
   resp_packet(0),
   established(false)
 {
@@ -50,7 +52,7 @@ http::Packet* Https_client_connection::do_process_session( const std::string& s 
   
   do {
     int to = timeout >= 0 ? timeout*1000 : -1;
-    if( !reactor.handle_events(to) )
+    if( !reactor->handle_events(to) )
       throw Client_timeout();
   }
   while( !resp_packet );
