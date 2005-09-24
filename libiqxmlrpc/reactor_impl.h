@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor_impl.h,v 1.1 2005-09-20 16:02:58 bada Exp $
+//  $Id: reactor_impl.h,v 1.2 2005-09-24 16:24:57 bada Exp $
 
 #ifndef _iqxmlrpc_reactor_impl_h_
 #define _iqxmlrpc_reactor_impl_h_
@@ -42,12 +42,11 @@
 
 namespace iqnet
 {
-  template <class Lock>
-  class Reactor;
-}
 
+//! The Reactor template class.
+//! Lock param can be either boost::mutex or iqnet::Null_lock.
 template <class Lock>
-class iqnet::Reactor: public iqnet::Reactor_base, boost::noncopyable {
+class Reactor: public Reactor_base, boost::noncopyable {
 public:
   Reactor();
   ~Reactor() {}
@@ -95,8 +94,6 @@ private:
 
 
 // ----------------------------- Implementation -----------------------------
-namespace iqnet
-{
 
 template <class Lock>
 Reactor<Lock>::Reactor():

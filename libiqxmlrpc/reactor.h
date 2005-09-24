@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.9 2005-09-20 16:02:58 bada Exp $
+//  $Id: reactor.h,v 1.10 2005-09-24 16:24:56 bada Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
@@ -59,6 +59,9 @@ public:
 };
 
 
+//! Abstract base for Reactor template.
+//! It defines interface, standard exceptions and 
+//! general data structures for all implementations.
 class iqnet::Reactor_base {
 public:
   class No_handlers: public iqnet::network_error {

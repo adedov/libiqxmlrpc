@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor_poll_impl.h,v 1.1 2005-09-20 16:02:59 bada Exp $
+//  $Id: reactor_poll_impl.h,v 1.2 2005-09-24 16:24:57 bada Exp $
 
 #ifndef _iqxmlrpc_reactor_poll_impl_h_
 #define _iqxmlrpc_reactor_poll_impl_h_
@@ -30,7 +30,8 @@
 namespace iqnet
 {
 
-class iqnet::Reactor_poll_impl: boost::noncopyable {
+//! Reactor implementation helper based on poll() system call.
+class Reactor_poll_impl: boost::noncopyable {
   struct Impl;
   Impl* impl;
 
