@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_server.h,v 1.4 2005-09-20 16:02:58 bada Exp $
+//  $Id: https_server.h,v 1.5 2005-09-24 16:48:43 bada Exp $
 
 #ifndef _libiqxmlrpc_https_server_h_
 #define _libiqxmlrpc_https_server_h_
@@ -53,6 +53,7 @@ protected:
   void send_succeed( bool& terminate );
 };
 
+//! XML-RPC server that works over secured HTTP connections (HTTPS).
 class Https_server: public Server {
   typedef Server_conn_factory<Https_server_connection> Conn_factory;
 

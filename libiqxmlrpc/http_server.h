@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: http_server.h,v 1.4 2005-09-20 16:02:57 bada Exp $
+//  $Id: http_server.h,v 1.5 2005-09-24 16:48:43 bada Exp $
 
 #ifndef _libiqxmlrpc_http_server_h_
 #define _libiqxmlrpc_http_server_h_
@@ -52,6 +52,7 @@ public:
   void log_unknown_exception();  
 };
 
+//! XML-RPC server that works over plain HTTP connections.
 class Http_server: public Server {
   typedef Server_conn_factory<Http_server_connection> Conn_factory;
 
