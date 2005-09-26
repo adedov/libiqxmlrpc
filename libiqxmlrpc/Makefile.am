@@ -82,27 +82,13 @@ libiqxmlrpc_client_la_SOURCES = \
   
 libiqxmlrpc_server_la_SOURCES = \
   sigsock.cc \
-	server_conn.cc \
+  server_conn.cc \
   http_server.cc \
   https_server.cc \
   method.cc \
   builtins.cc \
   executor.cc \
   server.cc
-
-# Server only sources:
-#  sigsock.*
-#  method.*
-#  builtins.*
-#  executor.*
-#  server.*
-#  http_server.*
-#  https_server.*
-#  
-# Client only sources:
-#  http_client.*
-#  https_client.*
-#  client.*
 
 clean-local:
 	rm -f *.da  
