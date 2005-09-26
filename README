@@ -1,12 +1,7 @@
 Libiqxmlrpc
 ===========
 
-Libiqxmlrpc is an object-oriented library, which represents simple XML-RPC 
-solution both for client and server sides.
-
-Please, look into doc/index.html for further reading. This file explains only
-some steps of building and testing of the library.
-
+See doc/index.html
 
 Build library
 -------------
