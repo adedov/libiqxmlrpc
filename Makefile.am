@@ -1,34 +1,32 @@
 AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = \
-  License \
-  ChangeLog \
-  NEWS \
-  README \
-  autogen.sh \
-  libiqxmlrpc.pc.in \
-  libiqxmlrpc.pc \
-  libiqxmlrpc-server.pc.in \
-  libiqxmlrpc-server.pc \
-  libiqxmlrpc-client.pc.in \
-  libiqxmlrpc-client.pc \
-  libiqxmlrpc.spec.in \
-  libiqxmlrpc.spec
+	License \
+	ChangeLog \
+	NEWS \
+	README \
+	autogen.sh \
+	libiqxmlrpc.pc.in \
+	libiqxmlrpc.pc \
+	libiqxmlrpc-server.pc.in \
+	libiqxmlrpc-server.pc \
+	libiqxmlrpc-client.pc.in \
+	libiqxmlrpc-client.pc \
+	libiqxmlrpc.spec.in \
+	libiqxmlrpc.spec
 
 pkgconfigdir = ${libdir}/pkgconfig
 pkgconfig_DATA = \
-  libiqxmlrpc.pc \
-  libiqxmlrpc-server.pc \
-  libiqxmlrpc-client.pc
+	libiqxmlrpc.pc \
+	libiqxmlrpc-server.pc \
+	libiqxmlrpc-client.pc
   
 SUBDIRS = \
-  libiqxmlrpc \
-  tests \
-  doc \
-  win32
+	libiqxmlrpc \
+	tests \
+	doc \
+	win32
 
-#  libiqnet
- 
 rpm:	dist
 	cp $(PACKAGE)-$(VERSION).tar.gz /usr/src/redhat/SOURCES
 	rpmbuild -ba $(PACKAGE).spec

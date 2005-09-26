@@ -1,9 +1,9 @@
 EXTRA_DIST = \
-  libiqxmlrpc.doxygen \
-  libiqxmlrpc.doxygen.in \
-  libiqxmlrpc.pages/*.dox \
-  index.html \
-  README.win32
+	libiqxmlrpc.doxygen \
+	libiqxmlrpc.doxygen.in \
+	libiqxmlrpc.pages/*.dox \
+	index.html \
+	README.win32
 
 DOCDIR=${prefix}/share/doc/@PACKAGE@
 MKDOC=X@MAKEDOCS@
