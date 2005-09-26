@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.h,v 1.9 2005-09-20 16:02:56 bada Exp $
+//  $Id: executor.h,v 1.10 2005-09-26 18:19:45 bada Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -28,10 +28,10 @@
 #include "lock.h"
 #include "method.h"
 #include "sigsock.h"
-#include "reactor_impl.h"
 
 namespace iqxmlrpc 
 {
+  class Reactor_base;
   class Server;
   class Server_connection;
   class Response;
@@ -110,15 +110,8 @@ public:
 //! Factory class for Serial_executor.
 class iqxmlrpc::Serial_executor_factory: public iqxmlrpc::Executor_factory_base {
 public:
-  Executor* create( Method* m, Server* s, Server_connection* c )
-  {
-    return new Serial_executor( m, s, c );
-  }
-
-  iqnet::Reactor_base* create_reactor()
-  {
-    return new iqnet::Reactor<iqnet::Null_lock>;
-  }
+  Executor* create( Method* m, Server* s, Server_connection* c );
+  iqnet::Reactor_base* create_reactor();
 };
 
 
@@ -155,18 +148,11 @@ public:
   Pool_executor_factory(unsigned num_threads);
   ~Pool_executor_factory();
 
+  Executor* create( Method* m, Server* s, Server_connection* c );
+  iqnet::Reactor_base* create_reactor();
+
   //! Add some threads to the pool.
   void add_threads(unsigned num);
-
-  Executor* create( Method* m, Server* s, Server_connection* c )
-  {
-    return new Pool_executor( this, m, s, c );
-  }
-
-  iqnet::Reactor_base* create_reactor()
-  {
-    return new iqnet::Reactor<boost::mutex>;
-  }
 
   void register_executor( Pool_executor* );
 };

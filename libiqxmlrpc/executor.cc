@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.11 2005-09-20 16:02:56 bada Exp $
+//  $Id: executor.cc,v 1.12 2005-09-26 18:19:45 bada Exp $
 
 #include "executor.h"
 #include "except.h"
 #include "response.h"
+#include "reactor_impl.h"
 #include "server.h"
 #include "util.h"
 
@@ -58,6 +59,19 @@ void Serial_executor::execute( const Param_list& params )
   {
     schedule_response( Response( f.code(), f.what() ) );
   }
+}
+
+
+Executor* Serial_executor_factory::create(
+  Method* m, Server* s, Server_connection* c )
+{
+  return new Serial_executor( m, s, c );
+}
+
+
+iqnet::Reactor_base* Serial_executor_factory::create_reactor()
+{
+  return new iqnet::Reactor<iqnet::Null_lock>;
 }
 
 
@@ -120,6 +134,19 @@ Pool_executor_factory::~Pool_executor_factory()
   util::delete_ptrs(pool.begin(), pool.end());
   scoped_lock lk(req_queue_lock);
   util::delete_ptrs(req_queue.begin(), req_queue.end());
+}
+
+
+Executor* Pool_executor_factory::create(
+  Method* m, Server* s, Server_connection* c )
+{
+  return new Pool_executor( this, m, s, c );
+}
+
+
+iqnet::Reactor_base* Pool_executor_factory::create_reactor()
+{
+  return new iqnet::Reactor<boost::mutex>;
 }
 
 
