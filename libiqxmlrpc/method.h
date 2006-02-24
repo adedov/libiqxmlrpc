@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.17 2006-02-24 09:40:59 bada Exp $
+//  $Id: method.h,v 1.18 2006-02-24 17:13:41 bada Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -36,8 +36,7 @@ class Method;
 //! Method's parameters type
 typedef std::vector<Value> Param_list;
 
-//! A type of a pointer to a function that can be wrapped
-//! with Method_function_adapter class.
+//! Type of pointer to function that can be used as server method.
 typedef void (*Method_function)(Method*, const Param_list&, Value&);
 
 //! This clas provides restricted interface of class Server for Method's needs.
@@ -100,6 +99,17 @@ private:
 };
 
 //! Interceptor's base class
+/*! One can use interceptors in order to wrap actual XML-RPC calls
+ *  on server side with code that supports particular aspect.
+ *  E.g. logging or catch/re-throw internal exceptions, etc.
+ *
+ *  Interceptors are stacked inside of server and are being called
+ *  in order of LIFO.
+ *
+ *  Also note that interceptors are shared between method that executed
+ *  in the same time. So the synchronization of internal state of
+ *  user-defined interceptor is up to it's creator.
+ */
 class Interceptor: boost::noncopyable {
 public:
   Interceptor():
@@ -116,11 +126,18 @@ public:
     nested = ic;
   }
 
-  //! Customize this method. Use yield() method to pass the execution.
-  //! Note: interceptor objects are shared beetwen methods and even threads.
+  //! User defined interceptor's code goes here.
+  /*! This method is called by library as soon it resolved target XML-RPC
+   * method on a server side. This method must call actual XML-RPC method
+   * (along with other stacked interceptors) via calling yield() member
+   */
   virtual void process(Method*, const Param_list&, Value&) = 0;
 
 protected:
+  //! Yield the control to specific XML-RPC method.
+  /*! This function <b>must</b> be called by process() method function
+   *  unless it meaningfuly decided not to call actual server method.
+   */
   void yield(Method* m, const Param_list& params, Value& result)
   {
     m->process_execution(nested, params, result);
@@ -130,15 +147,12 @@ private:
   Interceptor* nested;
 };
 
-//! The method class that wraps the call of function specified in ctor
+//! Adapter that allows make server method from plain function.
+//! \see Method_function
 class Method_function_adapter: public Method {
 public:
   Method_function_adapter(Method_function f):
     function(f) {}
-
-  using Method::name;
-  using Method::peer_addr;
-  using Method::server;
 
 private:
   void execute(const Param_list& params, Value& result)
@@ -169,7 +183,7 @@ public:
   T* create() { return new T(); }
 };
 
-//! Factory specialization. Creates funciton adapter methods.
+//! Specialization for funciton adapters.
 template <>
 class Method_factory<Method_function_adapter>: public Method_factory_base {
 public:
