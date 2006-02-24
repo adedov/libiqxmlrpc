@@ -10,9 +10,9 @@ using namespace iqxmlrpc;
 
 void register_user_methods(iqxmlrpc::Server& s)
 {
-  s.register_method<serverctl_stop>( "serverctl.stop");
-  s.register_method<Echo>( "echo" );
-  s.register_method<Get_file>( "get_file" );
+  register_method<serverctl_stop>(s, "serverctl.stop");
+  register_method(s, "echo", echo_method);
+  register_method<Get_file>(s, "get_file");
 }
 
 void serverctl_stop::execute( 
@@ -24,8 +24,10 @@ void serverctl_stop::execute(
 }
 
 
-void Echo::execute( 
-  const iqxmlrpc::Param_list& args, iqxmlrpc::Value& retval )
+void echo_method(
+  iqxmlrpc::Method*,
+  const iqxmlrpc::Param_list& args,
+  iqxmlrpc::Value& retval )
 {
   BOOST_MESSAGE("Echo method invoked.");
   retval = args[0];

@@ -11,10 +11,13 @@ public:
   void execute( const iqxmlrpc::Param_list&, iqxmlrpc::Value& );
 };
 
-class Echo: public iqxmlrpc::Method {
+/*class Echo: public iqxmlrpc::Method {
 public:
   void execute( const iqxmlrpc::Param_list&, iqxmlrpc::Value& );
 };
+*/
+
+void echo_method(iqxmlrpc::Method*, const iqxmlrpc::Param_list&, iqxmlrpc::Value&);
 
 class Get_file: public iqxmlrpc::Method {
 public:

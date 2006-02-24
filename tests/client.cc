@@ -39,6 +39,14 @@ void introspection_test()
   }
 }
 
+void echo_test()
+{
+  BOOST_REQUIRE(test_client);
+  Echo_proxy echo(test_client);
+  Response retval(echo("Hello"));
+  BOOST_CHECK(retval.value().get_string() == "Hello");
+}
+
 void get_file_test()
 {
   BOOST_REQUIRE(test_client);
@@ -72,6 +80,7 @@ test_suite* init_unit_test_suite(int argc, char* argv[])
    
     test_suite* test = BOOST_TEST_SUITE("Client test");
     test->add( BOOST_TEST_CASE(&introspection_test) );
+    test->add( BOOST_TEST_CASE(&echo_test) );
     test->add( BOOST_TEST_CASE(&get_file_test) );
 
     if (test_config.stop_server())

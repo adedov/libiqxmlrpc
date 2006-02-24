@@ -15,6 +15,33 @@
 using namespace boost::unit_test_framework;
 using namespace iqxmlrpc;
 
+class LogInterceptor: public Interceptor {
+public:
+  void process(Method* m, const Param_list& p, Value& r)
+  {
+    std::cout << "Log Interceptor: " << m->name() << " is executing.\n";
+    yield(m, p, r);
+  }
+};
+
+class CallCountingInterceptor: public Interceptor {
+  unsigned count;
+
+public:
+  CallCountingInterceptor(): count(0) {}
+
+  ~CallCountingInterceptor()
+  {
+    std::cout << "Calls Count: " << count << std::endl;
+  }
+  
+  void process(Method* m, const Param_list& p, Value& r)
+  {
+    std::cout << "Executing " << ++count << " call\n";
+    yield(m, p, r);
+  }
+};
+   
 class Test_server: boost::noncopyable {
   Test_server_config conf_;
   std::auto_ptr<Executor_factory_base> ef_;
@@ -52,7 +79,10 @@ Test_server::Test_server(const Test_server_config& conf):
   {
     impl_.reset(new Http_server(conf.port, ef_.get()));
   }
-  
+
+  impl_->push_interceptor(new CallCountingInterceptor);
+  impl_->push_interceptor(new LogInterceptor);
+
   impl_->log_errors( &std::cerr );
   impl_->enable_introspection();
   register_user_methods(impl());
