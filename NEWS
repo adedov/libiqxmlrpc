@@ -1,5 +1,29 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.7 - 0.7.1
+Two new features were added:
+  * Support for server-side method interceptors.
+
+    I.e. one can wrap calls of XML-RPC methods with arbitrary amount of
+    interceptors, which will do some useful job concerning any aspects, which
+    orthogonal in relation to actual method's functionality.  E.g. such tasks
+    as call logging, exception's handling, and security policy treatment can
+    be addressed by this feature.
+  
+  * Ability to register plain function as XML-RPC method implementation.
+
+    The functions with specific signature can be registered with server as
+    request handlers.  Moreover the new common interface for registering
+    methods with the server is introduced (while old one still remains correct
+    too):
+
+      Server s;
+      register_method<MyMethod>(s, "my_method");
+      register_method(s, "method2", my_function);
+
+   An old code that was wored with prev version of library is source-level
+   compatible with this version.
+
 0.6.5 - 0.7
   This release incorporates big code changes. I believe that quality of 
   code have been greatly improved since new test suite had been intoduced.
