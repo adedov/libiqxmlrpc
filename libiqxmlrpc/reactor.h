@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor.h,v 1.10 2005-09-24 16:24:56 bada Exp $
+//  $Id: reactor.h,v 1.11 2006-02-24 10:17:38 bada Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
@@ -28,10 +28,6 @@
 
 namespace iqnet
 {
-  class Event_handler;
-  class Reactor_base;
-};
-
 
 //! Base class for event-driven communication classes.
 class iqnet::Event_handler {
@@ -103,5 +99,7 @@ public:
   /*! Throws Reactor::No_handlers when no one handler has been registered. */
   virtual bool handle_events( Timeout ms = -1 ) = 0;
 };
+
+} // namespace iqnet
 
 #endif
