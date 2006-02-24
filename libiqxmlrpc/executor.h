@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.h,v 1.11 2006-02-24 09:40:58 bada Exp $
+//  $Id: executor.h,v 1.12 2006-02-24 10:17:12 bada Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -29,9 +29,13 @@
 #include "method.h"
 #include "sigsock.h"
 
+namespace iqnet
+{
+  class Reactor_base;
+}
+
 namespace iqxmlrpc 
 {
-class Reactor_base;
 class Server;
 class Server_connection;
 class Response;
