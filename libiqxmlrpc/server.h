@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.23 2006-02-24 09:40:59 bada Exp $
+//  $Id: server.h,v 1.24 2006-02-24 17:38:35 bada Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -130,12 +130,14 @@ void Server::register_method(const std::string& name, Method_factory_base* f)
   disp.register_method(name, f);
 }
 
+//! Register class Method_class as handler for call "name" with specific server.
 template <class Method_class>
 inline void register_method(Server& server, const std::string& name)
 {
   server.register_method<Method_class>(name);
 }
 
+//! Register function "fn" as handler for call "name" with specific server.
 inline void register_method(Server& server, const std::string& name, Method_function fn)
 {
   server.register_method(name, new Method_factory<Method_function_adapter>(fn));
