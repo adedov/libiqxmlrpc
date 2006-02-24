@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.cc,v 1.9 2005-04-10 18:20:18 bada Exp $
+//  $Id: method.cc,v 1.10 2006-02-24 09:40:59 bada Exp $
 
 #include <algorithm>
 #include "method.h"
@@ -41,6 +41,15 @@ void Server_feedback::log_message( const std::string& msg )
   server_->log_err_msg(msg);
 }
 
+// ----------------------------------------------------------------------------
+void Method::process_execution(Interceptor* ic, const Param_list& params, Value& result)
+{
+  if (ic) {
+    ic->process(this, params, result);
+  } else {
+    execute(params, result);
+  }
+}
 
 // ----------------------------------------------------------------------------
 Method_dispatcher::Method_dispatcher( Server* s ):

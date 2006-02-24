@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.12 2005-09-26 18:19:45 bada Exp $
+//  $Id: executor.cc,v 1.13 2006-02-24 09:40:58 bada Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -29,6 +29,7 @@ typedef boost::mutex::scoped_lock scoped_lock;
 
 Executor::Executor( Method* m, Server* s, Server_connection* cb ):
   method(m),
+  interceptors(0),
   server(s),
   conn(cb)
 {
@@ -52,7 +53,7 @@ void Serial_executor::execute( const Param_list& params )
 {
   try {
     Value result(0);
-    method->execute( params, result );
+    method->process_execution( interceptors, params, result );
     schedule_response( Response(result) );
   }
   catch( const Fault& f )
@@ -201,7 +202,7 @@ void Pool_executor::process_actual_execution()
 {
   try {
     Value result(0);
-    method->execute( params, result );
+    method->process_execution( interceptors, params, result );
     schedule_response( Response(result) );
   }
   catch( const Fault& f )

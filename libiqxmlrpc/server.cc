@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.23 2005-09-20 16:02:59 bada Exp $
+//  $Id: server.cc,v 1.24 2006-02-24 09:40:59 bada Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -41,7 +41,8 @@ Server::Server(
   exit_flag(false),
   soft_exit(false),
   log(0),
-  max_req_sz(0)
+  max_req_sz(0),
+  interceptors(0)
 {
 }
 
@@ -55,6 +56,13 @@ void Server::perform_soft_exit()
 {
   delete acceptor.release();
   soft_exit = true;
+}
+
+
+void Server::push_interceptor(Interceptor* ic)
+{
+  ic->nest(interceptors.release());
+  interceptors.reset(ic);
 }
 
 
@@ -94,6 +102,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
     std::auto_ptr<Request> req( parse_request( packet->content() ) );
     Method* meth = disp.create_method( req->get_name(), conn->get_peer_addr() );
     executor = exec_factory->create( meth, this, conn );
+    executor->set_interceptors(interceptors.get());
     executor->execute( req->get_params() );
   }
   catch( const iqxmlrpc::Exception& e )

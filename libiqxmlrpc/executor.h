@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.h,v 1.10 2005-09-26 18:19:45 bada Exp $
+//  $Id: executor.h,v 1.11 2006-02-24 09:40:58 bada Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -31,40 +31,31 @@
 
 namespace iqxmlrpc 
 {
-  class Reactor_base;
-  class Server;
-  class Server_connection;
-  class Response;
+class Reactor_base;
+class Server;
+class Server_connection;
+class Response;
 
-  struct Serial_executor_traits;
-  struct Pool_executor_traits;
+class Serial_executor_factory;
+class Pool_executor_factory;
 
-  class Executor;
-  class Serial_executor;
-  class Pool_executor;
-
-  class Executor_factory_base;
-  class Serial_executor_factory;
-  class Pool_executor_factory;
-};
-
-
-struct iqxmlrpc::Serial_executor_traits 
+struct Serial_executor_traits 
 {
   typedef Serial_executor_factory Executor_factory;
   typedef iqnet::Null_lock Lock;
 };
 
-struct iqxmlrpc::Pool_executor_traits 
+struct Pool_executor_traits 
 {
   typedef Pool_executor_factory Executor_factory;
   typedef boost::mutex Lock;
 };
 
 //! Abstract executor class. Defines the policy for method execution.
-class iqxmlrpc::Executor {
+class Executor {
 protected:
-  iqxmlrpc::Method* method;
+  Method* method;
+  Interceptor* interceptors;
 
 private:
   Server* server;
@@ -73,6 +64,8 @@ private:
 public:
   Executor( Method*, Server*, Server_connection* );
   virtual ~Executor();
+
+  void set_interceptors(Interceptor* ic) { interceptors = ic; }
 
   //! Start method execution.
   virtual void execute( const Param_list& params ) = 0;
@@ -83,7 +76,7 @@ protected:
 
 
 //! Abstract base for Executor's factories.
-class iqxmlrpc::Executor_factory_base {
+class Executor_factory_base {
 public:
   virtual ~Executor_factory_base() {}
 
@@ -98,17 +91,17 @@ public:
 
 
 //! Single thread executor.
-class iqxmlrpc::Serial_executor: public iqxmlrpc::Executor {
+class Serial_executor: public Executor {
 public:
   Serial_executor( Method* m, Server* s, Server_connection* c ):
     Executor( m, s, c ) {}
 
-  void execute( const Param_list& params );
+  void execute( const Param_list& );
 };
 
 
 //! Factory class for Serial_executor.
-class iqxmlrpc::Serial_executor_factory: public iqxmlrpc::Executor_factory_base {
+class Serial_executor_factory: public Executor_factory_base {
 public:
   Executor* create( Method* m, Server* s, Server_connection* c );
   iqnet::Reactor_base* create_reactor();
@@ -116,7 +109,7 @@ public:
 
 
 //! An Executor which plans request to be executed by a pool of threads.
-class iqxmlrpc::Pool_executor: public iqxmlrpc::Executor {
+class Pool_executor: public Executor {
   static iqnet::Alarm_socket* alarm_sock;
 
   Pool_executor_factory* pool;
@@ -126,13 +119,13 @@ public:
   Pool_executor( Pool_executor_factory*, Method*, Server*, Server_connection* );
   ~Pool_executor();
 
-  void execute( const Param_list& params );
+  void execute( const Param_list& );
   void process_actual_execution();
 };
 
 
 //! Factory for Pool_executor objects. It is also serves as a pool of threads.
-class iqxmlrpc::Pool_executor_factory: public iqxmlrpc::Executor_factory_base {
+class Pool_executor_factory: public Executor_factory_base {
   class Pool_thread;
   friend class Pool_thread;
 
@@ -156,5 +149,7 @@ public:
 
   void register_executor( Pool_executor* );
 };
+
+} // namespace iqxmlrpc
 
 #endif

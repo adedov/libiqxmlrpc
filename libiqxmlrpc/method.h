@@ -15,36 +15,33 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.16 2005-09-20 16:02:58 bada Exp $
+//  $Id: method.h,v 1.17 2006-02-24 09:40:59 bada Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
 
 #include <string>
 #include <map>
+#include <boost/utility.hpp>
 #include "value.h"
 #include "except.h"
 #include "inet_addr.h"
 
 namespace iqxmlrpc
 {
-  class Server;
-  class Server_config;
+class Server;
+class Interceptor;
+class Method;
 
-  //! Vector of Value objects.
-  typedef std::vector<Value> Param_list;
+//! Method's parameters type
+typedef std::vector<Value> Param_list;
 
-  class Server_feedback;
-  struct Method_data;
-  class Method;  
-  class Method_factory_base;
-  template <class T> class Method_factory;
-  class Method_dispatcher;
-};
-
+//! A type of a pointer to a function that can be wrapped
+//! with Method_function_adapter class.
+typedef void (*Method_function)(Method*, const Param_list&, Value&);
 
 //! This clas provides restricted interface of class Server for Method's needs.
-class iqxmlrpc::Server_feedback {
+class Server_feedback {
   Server* server_;
 
 public:
@@ -59,10 +56,9 @@ public:
   void log_message( const std::string& );
 };
 
-
 //! Abstract base for server method. 
 //! Inherit it to create actual server method.
-class iqxmlrpc::Method {
+class Method {
 public:
   struct Data {
     std::string      method_name;
@@ -78,7 +74,7 @@ public:
   public:
     virtual ~Help() {}
     //! Returns methods signature
-    virtual iqxmlrpc::Value signature() const { return iqxmlrpc::Nil(); }
+    virtual Value signature() const { return iqxmlrpc::Nil(); }
     //! Returns methods help string
     virtual std::string help() const { return ""; }
   };
@@ -90,22 +86,75 @@ private:
 public:
   virtual ~Method() {}
 
-  //! Replace it with your actual code.
-  virtual void execute( const Param_list& params, Value& response ) = 0;
+  //! Calls customized execute() and optionally wraps it with interceptors.
+  //! Is is called by a server object.
+  void process_execution(Interceptor*, const Param_list& params, Value& response);
 
-protected:
   const std::string&      name()      const { return data_.method_name; }
   const iqnet::Inet_addr& peer_addr() const { return data_.peer_addr; }
   Server_feedback&        server()          { return data_.server_face; }
+
+private:
+  //! Replace it with your actual code.
+  virtual void execute( const Param_list& params, Value& response ) = 0;
 };
 
+//! Interceptor's base class
+class Interceptor: boost::noncopyable {
+public:
+  Interceptor():
+    nested(0) {}
+
+  virtual ~Interceptor()
+  {
+    delete nested;
+  }
+
+  void nest(Interceptor* ic)
+  {
+    delete nested;
+    nested = ic;
+  }
+
+  //! Customize this method. Use yield() method to pass the execution.
+  //! Note: interceptor objects are shared beetwen methods and even threads.
+  virtual void process(Method*, const Param_list&, Value&) = 0;
+
+protected:
+  void yield(Method* m, const Param_list& params, Value& result)
+  {
+    m->process_execution(nested, params, result);
+  }
+
+private:
+  Interceptor* nested;
+};
+
+//! The method class that wraps the call of function specified in ctor
+class Method_function_adapter: public Method {
+public:
+  Method_function_adapter(Method_function f):
+    function(f) {}
+
+  using Method::name;
+  using Method::peer_addr;
+  using Method::server;
+
+private:
+  void execute(const Param_list& params, Value& result)
+  {
+    function(this, params, result);
+  }
+
+  Method_function function;
+};
 
 //! Abstract factory for Method. 
 /*! Method_dispatcher uses it to create Method object on demand. 
     Inherit it to create your specific factory.
     \see Method_factory
 */
-class iqxmlrpc::Method_factory_base {
+class Method_factory_base {
 public:
   virtual ~Method_factory_base() {}
     
@@ -115,11 +164,23 @@ public:
 
 //! Template for simple Method factory.
 template <class T>
-class iqxmlrpc::Method_factory: public Method_factory_base {
+class Method_factory: public Method_factory_base {
 public:
   T* create() { return new T(); }
 };
 
+//! Factory specialization. Creates funciton adapter methods.
+template <>
+class Method_factory<Method_function_adapter>: public Method_factory_base {
+public:
+  Method_factory(Method_function fn):
+    function(fn) {}
+
+  Method* create() { return new Method_function_adapter(function); }
+
+private:
+  Method_function function;
+};
 
 //! Method dispatcher.
 /*! This class responsible for methods dispatching by their names.
@@ -131,7 +192,7 @@ public:
     disp.register_method( "my_method", new Method_factory<MyMethod> );
     \endcode
 */
-class iqxmlrpc::Method_dispatcher {
+class Method_dispatcher {
   typedef std::map<std::string, Method_factory_base*> Factory_map;
 
   Server* server;
@@ -150,5 +211,6 @@ public:
   Method* create_method( const std::string& name, const iqnet::Inet_addr& peer );
 };
 
+} // namespace iqxmlrpc
 
 #endif

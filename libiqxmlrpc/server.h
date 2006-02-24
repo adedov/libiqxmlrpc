@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.22 2005-09-20 16:02:59 bada Exp $
+//  $Id: server.h,v 1.23 2006-02-24 09:40:59 bada Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -34,14 +34,13 @@
 namespace iqnet
 {
   class Reactor_base;
-};
-
+}
 
 namespace iqxmlrpc
 {
 
 //! XML-RPC server.
-class iqxmlrpc::Server {
+class Server: boost::noncopyable {
 protected:
   Method_dispatcher disp;
   Executor_factory_base* exec_factory;
@@ -57,6 +56,9 @@ protected:
   std::ostream* log;
   unsigned max_req_sz;
 
+private:
+  std::auto_ptr<Interceptor> interceptors;
+  
 public:
   Server( 
     int port, 
@@ -70,6 +72,13 @@ public:
   //! Register specific method class with server.
   template <class Method_class> 
   void register_method( const std::string& name );
+
+  //! Register method using abstract factory.
+  void register_method( const std::string& name, Method_factory_base* );
+
+  //! Push user defined interceptor into stack of interceptors.
+  //! Grabs the ownership.
+  void push_interceptor(Interceptor*);
 
   //! Allow clients to request introspection information 
   //! via special built-in methods.
@@ -108,11 +117,28 @@ private:
 
 
 template <class Method_class>
-void iqxmlrpc::Server::register_method( const std::string& meth_name )
+inline void Server::register_method( const std::string& meth_name )
 {
   typedef typename Method_class::Help Help;
   disp.register_method( meth_name, new Method_factory<Method_class> );
-  iqxmlrpc::Introspector::register_help_obj( meth_name, new Help );
+  Introspector::register_help_obj( meth_name, new Help );
+}
+
+inline
+void Server::register_method(const std::string& name, Method_factory_base* f)
+{
+  disp.register_method(name, f);
+}
+
+template <class Method_class>
+inline void register_method(Server& server, const std::string& name)
+{
+  server.register_method<Method_class>(name);
+}
+
+inline void register_method(Server& server, const std::string& name, Method_function fn)
+{
+  server.register_method(name, new Method_factory<Method_function_adapter>(fn));
 }
 
 } // namespace iqxmlrpc
