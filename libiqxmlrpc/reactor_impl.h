@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor_impl.h,v 1.2 2005-09-24 16:24:57 bada Exp $
+//  $Id: reactor_impl.h,v 1.3 2006-06-17 14:52:04 bada Exp $
 
 #ifndef _iqxmlrpc_reactor_impl_h_
 #define _iqxmlrpc_reactor_impl_h_
@@ -132,7 +132,7 @@ void Reactor<Lock>::register_handler( Event_handler* eh, Event_mask mask )
   }
   else
   {
-    Reactor<Lock>::hs_iterator i = find_handler_state(eh);
+    typename Reactor<Lock>::hs_iterator i = find_handler_state(eh);
     i->mask |= mask;
   }
 }

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: https_server.h,v 1.5 2005-09-24 16:48:43 bada Exp $
+//  $Id: https_server.h,v 1.6 2006-06-17 14:52:04 bada Exp $
 
 #ifndef _libiqxmlrpc_https_server_h_
 #define _libiqxmlrpc_https_server_h_
@@ -28,7 +28,7 @@ namespace iqxmlrpc
 {
 
 //! Represents server-side \b HTTPS non-blocking connection.
-class iqxmlrpc::Https_server_connection: 
+class Https_server_connection: 
   public iqnet::ssl::Reaction_connection,
   public iqxmlrpc::Server_connection
 {
