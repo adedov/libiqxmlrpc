@@ -1,5 +1,10 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.7.1 - 0.7.2
+  * Compilation fix for GNU C++ >= 3.4
+  * Remove last (I hope) obstacle of making library platform-independent:
+    Replace Alarm_socket with platform-independent Reactor_interrupter.
+
 0.7 - 0.7.1
 Two new features were added:
   * Support for server-side method interceptors.
