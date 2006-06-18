@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: executor.cc,v 1.13 2006-02-24 09:40:58 bada Exp $
+//  $Id: executor.cc,v 1.14 2006-06-18 14:08:26 bada Exp $
 
 #include "executor.h"
 #include "except.h"
@@ -171,7 +171,7 @@ void Pool_executor_factory::register_executor( Pool_executor* executor )
 
 
 // ----------------------------------------------------------------------------
-iqnet::Alarm_socket* Pool_executor::alarm_sock = 0;
+iqnet::Reactor_interrupter* Pool_executor::reactor_interrupter = 0;
 
 
 Pool_executor::Pool_executor( 
@@ -180,14 +180,14 @@ Pool_executor::Pool_executor(
     Executor( m, s, c ),
     pool(p)
 {
-  if( !alarm_sock )
-    alarm_sock = new iqnet::Alarm_socket( s->get_reactor() );
+  if( !reactor_interrupter )
+    reactor_interrupter = new iqnet::Reactor_interrupter(s->get_reactor());
 }
 
 
 Pool_executor::~Pool_executor()
 {
-  alarm_sock->send_alarm();
+  reactor_interrupter->make_interrupt();
 }
 
 

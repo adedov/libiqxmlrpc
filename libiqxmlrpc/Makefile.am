@@ -31,7 +31,7 @@ pkginclude_HEADERS = \
 	lock.h \
 	reactor.h \
 	connection.h \
-	sigsock.h \
+	reactor_interrupter.h \
 	ssl_lib.h \
 	ssl_connection.h \
 	except.h \
@@ -81,7 +81,7 @@ libiqxmlrpc_client_la_SOURCES = \
 	client.cc
 
 libiqxmlrpc_server_la_SOURCES = \
-	sigsock.cc \
+	reactor_interrupter.cc \
 	server_conn.cc \
 	http_server.cc \
 	https_server.cc \

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: inet_addr.cc,v 1.1 2004-04-22 09:25:56 adedov Exp $
+//  $Id: inet_addr.cc,v 1.2 2006-06-18 14:08:26 bada Exp $
 
 #include "sysinc.h"
 #include "inet_addr.h"
@@ -48,7 +48,7 @@ Inet_addr::Inet_addr( const std::string& host_, int port_ ):
 
 
 Inet_addr::Inet_addr( int port_ ):
-  host("localhost"), port(port_)
+  host("127.0.0.1"), port(port_)
 {
   sa.sin_family = PF_INET;
   sa.sin_port = htons(port);

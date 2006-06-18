@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.h,v 1.5 2004-10-25 04:31:18 adedov Exp $
+//  $Id: socket.h,v 1.6 2006-06-18 14:08:27 bada Exp $
 
 #ifndef _libiqnet_socket_h_
 #define _libiqnet_socket_h_
@@ -64,12 +64,16 @@ public:
   virtual int recv( char*, int );
   
   void   bind( int port );
+  void   bind( const std::string& host, int port );
   void   listen( unsigned backlog = 5 );
   Socket accept();
   void   connect( const iqnet::Inet_addr& );
 
+  //! Returns an inet addr the socket asscociated with.
+  Inet_addr get_addr() const;
+
   //! Returns peer addr of connected or accepted socket.
-  const Inet_addr& get_peer_addr() const { return peer; }  
+  const Inet_addr& get_peer_addr() const { return peer; }
   
   //! Returns last error occured with socket.
   int get_last_error();

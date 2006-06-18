@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: socket.cc,v 1.8 2004-10-25 07:46:26 adedov Exp $
+//  $Id: socket.cc,v 1.9 2006-06-18 14:08:27 bada Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -27,7 +27,7 @@ using namespace iqnet;
 
 Socket::Socket()
 {
-  if( (sock = socket( PF_INET, SOCK_STREAM, 0 )) == -1 )
+  if( (sock = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP )) == -1 )
     throw network_error( "Socket::Socket" );
 
 #ifndef _WINDOWS
@@ -57,7 +57,7 @@ void Socket::shutdown()
 void Socket::close()
 {
 #ifdef _WINDOWS
-	closesocket(sock);
+  closesocket(sock);
 #else
   ::close( sock );
 #endif //_WINDOWS
@@ -67,9 +67,9 @@ void Socket::close()
 void Socket::set_non_blocking( bool flag )
 {
 #ifdef _WINDOWS
-	unsigned long f = flag ? 1 : 0;
-	if( ioctlsocket(sock, FIONBIO, &f) != 0 )
-		throw network_error( "Socket::set_non_blocking");
+  unsigned long f = flag ? 1 : 0;
+  if( ioctlsocket(sock, FIONBIO, &f) != 0 )
+    throw network_error( "Socket::set_non_blocking");
 #else
   if( !flag )
     return;
@@ -133,6 +133,17 @@ void Socket::bind( int port )
 }
 
 
+void Socket::bind( const std::string& host, int port )
+{
+  Inet_addr addr( host, port );
+  const sockaddr* saddr = 
+    reinterpret_cast<const sockaddr*>(addr.get_sockaddr());
+
+  if( ::bind( sock, saddr, sizeof(sockaddr_in) ) == -1 )
+    throw network_error( "Socket::bind" );
+}
+
+
 void Socket::listen( unsigned blog )
 {
   if( ::listen( sock, blog ) == -1 )
@@ -142,7 +153,7 @@ void Socket::listen( unsigned blog )
 
 Socket Socket::accept()
 {
-  struct sockaddr_in addr;
+  sockaddr_in addr;
   socklen_t len = sizeof(sockaddr_in);
   
   Handler new_sock = ::accept( sock, reinterpret_cast<sockaddr*>(&addr), &len );  
@@ -162,6 +173,18 @@ void Socket::connect( const iqnet::Inet_addr& peer_addr )
     throw network_error( "Socket::connect" );
   
   peer = peer_addr;
+}
+
+
+Inet_addr Socket::get_addr() const
+{
+  sockaddr_in saddr;
+  socklen_t saddr_len = sizeof(saddr);
+  
+  if (::getsockname(sock, reinterpret_cast<sockaddr*>(&saddr), &saddr_len) == -1)
+    throw network_error( "Socket::get_addr" );
+
+  return Inet_addr(reinterpret_cast<const sockaddr_in&>(saddr));
 }
 
 
