@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.18 2006-02-24 17:13:41 bada Exp $
+//  $Id: method.h,v 1.19 2006-08-19 16:42:01 adedov Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -32,6 +32,7 @@ namespace iqxmlrpc
 class Server;
 class Interceptor;
 class Method;
+class Method_dispatcher_base;
 
 //! Method's parameters type
 typedef std::vector<Value> Param_list;
@@ -55,7 +56,7 @@ public:
   void log_message( const std::string& );
 };
 
-//! Abstract base for server method. 
+//! Abstract base for server method.
 //! Inherit it to create actual server method.
 class Method {
 public:
@@ -65,7 +66,7 @@ public:
     Server_feedback  server_face;
   };
 
-  //! Introspection interface class. 
+  //! Introspection interface class.
   /*! Create appropriate nested class for each of your method classes
       if you want to support an introspection in your appliaction.
   */
@@ -79,7 +80,7 @@ public:
   };
 
 private:
-  friend class Method_dispatcher;
+  friend class Method_dispatcher_base;
   Data data_;
 
 public:
@@ -163,18 +164,18 @@ private:
   Method_function function;
 };
 
-//! Abstract factory for Method. 
-/*! Method_dispatcher uses it to create Method object on demand. 
+//! Abstract factory for Method.
+/*! Method_dispatcher uses it to create Method object on demand.
     Inherit it to create your specific factory.
     \see Method_factory
 */
 class Method_factory_base {
 public:
   virtual ~Method_factory_base() {}
-    
+
   virtual Method* create() = 0;
 };
-  
+
 
 //! Template for simple Method factory.
 template <class T>
@@ -182,6 +183,7 @@ class Method_factory: public Method_factory_base {
 public:
   T* create() { return new T(); }
 };
+
 
 //! Specialization for funciton adapters.
 template <>
@@ -196,33 +198,24 @@ private:
   Method_function function;
 };
 
-//! Method dispatcher.
-/*! This class responsible for methods dispatching by their names.
-    User must register his own methods in Method_dispatcher.
-    \code
-    // Usage example:
-    class MyMethod;
-    Method_dispatcher disp;
-    disp.register_method( "my_method", new Method_factory<MyMethod> );
-    \endcode
-*/
-class Method_dispatcher {
-  typedef std::map<std::string, Method_factory_base*> Factory_map;
 
-  Server* server;
-  Factory_map fs;
-  
+//! Method dispatcher base class.
+class Method_dispatcher_base {
 public:
-  Method_dispatcher( Server* );
-  virtual ~Method_dispatcher();
+  virtual ~Method_dispatcher_base() {}
 
-  //! Register Method with its factory.
-  /*! Method_dispatcher owns factory object. */
-  void register_method( const std::string& name, Method_factory_base* );
+  Method* create_method(const Method::Data& data)
+  {
+    Method *method = do_create_method(data.method_name);
+    if (method)
+      method->data_ = data;
 
-  //! Create method object according to specified name. 
-  //! Returns 0 if no Method registered for name.
-  Method* create_method( const std::string& name, const iqnet::Inet_addr& peer );
+    return method;
+  }
+
+private:
+  virtual Method*
+  do_create_method(const std::string&) = 0;
 };
 
 } // namespace iqxmlrpc

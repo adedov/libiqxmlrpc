@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.cc,v 1.10 2006-02-24 09:40:59 bada Exp $
+//  $Id: method.cc,v 1.11 2006-08-19 16:42:01 adedov Exp $
 
 #include <algorithm>
 #include "method.h"
@@ -49,37 +49,4 @@ void Method::process_execution(Interceptor* ic, const Param_list& params, Value&
   } else {
     execute(params, result);
   }
-}
-
-// ----------------------------------------------------------------------------
-Method_dispatcher::Method_dispatcher( Server* s ):
-  server(s)
-{
-}
-
-
-Method_dispatcher::~Method_dispatcher()
-{
-  util::delete_ptrs( fs.begin(), fs.end(), 
-    util::Select2nd<Factory_map>());
-}
-
-
-void Method_dispatcher::register_method
-  ( const std::string& name, Method_factory_base* fb )
-{
-  fs[name] = fb;
-}
-
-
-Method* Method_dispatcher::create_method( 
-  const std::string& name, const iqnet::Inet_addr& addr )
-{
-  if( fs.find(name) == fs.end() )
-    throw Unknown_method( name );
-
-  Method* m = fs[name]->create();
-  Method::Data data = { name, addr, Server_feedback(server) };
-  m->data_ = data;
-  return m;
 }

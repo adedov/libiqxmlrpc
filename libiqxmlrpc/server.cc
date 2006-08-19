@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.24 2006-02-24 09:40:59 bada Exp $
+//  $Id: server.cc,v 1.25 2006-08-19 16:42:01 adedov Exp $
 
 #include <memory>
 #include "reactor.h"
@@ -24,14 +24,34 @@
 #include "response.h"
 #include "server_conn.h"
 
-using namespace iqxmlrpc;
+namespace iqxmlrpc {
 
+Default_method_dispatcher::~Default_method_dispatcher()
+{
+  util::delete_ptrs( fs.begin(), fs.end(),
+    util::Select2nd<Factory_map>());
+}
+
+void Default_method_dispatcher::register_method
+  ( const std::string& name, Method_factory_base* fb )
+{
+  fs[name] = fb;
+}
+
+Method* Default_method_dispatcher::do_create_method(const std::string& name)
+{
+  if( fs.find(name) == fs.end() )
+    return 0;
+
+  return fs[name]->create();
+}
+
+// ---------------------------------------------------------------------------
 Server::Server(
-  int p, 
+  int p,
   iqnet::Accepted_conn_factory* cf,
   Executor_factory_base* ef
 ):
-  disp(this),
   exec_factory(ef),
   port(p),
   reactor(ef->create_reactor()),
@@ -44,11 +64,20 @@ Server::Server(
   max_req_sz(0),
   interceptors(0)
 {
+  default_disp = new Default_method_dispatcher;
+  dispatchers.push_back(default_disp);
 }
 
 
 Server::~Server()
 {
+  util::delete_ptrs(dispatchers.begin(), dispatchers.end());
+}
+
+
+void Server::register_method(const std::string& name, Method_factory_base* f)
+{
+  default_disp->register_method(name, f);
 }
 
 
@@ -66,11 +95,18 @@ void Server::push_interceptor(Interceptor* ic)
 }
 
 
+void Server::push_dispatcher(Method_dispatcher_base* disp)
+{
+  dispatchers.push_back(disp);
+}
+
+
 void Server::enable_introspection()
 {
-  register_method<List_methods_m>( "system.listMethods" );
-  register_method<Method_signature_m>( "system.methodSignature" );
-  register_method<Method_help_m>( "system.methodHelp" );
+  using iqxmlrpc::register_method;
+  register_method<List_methods_m>(*this, "system.listMethods" );
+  register_method<Method_signature_m>(*this, "system.methodSignature" );
+  register_method<Method_help_m>(*this, "system.methodHelp" );
 }
 
 
@@ -93,14 +129,35 @@ void Server::log_err_msg( const std::string& msg )
 }
 
 
+Method* Server::create_method(const Method::Data& mdata)
+{
+  typedef DispatchersSet::iterator I;
+  for (I i = dispatchers.begin(); i != dispatchers.end(); ++i)
+  {
+    Method* tmp = (*i)->create_method(mdata);
+    if (tmp)
+      return tmp;
+  }
+
+  throw Unknown_method(mdata.method_name);
+}
+
+
 void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 {
   Executor* executor = 0;
 
   try {
     std::auto_ptr<http::Packet> packet(pkt);
-    std::auto_ptr<Request> req( parse_request( packet->content() ) );
-    Method* meth = disp.create_method( req->get_name(), conn->get_peer_addr() );
+    std::auto_ptr<Request> req( parse_request(packet->content()) );
+
+    Method::Data mdata = {
+      req->get_name(),
+      conn->get_peer_addr(),
+      Server_feedback(this)
+    };
+
+    Method* meth = create_method( mdata );
     executor = exec_factory->create( meth, this, conn );
     executor->set_interceptors(interceptors.get());
     executor->execute( req->get_params() );
@@ -154,18 +211,18 @@ void Server::work()
   }
 
   try {
-    for(;;)
+    for(bool have_handlers = true; have_handlers;)
     {
       if( exit_flag && !soft_exit )
         perform_soft_exit();
 
-      reactor->handle_events();
+      have_handlers = reactor->handle_events();
     }
-  } 
+  }
   catch ( const iqnet::Reactor_base::No_handlers& )
   {
     // Soft exit performed.
   }
 }
 
-
+} // namespace iqxmlrpc

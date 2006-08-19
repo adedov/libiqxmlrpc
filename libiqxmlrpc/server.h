@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.h,v 1.24 2006-02-24 17:38:35 bada Exp $
+//  $Id: server.h,v 1.25 2006-08-19 16:42:01 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -39,10 +39,24 @@ namespace iqnet
 namespace iqxmlrpc
 {
 
+class Default_method_dispatcher: public Method_dispatcher_base {
+  typedef std::map<std::string, Method_factory_base*> Factory_map;
+  Factory_map fs;
+
+public:
+  ~Default_method_dispatcher();
+
+  void register_method( const std::string& name, Method_factory_base* );
+
+private:
+  virtual Method*
+  do_create_method(const std::string&);
+};
+
+
 //! XML-RPC server.
 class Server: boost::noncopyable {
 protected:
-  Method_dispatcher disp;
   Executor_factory_base* exec_factory;
 
   int port;
@@ -58,29 +72,33 @@ protected:
 
 private:
   std::auto_ptr<Interceptor> interceptors;
-  
+
+  typedef std::deque<Method_dispatcher_base*> DispatchersSet;
+  DispatchersSet dispatchers;
+  Default_method_dispatcher* default_disp;
+
 public:
-  Server( 
-    int port, 
+  Server(
+    int port,
     iqnet::Accepted_conn_factory* conn_factory,
     Executor_factory_base* executor_factory );
 
   virtual ~Server();
 
-  //! \name Server configuration methods
-  /*! \{ */
-  //! Register specific method class with server.
-  template <class Method_class> 
-  void register_method( const std::string& name );
-
   //! Register method using abstract factory.
   void register_method( const std::string& name, Method_factory_base* );
+
+  //! Push one more alternative Method Dispatcher
+  //! Method Dispatchers will be used in order they added
+  //! until requested method would't be found.
+  //! Grabs ownership.
+  void push_dispatcher(Method_dispatcher_base*);
 
   //! Push user defined interceptor into stack of interceptors.
   //! Grabs the ownership.
   void push_interceptor(Interceptor*);
 
-  //! Allow clients to request introspection information 
+  //! Allow clients to request introspection information
   //! via special built-in methods.
   void enable_introspection();
 
@@ -89,7 +107,7 @@ public:
 
   //! Set maximum size of incoming client's request in bytes.
   void set_max_request_sz( unsigned );
-  
+
   //! Set optional firewall object.
   void set_firewall( iqnet::Firewall_base* );
   /*! \} */
@@ -102,39 +120,30 @@ public:
   //! Ask server to exit from work() event handle loop.
   void set_exit_flag() { exit_flag = true; }
   /*! \} */
-  
+
   iqnet::Reactor_base* get_reactor() { return reactor.get(); }
 
   void schedule_execute( http::Packet*, Server_connection* );
   void schedule_response( const Response&, Server_connection*, Executor* );
-  
+
   void log_err_msg( const std::string& );
   unsigned get_max_request_sz() const { return max_req_sz; }
 
 private:
   void perform_soft_exit();
+
+  Method* create_method(const Method::Data&);
 };
 
-
-template <class Method_class>
-inline void Server::register_method( const std::string& meth_name )
-{
-  typedef typename Method_class::Help Help;
-  disp.register_method( meth_name, new Method_factory<Method_class> );
-  Introspector::register_help_obj( meth_name, new Help );
-}
-
-inline
-void Server::register_method(const std::string& name, Method_factory_base* f)
-{
-  disp.register_method(name, f);
-}
 
 //! Register class Method_class as handler for call "name" with specific server.
 template <class Method_class>
 inline void register_method(Server& server, const std::string& name)
 {
-  server.register_method<Method_class>(name);
+//  typedef typename Method_class::Help Help;
+//  Introspector::register_help_obj( meth_name, new Help );
+
+  server.register_method(name, new Method_factory<Method_class>);
 }
 
 //! Register function "fn" as handler for call "name" with specific server.
