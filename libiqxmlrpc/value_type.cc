@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.21 2005-06-06 17:03:01 bada Exp $
+//  $Id: value_type.cc,v 1.22 2006-08-19 16:50:44 adedov Exp $
 
 #include <string.h>
 #include <algorithm>
@@ -24,7 +24,7 @@
 #include "utf_conv.h"
 #include "util.h"
 
-using namespace iqxmlrpc;
+namespace iqxmlrpc {
 
 
 Value_type* Nil::clone() const
@@ -40,6 +40,7 @@ void Nil::to_xml( xmlpp::Node* p ) const
 
 
 // --------------------- Scalar's specialization ------------------------------
+template<>
 void Int::to_xml( xmlpp::Node* p ) const 
 {
   xmlpp::Element* el = p->add_child( "i4" );
@@ -49,14 +50,14 @@ void Int::to_xml( xmlpp::Node* p ) const
   el->add_child_text( ss.str() );
 }
 
-
+template<>
 void Bool::to_xml( xmlpp::Node* p ) const
 {
   xmlpp::Element* el = p->add_child( "boolean" );
   el->add_child_text( value_ ? "1" : "0" );
 }
 
-
+template<>
 void Double::to_xml( xmlpp::Node* p ) const
 {
   xmlpp::Element* el = p->add_child( "double" );
@@ -68,7 +69,8 @@ void Double::to_xml( xmlpp::Node* p ) const
 
 
 // --------------------------------------------------------------------------
-void iqxmlrpc::String::to_xml( xmlpp::Node* p ) const
+template<>
+void String::to_xml( xmlpp::Node* p ) const
 {
   xmlpp::Element* el = p->add_child( "string" );
   el->add_child_text( config::cs_conv->to_utf(value_) );
@@ -532,3 +534,5 @@ const std::string& Date_time::to_string() const
   
   return cache;
 }
+
+} // namespace iqxmlrpc
