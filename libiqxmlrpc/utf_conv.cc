@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: utf_conv.cc,v 1.5 2004-10-15 03:58:12 adedov Exp $
+//  $Id: utf_conv.cc,v 1.6 2006-08-21 15:59:45 adedov Exp $
 
 #include <errno.h>
 #include "utf_conv.h"
@@ -89,7 +89,7 @@ std::string Utf_conv::convert( iconv_t cd, const std::string& s )
   size_t ileft = ilen;
   size_t oleft = olen; 
   
-#ifdef _WINDOWS
+#ifdef _WINDOWS || __CYGWIN__
   const char* ibuf = s.c_str();
 #else
   char* ibuf = const_cast<char*>(s.c_str());
