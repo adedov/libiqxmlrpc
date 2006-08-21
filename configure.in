@@ -1,5 +1,5 @@
 AC_INIT( libiqxmlrpc/value.h )
-AM_INIT_AUTOMAKE( libiqxmlrpc, 0.7.2 )
+AM_INIT_AUTOMAKE( libiqxmlrpc, 0.7.3cvs )
 AM_CONFIG_HEADER( config.h )
 
 LIBIQXMLRPC_VERSION=0:0:0
