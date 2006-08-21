@@ -23,16 +23,19 @@ void scalar_test()
   BOOST_CHECK(vi.is_int());
   int i = vi;
   BOOST_CHECK_EQUAL(i, 10);
+  BOOST_CHECK_EQUAL(vi.type_name(), "i4");
 
   Value vd = 0.33;
   BOOST_CHECK(vd.is_double());
   double d = vd;
   BOOST_CHECK_EQUAL(d, 0.33);
+  BOOST_CHECK_EQUAL(vd.type_name(), "double");
 
   Value vs = "Test String";
   BOOST_CHECK(vs.is_string());
   std::string s = vs;
   BOOST_CHECK_EQUAL(s, "Test String");
+  BOOST_CHECK_EQUAL(vs.type_name(), "string");
 }
 
 void array_test()
@@ -46,6 +49,7 @@ void array_test()
 
   BOOST_CHECK(v.is_array());
   BOOST_CHECK_EQUAL(v.size(), (unsigned) 10);
+  BOOST_CHECK_EQUAL(v.type_name(), "array");
   BOOST_CHECK(v[0].is_string());
   BOOST_CHECK(v[1].is_int());
   
@@ -82,7 +86,7 @@ void struct_test()
   s.insert( "author", "D.D.Salinger" );
   s.insert( "title", "The catcher in the rye." );
   s.insert( "pages", 250 );
-
+  
   BOOST_CHECK(s.has_field("author"));
   BOOST_CHECK(s.has_field("title"));
   BOOST_CHECK(s.has_field("pages"));
@@ -113,6 +117,9 @@ void struct_test()
     std::auto_ptr<Struct> s1(s.clone());
     BOOST_CHECK(s1->has_field("pages"));
   }
+
+  Value v(s);
+  BOOST_CHECK_EQUAL(v.type_name(), "struct");
 }
 
 void binary_test()

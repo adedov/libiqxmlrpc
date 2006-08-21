@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value.h,v 1.18 2005-06-06 17:03:01 bada Exp $
+//  $Id: value.h,v 1.19 2006-08-21 08:43:16 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -81,7 +81,7 @@ public:
   bool is_array()  const { return can_cast<Array>(); }
   bool is_struct() const { return can_cast<Struct>(); }
 
-  std::string type_debug() const { return typeid(*value).name(); }
+  const std::string& type_name() const { return value->type_name(); }
   //! \}
 
   //! \name Access scalar value

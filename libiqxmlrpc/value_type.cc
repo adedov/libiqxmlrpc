@@ -15,16 +15,29 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.cc,v 1.22 2006-08-19 16:50:44 adedov Exp $
+//  $Id: value_type.cc,v 1.23 2006-08-21 08:43:16 adedov Exp $
 
 #include <string.h>
 #include <algorithm>
+#include <boost/lexical_cast.hpp>
 #include "value_type.h"
 #include "value.h"
 #include "utf_conv.h"
 #include "util.h"
 
 namespace iqxmlrpc {
+
+namespace type_names {
+  const std::string nil_type_name     = "nil";
+  const std::string int_type_name     = "i4";
+  const std::string bool_type_name    = "boolean";
+  const std::string double_type_name  = "double";
+  const std::string string_type_name  = "string";
+  const std::string array_type_name   = "array";
+  const std::string struct_type_name  = "struct";
+  const std::string base64_type_name  = "base64";
+  const std::string date_type_name    = "dateTime.iso8601";
+} // nameless namespace
 
 
 Value_type* Nil::clone() const
@@ -33,46 +46,68 @@ Value_type* Nil::clone() const
 }
 
 
+const std::string& Nil::type_name() const
+{
+  return type_names::nil_type_name;
+}
+
+
 void Nil::to_xml( xmlpp::Node* p ) const
 {
-  p->add_child( "nil" );
+  p->add_child( type_names::nil_type_name );
 }
 
 
 // --------------------- Scalar's specialization ------------------------------
 template<>
+const std::string& Int::type_name() const
+{
+  return type_names::int_type_name;
+}
+
+template<>
 void Int::to_xml( xmlpp::Node* p ) const 
 {
-  xmlpp::Element* el = p->add_child( "i4" );
-  
-  std::stringstream ss;
-  ss << value_;
-  el->add_child_text( ss.str() );
+  xmlpp::Element* el = p->add_child( type_names::int_type_name );
+  el->add_child_text( boost::lexical_cast<std::string>(value_) );
+}
+
+template<>
+const std::string& Bool::type_name() const
+{
+  return type_names::bool_type_name;
 }
 
 template<>
 void Bool::to_xml( xmlpp::Node* p ) const
 {
-  xmlpp::Element* el = p->add_child( "boolean" );
+  xmlpp::Element* el = p->add_child( type_names::bool_type_name );
   el->add_child_text( value_ ? "1" : "0" );
+}
+
+template<>
+const std::string& Double::type_name() const
+{
+  return type_names::double_type_name;
 }
 
 template<>
 void Double::to_xml( xmlpp::Node* p ) const
 {
-  xmlpp::Element* el = p->add_child( "double" );
-  
-  std::stringstream ss;
-  ss << value_;
-  el->add_child_text( ss.str() );
+  xmlpp::Element* el = p->add_child( type_names::double_type_name );
+  el->add_child_text( boost::lexical_cast<std::string>(value_) );
 }
 
+template<>
+const std::string& String::type_name() const
+{
+  return type_names::string_type_name;
+}
 
-// --------------------------------------------------------------------------
 template<>
 void String::to_xml( xmlpp::Node* p ) const
 {
-  xmlpp::Element* el = p->add_child( "string" );
+  xmlpp::Element* el = p->add_child( type_names::string_type_name );
   el->add_child_text( config::cs_conv->to_utf(value_) );
 }
 
@@ -128,9 +163,15 @@ Array* Array::clone() const
 }
 
 
+const std::string& Array::type_name() const
+{
+  return type_names::array_type_name;
+}
+
+
 void Array::to_xml( xmlpp::Node* p ) const
 {
-  xmlpp::Element* arr_el = p->add_child( "array" );
+  xmlpp::Element* arr_el = p->add_child( type_names::array_type_name );
   xmlpp::Element* el = arr_el->add_child( "data" );
   unsigned sz = size();
   
@@ -217,9 +258,15 @@ Struct* Struct::clone() const
 }
 
 
+const std::string& Struct::type_name() const
+{
+  return type_names::struct_type_name;
+}
+
+
 void Struct::to_xml( xmlpp::Node* p ) const
 {
-  xmlpp::Element* str_el = p->add_child( "struct" );
+  xmlpp::Element* str_el = p->add_child( type_names::struct_type_name );
   
   for( const_iterator i=values.begin(); i != values.end(); ++i )
   {
@@ -461,9 +508,15 @@ Value_type* Binary_data::clone() const
 }
 
 
+const std::string& Binary_data::type_name() const
+{
+  return type_names::base64_type_name;
+}
+
+
 void Binary_data::to_xml( xmlpp::Node* p ) const 
 {
-  xmlpp::Element* el = p->add_child( "base64" );
+  xmlpp::Element* el = p->add_child( type_names::base64_type_name );
   el->add_child_text( get_base64() );
 }
 
@@ -516,9 +569,15 @@ Value_type* Date_time::clone() const
 }
 
 
+const std::string& Date_time::type_name() const
+{
+  return type_names::date_type_name;
+}
+
+
 void Date_time::to_xml( xmlpp::Node* p ) const
 {
-  xmlpp::Element* el = p->add_child( "dateTime.iso8601" );
+  xmlpp::Element* el = p->add_child( type_names::date_type_name );
   el->add_child_text( to_string() );  
 }
 

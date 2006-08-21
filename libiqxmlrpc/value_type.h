@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: value_type.h,v 1.26 2005-06-06 17:03:02 bada Exp $
+//  $Id: value_type.h,v 1.27 2006-08-21 08:43:16 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -58,8 +58,9 @@ namespace iqxmlrpc
 class iqxmlrpc::Value_type {
 public:
   virtual ~Value_type() {}
-  
+
   virtual Value_type*  clone()  const = 0;
+  virtual const std::string& type_name() const = 0;
   virtual void to_xml( xmlpp::Node* parent ) const = 0;
 };
 
@@ -67,10 +68,11 @@ public:
 //! XML-RPC extension: Nil type.
 /*! \see http://ontosys.com/xml-rpc/extensions.html */
 class iqxmlrpc::Nil: public iqxmlrpc::Value_type {
- int nope;
+  int nope;
 
 public:
   Value_type* clone() const;
+  const std::string& type_name() const;
   void to_xml( xmlpp::Node* ) const;
 };
 
@@ -87,6 +89,7 @@ public:
   Scalar<T>* clone() const { return new Scalar<T>(value_); }
 
   void to_xml( xmlpp::Node* ) const;
+  const std::string& type_name() const;
 
   const T& value() const { return value_; }
   T&       value()       { return value_; }
@@ -131,6 +134,7 @@ public:
 
   void swap(Array&) throw();
   Array* clone() const;
+  const std::string& type_name() const;
   void to_xml( xmlpp::Node* ) const;
   
   unsigned size() const { return values.size(); }
@@ -249,6 +253,7 @@ public:
 
   void swap(Struct&) throw();
   Struct* clone() const;
+  const std::string& type_name() const;
   void to_xml( xmlpp::Node* ) const;
 
   bool has_field( const std::string& ) const;
@@ -297,6 +302,7 @@ public:
   const std::string& get_data() const;
 
   Value_type* clone() const;
+  const std::string& type_name() const;
   void to_xml( xmlpp::Node* parent ) const;
   
 private:
@@ -336,6 +342,7 @@ public:
   const std::string& to_string() const;  
   
   Value_type* clone() const;
+  const std::string& type_name() const;
   void to_xml( xmlpp::Node* ) const;
 };
 
