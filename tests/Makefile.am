@@ -1,6 +1,11 @@
+ACLOCAL_AMFLAGS = -I ../m4
 EXTRA_DIST = data regression.sh
 CXXFLAGS = @CXXFLAGS@ -pthread
-LDADD = ../libiqxmlrpc/libiqxmlrpc.la -lboost_unit_test_framework -lboost_program_options
+LDADD = ../libiqxmlrpc/libiqxmlrpc-client.la \
+	../libiqxmlrpc/libiqxmlrpc-server.la \
+	$(BOOST_THREAD_LIB) \
+	$(BOOST_UNIT_TEST_FRAMEWORK) \
+	$(BOOST_PROGRAM_OPTIONS)
 
 check_PROGRAMS = \
 	value-usage \

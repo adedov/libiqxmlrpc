@@ -6,7 +6,7 @@ libiqxmlrpc_general_la_LIBADD = ${LIBXMLPP_LIBS} ${OPENSSL_LIBS}
 lib_LTLIBRARIES = libiqxmlrpc-client.la libiqxmlrpc-server.la libiqxmlrpc.la
 
 libiqxmlrpc_client_la_LIBADD = libiqxmlrpc-general.la
-libiqxmlrpc_server_la_LIBADD = libiqxmlrpc-general.la -lboost_thread
+libiqxmlrpc_server_la_LIBADD = libiqxmlrpc-general.la $(BOOST_THREAD_LIB)
 
 libiqxmlrpc_la_SOURCES = libiqxmlrpc.h
 libiqxmlrpc_la_LIBADD = libiqxmlrpc-general.la libiqxmlrpc-client.la libiqxmlrpc-server.la
