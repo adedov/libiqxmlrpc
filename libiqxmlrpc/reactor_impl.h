@@ -15,13 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: reactor_impl.h,v 1.3 2006-06-17 14:52:04 bada Exp $
+//  $Id: reactor_impl.h,v 1.4 2006-08-25 07:39:40 adedov Exp $
 
 #ifndef _iqxmlrpc_reactor_impl_h_
 #define _iqxmlrpc_reactor_impl_h_
 
 #include <assert.h>
 #include <map>
+#include <algorithm>
 #include <boost/utility.hpp>
 #include "reactor.h"
 #include "config.h"
@@ -217,7 +218,7 @@ void Reactor<Lock>::invoke_servers_handler(
 }
 
 template <class Lock>
-void Reactor<Lock>::invoke_event_handler( Reactor<Lock>::HandlerState& hs )
+void Reactor<Lock>::invoke_event_handler( Reactor_base::HandlerState& hs )
 {
   bool terminate = false;
 
@@ -290,7 +291,7 @@ bool Reactor<Lock>::handle_system_events(Reactor_base::Timeout ms)
 }
 
 template <class Lock>
-bool Reactor<Lock>::handle_events(Reactor::Timeout ms)
+bool Reactor<Lock>::handle_events(Reactor_base::Timeout ms)
 {
   if (handlers.empty())
     return false;
