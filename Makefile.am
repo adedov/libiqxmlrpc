@@ -32,7 +32,7 @@ rpm:	dist
 	rpmbuild -ba $(PACKAGE).spec
 
 clog:
-	cvs2cl --fsf -P -S
+	cvs2cl --fsf -P -S -b
 
 mydist:	dist
 	( cd doc; tar cfz ../libiqxmlrpc-doc-@VERSION@.tar.gz index.html libiqxmlrpc.html )
