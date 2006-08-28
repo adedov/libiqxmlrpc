@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([libiqxmlrpc], [0.7.3cvs], [adedov@users.sourceforge.net])
+AC_INIT([libiqxmlrpc], [0.8pre], [adedov@users.sourceforge.net])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([libiqxmlrpc/value.h])
 AM_CONFIG_HEADER(config.h)
@@ -22,7 +22,7 @@ AX_BOOST_PROGRAM_OPTIONS
 AX_BOOST_UNIT_TEST_FRAMEWORK
 
 INCLUDES='-I${top_srcdir}'
-CXXFLAGS="-O2 -Wall -pthread"
+CXXFLAGS="-O2 -Wall ${BOOST_CPPFLAGS}"
 LDFLAGS=""
 MAKEDOCS="yes"
 
