@@ -15,16 +15,17 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: response.cc,v 1.9 2005-06-06 17:03:01 bada Exp $
+//  $Id: response.cc,v 1.10 2006-08-30 18:01:36 adedov Exp $
 
 #include <memory>
+#include <libxml++/libxml++.h>
 #include "response.h"
 #include "parser.h"
 #include "value.h"
+#include "value_type_xml.h"
 #include "except.h"
 
-using namespace iqxmlrpc;
-
+namespace iqxmlrpc {
 
 Response::Response( const xmlpp::Document* doc ):
   value_(0)
@@ -156,7 +157,8 @@ inline void Response::ok_to_xml( xmlpp::Node* p ) const
   
   Element* params_el = p->add_child( "params" );
   Element* param_el  = params_el->add_child( "param" );
-  value_->to_xml( param_el );
+  Value_type_to_xml vis(param_el);
+  value_->apply_visitor(vis);
 }
 
 
@@ -170,5 +172,8 @@ inline void Response::fault_to_xml( xmlpp::Node* p ) const
   fault.insert( "faultCode", fault_code_ );
   fault.insert( "faultString", fault_string_ );
   Value v( fault );
-  v.to_xml( fault_el );
+  Value_type_to_xml vis(fault_el);
+  v.apply_visitor(vis);
 }
+
+} // namespace iqxmlrpc

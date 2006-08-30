@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: value.h,v 1.19 2006-08-21 08:43:16 adedov Exp $
+//
+//  $Id: value.h,v 1.20 2006-08-30 18:01:36 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -27,29 +27,26 @@
 #include "value_type.h"
 #include "except.h"
 
-
-namespace iqxmlrpc 
+namespace iqxmlrpc
 {
-  class Value;
-}
 
 //! Proxy class to access XML-RPC values by users.
 /*! For more documentation please look into \ref value_usage .
-    \exception Bad_cast 
+    \exception Bad_cast
 */
 class iqxmlrpc::Value {
 public:
-  //! Bad_cast is being thrown on illegal 
+  //! Bad_cast is being thrown on illegal
   //! type conversion or Value::get_X() call.
   class Bad_cast: public Exception {
   public:
     Bad_cast():
       Exception( "iqxmlrpc::Value: incorrect type was requested." ) {}
   };
-  
+
 private:
   Value_type* value;
-  
+
 public:
   Value( Value_type* );
   Value( const Value& );
@@ -100,23 +97,23 @@ public:
   operator Binary_data() const { return get_binary(); }
   operator struct tm()   const { return get_datetime().get_tm(); }
   //! \}
-  
+
   //! \name Array functions
   //! \{
   //! Access inner Array value
   Array& the_array() { return *cast<Array>(); }
   const Array& the_array() const { return *cast<Array>(); }
-  
+
   unsigned size() const { return cast<Array>()->size(); }
   const Value& operator []( int ) const;
   Value&       operator []( int );
-  
+
   void push_back( const Value& v ) { cast<Array>()->push_back(v); }
-  
+
   Array::const_iterator arr_begin() const { return cast<Array>()->begin(); }
   Array::const_iterator arr_end()   const { return cast<Array>()->end(); }
   //! \}
-  
+
   //! \name Struct functions
   //! \{
   //! Access inner Struct value.
@@ -127,27 +124,20 @@ public:
   {
     return cast<Struct>()->has_field(f);
   }
-  
+
   const Value& operator []( const char* ) const;
   Value&       operator []( const char* );
   const Value& operator []( const std::string& ) const;
   Value&       operator []( const std::string& );
-  
-  void insert( const std::string& n, const Value& v ) 
-  { 
-    cast<Struct>()->insert(n,v); 
+
+  void insert( const std::string& n, const Value& v )
+  {
+    cast<Struct>()->insert(n,v);
   }
   //! \}
-  
-  //! \name XML building
-  //! \{
-  /*!
-    \param node  Parent node to attach to.
-    \param debug Not enclose actual value in <value> tag.
-  */
-  void to_xml( xmlpp::Node* node, bool debug = false ) const;
-  //! \}
-  
+
+  void apply_visitor(Value_type_visitor&) const;
+
 private:
   template <class T> T* cast() const
   {
@@ -156,11 +146,13 @@ private:
       throw Bad_cast();
     return t;
   }
-  
-  template <class T> bool can_cast() const 
+
+  template <class T> bool can_cast() const
   {
     return dynamic_cast<T*>( value );
   }
 };
+
+} // namespace iqxmlrpc
 
 #endif

@@ -15,21 +15,22 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: response.h,v 1.4 2004-10-19 09:00:05 adedov Exp $
+//  $Id: response.h,v 1.5 2006-08-30 18:01:36 adedov Exp $
 
 #ifndef _iqxmlrpc_response_h_
 #define _iqxmlrpc_response_h_
 
 #include <string>
-#include <libxml++/libxml++.h>
 
+namespace xmlpp {
+  class Document;
+  class Node;
+}
 
 namespace iqxmlrpc 
 {
-  class Value;
-  class Response;
-};
-
+class Value;
+class Response;
 
 //! XML-RPC response.
 class iqxmlrpc::Response {
@@ -70,5 +71,7 @@ private:
   void ok_to_xml( xmlpp::Node* ) const;
   void fault_to_xml( xmlpp::Node* ) const;
 };
+
+} // namespace iqxmlrpc
 
 #endif

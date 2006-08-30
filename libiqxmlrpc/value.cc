@@ -1,28 +1,27 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: value.cc,v 1.8 2005-03-23 18:24:27 bada Exp $
+//
+//  $Id: value.cc,v 1.9 2006-08-30 18:01:36 adedov Exp $
 
 #include <stdexcept>
 #include "value.h"
-#include "value_type.h"
+#include "value_type_visitor.h"
 
-using namespace iqxmlrpc;
-
+namespace iqxmlrpc {
 
 Value::Value( Value_type* v ):
   value(v)
@@ -154,14 +153,9 @@ Value& Value::operator []( const char* s )
 }
 
 
-void Value::to_xml( xmlpp::Node* p, bool debug ) const
+void Value::apply_visitor(Value_type_visitor& v) const
 {
-  if( debug )
-  {
-    value->to_xml( p );
-    return;
-  }
-
-  xmlpp::Element* el = p->add_child( "value" );
-  value->to_xml( el );
+  v.visit_value(*value);
 }
+
+} // namespace iqxmlrpc

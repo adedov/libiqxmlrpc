@@ -15,16 +15,16 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: request.cc,v 1.5 2004-09-19 17:42:38 adedov Exp $
+//  $Id: request.cc,v 1.6 2006-08-30 18:01:36 adedov Exp $
 
 #include <libxml++/libxml++.h>
 #include "request.h"
 #include "parser.h"
 #include "value.h"
+#include "value_type_xml.h"
 #include "except.h"
 
-using namespace iqxmlrpc;
-
+namespace iqxmlrpc {
 
 Request* iqxmlrpc::parse_request( const std::string& request_string )
 {
@@ -83,7 +83,8 @@ xmlpp::Document* Request::to_xml() const
     for( const_iterator i = params.begin(); i != params.end(); ++i )
     {
       Element* p_el = params_el->add_child( "param" );
-      i->to_xml( p_el );
+      Value_type_to_xml vis(p_el);
+      i->apply_visitor(vis);
     }
   }
   catch(...)
@@ -149,3 +150,5 @@ inline void Request::parse_params( const xmlpp::Node* node )
     delete value;
   }
 }
+
+} // namespace iqxmlrpc

@@ -15,8 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: client.cc,v 1.7 2004-11-14 16:58:28 adedov Exp $
+//  $Id: client.cc,v 1.8 2006-08-30 18:01:36 adedov Exp $
 
+#include <libxml++/libxml++.h>
 #include "client.h"
 #include "http.h"
 

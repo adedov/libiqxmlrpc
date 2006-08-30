@@ -17,7 +17,8 @@ noinst_HEADERS = \
 	reactor_impl.h \
 	reactor_poll_impl.h \
 	reactor_select_impl.h \
-	parser_specific.h
+	parser_specific.h \
+	value_type_xml.h
 
 pkginclude_HEADERS = \
 	libiqxmlrpc.h \
@@ -36,6 +37,7 @@ pkginclude_HEADERS = \
 	ssl_connection.h \
 	except.h \
 	value_type.h \
+	value_type_visitor.h \
 	value.h \
 	parser.h \
 	request.h \
@@ -67,13 +69,14 @@ libiqxmlrpc_general_la_SOURCES = \
 	ssl_connection.cc \
 	except.cc \
 	value_type.cc \
+	value_type_xml.cc \
 	value.cc \
 	parser.cc \
 	parser_specific.cc \
 	request.cc \
 	response.cc \
 	http.cc \
-	utf_conv.cc 
+	utf_conv.cc
 
 libiqxmlrpc_client_la_SOURCES = \
 	http_client.cc \

@@ -15,9 +15,10 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: server.cc,v 1.25 2006-08-19 16:42:01 adedov Exp $
+//  $Id: server.cc,v 1.26 2006-08-30 18:01:36 adedov Exp $
 
 #include <memory>
+#include <libxml++/libxml++.h>
 #include "reactor.h"
 #include "server.h"
 #include "request.h"
