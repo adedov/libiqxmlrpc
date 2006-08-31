@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value.cc,v 1.9 2006-08-30 18:01:36 adedov Exp $
+//  $Id: value.cc,v 1.10 2006-08-31 17:16:42 adedov Exp $
 
 #include <stdexcept>
 #include "value.h"
 #include "value_type_visitor.h"
+#include "value_type_xml.h"
 
 namespace iqxmlrpc {
 
@@ -156,6 +157,22 @@ Value& Value::operator []( const char* s )
 void Value::apply_visitor(Value_type_visitor& v) const
 {
   v.visit_value(*value);
+}
+
+//
+// Free functions
+//
+
+void value_to_xml(const Value& v, xmlpp::Node* node)
+{
+  Value_type_to_xml vis(node);
+  v.apply_visitor(vis);
+}
+
+void print_value(const Value& v, std::ostream& s)
+{
+  Print_value_visitor vis(s);
+  v.apply_visitor(vis);
 }
 
 } // namespace iqxmlrpc

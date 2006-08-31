@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value.h,v 1.20 2006-08-30 18:01:36 adedov Exp $
+//  $Id: value.h,v 1.21 2006-08-31 17:16:42 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -24,8 +24,13 @@
 #include <vector>
 #include <map>
 #include <typeinfo>
+#include <iosfwd>
 #include "value_type.h"
 #include "except.h"
+
+namespace xmlpp {
+  class Node;
+}
 
 namespace iqxmlrpc
 {
@@ -152,6 +157,9 @@ private:
     return dynamic_cast<T*>( value );
   }
 };
+
+void value_to_xml(const Value&, xmlpp::Node*);
+void print_value(const Value&, std::ostream&);
 
 } // namespace iqxmlrpc
 
