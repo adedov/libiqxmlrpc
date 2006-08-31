@@ -15,10 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value_type_visitor.h,v 1.1 2006-08-30 18:01:36 adedov Exp $
+//  $Id: value_type_visitor.h,v 1.2 2006-08-31 17:15:26 adedov Exp $
 
 #ifndef _iqxmlrpc_value_type_visitor_base_
 #define _iqxmlrpc_value_type_visitor_base_
+
+#include <iosfwd>
 #include "value_type.h"
 
 namespace iqxmlrpc {
@@ -90,6 +92,26 @@ private:
   virtual void do_visit_array(const Array&) = 0;
   virtual void do_visit_base64(const Binary_data&) = 0;
   virtual void do_visit_datetime(const Date_time&) = 0;
+};
+
+
+class Print_value_visitor: public Value_type_visitor {
+public:
+  Print_value_visitor(std::ostream&);
+
+private:
+  virtual void do_visit_value(const Value_type&);
+  virtual void do_visit_nil();
+  virtual void do_visit_int(int);
+  virtual void do_visit_double(double);
+  virtual void do_visit_bool(bool);
+  virtual void do_visit_string(const std::string&);
+  virtual void do_visit_struct(const Struct&);
+  virtual void do_visit_array(const Array&);
+  virtual void do_visit_base64(const Binary_data&);
+  virtual void do_visit_datetime(const Date_time&);
+
+  std::ostream& out_;
 };
 
 } // namespace iqxmlrpc
