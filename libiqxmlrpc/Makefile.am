@@ -69,6 +69,7 @@ libiqxmlrpc_general_la_SOURCES = \
 	ssl_connection.cc \
 	except.cc \
 	value_type.cc \
+	value_type_visitor.cc \
 	value_type_xml.cc \
 	value.cc \
 	parser.cc \
