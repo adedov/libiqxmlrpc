@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: method.h,v 1.19 2006-08-19 16:42:01 adedov Exp $
+//  $Id: method.h,v 1.20 2006-09-03 06:57:57 adedov Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -213,9 +213,17 @@ public:
     return method;
   }
 
+  void get_methods_list(Array& retval) const
+  {
+    do_get_methods_list(retval);
+  }
+
 private:
   virtual Method*
   do_create_method(const std::string&) = 0;
+
+  virtual void
+  do_get_methods_list(Array&) const = 0;
 };
 
 } // namespace iqxmlrpc

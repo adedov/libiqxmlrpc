@@ -1,102 +1,46 @@
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: builtins.h,v 1.2 2004-10-14 03:09:22 adedov Exp $
+//
+//  $Id: builtins.h,v 1.3 2006-09-03 06:57:57 adedov Exp $
 
 #ifndef _iqxmlrpc_buildins_h_
 #define _iqxmlrpc_buildins_h_
 
 #include "method.h"
 
-namespace iqxmlrpc 
-{
-  class Introspector;
-  class List_methods_m;
-  class Method_signature_m;
-  class Method_help_m;
-};
+namespace iqxmlrpc {
 
+class Method_dispatcher_manager;
 
-//! Class which stores introspection information about XML-RPC 
-//! methods configured in server application.
-/*! It stores all data in static structures to allow
-    its children access an information.
-*/
-class iqxmlrpc::Introspector {
-protected:
-  typedef std::map<std::string, Method::Help*> Meth_info_map;
-  typedef Meth_info_map::iterator iterator;
-  typedef Meth_info_map::const_iterator const_iterator;
+namespace builtins {
+
+//! Implementation of system.listMethods
+//! See http://xmlrpc.usefulinc.com/doc/reserved.html
+class List_methods: public iqxmlrpc::Method {
+  Method_dispatcher_manager* disp_manager_;
+
+public:
+  List_methods(Method_dispatcher_manager*);
 
 private:
-  static Meth_info_map ibase;
-
-protected:
-  static const_iterator begin();
-  static const_iterator end();
-  static const_iterator find( const std::string& );
-
-public:
-  virtual ~Introspector() {}
-    
-  static void register_help_obj( const std::string&, Method::Help* );
-};
-
-
-//! Class which represents built-in server's method "system.listMethods"
-class iqxmlrpc::List_methods_m: 
-  public iqxmlrpc::Method, 
-  public iqxmlrpc::Introspector 
-{
-public:
-  class Help: public Method::Help {
-    iqxmlrpc::Value signature() const;
-    std::string help() const;
-  };
-
   void execute( const Param_list& params, Value& response );
 };
 
-
-//! Class which represents built-in server's method "system.methodSignature"
-class iqxmlrpc::Method_signature_m: 
-  public iqxmlrpc::Method, 
-  public iqxmlrpc::Introspector 
-{
-public:
-  class Help: public Method::Help {
-    iqxmlrpc::Value signature() const;
-    std::string help() const;
-  };
-
-  void execute( const Param_list& params, Value& response );
-};
-
-
-//! Class which represents built-in server's method "system.methodHelp"
-class iqxmlrpc::Method_help_m: 
-  public iqxmlrpc::Method, 
-  public iqxmlrpc::Introspector 
-{
-public:
-  class Help: public Method::Help {
-    iqxmlrpc::Value signature() const;
-    std::string help() const;
-  };
-
-  void execute( const Param_list& params, Value& response );
-};
-
+} // namespace builtins
+} // namespace iqxmlrpc
 
 #endif

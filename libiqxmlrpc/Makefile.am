@@ -27,6 +27,7 @@ pkginclude_HEADERS = \
 	connection.h \
 	connector.h \
 	conn_factory.h \
+	dispatcher_manager.h \
 	except.h \
 	executor.h \
 	http.h \
@@ -60,6 +61,7 @@ pkginclude_HEADERS = \
 libiqxmlrpc_general_la_SOURCES = \
 	acceptor.cc \
 	connection.cc \
+	dispatcher_manager.cc \
 	except.cc \
 	http.cc \
 	inet_addr.cc \

@@ -1,21 +1,21 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
-//  
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: server.cc,v 1.26 2006-08-30 18:01:36 adedov Exp $
+//
+//  $Id: server.cc,v 1.27 2006-09-03 06:57:57 adedov Exp $
 
 #include <memory>
 #include <libxml++/libxml++.h>
@@ -26,26 +26,6 @@
 #include "server_conn.h"
 
 namespace iqxmlrpc {
-
-Default_method_dispatcher::~Default_method_dispatcher()
-{
-  util::delete_ptrs( fs.begin(), fs.end(),
-    util::Select2nd<Factory_map>());
-}
-
-void Default_method_dispatcher::register_method
-  ( const std::string& name, Method_factory_base* fb )
-{
-  fs[name] = fb;
-}
-
-Method* Default_method_dispatcher::do_create_method(const std::string& name)
-{
-  if( fs.find(name) == fs.end() )
-    return 0;
-
-  return fs[name]->create();
-}
 
 // ---------------------------------------------------------------------------
 Server::Server(
@@ -65,22 +45,16 @@ Server::Server(
   max_req_sz(0),
   interceptors(0)
 {
-  default_disp = new Default_method_dispatcher;
-  dispatchers.push_back(default_disp);
 }
-
 
 Server::~Server()
 {
-  util::delete_ptrs(dispatchers.begin(), dispatchers.end());
 }
-
 
 void Server::register_method(const std::string& name, Method_factory_base* f)
 {
-  default_disp->register_method(name, f);
+  disp_manager.register_method(name, f);
 }
-
 
 void Server::perform_soft_exit()
 {
@@ -88,61 +62,37 @@ void Server::perform_soft_exit()
   soft_exit = true;
 }
 
-
 void Server::push_interceptor(Interceptor* ic)
 {
   ic->nest(interceptors.release());
   interceptors.reset(ic);
 }
 
-
 void Server::push_dispatcher(Method_dispatcher_base* disp)
 {
-  dispatchers.push_back(disp);
+  disp_manager.push_back(disp);
 }
-
 
 void Server::enable_introspection()
 {
-  using iqxmlrpc::register_method;
-  register_method<List_methods_m>(*this, "system.listMethods" );
-  register_method<Method_signature_m>(*this, "system.methodSignature" );
-  register_method<Method_help_m>(*this, "system.methodHelp" );
+  disp_manager.enable_introspection();
 }
-
 
 void Server::log_errors( std::ostream* log_ )
 {
   log = log_;
 }
 
-
 void Server::set_max_request_sz( unsigned sz )
 {
   max_req_sz = sz;
 }
-
 
 void Server::log_err_msg( const std::string& msg )
 {
   if( log )
     *log << msg << std::endl;
 }
-
-
-Method* Server::create_method(const Method::Data& mdata)
-{
-  typedef DispatchersSet::iterator I;
-  for (I i = dispatchers.begin(); i != dispatchers.end(); ++i)
-  {
-    Method* tmp = (*i)->create_method(mdata);
-    if (tmp)
-      return tmp;
-  }
-
-  throw Unknown_method(mdata.method_name);
-}
-
 
 void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 {
@@ -158,7 +108,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
       Server_feedback(this)
     };
 
-    Method* meth = create_method( mdata );
+    Method* meth = disp_manager.create_method( mdata );
     executor = exec_factory->create( meth, this, conn );
     executor->set_interceptors(interceptors.get());
     executor->execute( req->get_params() );
@@ -183,25 +133,22 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
   }
 }
 
-
-void Server::schedule_response( 
+void Server::schedule_response(
   const Response& resp, Server_connection* conn, Executor* exec )
 {
   std::auto_ptr<Executor> executor_to_delete(exec);
 
   std::auto_ptr<xmlpp::Document> xmldoc( resp.to_xml() );
   std::string resp_str = xmldoc->write_to_string_formatted( "utf-8" );
-  
-  http::Packet *packet = new http::Packet( new http::Response_header(), resp_str );
+
+  http::Packet *packet = new http::Packet(new http::Response_header(), resp_str);
   conn->schedule_response( packet );
 }
-
 
 void Server::set_firewall( iqnet::Firewall_base* _firewall )
 {
    firewall = _firewall;
 }
-
 
 void Server::work()
 {
