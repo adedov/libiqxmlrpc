@@ -14,85 +14,85 @@ libiqxmlrpc_la_LIBADD = libiqxmlrpc-general.la libiqxmlrpc-client.la libiqxmlrpc
 EXTRA_DIST = version.h.in version.h 
 
 noinst_HEADERS = \
+	parser_specific.h \
 	reactor_impl.h \
 	reactor_poll_impl.h \
 	reactor_select_impl.h \
-	parser_specific.h \
 	value_type_xml.h
 
 pkginclude_HEADERS = \
-	libiqxmlrpc.h \
-	sysinc.h \
-	conn_factory.h \
-	net_except.h \
-	inet_addr.h \
-	socket.h \
 	acceptor.h \
-	connector.h \
-	lock.h \
-	reactor.h \
-	connection.h \
-	reactor_interrupter.h \
-	ssl_lib.h \
-	ssl_connection.h \
-	except.h \
-	value_type.h \
-	value_type_visitor.h \
-	value.h \
-	parser.h \
-	request.h \
-	response.h \
-	method.h \
 	builtins.h \
+	client.h \
+	connection.h \
+	connector.h \
+	conn_factory.h \
+	except.h \
 	executor.h \
 	http.h \
-	server_conn.h \
-	server.h \
-	client.h \
 	http_client.h \
 	http_server.h \
 	https_client.h \
 	https_server.h \
+	inet_addr.h \
+	libiqxmlrpc.h \
+	lock.h \
+	method.h \
+	net_except.h \
+	parser.h \
+	reactor.h \
+	reactor_interrupter.h \
+	request.h \
+	response.h \
+	server_conn.h \
+	server.h \
+	socket.h \
+	ssl_lib.h \
+	ssl_connection.h \
+	sysinc.h \
 	utf_conv.h \
-	util.h
+	util.h \
+	value_type.h \
+	value_type_visitor.h \
+	value.h
 #  xml_util.h
 
 libiqxmlrpc_general_la_SOURCES = \
-	inet_addr.cc \
-	net_except.cc \
-	reactor_poll_impl.cc \
-	reactor_select_impl.cc \
-	socket.cc \
 	acceptor.cc \
 	connection.cc \
+	except.cc \
+	http.cc \
+	inet_addr.cc \
+	net_except.cc \
+	parser.cc \
+	parser_specific.cc \
+	reactor_poll_impl.cc \
+	reactor_select_impl.cc \
+	request.cc \
+	response.cc \
+	socket.cc \
 	ssl_lib.cc \
 	ssl_connection.cc \
-	except.cc \
+	utf_conv.cc \
 	value_type.cc \
 	value_type_visitor.cc \
 	value_type_xml.cc \
-	value.cc \
-	parser.cc \
-	parser_specific.cc \
-	request.cc \
-	response.cc \
-	http.cc \
-	utf_conv.cc
+	value.cc
 
 libiqxmlrpc_client_la_SOURCES = \
+	client.cc \
 	http_client.cc \
-	https_client.cc \
-	client.cc
+	https_client.cc
 
 libiqxmlrpc_server_la_SOURCES = \
-	reactor_interrupter.cc \
-	server_conn.cc \
+	builtins.cc \
+	executor.cc \
 	http_server.cc \
 	https_server.cc \
 	method.cc \
-	builtins.cc \
-	executor.cc \
-	server.cc
+	reactor_interrupter.cc \
+	server.cc \
+	server_conn.cc
 
 clean-local:
 	rm -f *.da  
