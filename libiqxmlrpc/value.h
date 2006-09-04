@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value.h,v 1.21 2006-08-31 17:16:42 adedov Exp $
+//  $Id: value.h,v 1.22 2006-09-04 09:03:49 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -39,7 +39,7 @@ namespace iqxmlrpc
 /*! For more documentation please look into \ref value_usage .
     \exception Bad_cast
 */
-class iqxmlrpc::Value {
+class Value {
 public:
   //! Bad_cast is being thrown on illegal
   //! type conversion or Value::get_X() call.

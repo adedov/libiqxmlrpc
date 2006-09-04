@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: response.h,v 1.5 2006-08-30 18:01:36 adedov Exp $
+//  $Id: response.h,v 1.6 2006-09-04 09:03:49 adedov Exp $
 
 #ifndef _iqxmlrpc_response_h_
 #define _iqxmlrpc_response_h_
@@ -33,7 +33,7 @@ class Value;
 class Response;
 
 //! XML-RPC response.
-class iqxmlrpc::Response {
+class Response {
 private:
   Value* value_;
   int fault_code_;

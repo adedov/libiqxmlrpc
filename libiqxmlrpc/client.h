@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: client.h,v 1.16 2006-09-04 04:15:43 adedov Exp $
+//  $Id: client.h,v 1.17 2006-09-04 09:03:49 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -30,7 +30,7 @@
 namespace iqxmlrpc {
 
 //! Transport independent base class for XML-RPC client's connection.
-class iqxmlrpc::Client_connection {
+class Client_connection {
   http::Packet_reader<http::Response_header> preader;
 
 protected:
@@ -71,7 +71,7 @@ protected:
 
 
 //! Abstract base class for XML-RPC client.
-class iqxmlrpc::Client_base {
+class Client_base {
 public:
   virtual ~Client_base() {}
 
@@ -90,7 +90,7 @@ public:
 
 //! Template for XML-RPC client class.
 template < class Transport >
-class iqxmlrpc::Client: public iqxmlrpc::Client_base {
+class Client: public iqxmlrpc::Client_base {
   class Conn_ptr
   {
     Transport* ptr;
@@ -169,7 +169,7 @@ public:
 };
 
 template <class T>
-iqxmlrpc::Response iqxmlrpc::Client<T>::execute(
+Response iqxmlrpc::Client<T>::execute(
   const std::string& method, const Param_list& pl )
 {
   Request req( method, pl );
@@ -185,7 +185,7 @@ iqxmlrpc::Response iqxmlrpc::Client<T>::execute(
 
 
 //! Exception which be thrown by client when timeout occured.
-class iqxmlrpc::Client_timeout: public iqxmlrpc::Exception {
+class Client_timeout: public iqxmlrpc::Exception {
 public:
   Client_timeout():
     Exception( "Broken connection." ) {}

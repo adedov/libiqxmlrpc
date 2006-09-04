@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //  
-//  $Id: request.h,v 1.4 2006-08-30 18:01:36 adedov Exp $
+//  $Id: request.h,v 1.5 2006-09-04 09:03:49 adedov Exp $
 
 #ifndef _iqxmlrpc_request_h_
 #define _iqxmlrpc_request_h_
@@ -39,7 +39,7 @@ typedef std::vector<Value> Param_list;
 Request* parse_request( const std::string& );
 
 //! Incoming RPC request.
-class iqxmlrpc::Request {
+class Request {
 public:
   typedef Param_list::const_iterator const_iterator;
 
