@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: reactor_select_impl.cc,v 1.1 2005-09-20 16:02:59 bada Exp $
+//
+//  $Id: reactor_select_impl.cc,v 1.2 2006-09-04 12:13:31 adedov Exp $
 
 #include "config.h"
 
@@ -42,7 +42,7 @@ void Reactor_select_impl::reset(const HandlerStateList& in)
   FD_ZERO( &read_set );
   FD_ZERO( &write_set );
   FD_ZERO( &err_set );
-   
+
   for( HandlerStateList::const_iterator i = in.begin(); i != in.end(); ++i )
   {
     if( i->mask & Reactor_base::INPUT )
@@ -58,7 +58,7 @@ bool Reactor_select_impl::poll(HandlerStateList& out, Reactor_base::Timeout to_m
 {
   struct timeval tv;
   struct timeval *ptv = 0;
-    
+
   if( to_ms >= 0 )
   {
     tv.tv_sec = 0;
@@ -70,7 +70,7 @@ bool Reactor_select_impl::poll(HandlerStateList& out, Reactor_base::Timeout to_m
 
   if( code < 0 )
     throw network_error( "select()" );
-  
+
   if( !code )
     return false;
 
@@ -80,7 +80,7 @@ bool Reactor_select_impl::poll(HandlerStateList& out, Reactor_base::Timeout to_m
     revents |= FD_ISSET( i->fd, &read_set ) ? Reactor_base::INPUT : 0;
     revents |= FD_ISSET( i->fd, &write_set ) ? Reactor_base::OUTPUT : 0;
 //    revents |= FD_ISSET( i->fd, &err_set ) ? POLLERR : 0;
-    
+
     if( revents )
     {
       Reactor_base::HandlerState h( i->fd );
@@ -88,7 +88,7 @@ bool Reactor_select_impl::poll(HandlerStateList& out, Reactor_base::Timeout to_m
       out.push_back( h );
     }
   }
- 
+
   return true;
 }
 

@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: reactor_impl.h,v 1.4 2006-08-25 07:39:40 adedov Exp $
+//
+//  $Id: reactor_impl.h,v 1.5 2006-09-04 12:13:31 adedov Exp $
 
 #ifndef _iqxmlrpc_reactor_impl_h_
 #define _iqxmlrpc_reactor_impl_h_
@@ -29,13 +29,13 @@
 
 #ifdef HAVE_POLL
 #include "reactor_poll_impl.h"
-  namespace iqnet 
+  namespace iqnet
   {
     typedef Reactor_poll_impl ReactorImpl;
   }
 #else
 #include "reactor_select_impl.h"
-  namespace iqnet 
+  namespace iqnet
   {
     typedef Reactor_select_impl ReactorImpl;
   }
@@ -72,13 +72,13 @@ private:
   hs_iterator       begin()       { return handlers_states.begin(); }
   hs_const_iterator end()   const { return handlers_states.end(); }
   hs_iterator       end()         { return handlers_states.end(); }
- 
+
   Event_handler* find_handler(Socket::Handler);
   hs_iterator find_handler_state(Event_handler*);
 
   void handle_user_events();
   bool handle_system_events( Timeout );
-  
+
   void invoke_clients_handler( Event_handler*, HandlerState&, bool& terminate );
   void invoke_servers_handler( Event_handler*, HandlerState&, bool& terminate );
   void invoke_event_handler( HandlerState& );
@@ -89,7 +89,7 @@ private:
 
   EventHandlersMap handlers;
   HandlerStateList handlers_states;
-  
+
   unsigned num_stoppers;
 };
 
@@ -103,7 +103,7 @@ Reactor<Lock>::Reactor():
 }
 
 template <class Lock>
-typename Reactor<Lock>::hs_iterator 
+typename Reactor<Lock>::hs_iterator
 Reactor<Lock>::find_handler_state(Event_handler* eh)
 {
   return std::find(begin(), end(), HandlerState(eh->get_handler()));
@@ -115,17 +115,17 @@ iqnet::Event_handler* Reactor<Lock>::find_handler(Socket::Handler fd)
   h_iterator i = handlers.find(fd);
   return i == handlers.end() ? 0 : i->second;
 }
- 
+
 template <class Lock>
 void Reactor<Lock>::register_handler( Event_handler* eh, Event_mask mask )
 {
   scoped_lock lk(lock);
-  
+
   if (eh->is_stopper())
     num_stoppers++;
 
   Socket::Handler fd = eh->get_handler();
-  
+
   if( handlers.find(fd) == handlers.end() )
   {
     handlers_states.push_back( HandlerState(fd, mask) );
@@ -143,7 +143,7 @@ void Reactor<Lock>::unregister_handler( Event_handler* eh, Event_mask mask )
 {
   scoped_lock lk(lock);
   hs_iterator i = find_handler_state( eh );
-  
+
   if( i != end() )
   {
     int newmask = (i->mask &= !mask);
@@ -164,7 +164,7 @@ void Reactor<Lock>::unregister_handler( Event_handler* eh )
 {
   scoped_lock lk(lock);
   h_iterator i = handlers.find(eh->get_handler());
-  
+
   if( i != handlers.end() )
   {
     handlers.erase(i);
@@ -186,12 +186,12 @@ void Reactor<Lock>::fake_event( Event_handler* eh, Event_mask mask )
 }
 
 template <class Lock>
-void Reactor<Lock>::invoke_clients_handler( 
+void Reactor<Lock>::invoke_clients_handler(
   Event_handler* handler, HandlerState& hs, bool& terminate )
 {
   bool in  = hs.revents & Reactor_base::INPUT;
   bool out = hs.revents & Reactor_base::OUTPUT;
-  
+
   if( in )
     handler->handle_input( terminate );
   else if( out )
@@ -199,7 +199,7 @@ void Reactor<Lock>::invoke_clients_handler(
 }
 
 template <class Lock>
-void Reactor<Lock>::invoke_servers_handler( 
+void Reactor<Lock>::invoke_servers_handler(
     Event_handler* handler, HandlerState& hs, bool& terminate )
 {
   try {
@@ -224,12 +224,12 @@ void Reactor<Lock>::invoke_event_handler( Reactor_base::HandlerState& hs )
 
   Event_handler* handler = find_handler(hs.fd);
   assert(handler);
-  
+
   if( handler->catch_in_reactor() )
     invoke_servers_handler( handler, hs, terminate );
   else
     invoke_clients_handler( handler, hs, terminate );
-  
+
   if( terminate )
   {
     unregister_handler( handler );
@@ -242,7 +242,7 @@ void Reactor<Lock>::handle_user_events()
 {
   HandlerStateList called_by_user;
   scoped_lock lk(lock);
-  
+
   for( hs_iterator i = begin(); i != end(); ++i )
   {
     if( i->revents && (i->mask | i->revents) )
@@ -259,7 +259,7 @@ void Reactor<Lock>::handle_user_events()
     HandlerState hs(called_by_user.front());
     called_by_user.pop_front();
     invoke_event_handler(hs);
-  }  
+  }
 }
 
 template <class Lock>

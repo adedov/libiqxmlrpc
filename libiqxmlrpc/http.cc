@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: http.cc,v 1.23 2004-11-14 16:58:28 adedov Exp $
+//
+//  $Id: http.cc,v 1.24 2006-09-04 12:13:31 adedov Exp $
 
 #include "sysinc.h"
 #include <iostream>
@@ -36,7 +36,7 @@ using namespace iqxmlrpc::http;
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 class Header::Option_eq: public std::unary_function<bool, Header::Option> {
   std::string name;
-  
+
 public:
   Option_eq( const std::string& n ): name(n) {}
 
@@ -74,9 +74,9 @@ void Header::set_content_length( unsigned lth )
   content_length_ = lth;
   std::ostringstream ss;
   ss << lth;
-  
+
   set_option( "content-length:", ss.str() );
-  
+
   if( lth )
     set_option( "content-type:", "text/xml" );
   else
@@ -116,16 +116,16 @@ void Header::parse( std::istringstream& ss )
   while( ss )
   {
     std::string word = read_option_name( ss );
-    
+
     if( word.empty() )
     {
       read_eol(ss);
       break;
     }
-    
+
     set_option( word, read_option_content(ss) );
   }
-  
+
   for( Options_box::const_iterator i = options.begin(); i != options.end(); ++i )
   {
     Parsers_box::const_iterator j = parsers.find( i->name );
@@ -136,7 +136,7 @@ void Header::parse( std::istringstream& ss )
       j->second( this, os );
       continue;
     }
-    
+
     if( i->name.find(":") == std::string::npos )
       throw Malformed_packet();
   }
@@ -147,13 +147,13 @@ void Header::set_option( const std::string& name, const std::string& value )
 {
   Option_eq eq( name );
   Options_box::iterator i = std::find_if( options.begin(), options.end(), eq );
-  
+
   if( i == options.end() )
   {
     options.push_back( Option(name, value) );
     return;
   }
-  
+
   i->value = value;
 }
 
@@ -171,7 +171,7 @@ void Header::unset_option( const std::string& name )
 std::string Header::read_option_name( std::istringstream& ss )
 {
   std::string word;
-  
+
   while( ss )
   {
     char c = ss.get();
@@ -180,12 +180,12 @@ std::string Header::read_option_name( std::istringstream& ss )
       case ' ':
       case '\t':
         return word;
-      
+
       case '\r':
       case '\n':
         ss.putback(c);
         return word;
-      
+
       default:
         word += tolower(c);
     }
@@ -204,10 +204,10 @@ void Header::read_eol( std::istringstream& ss )
       if( ss.get() != '\n' )
         throw Malformed_packet();
       break;
-      
+
     case '\n':
       break;
-    
+
     default:
       throw Malformed_packet();
   }
@@ -217,16 +217,16 @@ void Header::read_eol( std::istringstream& ss )
 std::string Header::read_option_content( std::istringstream& ss )
 {
   for( ; ss && (ss.peek() == ' ' || ss.peek() == '\t'); ss.get() )
-  
+
   if( !ss )
     throw Malformed_packet();
-  
+
   std::string option;
   while( ss )
   {
     if( ss.peek() == '\r' || ss.peek() == '\n' )
       break;
-    
+
     option += ss.get();
   }
 
@@ -240,7 +240,7 @@ void Header::ignore_line( std::istringstream& ss )
   while( ss )
   {
     bool cr = false;
-    
+
     switch( ss.get() )
     {
       case '\r':
@@ -248,10 +248,10 @@ void Header::ignore_line( std::istringstream& ss )
           throw Malformed_packet();
         cr = true;
         break;
-      
+
       case '\n':
         return;
-      
+
       default:
         if( cr )
           throw Malformed_packet();
@@ -263,7 +263,7 @@ void Header::ignore_line( std::istringstream& ss )
 std::string Header::dump() const
 {
   std::ostringstream ss;
-  
+
   for( Options_box::const_iterator i = options.begin(); i != options.end(); ++i )
     ss << i->name << " " << i->value << "\r\n";
 
@@ -317,7 +317,7 @@ Request_header::Request_header( std::istringstream& ss )
 }
 
 
-Request_header::Request_header( 
+Request_header::Request_header(
   const std::string& req_uri,
   const std::string& server_host
 ):
@@ -327,7 +327,7 @@ Request_header::Request_header(
 {
   set_version( "HTTP/1.0" );
   set_option( "user-agent:", user_agent_ );
-  
+
   if( !host_.empty() )
     set_option( "host:", host_ );
 }
@@ -418,13 +418,13 @@ Response_header::~Response_header()
 void Response_header::parse( std::istringstream& ss )
 {
   register_parser( "server:", Response_header::parse_server );
-  
+
   std::string version;
   ss >> version;
   set_version( version );
   ss >> code_;
   phrase_ = read_option_content( ss );
-  
+
   Header::parse( ss );
 }
 
@@ -440,7 +440,7 @@ std::string Response_header::current_date() const
   char date_str[30];
   date_str[29] = 0;
   strftime( date_str, 30, "%a, %d %b %Y %T %Z", bdt );
-  
+
   setlocale( LC_TIME, oldlocale );
   return date_str;
 }
@@ -463,8 +463,8 @@ void Response_header::parse_server( Header* obj, std::istringstream& ss )
 
 // ---------------------------------------------------------------------------
 Packet::Packet( Header* h, const std::string& co ):
-  header_(h), 
-  content_(co) 
+  header_(h),
+  content_(co)
 {
   header_->set_content_length(content_.length());
 }
@@ -477,7 +477,7 @@ Packet::Packet( const Packet& p ):
 }
 
 
-Packet::~Packet() 
+Packet::~Packet()
 {
   delete header_;
 }
@@ -488,7 +488,7 @@ Packet& Packet::operator =( const Packet& p )
   delete header_;
   header_  = p.header_->clone();
   content_ = p.content_;
-  
+
   return *this;
 }
 

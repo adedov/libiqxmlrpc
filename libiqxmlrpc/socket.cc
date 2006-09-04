@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: socket.cc,v 1.9 2006-06-18 14:08:27 bada Exp $
+//
+//  $Id: socket.cc,v 1.10 2006-09-04 12:13:31 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
@@ -33,7 +33,7 @@ Socket::Socket()
 #ifndef _WINDOWS
   int enable = 1;
   setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable) );
-  
+
   struct linger ling;
   ling.l_onoff = 0;
   setsockopt( sock, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling) );
@@ -99,7 +99,7 @@ int Socket::send( const char* data, int len )
 #else
   int ret = ::send( sock, data, len, MSG_NOSIGNAL );
 #endif //_WINDOWS
-  
+
   if( ret == -1 )
     throw network_error( "Socket::send" );
 
@@ -114,7 +114,7 @@ int Socket::recv( char* buf, int len )
 #else
   int ret = ::recv( sock, buf, len, MSG_NOSIGNAL );
 #endif //_WINDOWS
-  
+
   if( ret == -1 )
     throw network_error( "Socket::recv" );
 
@@ -125,7 +125,7 @@ int Socket::recv( char* buf, int len )
 void Socket::bind( int port )
 {
   Inet_addr addr( port );
-  const sockaddr* saddr = 
+  const sockaddr* saddr =
     reinterpret_cast<const sockaddr*>(addr.get_sockaddr());
 
   if( ::bind( sock, saddr, sizeof(sockaddr_in) ) == -1 )
@@ -136,7 +136,7 @@ void Socket::bind( int port )
 void Socket::bind( const std::string& host, int port )
 {
   Inet_addr addr( host, port );
-  const sockaddr* saddr = 
+  const sockaddr* saddr =
     reinterpret_cast<const sockaddr*>(addr.get_sockaddr());
 
   if( ::bind( sock, saddr, sizeof(sockaddr_in) ) == -1 )
@@ -155,8 +155,8 @@ Socket Socket::accept()
 {
   sockaddr_in addr;
   socklen_t len = sizeof(sockaddr_in);
-  
-  Handler new_sock = ::accept( sock, reinterpret_cast<sockaddr*>(&addr), &len );  
+
+  Handler new_sock = ::accept( sock, reinterpret_cast<sockaddr*>(&addr), &len );
   if( new_sock == -1 )
     throw network_error( "Socket::accept" );
 
@@ -166,12 +166,12 @@ Socket Socket::accept()
 
 void Socket::connect( const iqnet::Inet_addr& peer_addr )
 {
-  const sockaddr* saddr = 
+  const sockaddr* saddr =
     reinterpret_cast<const sockaddr*>(peer_addr.get_sockaddr());
-  
+
   if( ::connect(sock, saddr, sizeof(sockaddr_in)) )
     throw network_error( "Socket::connect" );
-  
+
   peer = peer_addr;
 }
 
@@ -180,7 +180,7 @@ Inet_addr Socket::get_addr() const
 {
   sockaddr_in saddr;
   socklen_t saddr_len = sizeof(saddr);
-  
+
   if (::getsockname(sock, reinterpret_cast<sockaddr*>(&saddr), &saddr_len) == -1)
     throw network_error( "Socket::get_addr" );
 
@@ -192,7 +192,7 @@ int Socket::get_last_error()
 {
   int err = 0;
   socklen_t int_sz = 0;
-#ifndef _WINDOWS  
+#ifndef _WINDOWS
   ::getsockopt( sock, SOL_SOCKET, SO_ERROR, &err, &int_sz );
 #else
   err=WSAGetLastError();

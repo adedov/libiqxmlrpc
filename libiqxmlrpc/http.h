@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: http.h,v 1.20 2005-09-20 16:02:57 bada Exp $
+//
+//  $Id: http.h,v 1.21 2006-09-04 12:13:31 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -31,8 +31,8 @@
 namespace iqxmlrpc
 {
   //! XML-RPC HTTP transport-independent infrastructure.
-  /*! Contains classes which responsible for transport-indepenent 
-      HTTP collaboration functionality. Such as packet parsing/constructing, 
+  /*! Contains classes which responsible for transport-indepenent
+      HTTP collaboration functionality. Such as packet parsing/constructing,
       wrapping XML-RPC message into HTTP-layer one and vice versa.
   */
   namespace http
@@ -41,23 +41,23 @@ namespace iqxmlrpc
     class Request_header;
     class Response_header;
     class Packet;
-    
+
     template <class Header_type>
     class Packet_reader;
-      
+
     class Malformed_packet;
     class Error_response;
     class Bad_request;
     class Method_not_allowed;
     class Request_too_large;
     class Unsupported_content_type;
-      
+
     class Server;
     class Client;
   };
 };
 
-//! HTTP header. Responsible for parsing, 
+//! HTTP header. Responsible for parsing,
 //! creating generic HTTP headers.
 class iqxmlrpc::http::Header {
 public:
@@ -68,7 +68,7 @@ private:
   struct Option {
     std::string name;
     std::string value;
-    
+
     Option( const std::string& n, const std::string& v ):
       name(n), value(v) {}
   };
@@ -84,34 +84,34 @@ private:
   unsigned    content_length_;
   bool        content_length_set_;
   bool        conn_keep_alive_;
-  
+
 public:
   Header();
   virtual ~Header();
 
   virtual Header* clone() const { return new Header(*this); }
-  
+
   const std::string& version()     const { return version_; }
   unsigned content_length()        const { return content_length_; }
   bool     is_content_length_set() const { return content_length_set_; }
   bool     conn_keep_alive()       const { return conn_keep_alive_; }
-  
+
   void set_version( const std::string& v );
   void set_content_length( unsigned ln );
   void set_conn_keep_alive( bool );
 
   //! Adds/alters header option.
-  /*! For example: 
+  /*! For example:
       \code set_option( "allow:", "POST" ); \endcode
   */
   void set_option( const std::string& name, const std::string& value );
-  
+
   //! Remove option from header.
   void unset_option( const std::string& name );
 
   //! Return text representation of header including final CRLF.
   virtual std::string dump() const;
-  
+
 protected:
   //! Register parser for specific option name.
   void register_parser( const std::string&, Parser );
@@ -138,7 +138,7 @@ class iqxmlrpc::http::Request_header: public http::Header {
   std::string uri_;
   std::string host_;
   std::string user_agent_;
-  
+
 public:
   Request_header( const std::string& to_parse );
   Request_header( std::istringstream& to_parse );
@@ -180,7 +180,7 @@ public:
   int                code()   const { return code_; }
   const std::string& phrase() const { return phrase_; }
   const std::string& server() const { return server_; }
-  
+
   std::string dump() const;
 
 private:
@@ -196,7 +196,7 @@ class iqxmlrpc::http::Packet {
 protected:
   http::Header* header_;
   std::string content_;
-  
+
 public:
   Packet( const Packet& );
   Packet( http::Header* header, const std::string& content );
@@ -207,14 +207,14 @@ public:
   //! Sets header option "connection: {keep-alive|close}".
   //! By default connection is close.
   void set_keep_alive( bool = true );
-  
+
   const http::Header* header()  const { return header_; }
   const std::string&  content() const { return content_; }
 
   virtual std::string dump() const
   {
     return header_->dump() + content_;
-  }  
+  }
 };
 
 
@@ -226,25 +226,25 @@ class iqxmlrpc::http::Packet_reader {
   bool constructed;
   unsigned pkt_max_sz;
   unsigned total_sz;
-  
+
 public:
   Packet_reader():
-    header(0), 
+    header(0),
     constructed(false),
     pkt_max_sz(0),
     total_sz(0) {}
-      
+
   ~Packet_reader()
   {
     if( !constructed )
       delete header;
   }
-   
-  void set_max_size( unsigned m ) 
-  { 
-    pkt_max_sz = m; 
+
+  void set_max_size( unsigned m )
+  {
+    pkt_max_sz = m;
   }
-  
+
   Packet* read_packet( const std::string& );
 
 private:
@@ -262,14 +262,14 @@ public:
 };
 
 
-//! Exception related to HTTP protocol. 
+//! Exception related to HTTP protocol.
 //! Can be sent as error response to client.
 class iqxmlrpc::http::Error_response: public http::Packet, public Exception {
 public:
   Error_response( const std::string& phrase, int code ):
     Packet( new Response_header(code, phrase), "" ),
     Exception( "HTTP: " + phrase ) {}
-  
+
   ~Error_response() throw() {};
 
   std::string dump_error_response() const { return dump(); }
@@ -314,7 +314,7 @@ public:
 // ------------ Packet_reader's code --------------
 namespace iqxmlrpc
 {
-  namespace http 
+  namespace http
   {
 
   template <class Header_type>
@@ -332,35 +332,35 @@ namespace iqxmlrpc
   {
     if( !pkt_max_sz )
       return;
-    
+
     total_sz += sz;
     if( total_sz >= pkt_max_sz )
       throw Request_too_large();
   }
-  
+
   template <class Header_type>
   Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
   {
     if( constructed )
       clear();
-    
+
     check_sz( s.length() );
-    
+
     if( !header )
     {
       if( s.empty() )
         throw http::Malformed_packet();
-      
+
       read_header(s);
     }
     else
       content_cache += s;
-    
+
     if( header )
     {
       bool ready = s.empty() && !header->is_content_length_set() ||
                    content_cache.length() >= header->content_length();
-      
+
       if( ready )
       {
         if( header->is_content_length_set() )
@@ -371,25 +371,25 @@ namespace iqxmlrpc
         return packet;
       }
     }
-    
+
     return 0;
   }
-  
+
   template <class Header_type>
   void Packet_reader<Header_type>::read_header( const std::string& s )
   {
     header_cache += s;
     unsigned i = header_cache.find( "\r\n\r\n" );
-    
+
     if( i == std::string::npos )
       i = header_cache.find( "\n\n" );
-    
+
     if( i == std::string::npos )
       return;
-    
+
     std::istringstream ss( header_cache );
     header = new Header_type( ss );
-    
+
     for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
       content_cache += c;
   }

@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: executor.h,v 1.13 2006-06-18 14:08:26 bada Exp $
+//
+//  $Id: executor.h,v 1.14 2006-09-04 12:13:31 adedov Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -34,7 +34,7 @@ namespace iqnet
   class Reactor_base;
 }
 
-namespace iqxmlrpc 
+namespace iqxmlrpc
 {
 class Server;
 class Server_connection;
@@ -43,13 +43,13 @@ class Response;
 class Serial_executor_factory;
 class Pool_executor_factory;
 
-struct Serial_executor_traits 
+struct Serial_executor_traits
 {
   typedef Serial_executor_factory Executor_factory;
   typedef iqnet::Null_lock Lock;
 };
 
-struct Pool_executor_traits 
+struct Pool_executor_traits
 {
   typedef Pool_executor_factory Executor_factory;
   typedef boost::mutex Lock;
@@ -64,7 +64,7 @@ protected:
 private:
   Server* server;
   Server_connection* conn;
-  
+
 public:
   Executor( Method*, Server*, Server_connection* );
   virtual ~Executor();
@@ -84,10 +84,10 @@ class Executor_factory_base {
 public:
   virtual ~Executor_factory_base() {}
 
-  virtual Executor* create( 
-    Method*, 
-    Server*, 
-    Server_connection* 
+  virtual Executor* create(
+    Method*,
+    Server*,
+    Server_connection*
   ) = 0;
 
   virtual iqnet::Reactor_base* create_reactor() = 0;
@@ -140,7 +140,7 @@ class Pool_executor_factory: public Executor_factory_base {
   std::deque<Pool_executor*> req_queue;
   boost::mutex               req_queue_lock;
   boost::condition           req_queue_cond;
- 
+
 public:
   Pool_executor_factory(unsigned num_threads);
   ~Pool_executor_factory();

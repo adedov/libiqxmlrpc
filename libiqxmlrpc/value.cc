@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value.cc,v 1.10 2006-08-31 17:16:42 adedov Exp $
+//  $Id: value.cc,v 1.11 2006-09-04 12:13:31 adedov Exp $
 
 #include <stdexcept>
 #include "value.h"
@@ -117,10 +117,10 @@ const Value& Value::operator =( const Value& v )
 }
 
 
-const Value& Value::operator []( int i ) const 
+const Value& Value::operator []( int i ) const
 {
   const Array *a = cast<Array>();
-  return (*a)[i]; 
+  return (*a)[i];
 }
 
 

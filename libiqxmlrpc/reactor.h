@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: reactor.h,v 1.12 2006-06-17 14:52:04 bada Exp $
+//
+//  $Id: reactor.h,v 1.13 2006-09-04 12:13:31 adedov Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
@@ -39,8 +39,8 @@ public:
 
   virtual void handle_input( bool& terminate ) {}
   virtual void handle_output( bool& terminate ) {}
-   
-  //! Invoked by Reactor when handle_X() 
+
+  //! Invoked by Reactor when handle_X()
   //! sets terminate variable to true.
   virtual void finish() {};
 
@@ -50,13 +50,13 @@ public:
   virtual void log_exception( const std::exception& ) {};
   //! Log its exception catched in an external object.
   virtual void log_unknown_exception() {};
-  
+
   virtual Socket::Handler get_handler() const = 0;
 };
 
 
 //! Abstract base for Reactor template.
-//! It defines interface, standard exceptions and 
+//! It defines interface, standard exceptions and
 //! general data structures for all implementations.
 class Reactor_base {
 public:
@@ -65,17 +65,17 @@ public:
     No_handlers():
       network_error( "iqnet::Reactor: no handlers given.", false ) {}
   };
-  
+
   enum Event_mask { INPUT=1, OUTPUT=2 };
 
   struct HandlerState {
     Socket::Handler fd;
     short           mask;
     short           revents;
-    
+
     HandlerState( Socket::Handler fd_ = 0 ):
       fd(fd_), mask(0), revents(0) {}
-    
+
     HandlerState( Socket::Handler fd_, Event_mask m ):
       fd(fd_), mask(m), revents(0) {}
 

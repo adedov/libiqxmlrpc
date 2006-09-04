@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: reactor_interrupter.h,v 1.1 2006-06-18 14:08:27 bada Exp $
+//  $Id: reactor_interrupter.h,v 1.2 2006-09-04 12:13:31 adedov Exp $
 
 #ifndef _iqxmlrpc_reactor_interrupter_h_
 #define _iqxmlrpc_reactor_interrupter_h_
@@ -36,7 +36,7 @@ private:
   class Impl;
   Impl* impl_;
 };
-  
+
 } // namespace iqnet
 
 #endif

@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: server_conn.cc,v 1.1 2005-09-20 16:02:59 bada Exp $
+//
+//  $Id: server_conn.cc,v 1.2 2006-09-04 12:13:31 adedov Exp $
 
 #include "server_conn.h"
 #include "server.h"
@@ -48,14 +48,14 @@ void Server_connection::set_read_sz( unsigned rsz )
 
 http::Packet* Server_connection::read_request( const std::string& s )
 {
-  try 
+  try
   {
     preader.set_max_size( server->get_max_request_sz() );
     http::Packet* r = preader.read_packet(s);
-    
+
     if( r )
       keep_alive = r->header()->conn_keep_alive();
-    
+
     return r;
   }
   catch( const http::Malformed_packet& )

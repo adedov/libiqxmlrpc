@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: acceptor.h,v 1.6 2005-09-20 16:02:56 bada Exp $
+//
+//  $Id: acceptor.h,v 1.7 2006-09-04 12:13:31 adedov Exp $
 
 #ifndef _libiqnet_acceptor_h_
 #define _libiqnet_acceptor_h_
@@ -25,7 +25,7 @@
 #include "socket.h"
 #include "reactor.h"
 
-namespace iqnet 
+namespace iqnet
 {
   class Accepted_conn_factory;
   class Connection;
@@ -34,7 +34,7 @@ namespace iqnet
 };
 
 
-//! Firewall base class. 
+//! Firewall base class.
 /*! Used by Acceptor to find out whether it should
     accept XML-RPC requests from specific IP.
 */
@@ -50,9 +50,9 @@ public:
 //! An implementation of pattern that separates TCP-connection
 //! establishment from connection handling.
 /*!
-    Acceptor uses creates server-side socket on port 'port' 
-    and waits for incoming connections. When incoming connection 
-    is occured the Acceptor is using instance of Connection_factory 
+    Acceptor uses creates server-side socket on port 'port'
+    and waits for incoming connections. When incoming connection
+    is occured the Acceptor is using instance of Connection_factory
     to create a specific connection handler.
 */
 class iqnet::Acceptor: public iqnet::Event_handler {
@@ -60,7 +60,7 @@ class iqnet::Acceptor: public iqnet::Event_handler {
   Accepted_conn_factory *factory;
   Reactor_base *reactor;
   Firewall_base* firewall;
-    
+
 public:
   Acceptor( int port, Accepted_conn_factory*, Reactor_base* );
   virtual ~Acceptor();
@@ -74,7 +74,7 @@ public:
 protected:
   void finish() {}
   Socket::Handler get_handler() const { return sock.get_handler(); }
-  
+
   void accept();
   void listen();
 };

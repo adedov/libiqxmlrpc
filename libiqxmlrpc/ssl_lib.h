@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: ssl_lib.h,v 1.2 2004-04-27 07:18:03 adedov Exp $
+//
+//  $Id: ssl_lib.h,v 1.3 2006-09-04 12:13:31 adedov Exp $
 
 /*! \file */
 #ifndef _libiqnet_ssl_lib_h_
@@ -30,21 +30,21 @@ namespace iqnet
   namespace ssl
   {
     class Ctx;
-  
+
     //! Global SSL context.
-    /*! One must initialize it with appropriate ssl::Ctx 
+    /*! One must initialize it with appropriate ssl::Ctx
         object before using iqnet's SSL code.
         \see ssl::Ctx
     */
     extern Ctx* ctx;
-  
+
     class exception;
     class not_initialized;
     class connection_close;
     class io_error;
     class need_write;
     class need_read;
-    
+
     //! Throws concrete SSL IO subsystem's exception.
     void throw_io_exception( SSL*, int ret );
   };
@@ -52,7 +52,7 @@ namespace iqnet
 
 
 //! SSL context class. Initializes SSL library.
-/*! 
+/*!
   \code
   using namespace iqnet;
   ssl::ctx = ssl::Ctx::client_server( "/path/to/cert", "/path/to/key" );
@@ -62,7 +62,7 @@ namespace iqnet
 class iqnet::ssl::Ctx {
   static bool initialized;
   SSL_CTX* ctx;
-  
+
 public:
   static Ctx* client_server( const std::string& cert_path, const std::string& key_path );
   static Ctx* server_only( const std::string& cert_path, const std::string& key_path );
@@ -71,7 +71,7 @@ public:
   ~Ctx();
 
   SSL_CTX* context() { return ctx; }
-  
+
 private:
   Ctx( const std::string&, const std::string&, bool init_client );
   Ctx();
@@ -106,10 +106,10 @@ public:
 class iqnet::ssl::connection_close: public ssl::exception {
   bool clean;
 public:
-  connection_close( bool clean_ ): 
+  connection_close( bool clean_ ):
     exception( "Connection has been closed." ),
     clean(clean_) {}
-      
+
   bool is_clean() const { return clean; }
 };
 

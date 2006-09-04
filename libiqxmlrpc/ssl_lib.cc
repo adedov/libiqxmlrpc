@@ -1,28 +1,28 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: ssl_lib.cc,v 1.3 2004-10-11 11:02:50 maxim Exp $
+//
+//  $Id: ssl_lib.cc,v 1.4 2006-09-04 12:13:31 adedov Exp $
 
 #include <openssl/rsa.h>
 #include <openssl/crypto.h>
 #include <openssl/x509.h>
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
-#include <openssl/err.h> 
+#include <openssl/err.h>
 #include "net_except.h"
 #include "ssl_lib.h"
 
@@ -55,11 +55,11 @@ Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client
 
   SSL_METHOD* meth = client ? SSLv23_method() : SSLv23_server_method();
   ctx = SSL_CTX_new( meth );
-  
-  if( 
+
+  if(
     !SSL_CTX_use_certificate_file( ctx, cert_path.c_str(), SSL_FILETYPE_PEM ) ||
     !SSL_CTX_use_PrivateKey_file( ctx, key_path.c_str(), SSL_FILETYPE_PEM ) ||
-    !SSL_CTX_check_private_key( ctx ) 
+    !SSL_CTX_check_private_key( ctx )
   )
     throw exception();
 }
@@ -68,7 +68,7 @@ Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client
 Ctx::Ctx()
 {
   init_library();
-  
+
   SSL_METHOD *meth = SSLv23_client_method();
   ctx = SSL_CTX_new( meth );
 }
@@ -123,28 +123,28 @@ void iqnet::ssl::throw_io_exception( SSL* ssl, int ret )
   {
     case SSL_ERROR_NONE:
       return;
-    
+
     case SSL_ERROR_ZERO_RETURN:
     {
       bool clean = SSL_get_shutdown(ssl) & SSL_RECEIVED_SHUTDOWN;
       throw connection_close( clean );
     }
-    
+
     case SSL_ERROR_WANT_READ:
       throw need_read();
-    
+
     case SSL_ERROR_WANT_WRITE:
       throw need_write();
-    
+
     case SSL_ERROR_SYSCALL:
       if( !ret )
         throw connection_close( false );
       else
         throw iqnet::network_error( "iqnet::ssl::throw_io_exception" );
-    
+
     case SSL_ERROR_SSL:
       throw exception();
-    
+
     default:
       throw io_error( code );
   }

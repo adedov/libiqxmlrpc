@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: server_conn.h,v 1.1 2005-09-20 16:02:59 bada Exp $
+//
+//  $Id: server_conn.h,v 1.2 2006-09-04 12:13:31 adedov Exp $
 
 #ifndef _iqxmlrpc_server_conn_h_
 #define _iqxmlrpc_server_conn_h_
@@ -46,19 +46,19 @@ protected:
   std::string response;
 
 protected:
-  bool keep_alive;  
+  bool keep_alive;
 
 public:
   Server_connection( const iqnet::Inet_addr& );
   virtual ~Server_connection() = 0;
 
   const iqnet::Inet_addr& get_peer_addr() const { return peer_addr; }
-  
+
   void set_read_sz( unsigned );
-  
-  void set_server( Server* s ) 
-  { 
-    server = s; 
+
+  void set_server( Server* s )
+  {
+    server = s;
   }
 
   virtual void schedule_response( http::Packet* );
@@ -69,7 +69,7 @@ protected:
 
 //! Server connections factory.
 template < class Transport >
-class Server_conn_factory: public iqnet::Serial_conn_factory<Transport> 
+class Server_conn_factory: public iqnet::Serial_conn_factory<Transport>
 {
   Server* server;
   iqnet::Reactor_base* reactor;

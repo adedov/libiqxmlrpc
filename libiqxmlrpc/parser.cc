@@ -1,21 +1,21 @@
 //  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2004 Anton Dedov
-//  
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
-//  
+//
 //  This library is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 //  Lesser General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//  
-//  $Id: parser.cc,v 1.10 2004-10-23 06:08:51 maxim Exp $
+//
+//  $Id: parser.cc,v 1.11 2006-09-04 12:13:31 adedov Exp $
 
 #include <stdexcept>
 #include <functional>
@@ -36,7 +36,7 @@ Parser* Parser::instance()
 {
   if( !Parser::instance_ )
     Parser::instance_ = new Parser;
-  
+
   return Parser::instance_;
 }
 
@@ -50,7 +50,7 @@ Parser::Parser()
   register_parser( "double", new Double_parser );
   register_parser( "string", new String_parser );
   register_parser( "", new String_parser ); // default type
-  register_parser( "nil", new Nil_parser );    
+  register_parser( "nil", new Nil_parser );
   register_parser( "base64", new Base64_parser );
   register_parser( "dateTime.iso8601", new Date_time_parser );
   register_parser( "array", new Array_parser );
@@ -67,7 +67,7 @@ Parser::~Parser()
 
 void Parser::clean_types()
 {
-  std::for_each( types.begin(), types.end(), 
+  std::for_each( types.begin(), types.end(),
     std::mem_fun_ref(&Type_desc::clean) );
 }
 
@@ -75,20 +75,20 @@ void Parser::clean_types()
 Value* Parser::parse_value( const xmlpp::Node* node )
 {
   using namespace xmlpp;
-  
+
   if( node->get_name() != "value" )
     throw XML_RPC_violation::at_node( node );
-  
+
   Node *valnode = 0;
   std::string tname;
   get_value_node( node, valnode, tname );
-  
+
   for( Types_list::const_iterator i = types.begin(); i != types.end(); ++i )
   {
     if( i->xmlrpc_name == tname )
       return new Value( i->parser->parse_value(valnode) );
   }
-  
+
   throw XML_RPC_violation::caused( "unknown XML-RPC value type '" + tname + "'" );
 }
 
@@ -96,10 +96,10 @@ Value* Parser::parse_value( const xmlpp::Node* node )
 xmlpp::Node::NodeList Parser::elements_only( const xmlpp::Node* node )
 {
   using namespace xmlpp;
-  
+
   Node::NodeList childs = node->get_children();
   Node::NodeList elems;
-  
+
   typedef Node::NodeList::const_iterator CI;
   for( CI i = childs.begin(); i != childs.end(); ++i )
   {
@@ -112,7 +112,7 @@ xmlpp::Node::NodeList Parser::elements_only( const xmlpp::Node* node )
       else
         continue;
     }
-    
+
     Element* el = dynamic_cast<Element*>(*i);
     if( el )
       elems.push_back( el );
@@ -127,12 +127,12 @@ xmlpp::Element* Parser::single_element( const xmlpp::Node* node )
   xmlpp::Node::NodeList lst = elements_only( node );
   if( lst.size() != 1 )
     throw XML_RPC_violation::at_node(node);
-  
+
   return dynamic_cast<xmlpp::Element*>(lst.front());
 }
 
 
-void Parser::get_value_node( 
+void Parser::get_value_node(
   const xmlpp::Node* node, xmlpp::Node*& valnode, std::string& type )
 {
   using namespace xmlpp;
@@ -149,7 +149,7 @@ void Parser::get_value_node(
       return;
     }
   }
-  
+
   valnode = single_element(node);
   type = valnode->get_name();
 }
