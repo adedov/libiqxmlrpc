@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: parser.cc,v 1.11 2006-09-04 12:13:31 adedov Exp $
+//  $Id: parser.cc,v 1.12 2006-09-05 02:55:06 adedov Exp $
 
 #include <stdexcept>
 #include <functional>
@@ -86,7 +86,12 @@ Value* Parser::parse_value( const xmlpp::Node* node )
   for( Types_list::const_iterator i = types.begin(); i != types.end(); ++i )
   {
     if( i->xmlrpc_name == tname )
-      return new Value( i->parser->parse_value(valnode) );
+    {
+      if (valnode)
+        return new Value(i->parser->parse_value(valnode));
+      else
+        return new Value("");
+    }
   }
 
   throw XML_RPC_violation::caused( "unknown XML-RPC value type '" + tname + "'" );
@@ -140,7 +145,8 @@ void Parser::get_value_node(
   Node::NodeList childs = node->get_children();
   if( childs.size() == 1 )
   {
-    // Check for default node type
+    // case: <value>TEXT</value>
+    // TEXT should be treated as a value of default type
     TextNode* text = dynamic_cast<TextNode*>(childs.front());
     if( text )
     {
@@ -148,6 +154,14 @@ void Parser::get_value_node(
       type = "";
       return;
     }
+  }
+  else if (childs.size() == 0)
+  {
+    // case: <value/>
+    // should be treated as empty value of default type
+    valnode = 0;
+    type = "";
+    return;
   }
 
   valnode = single_element(node);
