@@ -15,13 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.cc,v 1.24 2006-09-04 12:13:31 adedov Exp $
+//  $Id: http.cc,v 1.25 2006-09-05 04:36:37 adedov Exp $
 
 #include "sysinc.h"
 #include <iostream>
 #include <functional>
 #include <memory>
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 #include "http.h"
 #include "method.h"
 
@@ -138,7 +139,7 @@ void Header::parse( std::istringstream& ss )
     }
 
     if( i->name.find(":") == std::string::npos )
-      throw Malformed_packet();
+      throw Malformed_packet("no colon symbol in HTTP header row");
   }
 }
 
@@ -191,35 +192,37 @@ std::string Header::read_option_name( std::istringstream& ss )
     }
   }
 
-  throw Malformed_packet();
+  throw Malformed_packet("read HTTP parameter name");
 }
 
 
 void Header::read_eol( std::istringstream& ss )
 {
+  static std::string errstr = "unexpected symbols at the end of line";
+
   char c = ss.get();
   switch( c )
   {
     case '\r':
       if( ss.get() != '\n' )
-        throw Malformed_packet();
+        throw Malformed_packet(errstr);
       break;
 
     case '\n':
       break;
 
     default:
-      throw Malformed_packet();
+      throw Malformed_packet(errstr);
   }
 }
 
 
 std::string Header::read_option_content( std::istringstream& ss )
 {
-  for( ; ss && (ss.peek() == ' ' || ss.peek() == '\t'); ss.get() )
+  for( ; ss && (ss.peek() == ' ' || ss.peek() == '\t'); ss.get() );
 
   if( !ss )
-    throw Malformed_packet();
+    throw Malformed_packet("read option content");
 
   std::string option;
   while( ss )
@@ -237,6 +240,8 @@ std::string Header::read_option_content( std::istringstream& ss )
 
 void Header::ignore_line( std::istringstream& ss )
 {
+  static std::string errstr = "unexpected symbols in line that should be empty";
+
   while( ss )
   {
     bool cr = false;
@@ -245,7 +250,7 @@ void Header::ignore_line( std::istringstream& ss )
     {
       case '\r':
         if( cr )
-          throw Malformed_packet();
+          throw Malformed_packet(errstr);
         cr = true;
         break;
 
@@ -254,7 +259,7 @@ void Header::ignore_line( std::istringstream& ss )
 
       default:
         if( cr )
-          throw Malformed_packet();
+          throw Malformed_packet(errstr);
     }
   }
 }
@@ -275,9 +280,11 @@ void Header::parse_content_type( Header* obj, std::istringstream& ss )
 {
   std::string opt;
   ss >> opt;
+  boost::to_lower(opt);
+  boost::trim_right_if(opt, boost::is_any_of(";"));
 
   if( opt != "text/xml" )
-    throw Unsupported_content_type();
+    throw Unsupported_content_type(opt);
 }
 
 
@@ -293,13 +300,14 @@ void Header::parse_connection( Header* obj, std::istringstream& ss )
 {
   std::string opt;
   ss >> opt;
+  boost::to_lower(opt);
 
   if( opt == "keep-alive" )
     obj->conn_keep_alive_ = true;
   else if( opt == "close" )
     obj->conn_keep_alive_ = false;
   else
-    throw Malformed_packet();
+    throw Malformed_packet("parse error in 'Connection' parameter");
 }
 
 

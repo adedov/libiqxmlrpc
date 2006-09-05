@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.h,v 1.21 2006-09-04 12:13:31 adedov Exp $
+//  $Id: http.h,v 1.22 2006-09-05 04:36:37 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -258,7 +258,10 @@ private:
 class iqxmlrpc::http::Malformed_packet: public Exception {
 public:
   Malformed_packet():
-    Exception( "Malformed HTTP packet received." ) {}
+    Exception( "Malformed HTTP packet received.") {}
+
+  Malformed_packet(const std::string& problem_domain):
+    Exception( "Malformed HTTP packet received (" + problem_domain + ")." ) {}
 };
 
 
@@ -306,8 +309,8 @@ public:
 //! HTTP/1.1 415 Unsupported media type
 class iqxmlrpc::http::Unsupported_content_type: public http::Error_response {
 public:
-  Unsupported_content_type():
-    Error_response( "Unsupported media type", 415 ) {}
+  Unsupported_content_type(const std::string& wrong):
+    Error_response( "Unsupported media type '" + wrong + "'", 415 ) {}
 };
 
 
