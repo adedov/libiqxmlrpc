@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: response.cc,v 1.11 2006-08-31 17:21:25 adedov Exp $
+//  $Id: response.cc,v 1.12 2006-09-06 07:39:58 adedov Exp $
 
 #include <memory>
 #include <libxml++/libxml++.h>
@@ -27,59 +27,28 @@
 
 namespace iqxmlrpc {
 
-Response::Response( const xmlpp::Document* doc ):
-  value_(0)
+Response::Response( const xmlpp::Document* doc )
 {
   parse( doc->get_root_node() );
 }
 
 
-Response::Response( const xmlpp::Node* node ):
-  value_(0)
+Response::Response( const xmlpp::Node* node )
 {
   parse( node );
 }
 
 
-Response::Response( const Value& v ):
-  value_(new Value(v))
+Response::Response( Value* v ):
+  value_(v)
 {
 }
 
 
 Response::Response( int fcode, const std::string& fstring ):
-  value_(0),
   fault_code_(fcode),
   fault_string_(fstring)
 {
-}
-
-
-inline void Response::assign( const Response& r )
-{
-  value_ = r.value_ ? new Value(*r.value_) : 0;
-  fault_code_ = r.fault_code_;
-  fault_string_ = r.fault_string_;
-}
-
-
-Response::Response( const Response& r )
-{
-  assign( r );
-}
-
-
-Response& Response::operator =( const Response& r )
-{
-  delete value_;
-  assign( r );
-  return *this;
-}
-
-
-Response::~Response()
-{
-  delete value_;
 }
 
 
@@ -128,7 +97,7 @@ inline void Response::parse_param( const xmlpp::Node* node )
     throw XML_RPC_violation::at_node(param);
 
   xmlpp::Node* valnode = parser->single_element(param);
-  value_ = parser->parse_value( valnode );
+  value_.reset(parser->parse_value( valnode ));
 }
 
 

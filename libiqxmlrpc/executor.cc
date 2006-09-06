@@ -15,8 +15,9 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: executor.cc,v 1.15 2006-09-04 12:13:31 adedov Exp $
+//  $Id: executor.cc,v 1.16 2006-09-06 07:39:58 adedov Exp $
 
+#include <memory>
 #include "executor.h"
 #include "except.h"
 #include "response.h"
@@ -52,9 +53,9 @@ void Executor::schedule_response( const Response& resp )
 void Serial_executor::execute( const Param_list& params )
 {
   try {
-    Value result(0);
-    method->process_execution( interceptors, params, result );
-    schedule_response( Response(result) );
+    std::auto_ptr<Value> result(new Value(0));
+    method->process_execution( interceptors, params, *result.get() );
+    schedule_response( Response(result.release()) );
   }
   catch( const Fault& f )
   {
@@ -201,9 +202,9 @@ void Pool_executor::execute( const Param_list& params_ )
 void Pool_executor::process_actual_execution()
 {
   try {
-    Value result(0);
-    method->process_execution( interceptors, params, result );
-    schedule_response( Response(result) );
+    std::auto_ptr<Value> result(new Value(0));
+    method->process_execution( interceptors, params, *result.get() );
+    schedule_response( Response(result.release()) );
   }
   catch( const Fault& f )
   {

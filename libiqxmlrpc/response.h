@@ -15,12 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: response.h,v 1.7 2006-09-04 12:13:31 adedov Exp $
+//  $Id: response.h,v 1.8 2006-09-06 07:39:58 adedov Exp $
 
 #ifndef _iqxmlrpc_response_h_
 #define _iqxmlrpc_response_h_
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 namespace xmlpp {
   class Document;
@@ -34,20 +35,15 @@ class Response;
 
 //! XML-RPC response.
 class Response {
-private:
-  Value* value_;
+  boost::shared_ptr<Value> value_;
   int fault_code_;
   std::string fault_string_;
 
 public:
   Response( const xmlpp::Document* );
   Response( const xmlpp::Node* );
-  Response( const Value& );
+  Response( Value* );
   Response( int fault_code, const std::string& fault_string );
-  Response( const Response& );
-  virtual ~Response();
-
-  Response& operator =( const Response& );
 
   xmlpp::Document* to_xml() const;
 
@@ -62,8 +58,6 @@ public:
   const std::string& fault_string() const { return fault_string_; }
 
 private:
-  void assign( const Response& );
-
   void parse( const xmlpp::Node* );
   void parse_param( const xmlpp::Node* );
   void parse_fault( const xmlpp::Node* );
