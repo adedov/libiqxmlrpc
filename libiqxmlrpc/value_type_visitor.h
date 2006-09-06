@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value_type_visitor.h,v 1.2 2006-08-31 17:15:26 adedov Exp $
+//  $Id: value_type_visitor.h,v 1.3 2006-09-06 17:10:56 adedov Exp $
 
 #ifndef _iqxmlrpc_value_type_visitor_base_
 #define _iqxmlrpc_value_type_visitor_base_
@@ -25,6 +25,10 @@
 
 namespace iqxmlrpc {
 
+//! The Value_type's visitor base class.
+/*! Note that user need customize private do_xxx virtual methods
+ *  rather than public ones.
+ */
 class Value_type_visitor {
 public:
   virtual ~Value_type_visitor() {}
@@ -94,7 +98,7 @@ private:
   virtual void do_visit_datetime(const Date_time&) = 0;
 };
 
-
+//! Value_type visitor that prints visited values recursively.
 class Print_value_visitor: public Value_type_visitor {
 public:
   Print_value_visitor(std::ostream&);

@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value_type_xml.h,v 1.1 2006-08-30 18:01:36 adedov Exp $
+//  $Id: value_type_xml.h,v 1.2 2006-09-06 17:10:56 adedov Exp $
 
 #include <string>
 #include "value_type_visitor.h"
@@ -27,6 +27,7 @@ namespace xmlpp
 
 namespace iqxmlrpc {
 
+//! Value_type visitor that converts values into XML-RPC representation.
 class Value_type_to_xml: public Value_type_visitor {
 public:
   Value_type_to_xml(xmlpp::Node* parent):
