@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: reactor_impl.h,v 1.5 2006-09-04 12:13:31 adedov Exp $
+//  $Id: reactor_impl.h,v 1.6 2006-09-06 05:48:19 adedov Exp $
 
 #ifndef _iqxmlrpc_reactor_impl_h_
 #define _iqxmlrpc_reactor_impl_h_
@@ -112,6 +112,7 @@ Reactor<Lock>::find_handler_state(Event_handler* eh)
 template <class Lock>
 iqnet::Event_handler* Reactor<Lock>::find_handler(Socket::Handler fd)
 {
+  scoped_lock lk(lock);
   h_iterator i = handlers.find(fd);
   return i == handlers.end() ? 0 : i->second;
 }
