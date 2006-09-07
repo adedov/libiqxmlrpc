@@ -14,6 +14,7 @@ libiqxmlrpc_la_LIBADD = libiqxmlrpc-general.la libiqxmlrpc-client.la libiqxmlrpc
 EXTRA_DIST = version.h.in version.h 
 
 noinst_HEADERS = \
+	parser.h \
 	parser_specific.h \
 	reactor_impl.h \
 	reactor_poll_impl.h \
@@ -22,6 +23,7 @@ noinst_HEADERS = \
 
 pkginclude_HEADERS = \
 	acceptor.h \
+	api_export.h \
 	builtins.h \
 	client.h \
 	connection.h \
@@ -40,7 +42,6 @@ pkginclude_HEADERS = \
 	lock.h \
 	method.h \
 	net_except.h \
-	parser.h \
 	reactor.h \
 	reactor_interrupter.h \
 	request.h \
