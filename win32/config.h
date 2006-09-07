@@ -1,0 +1,3 @@
+#ifndef _libiqxmlrpc_windows_specific_config_h_
+#define _libiqxmlrpc_windows_specific_config_h_
+#endif
