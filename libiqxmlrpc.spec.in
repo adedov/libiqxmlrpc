@@ -34,7 +34,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %setup -q
 
 %build
-./configure --prefix=${RPM_BUILD_ROOT}/usr
+./configure --prefix=${RPM_BUILD_ROOT}/usr --without-boost-unit-test-framework
 make
 
 %install
