@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: connection.h,v 1.7 2006-09-07 04:45:21 adedov Exp $
+//  $Id: connection.h,v 1.8 2006-09-07 09:29:46 adedov Exp $
 
 #ifndef _libiqnet_connection_h_
 #define _libiqnet_connection_h_
