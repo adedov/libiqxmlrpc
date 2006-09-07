@@ -71,7 +71,6 @@ AC_OUTPUT(
   tests/Makefile
   doc/Makefile
   win32/Makefile
-  win32/res/Makefile
   doc/libiqxmlrpc.doxygen
   libiqxmlrpc.pc
   libiqxmlrpc-server.pc

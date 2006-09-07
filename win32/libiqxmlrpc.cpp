@@ -1,7 +1,6 @@
 // libiqxmlrpc.cpp : Defines the initialization routines for the DLL.
 //
 
-#include "stdafx.h"
 #include "libiqxmlrpc.h"
 
 #ifdef _DEBUG
@@ -42,7 +41,6 @@ END_MESSAGE_MAP()
 
 
 // ClibiqxmlrpcApp construction
-
 ClibiqxmlrpcApp::ClibiqxmlrpcApp()
 {
 	// TODO: add construction code here,
@@ -51,12 +49,10 @@ ClibiqxmlrpcApp::ClibiqxmlrpcApp()
 
 
 // The one and only ClibiqxmlrpcApp object
-
 ClibiqxmlrpcApp theApp;
 
 
 // ClibiqxmlrpcApp initialization
-
 BOOL ClibiqxmlrpcApp::InitInstance()
 {
 	CWinApp::InitInstance();

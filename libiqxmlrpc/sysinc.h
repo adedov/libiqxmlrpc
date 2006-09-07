@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: sysinc.h,v 1.7 2006-09-04 12:13:31 adedov Exp $
+//  $Id: sysinc.h,v 1.8 2006-09-07 09:11:07 adedov Exp $
 
 /*! \file sysinc.h
     This file should help to port library.
@@ -30,8 +30,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-#ifdef _WINDOWS_COMPILE_TIME
-  #include "../win32/stdafx.h"
+#if defined(_WINDOWS)
+  #define _WINSOCKAPI_ // to prevent winsock usage instead of Winsock2
+  #include <windows.h>
+  #include <Winsock2.h>
+  #include <ws2tcpip.h> 
 #else
   #include <unistd.h>
   #include <netdb.h>

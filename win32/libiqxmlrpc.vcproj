@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="libiqxmlrpc"
 	ProjectGUID="{908B471B-549E-45E6-9786-E462DAE55938}"
+	RootNamespace="libiqxmlrpc"
 	Keyword="MFCDLLProj">
 	<Platforms>
 		<Platform
@@ -14,28 +15,33 @@
 			Name="Debug|Win32"
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
-			ConfigurationType="4"
-			UseOfMFC="2"
+			ConfigurationType="2"
+			UseOfMFC="0"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/wd4800 /wd4267"
 				Optimization="0"
-				AdditionalIncludeDirectories="../libiqxmlrpc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;_WINDOWS_COMPILE_TIME"
+				AdditionalIncludeDirectories="..;..\libiqxmlrpc;..\win32;&quot;$(OPENSSL_ROOT)\include&quot;;&quot;$(LIBXMLPP)&quot;;&quot;$(LIBXML2)\include&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(ICONV_ROOT)\include&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;LIBIQXMLRPC_COMPILATION;DLL_EXPORT"
 				MinimalRebuild="TRUE"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="TRUE"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CallingConvention="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLibrarianTool"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="libxml++d.lib libxml2.lib iconv.lib charset.lib ssleay32.lib libeay32.lib Ws2_32.lib"
+				AdditionalLibraryDirectories="&quot;$(BOOST_ROOT)\bin\Debug&quot;;&quot;$(BOOST_ROOT)\bin\boost\libs\thread\build\boost_thread.dll\vc-7_1\debug\threading-multi\&quot;;&quot;$(ICONV_ROOT)\lib&quot;;&quot;$(LIBXML2)\lib&quot;;&quot;$(LIBXMLPP)\lib&quot;;&quot;$(OPENSSL_ROOT)\out32dll\debug&quot;"
+				IgnoreDefaultLibraryNames=""
+				ModuleDefinitionFile=""/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -49,12 +55,14 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1049"
+				Culture="0"
 				AdditionalIncludeDirectories="$(IntDir)"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
@@ -119,325 +127,109 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath="..\libiqxmlrpc\acceptor.cc">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\builtins.cc">
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\client.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\connection.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\dispatcher_manager.cc">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\except.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\executor.cc">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\http.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\http_client.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\http_server.cc">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\https_client.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\https_server.cc">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\inet_addr.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\libiqxmlrpc.cpp">
-			</File>
-			<File
-				RelativePath=".\libiqxmlrpc.def">
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\method.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\net_except.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\parser.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\parser_specific.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\libiqxmlrpc\reactor.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+				RelativePath="..\libiqxmlrpc\reactor_interrupter.cc">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\reactor_poll_impl.cc">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\reactor_select_impl.cc">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\request.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\response.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\server.cc">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\server_conn.cc">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\socket.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\ssl_connection.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\ssl_lib.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\stdafx.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\utf_conv.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\value.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\value_type.cc">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\value_type_visitor.cc">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\value_type_xml.cc">
 			</File>
 		</Filter>
 		<Filter
@@ -445,10 +237,22 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
+				RelativePath="..\libiqxmlrpc\acceptor.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\api_export.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\builtins.h">
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\client.h">
 			</File>
 			<File
-				RelativePath="..\libiqxmlrpc\conn_fabric.h">
+				RelativePath=".\config.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\conn_factory.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\connection.h">
@@ -457,7 +261,13 @@
 				RelativePath="..\libiqxmlrpc\connector.h">
 			</File>
 			<File
+				RelativePath="..\libiqxmlrpc\dispatcher_manager.h">
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\except.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\executor.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\http.h">
@@ -466,13 +276,19 @@
 				RelativePath="..\libiqxmlrpc\http_client.h">
 			</File>
 			<File
+				RelativePath="..\libiqxmlrpc\http_server.h">
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\https_client.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\https_server.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\inet_addr.h">
 			</File>
 			<File
-				RelativePath=".\libiqxmlrpc.h">
+				RelativePath="..\libiqxmlrpc\libiqxmlrpc.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\lock.h">
@@ -493,13 +309,28 @@
 				RelativePath="..\libiqxmlrpc\reactor.h">
 			</File>
 			<File
+				RelativePath="..\libiqxmlrpc\reactor_impl.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\reactor_interrupter.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\reactor_poll_impl.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\reactor_select_impl.h">
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\request.h">
 			</File>
 			<File
-				RelativePath="..\libiqxmlrpc\Resource.h">
+				RelativePath="..\libiqxmlrpc\response.h">
 			</File>
 			<File
-				RelativePath="..\libiqxmlrpc\response.h">
+				RelativePath="..\libiqxmlrpc\server.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\server_conn.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\socket.h">
@@ -511,19 +342,25 @@
 				RelativePath="..\libiqxmlrpc\ssl_lib.h">
 			</File>
 			<File
-				RelativePath="..\stdafx.h">
-			</File>
-			<File
 				RelativePath="..\libiqxmlrpc\sysinc.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\utf_conv.h">
 			</File>
 			<File
+				RelativePath="..\libiqxmlrpc\util.h">
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\value.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\value_type.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\value_type_visitor.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\value_type_xml.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\version.h">
@@ -533,16 +370,7 @@
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
-			<File
-				RelativePath=".\libiqxmlrpc.rc">
-			</File>
-			<File
-				RelativePath=".\res\libiqxmlrpc.rc2">
-			</File>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
