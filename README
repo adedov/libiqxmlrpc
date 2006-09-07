@@ -1,23 +1,9 @@
-Libiqxmlrpc
-===========
+Thank you for trying Libiqxmlrpc.
 
-See doc/index.html
+Please refer documentation on project's wiki:
+	http://libiqxmlrpc.sourceforge.net
 
-Build library
--------------
+Building instructions:
+	http://libiqxmlrpc.sourceforge.net/wakka.php?wakka=UsersGuide/BuildAndInstall
 
-## If you build it from CVS
-$ ./autogen.sh
-
-$ ./configure
-$ make
-
-## Build tests
-$ make check
-
-## Install
-$ make install
-
-
-Good luck,
 Anton Dedov <adedov@gmail.com>
