@@ -1,5 +1,52 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.7.3a - 0.8
+  This release has several incompatibility points with previous ones:
+
+    * Library does no longer support introspection through customized children
+      classes of Method::Help. I am considering that technique quite ugly now
+      and planning to re-implement introspection scheme in future. However
+      system.listMethods still available.
+    * With compilation fix for g++ 3.2 the Server class has lost
+      register_method template method. Now one should prefer use free
+      register_method functions instead of Server::register_method.
+
+  New features:
+
+    * External method dispatchers. This feature allows users to create
+      customized method dispatchers, which would do some problem-specific
+      things. E.g map XML-RPC requests to CORBA method calls (as I do), etc.
+    * Full-fledged Windows port.
+    * Recursive printing of values in perl-like form 
+      (iqxmlrpc::print_value function).
+
+  Bugfixes & code clean-ups (in order of importance):
+
+    * Fix compatibility with another XML-RPC engines:
+      - treat <value/> as empty string value (xmlrpc++);
+      - ignore ';' symbol in media-type HTTP parameter (xmlrpc-c);
+      - treat text values of HTTP paramters in case insensentive way.
+    * Fix coredump that appears in multi-threaded server with many threads
+      under high loads.  
+    * Compilation fix for g++ 3.2
+    * Get rid of dependecy on libxml++ in public headers.
+    * Make Response object much more cheaper for copying.
+
+0.7.3 - 0.7.3a
+  * Compilation fix for boost in some environments.
+
+0.7.2 - 0.7.3
+  * Compilation fix for gcc 4.1.1
+    (thanks to Tiziano Mueller).
+  * Compilation fix for Cygwin
+    (thanks to George Pantazopoulos).
+  * Compilation fix for MSVC++ 7.1.
+  * Now configure script treats boost configuration in more smart way 
+    with m4 macro.
+    (thanks to George Pantazopoulos).
+  * Now one can request pretty-print type name via Value::type_name 
+    (Value::debug_type was removed!).
+
 0.7.1 - 0.7.2
   * Compilation fix for GNU C++ >= 3.4
   * Remove last (I hope) obstacle of making library platform-independent:
