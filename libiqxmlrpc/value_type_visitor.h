@@ -15,12 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value_type_visitor.h,v 1.3 2006-09-06 17:10:56 adedov Exp $
+//  $Id: value_type_visitor.h,v 1.4 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_value_type_visitor_base_
 #define _iqxmlrpc_value_type_visitor_base_
 
 #include <iosfwd>
+#include "api_export.h"
 #include "value_type.h"
 
 namespace iqxmlrpc {
@@ -29,7 +30,7 @@ namespace iqxmlrpc {
 /*! Note that user need customize private do_xxx virtual methods
  *  rather than public ones.
  */
-class Value_type_visitor {
+class LIBIQXMLRPC_API Value_type_visitor {
 public:
   virtual ~Value_type_visitor() {}
 
@@ -99,7 +100,7 @@ private:
 };
 
 //! Value_type visitor that prints visited values recursively.
-class Print_value_visitor: public Value_type_visitor {
+class LIBIQXMLRPC_API Print_value_visitor: public Value_type_visitor {
 public:
   Print_value_visitor(std::ostream&);
 

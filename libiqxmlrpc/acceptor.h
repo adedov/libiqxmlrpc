@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,30 +15,26 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: acceptor.h,v 1.7 2006-09-04 12:13:31 adedov Exp $
+//  $Id: acceptor.h,v 1.8 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _libiqnet_acceptor_h_
 #define _libiqnet_acceptor_h_
 
 #include <string>
+#include "api_export.h"
 #include "inet_addr.h"
 #include "socket.h"
 #include "reactor.h"
 
-namespace iqnet
-{
-  class Accepted_conn_factory;
-  class Connection;
-  class Firewall_base;
-  class Acceptor;
-};
+namespace iqnet {
 
+class Accepted_conn_factory;
 
 //! Firewall base class.
 /*! Used by Acceptor to find out whether it should
     accept XML-RPC requests from specific IP.
 */
-class iqnet::Firewall_base {
+class LIBIQXMLRPC_API Firewall_base {
 public:
   virtual ~Firewall_base() {}
 
@@ -55,7 +51,7 @@ public:
     is occured the Acceptor is using instance of Connection_factory
     to create a specific connection handler.
 */
-class iqnet::Acceptor: public iqnet::Event_handler {
+class LIBIQXMLRPC_API Acceptor: public Event_handler {
   Socket sock;
   Accepted_conn_factory *factory;
   Reactor_base *reactor;
@@ -78,5 +74,7 @@ protected:
   void accept();
   void listen();
 };
+
+} // namespace iqnet
 
 #endif

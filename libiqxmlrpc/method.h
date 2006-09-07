@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: method.h,v 1.21 2006-09-04 12:13:31 adedov Exp $
+//  $Id: method.h,v 1.22 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -23,6 +23,7 @@
 #include <string>
 #include <map>
 #include <boost/utility.hpp>
+#include "api_export.h"
 #include "value.h"
 #include "except.h"
 #include "inet_addr.h"
@@ -41,7 +42,7 @@ typedef std::vector<Value> Param_list;
 typedef void (*Method_function)(Method*, const Param_list&, Value&);
 
 //! This clas provides restricted interface of class Server for Method's needs.
-class Server_feedback {
+class LIBIQXMLRPC_API Server_feedback {
   Server* server_;
 
 public:
@@ -58,25 +59,12 @@ public:
 
 //! Abstract base for server method.
 //! Inherit it to create actual server method.
-class Method {
+class LIBIQXMLRPC_API Method {
 public:
   struct Data {
     std::string      method_name;
     iqnet::Inet_addr peer_addr;
     Server_feedback  server_face;
-  };
-
-  //! Introspection interface class.
-  /*! Create appropriate nested class for each of your method classes
-      if you want to support an introspection in your appliaction.
-  */
-  class Help {
-  public:
-    virtual ~Help() {}
-    //! Returns methods signature
-    virtual Value signature() const { return iqxmlrpc::Nil(); }
-    //! Returns methods help string
-    virtual std::string help() const { return ""; }
   };
 
 private:
@@ -111,7 +99,7 @@ private:
  *  in the same time. So the synchronization of internal state of
  *  user-defined interceptor is up to it's creator.
  */
-class Interceptor: boost::noncopyable {
+class LIBIQXMLRPC_API Interceptor: boost::noncopyable {
 public:
   Interceptor():
     nested(0) {}
@@ -150,7 +138,7 @@ private:
 
 //! Adapter that allows make server method from plain function.
 //! \see Method_function
-class Method_function_adapter: public Method {
+class LIBIQXMLRPC_API Method_function_adapter: public Method {
 public:
   Method_function_adapter(Method_function f):
     function(f) {}
@@ -169,7 +157,7 @@ private:
     Inherit it to create your specific factory.
     \see Method_factory
 */
-class Method_factory_base {
+class LIBIQXMLRPC_API Method_factory_base {
 public:
   virtual ~Method_factory_base() {}
 
@@ -200,7 +188,7 @@ private:
 
 
 //! Method dispatcher base class.
-class Method_dispatcher_base {
+class LIBIQXMLRPC_API Method_dispatcher_base {
 public:
   virtual ~Method_dispatcher_base() {}
 

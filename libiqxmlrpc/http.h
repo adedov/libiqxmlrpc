@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.h,v 1.22 2006-09-05 04:36:37 adedov Exp $
+//  $Id: http.h,v 1.23 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -25,41 +25,21 @@
 #include <map>
 #include <list>
 #include <vector>
+#include "api_export.h"
 #include "except.h"
 
+namespace iqxmlrpc {
 
-namespace iqxmlrpc
-{
-  //! XML-RPC HTTP transport-independent infrastructure.
-  /*! Contains classes which responsible for transport-indepenent
-      HTTP collaboration functionality. Such as packet parsing/constructing,
-      wrapping XML-RPC message into HTTP-layer one and vice versa.
-  */
-  namespace http
-  {
-    class Header;
-    class Request_header;
-    class Response_header;
-    class Packet;
-
-    template <class Header_type>
-    class Packet_reader;
-
-    class Malformed_packet;
-    class Error_response;
-    class Bad_request;
-    class Method_not_allowed;
-    class Request_too_large;
-    class Unsupported_content_type;
-
-    class Server;
-    class Client;
-  };
-};
+//! XML-RPC HTTP transport-independent infrastructure.
+/*! Contains classes which responsible for transport-indepenent
+    HTTP collaboration functionality. Such as packet parsing/constructing,
+    wrapping XML-RPC message into HTTP-layer one and vice versa.
+*/
+namespace http {
 
 //! HTTP header. Responsible for parsing,
 //! creating generic HTTP headers.
-class iqxmlrpc::http::Header {
+class LIBIQXMLRPC_API Header {
 public:
   typedef void (*Parser)( Header*, std::istringstream& );
   typedef std::map<std::string, Parser> Parsers_box;
@@ -134,7 +114,7 @@ private:
 
 
 //! HTTP request's header.
-class iqxmlrpc::http::Request_header: public http::Header {
+class LIBIQXMLRPC_API Request_header: public Header {
   std::string uri_;
   std::string host_;
   std::string user_agent_;
@@ -163,7 +143,7 @@ private:
 
 
 //! HTTP response's header.
-class iqxmlrpc::http::Response_header: public http::Header {
+class LIBIQXMLRPC_API Response_header: public Header {
   int code_;
   std::string phrase_;
   std::string server_;
@@ -192,7 +172,7 @@ private:
 
 
 //! HTTP packet: Header + Content.
-class iqxmlrpc::http::Packet {
+class LIBIQXMLRPC_API Packet {
 protected:
   http::Header* header_;
   std::string content_;
@@ -219,7 +199,7 @@ public:
 
 
 template <class Header_type>
-class iqxmlrpc::http::Packet_reader {
+class Packet_reader {
   std::string header_cache;
   std::string content_cache;
   Header* header;
@@ -255,7 +235,7 @@ private:
 
 
 //! Exception which is thrown on syntax error during HTTP packet parsing.
-class iqxmlrpc::http::Malformed_packet: public Exception {
+class LIBIQXMLRPC_API Malformed_packet: public Exception {
 public:
   Malformed_packet():
     Exception( "Malformed HTTP packet received.") {}
@@ -267,7 +247,7 @@ public:
 
 //! Exception related to HTTP protocol.
 //! Can be sent as error response to client.
-class iqxmlrpc::http::Error_response: public http::Packet, public Exception {
+class LIBIQXMLRPC_API Error_response: public Packet, public Exception {
 public:
   Error_response( const std::string& phrase, int code ):
     Packet( new Response_header(code, phrase), "" ),
@@ -280,7 +260,7 @@ public:
 
 
 //! HTTP/1.1 400 Bad request
-class iqxmlrpc::http::Bad_request: public http::Error_response {
+class LIBIQXMLRPC_API Bad_request: public Error_response {
 public:
   Bad_request():
     Error_response( "Bad request", 400 ) {}
@@ -288,7 +268,7 @@ public:
 
 
 //! HTTP/1.1 405 Method not allowed
-class iqxmlrpc::http::Method_not_allowed: public http::Error_response {
+class LIBIQXMLRPC_API Method_not_allowed: public Error_response {
 public:
   Method_not_allowed():
     Error_response( "Method not allowed", 405 )
@@ -299,7 +279,7 @@ public:
 
 
 //! HTTP/1.1 413 Request Entity Too Large
-class iqxmlrpc::http::Request_too_large: public http::Error_response {
+class LIBIQXMLRPC_API Request_too_large: public Error_response {
 public:
   Request_too_large():
     Error_response( "Request Entity Too Large", 413 ) {}
@@ -307,97 +287,94 @@ public:
 
 
 //! HTTP/1.1 415 Unsupported media type
-class iqxmlrpc::http::Unsupported_content_type: public http::Error_response {
+class LIBIQXMLRPC_API Unsupported_content_type: public Error_response {
 public:
   Unsupported_content_type(const std::string& wrong):
     Error_response( "Unsupported media type '" + wrong + "'", 415 ) {}
 };
 
 
-// ------------ Packet_reader's code --------------
-namespace iqxmlrpc
+//
+// Packet_reader implementation
+//
+template <class Header_type>
+inline void Packet_reader<Header_type>::clear()
 {
-  namespace http
-  {
+  header = 0;
+  content_cache.erase();
+  header_cache.erase();
+  constructed = false;
+  total_sz = 0;
+}
 
-  template <class Header_type>
-  inline void Packet_reader<Header_type>::clear()
+template <class Header_type>
+void Packet_reader<Header_type>::check_sz( unsigned sz )
+{
+  if( !pkt_max_sz )
+    return;
+
+  total_sz += sz;
+  if( total_sz >= pkt_max_sz )
+    throw Request_too_large();
+}
+
+template <class Header_type>
+Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
+{
+  if( constructed )
+    clear();
+
+  check_sz( s.length() );
+
+  if( !header )
   {
-    header = 0;
-    content_cache.erase();
-    header_cache.erase();
-    constructed = false;
-    total_sz = 0;
+    if( s.empty() )
+      throw http::Malformed_packet();
+
+    read_header(s);
   }
+  else
+    content_cache += s;
 
-  template <class Header_type>
-  void Packet_reader<Header_type>::check_sz( unsigned sz )
+  if( header )
   {
-    if( !pkt_max_sz )
-      return;
+    bool ready = s.empty() && !header->is_content_length_set() ||
+                 content_cache.length() >= header->content_length();
 
-    total_sz += sz;
-    if( total_sz >= pkt_max_sz )
-      throw Request_too_large();
-  }
-
-  template <class Header_type>
-  Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
-  {
-    if( constructed )
-      clear();
-
-    check_sz( s.length() );
-
-    if( !header )
+    if( ready )
     {
-      if( s.empty() )
-        throw http::Malformed_packet();
+      if( header->is_content_length_set() )
+        content_cache.erase( header->content_length(), std::string::npos );
 
-      read_header(s);
+      Packet* packet = new Packet( header, content_cache );
+      constructed = true;
+      return packet;
     }
-    else
-      content_cache += s;
-
-    if( header )
-    {
-      bool ready = s.empty() && !header->is_content_length_set() ||
-                   content_cache.length() >= header->content_length();
-
-      if( ready )
-      {
-        if( header->is_content_length_set() )
-          content_cache.erase( header->content_length(), std::string::npos );
-
-        Packet* packet = new Packet( header, content_cache );
-        constructed = true;
-        return packet;
-      }
-    }
-
-    return 0;
   }
 
-  template <class Header_type>
-  void Packet_reader<Header_type>::read_header( const std::string& s )
-  {
-    header_cache += s;
-    unsigned i = header_cache.find( "\r\n\r\n" );
+  return 0;
+}
 
-    if( i == std::string::npos )
-      i = header_cache.find( "\n\n" );
+template <class Header_type>
+void Packet_reader<Header_type>::read_header( const std::string& s )
+{
+  header_cache += s;
+  unsigned i = header_cache.find( "\r\n\r\n" );
 
-    if( i == std::string::npos )
-      return;
+  if( i == std::string::npos )
+    i = header_cache.find( "\n\n" );
 
-    std::istringstream ss( header_cache );
-    header = new Header_type( ss );
+  if( i == std::string::npos )
+    return;
 
-    for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
-      content_cache += c;
-  }
+  std::istringstream ss( header_cache );
+  header = new Header_type( ss );
 
-  };
-};
+  for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
+    content_cache += c;
+}
+
+} // namespace http
+} // namespace iqxmlrpc
 
 #endif

@@ -15,12 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: client.h,v 1.17 2006-09-04 09:03:49 adedov Exp $
+//  $Id: client.h,v 1.18 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
 
 #include <memory>
+#include "api_export.h"
 #include "connection.h"
 #include "connector.h"
 #include "request.h"
@@ -30,7 +31,7 @@
 namespace iqxmlrpc {
 
 //! Transport independent base class for XML-RPC client's connection.
-class Client_connection {
+class LIBIQXMLRPC_API Client_connection {
   http::Packet_reader<http::Response_header> preader;
 
 protected:
@@ -71,7 +72,7 @@ protected:
 
 
 //! Abstract base class for XML-RPC client.
-class Client_base {
+class LIBIQXMLRPC_API Client_base {
 public:
   virtual ~Client_base() {}
 
@@ -185,7 +186,7 @@ Response iqxmlrpc::Client<T>::execute(
 
 
 //! Exception which be thrown by client when timeout occured.
-class Client_timeout: public iqxmlrpc::Exception {
+class LIBIQXMLRPC_API Client_timeout: public iqxmlrpc::Exception {
 public:
   Client_timeout():
     Exception( "Broken connection." ) {}

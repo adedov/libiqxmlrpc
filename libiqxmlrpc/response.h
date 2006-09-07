@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,26 +15,26 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: response.h,v 1.8 2006-09-06 07:39:58 adedov Exp $
+//  $Id: response.h,v 1.9 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_response_h_
 #define _iqxmlrpc_response_h_
 
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include "api_export.h"
 
 namespace xmlpp {
   class Document;
   class Node;
 }
 
-namespace iqxmlrpc
-{
+namespace iqxmlrpc {
+
 class Value;
-class Response;
 
 //! XML-RPC response.
-class Response {
+class LIBIQXMLRPC_API Response {
   boost::shared_ptr<Value> value_;
   int fault_code_;
   std::string fault_string_;

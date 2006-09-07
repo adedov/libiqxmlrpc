@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: connector.h,v 1.4 2006-09-04 12:13:31 adedov Exp $
+//  $Id: connector.h,v 1.5 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _libiqnet_connector_h_
 #define _libiqnet_connector_h_
@@ -23,16 +23,12 @@
 #include <string>
 #include "socket.h"
 
-
 namespace iqnet
 {
-  template <class Conn_type> class Connector;
-};
-
 
 //! Connector template.
 template <class Conn_type>
-class iqnet::Connector {
+class Connector {
   Inet_addr peer_addr;
 
 public:
@@ -59,5 +55,6 @@ public:
   }
 };
 
+} // namespace iqnet
 
 #endif

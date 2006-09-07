@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: executor.h,v 1.14 2006-09-04 12:13:31 adedov Exp $
+//  $Id: executor.h,v 1.15 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -25,6 +25,7 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
+#include "api_export.h"
 #include "lock.h"
 #include "method.h"
 #include "reactor_interrupter.h"
@@ -56,7 +57,7 @@ struct Pool_executor_traits
 };
 
 //! Abstract executor class. Defines the policy for method execution.
-class Executor {
+class LIBIQXMLRPC_API Executor {
 protected:
   Method* method;
   Interceptor* interceptors;
@@ -80,7 +81,7 @@ protected:
 
 
 //! Abstract base for Executor's factories.
-class Executor_factory_base {
+class LIBIQXMLRPC_API Executor_factory_base {
 public:
   virtual ~Executor_factory_base() {}
 
@@ -95,7 +96,7 @@ public:
 
 
 //! Single thread executor.
-class Serial_executor: public Executor {
+class LIBIQXMLRPC_API Serial_executor: public Executor {
 public:
   Serial_executor( Method* m, Server* s, Server_connection* c ):
     Executor( m, s, c ) {}
@@ -105,7 +106,7 @@ public:
 
 
 //! Factory class for Serial_executor.
-class Serial_executor_factory: public Executor_factory_base {
+class LIBIQXMLRPC_API Serial_executor_factory: public Executor_factory_base {
 public:
   Executor* create( Method* m, Server* s, Server_connection* c );
   iqnet::Reactor_base* create_reactor();
@@ -113,7 +114,7 @@ public:
 
 
 //! An Executor which plans request to be executed by a pool of threads.
-class Pool_executor: public Executor {
+class LIBIQXMLRPC_API Pool_executor: public Executor {
   static iqnet::Reactor_interrupter* reactor_interrupter;
 
   Pool_executor_factory* pool;
@@ -129,7 +130,7 @@ public:
 
 
 //! Factory for Pool_executor objects. It is also serves as a pool of threads.
-class Pool_executor_factory: public Executor_factory_base {
+class LIBIQXMLRPC_API Pool_executor_factory: public Executor_factory_base {
   class Pool_thread;
   friend class Pool_thread;
 

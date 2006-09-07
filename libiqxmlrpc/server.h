@@ -15,13 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: server.h,v 1.26 2006-09-03 06:57:58 adedov Exp $
+//  $Id: server.h,v 1.27 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
 
 #include <memory>
 #include <ostream>
+#include "api_export.h"
 #include "acceptor.h"
 #include "connection.h"
 #include "conn_factory.h"
@@ -39,7 +40,7 @@ namespace iqnet
 namespace iqxmlrpc {
 
 //! XML-RPC server.
-class Server: boost::noncopyable {
+class LIBIQXMLRPC_API Server: boost::noncopyable {
 protected:
   Executor_factory_base* exec_factory;
 
@@ -126,7 +127,8 @@ inline void register_method(Server& server, const std::string& name)
 }
 
 //! Register function "fn" as handler for call "name" with specific server.
-inline void register_method(Server& server, const std::string& name, Method_function fn)
+inline void LIBIQXMLRPC_API
+register_method(Server& server, const std::string& name, Method_function fn)
 {
   server.register_method(name, new Method_factory<Method_function_adapter>(fn));
 }

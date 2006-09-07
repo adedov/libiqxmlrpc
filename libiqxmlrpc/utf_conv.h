@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: utf_conv.h,v 1.6 2006-09-04 12:13:31 adedov Exp $
+//  $Id: utf_conv.h,v 1.7 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _libiqxmlrpc_utf_conv_h_
 #define _libiqxmlrpc_utf_conv_h_
@@ -26,30 +26,27 @@ extern "C" {
   #include <iconv.h>
 }
 
+#include "api_export.h"
 #include "except.h"
 #include "value.h"
 
+namespace iqxmlrpc {
 
-namespace iqxmlrpc
+class Utf_conv_base;
+
+//! Library's run-time configuration specific stuff
+namespace config
 {
-  class Utf_conv_base;
-  class Utf_null_conv;
-  class Utf_conv;
+  //! Current charset converter
+  extern LIBIQXMLRPC_API Utf_conv_base* cs_conv;
 
-  //! Library's run-time configuration specific stuff
-  namespace config
-  {
-    //! Current charset converter
-    extern iqxmlrpc::Utf_conv_base* cs_conv;
-
-    //! Change current charset converter
-    void set_encoding( const std::string&, unsigned max_sym_len = 3 );
-  };
-};
+  //! Change current charset converter
+  void LIBIQXMLRPC_API set_encoding(const std::string&, unsigned max_sym_len = 3);
+} // namespace config
 
 
 //! Base class for charset conversion utilities.
-class iqxmlrpc::Utf_conv_base {
+class LIBIQXMLRPC_API Utf_conv_base {
 public:
   virtual ~Utf_conv_base() {}
 
@@ -60,9 +57,8 @@ public:
   virtual std::string from_utf( const std::string& ) = 0;
 };
 
-
 //! No charset conversion class.
-class iqxmlrpc::Utf_null_conv: public iqxmlrpc::Utf_conv_base {
+class LIBIQXMLRPC_API Utf_null_conv: public Utf_conv_base {
 public:
   //! Returns string without any conversion
   std::string to_utf( const std::string& s )
@@ -77,10 +73,9 @@ public:
   }
 };
 
-
 //! Charset conversion utility class.
 /*! Converts strings to/from UTF-8 using GNU iconv. */
-class iqxmlrpc::Utf_conv: public iqxmlrpc::Utf_conv_base {
+class LIBIQXMLRPC_API Utf_conv: public Utf_conv_base {
 public:
   class Unknown_charset_conversion;
   class Charset_conversion_failed;
@@ -117,25 +112,24 @@ private:
   std::string convert( iconv_t, const std::string& );
 };
 
-
 //! No such conversion exception class
-class iqxmlrpc::Utf_conv::Unknown_charset_conversion:
-  public iqxmlrpc::Exception
+class LIBIQXMLRPC_API Utf_conv::Unknown_charset_conversion:
+  public Exception
 {
 public:
   Unknown_charset_conversion( const std::string& cs ):
     Exception( "iconv not aware about charset " + cs ) {}
 };
 
-
 //! Conversion fault exception class
-class iqxmlrpc::Utf_conv::Charset_conversion_failed:
-  public iqxmlrpc::Exception
+class LIBIQXMLRPC_API Utf_conv::Charset_conversion_failed:
+  public Exception
 {
 public:
   Charset_conversion_failed():
     Exception( "Charset conversion failed." ) {}
 };
 
+} // namespace iqxmlrpc
 
 #endif

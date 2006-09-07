@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: server_conn.h,v 1.2 2006-09-04 12:13:31 adedov Exp $
+//  $Id: server_conn.h,v 1.3 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_server_conn_h_
 #define _iqxmlrpc_server_conn_h_
 
+#include "api_export.h"
 #include "connection.h"
 #include "conn_factory.h"
 #include "http.h"
@@ -29,12 +30,12 @@ namespace iqnet
   class Reactor_base;
 }
 
-namespace iqxmlrpc
-{
+namespace iqxmlrpc {
+
 class Server;
 
 //! Base class for XML-RPC server connections.
-class Server_connection {
+class LIBIQXMLRPC_API Server_connection {
 protected:
   iqnet::Inet_addr peer_addr;
   Server *server;

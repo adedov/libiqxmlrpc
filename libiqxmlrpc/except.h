@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,12 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: except.h,v 1.8 2006-09-04 12:13:31 adedov Exp $
+//  $Id: except.h,v 1.9 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_except_h_
 #define _iqxmlrpc_except_h_
 
 #include <stdexcept>
+#include "api_export.h"
 
 namespace xmlpp
 {
@@ -31,17 +32,9 @@ namespace xmlpp
 // http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php
 namespace iqxmlrpc
 {
-  class Exception;
-  class Parse_error;
-  class XML_RPC_violation;
-  class Unknown_method;
-  class Invalid_meth_params;
-  class Fault;
-};
-
 
 //! Base class for iqxmlrpc exceptions.
-class iqxmlrpc::Exception: public std::runtime_error {
+class LIBIQXMLRPC_API Exception: public std::runtime_error {
   int ex_code;
 
 public:
@@ -53,39 +46,39 @@ public:
 
 
 //! XML Parser error.
-class iqxmlrpc::Parse_error: public iqxmlrpc::Exception {
+class LIBIQXMLRPC_API Parse_error: public Exception {
 public:
   Parse_error( const std::string& d ):
-    Exception( "Parser error. " + d, -32700 ) {}
+    Exception(std::string("Parser error. ") += d, -32700) {}
 };
 
 
 //! XML-RPC structures not conforming to spec.
-class iqxmlrpc::XML_RPC_violation: public iqxmlrpc::Exception {
+class LIBIQXMLRPC_API XML_RPC_violation: public Exception {
 public:
   static XML_RPC_violation at_node( const xmlpp::Node* );
   static XML_RPC_violation caused( const std::string&, const xmlpp::Node* = 0 );
 
   XML_RPC_violation():
-    Exception( "Server error. XML-RPC violation.", -32600 ) {}
+    Exception("Server error. XML-RPC violation.", -32600) {}
 
 private:
   XML_RPC_violation( const std::string& s ):
-    Exception( "Server error. XML-RPC violation: " + s, -32600 ) {}
+    Exception(std::string("Server error. XML-RPC violation: ") += s, -32600) {}
 };
 
 
 //! Exception is being thrown when user tries to create
 //! Method object for unregistered name.
-class iqxmlrpc::Unknown_method: public iqxmlrpc::Exception {
+class LIBIQXMLRPC_API Unknown_method: public Exception {
 public:
   Unknown_method( const std::string& name ):
-    Exception( "Server error. Method '" + name + "' not found.", -32601 ) {}
+    Exception((std::string("Server error. Method '") += name) += "' not found.", -32601) {}
 };
 
 
 //! Invalid method parameters exception.
-class iqxmlrpc::Invalid_meth_params: public iqxmlrpc::Exception {
+class LIBIQXMLRPC_API Invalid_meth_params: public Exception {
 public:
   Invalid_meth_params():
     Exception( "Server error. Invalid method parameters.", -32602 ) {}
@@ -94,9 +87,9 @@ public:
 
 //! Exception which user should throw from Method to
 //! initiate fault response.
-class iqxmlrpc::Fault: public iqxmlrpc::Exception {
+class LIBIQXMLRPC_API Fault: public Exception {
 public:
-  class FCI_violation: public std::runtime_error {
+  class LIBIQXMLRPC_API FCI_violation: public std::runtime_error {
   public:
     FCI_violation():
       runtime_error(
@@ -108,5 +101,7 @@ public:
 public:
   Fault( int c, const std::string& s );
 };
+
+} // namespace iqxmlrpc
 
 #endif

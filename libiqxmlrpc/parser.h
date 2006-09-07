@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: parser.h,v 1.5 2006-09-04 12:13:31 adedov Exp $
+//  $Id: parser.h,v 1.6 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_parser_h_
 #define _iqxmlrpc_parser_h_
@@ -24,25 +24,20 @@
 #include <string>
 #include <libxml++/libxml++.h>
 
-namespace iqxmlrpc
-{
-  class Value;
-  class Value_type;
-  class Value_parser;
-  class Parser;
-};
+namespace iqxmlrpc {
 
+class Value;
+class Value_type;
 
 //! Base class for classes responsible for parsing XML-RPC values.
-class iqxmlrpc::Value_parser {
+class Value_parser {
 public:
   virtual ~Value_parser() {}
   virtual Value_type* parse_value( const xmlpp::Node* ) const = 0;
 };
 
-
 //! Main parser class.
-class iqxmlrpc::Parser {
+class Parser {
   struct Type_desc
   {
     std::string   xmlrpc_name;
@@ -84,5 +79,7 @@ private:
   void clean_types();
   void get_value_node( const xmlpp::Node*, xmlpp::Node*&, std::string& );
 };
+
+} // namespace iqxmlrpc
 
 #endif

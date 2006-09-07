@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: builtins.h,v 1.3 2006-09-03 06:57:57 adedov Exp $
+//  $Id: builtins.h,v 1.4 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_buildins_h_
 #define _iqxmlrpc_buildins_h_
 
+#include "api_export.h"
 #include "method.h"
 
 namespace iqxmlrpc {
@@ -30,7 +31,7 @@ namespace builtins {
 
 //! Implementation of system.listMethods
 //! See http://xmlrpc.usefulinc.com/doc/reserved.html
-class List_methods: public iqxmlrpc::Method {
+class LIBIQXMLRPC_API List_methods: public Method {
   Method_dispatcher_manager* disp_manager_;
 
 public:

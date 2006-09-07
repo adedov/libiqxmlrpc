@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value.h,v 1.22 2006-09-04 09:03:49 adedov Exp $
+//  $Id: value.h,v 1.23 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
@@ -25,6 +25,7 @@
 #include <map>
 #include <typeinfo>
 #include <iosfwd>
+#include "api_export.h"
 #include "value_type.h"
 #include "except.h"
 
@@ -39,7 +40,7 @@ namespace iqxmlrpc
 /*! For more documentation please look into \ref value_usage .
     \exception Bad_cast
 */
-class Value {
+class LIBIQXMLRPC_API Value {
 public:
   //! Bad_cast is being thrown on illegal
   //! type conversion or Value::get_X() call.
@@ -158,8 +159,8 @@ private:
   }
 };
 
-void value_to_xml(const Value&, xmlpp::Node*);
-void print_value(const Value&, std::ostream&);
+void LIBIQXMLRPC_API value_to_xml(const Value&, xmlpp::Node*);
+void LIBIQXMLRPC_API print_value(const Value&, std::ostream&);
 
 } // namespace iqxmlrpc
 

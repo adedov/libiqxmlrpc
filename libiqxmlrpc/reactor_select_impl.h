@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: reactor_select_impl.h,v 1.3 2006-09-04 12:13:31 adedov Exp $
+//  $Id: reactor_select_impl.h,v 1.4 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_reactor_select_impl_h_
 #define _iqxmlrpc_reactor_select_impl_h_
@@ -24,6 +24,7 @@
 
 #ifndef HAVE_POLL
 #include <boost/utility.hpp>
+#include "api_export.h"
 #include "reactor.h"
 #include "sysinc.h"
 
@@ -31,7 +32,7 @@ namespace iqnet
 {
 
 //! Reactor implementation helper based on select() system call.
-class Reactor_select_impl: boost::noncopyable {
+class LIBIQXMLRPC_API Reactor_select_impl: boost::noncopyable {
   Socket::Handler max_fd;
   fd_set read_set, write_set, err_set;
   Reactor_base::HandlerStateList hs;

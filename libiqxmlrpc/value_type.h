@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: value_type.h,v 1.28 2006-08-30 18:01:36 adedov Exp $
+//  $Id: value_type.h,v 1.29 2006-09-07 04:45:21 adedov Exp $
 
 /*! \file */
 #ifndef _iqxmlrpc_value_type_h_
@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "api_export.h"
 #include "except.h"
 #include "util.h"
 
@@ -44,7 +45,7 @@ typedef Scalar<std::string> String;
 
 //! Base type for XML-RPC types.
 /*! \see \ref value_types */
-class Value_type {
+class LIBIQXMLRPC_API Value_type {
 public:
   virtual ~Value_type() {}
 
@@ -56,7 +57,7 @@ public:
 
 //! XML-RPC extension: Nil type.
 /*! \see http://ontosys.com/xml-rpc/extensions.html */
-class Nil: public Value_type {
+class LIBIQXMLRPC_API Nil: public Value_type {
   int nope;
 
 public:
@@ -87,7 +88,7 @@ public:
 
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
 /*! \see \ref array_usage */
-class Array: public Value_type {
+class LIBIQXMLRPC_API Array: public Value_type {
   typedef std::vector<Value*> Val_vector;
   typedef Val_vector::iterator iterator;
 
@@ -170,7 +171,7 @@ public:
 
 
 //! Const interator for Array
-class Array::const_iterator {
+class LIBIQXMLRPC_API Array::const_iterator {
   Array::Val_vector::const_iterator i;
 
 public:
@@ -213,7 +214,7 @@ inline Array::const_iterator Array::end() const
 
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
 /*! \see \ref struct_usage */
-class Struct: public Value_type {
+class LIBIQXMLRPC_API Struct: public Value_type {
 public:
   //! Exception which is being thrown when user tries
   //! to access structure's unexistent member.
@@ -260,7 +261,7 @@ public:
 
 
 //! XML-RPC Base64 type.
-class Binary_data: public Value_type {
+class LIBIQXMLRPC_API Binary_data: public Value_type {
 public:
   //! Malformed base64 encoding format exception.
   class Malformed_base64: public Exception {
@@ -308,7 +309,7 @@ private:
 
 
 //! XML-RPC dateTime.iso8601 type.
-class Date_time: public Value_type {
+class LIBIQXMLRPC_API Date_time: public Value_type {
 public:
   //! Malformed dateTime.iso8601 format exception.
   class Malformed_iso8601: public Exception {

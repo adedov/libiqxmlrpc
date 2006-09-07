@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,31 +15,23 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: ssl_connection.h,v 1.6 2006-09-04 12:13:31 adedov Exp $
+//  $Id: ssl_connection.h,v 1.7 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _libiqnet_ssl_connection_
 #define _libiqnet_ssl_connection_
 
 #include <openssl/ssl.h>
+#include "api_export.h"
 #include "reactor.h"
 #include "connection.h"
 #include "ssl_lib.h"
 #include "conn_factory.h"
 
-
-namespace iqnet
-{
-  namespace ssl
-  {
-    class Connection;
-    class Reaction_connection;
-    class Serial_conn_factory;
-  }
-};
-
+namespace iqnet {
+namespace ssl {
 
 //! SSL connection class.
-class iqnet::ssl::Connection: public iqnet::Connection {
+class LIBIQXMLRPC_API Connection: public iqnet::Connection {
 protected:
   ssl::Ctx* ssl_ctx;
   SSL *ssl;
@@ -67,10 +59,9 @@ protected:
   bool shutdown_sent();
 };
 
-
 //! Server-side established SSL-connection based on reactive model
 //! (with underlying non-blocking socket).
-class iqnet::ssl::Reaction_connection: public ssl::Connection {
+class LIBIQXMLRPC_API Reaction_connection: public ssl::Connection {
   Reactor_base* reactor;
 
   enum State { EMPTY, ACCEPTING, CONNECTING, READING, WRITING, SHUTDOWN };
@@ -118,5 +109,7 @@ protected:
   virtual void send_succeed( bool& terminate ) = 0;
 };
 
+} // namespace ssl
+} // namespace iqnet
 
 #endif

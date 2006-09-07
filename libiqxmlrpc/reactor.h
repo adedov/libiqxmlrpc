@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,22 +15,22 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: reactor.h,v 1.13 2006-09-04 12:13:31 adedov Exp $
+//  $Id: reactor.h,v 1.14 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
 
 #include <list>
+#include "api_export.h"
 #include "net_except.h"
 #include "lock.h"
 #include "socket.h"
-
 
 namespace iqnet
 {
 
 //! Base class for event-driven communication classes.
-class Event_handler {
+class LIBIQXMLRPC_API Event_handler {
 public:
   virtual ~Event_handler() {}
 
@@ -54,11 +54,10 @@ public:
   virtual Socket::Handler get_handler() const = 0;
 };
 
-
 //! Abstract base for Reactor template.
 //! It defines interface, standard exceptions and
 //! general data structures for all implementations.
-class Reactor_base {
+class LIBIQXMLRPC_API Reactor_base {
 public:
   class No_handlers: public iqnet::network_error {
   public:

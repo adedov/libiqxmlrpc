@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,13 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: request.h,v 1.6 2006-09-04 12:13:31 adedov Exp $
+//  $Id: request.h,v 1.7 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_request_h_
 #define _iqxmlrpc_request_h_
 
 #include <string>
 #include <vector>
+#include "api_export.h"
 #include "value.h"
 
 namespace xmlpp {
@@ -29,17 +30,17 @@ namespace xmlpp {
   class Node;
 }
 
-namespace iqxmlrpc
-{
-class Value;
+namespace iqxmlrpc {
+
 class Request;
+class Value;
 typedef std::vector<Value> Param_list;
 
 //! Build request object from XML-formed string.
-Request* parse_request( const std::string& );
+Request* LIBIQXMLRPC_API parse_request( const std::string& );
 
 //! Incoming RPC request.
-class Request {
+class LIBIQXMLRPC_API Request {
 public:
   typedef Param_list::const_iterator const_iterator;
 

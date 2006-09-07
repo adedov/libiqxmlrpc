@@ -15,12 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: dispatcher_manager.h,v 1.1 2006-09-03 06:57:57 adedov Exp $
+//  $Id: dispatcher_manager.h,v 1.2 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_dispatcher_manager_
 #define _iqxmlrpc_dispatcher_manager_
 
 #include <boost/noncopyable.hpp>
+#include "api_export.h"
 #include "method.h"
 
 namespace iqxmlrpc {
@@ -30,7 +31,7 @@ namespace iqxmlrpc {
  *  register_method operation and optionally system one, which holds
  *  server's built-in methods
  */
-class Method_dispatcher_manager: boost::noncopyable {
+class LIBIQXMLRPC_API Method_dispatcher_manager: boost::noncopyable {
   class Impl;
   Impl* impl_;
 

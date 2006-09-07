@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,11 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: https_server.h,v 1.7 2006-09-04 12:13:31 adedov Exp $
+//  $Id: https_server.h,v 1.8 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _libiqxmlrpc_https_server_h_
 #define _libiqxmlrpc_https_server_h_
 
+#include "api_export.h"
 #include "ssl_connection.h"
 #include "server_conn.h"
 #include "server.h"
@@ -28,7 +29,7 @@ namespace iqxmlrpc
 {
 
 //! Represents server-side \b HTTPS non-blocking connection.
-class Https_server_connection:
+class LIBIQXMLRPC_API Https_server_connection:
   public iqnet::ssl::Reaction_connection,
   public iqxmlrpc::Server_connection
 {
@@ -54,7 +55,7 @@ protected:
 };
 
 //! XML-RPC server that works over secured HTTP connections (HTTPS).
-class Https_server: public Server {
+class LIBIQXMLRPC_API Https_server: public Server {
   typedef Server_conn_factory<Https_server_connection> Conn_factory;
 
 public:

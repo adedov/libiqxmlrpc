@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: util.h,v 1.5 2006-09-04 12:13:31 adedov Exp $
+//  $Id: util.h,v 1.6 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_util_h_
 #define _iqxmlrpc_util_h_
@@ -25,12 +25,8 @@
 #include <boost/utility.hpp>
 #include "libiqxmlrpc/lock.h"
 
-namespace iqxmlrpc
-{
-
-//! Utility stuff
-namespace util
-{
+namespace iqxmlrpc {
+namespace util {
 
 template <class M>
 class Select2nd:

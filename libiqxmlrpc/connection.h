@@ -15,29 +15,26 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: connection.h,v 1.6 2006-09-04 12:13:31 adedov Exp $
+//  $Id: connection.h,v 1.7 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _libiqnet_connection_h_
 #define _libiqnet_connection_h_
 
 #include <string>
+#include "api_export.h"
 #include "inet_addr.h"
 #include "reactor.h"
 #include "net_except.h"
 
-
 namespace iqnet
 {
-  class Connection;
-}
-
 
 //! An established TCP-connection.
 /*!
     A build block for connection handling.
     Have to be created by connection's factory.
 */
-class iqnet::Connection: public iqnet::Event_handler {
+class LIBIQXMLRPC_API Connection: public Event_handler {
 protected:
   Socket sock;
 
@@ -65,5 +62,6 @@ public:
   virtual int recv( char*, int );
 };
 
+} // namespace iqnet
 
 #endif
