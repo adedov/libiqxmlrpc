@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: executor.cc,v 1.16 2006-09-06 07:39:58 adedov Exp $
+//  $Id: executor.cc,v 1.17 2006-09-07 09:35:41 adedov Exp $
 
 #include <memory>
 #include "executor.h"

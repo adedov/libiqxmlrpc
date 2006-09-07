@@ -1,5 +1,5 @@
-//  Libiqnet + Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004 Anton Dedov
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2004-2006 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: net_except.cc,v 1.4 2006-09-04 12:13:31 adedov Exp $
+//  $Id: net_except.cc,v 1.5 2006-09-07 09:35:42 adedov Exp $
 
 #include "sysinc.h"
 #include "net_except.h"
