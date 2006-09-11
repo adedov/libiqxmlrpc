@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: lock.h,v 1.7 2006-09-07 04:45:21 adedov Exp $
+//  $Id: lock.h,v 1.8 2006-09-11 03:49:04 adedov Exp $
 
 #ifndef _libiqnet_lock_h_
 #define _libiqnet_lock_h_
@@ -31,6 +31,7 @@ class LIBIQXMLRPC_API Null_lock {
 public:
   struct scoped_lock {
     scoped_lock(Null_lock&) {}
+    ~scoped_lock() {}
 
     void lock() {}
     void unlock() {}
