@@ -36,7 +36,7 @@ AC_DEFUN([AX_BOOST_UNIT_TEST_FRAMEWORK],
         	ax_boost_user_unit_test_framework_lib="$withval"
 		fi
         ],
-        [want_boost="yes"]
+        [want_boost="no"]
 	)
 
 	if test "x$want_boost" = "xyes"; then
