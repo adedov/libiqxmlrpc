@@ -47,7 +47,6 @@ rm -rf ${RPM_BUILD_ROOT}
 %defattr(-,root,root)
 %{prefix}/lib/*.so
 %{prefix}/lib/*.so.*
-%{prefix}/share/doc/libiqxmlrpc/index.html
 
 %files devel
 %defattr(-,root,root)
