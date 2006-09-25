@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.cc,v 1.27 2006-09-25 09:00:48 adedov Exp $
+//  $Id: http.cc,v 1.28 2006-09-25 09:35:23 adedov Exp $
 
 #include "sysinc.h"
 #include <algorithm>
@@ -208,6 +208,9 @@ std::string Header::dump() const
 void Header::set_content_length(unsigned len)
 {
   set_option(names::content_length, len);
+
+  if (len)
+    set_option(names::content_type, "text/xml");
 }
 
 void Header::set_conn_keep_alive(bool c)
@@ -258,7 +261,6 @@ Request_header::Request_header(
 {
   set_option(names::host, server_host);
   set_option(names::user_agent, PACKAGE " " VERSION);
-  set_option(names::content_type, "text/xml");
 }
 
 std::string Request_header::dump_head() const
