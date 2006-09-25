@@ -1,5 +1,17 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.8 - 0.8.1
+  Bugfixes:
+    * [ 1564903 ] Fix core dump that appear on malformed HTTP packet, when
+      Content-Type not set. Actually I have rewritten mini HTTP parser from
+      scratch.
+
+  Enhancements, clean-ups:
+    * The inner per-connection buffer's size has been increased for better
+      performance.
+    * Configure script no longer searches for boost-unit-test-framework
+      by default.
+
 0.7.3a - 0.8
   This release has several incompatibility points with previous ones:
 
