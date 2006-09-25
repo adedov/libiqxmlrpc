@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: client.h,v 1.18 2006-09-07 04:45:21 adedov Exp $
+//  $Id: client.h,v 1.19 2006-09-25 09:00:48 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -32,7 +32,7 @@ namespace iqxmlrpc {
 
 //! Transport independent base class for XML-RPC client's connection.
 class LIBIQXMLRPC_API Client_connection {
-  http::Packet_reader<http::Response_header> preader;
+  http::Packet_reader preader;
 
 protected:
   unsigned read_buf_sz;

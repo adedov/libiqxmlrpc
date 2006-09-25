@@ -15,16 +15,15 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.h,v 1.23 2006-09-07 04:45:21 adedov Exp $
+//  $Id: http.h,v 1.24 2006-09-25 09:00:48 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
 
-#include <string>
-#include <sstream>
 #include <map>
-#include <list>
-#include <vector>
+#include <string>
+#include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
 #include "api_export.h"
 #include "except.h"
 
@@ -41,164 +40,113 @@ namespace http {
 //! creating generic HTTP headers.
 class LIBIQXMLRPC_API Header {
 public:
-  typedef void (*Parser)( Header*, std::istringstream& );
-  typedef std::map<std::string, Parser> Parsers_box;
-
-private:
-  struct Option {
-    std::string name;
-    std::string value;
-
-    Option( const std::string& n, const std::string& v ):
-      name(n), value(v) {}
-  };
-
-  typedef std::vector<Option> Options_box;
-  class Option_eq;
-
-private:
-  Parsers_box parsers;
-  Options_box options;
-
-  std::string version_;
-  unsigned    content_length_;
-  bool        content_length_set_;
-  bool        conn_keep_alive_;
-
-public:
   Header();
   virtual ~Header();
 
-  virtual Header* clone() const { return new Header(*this); }
+  unsigned            content_length()  const;
+  bool                conn_keep_alive() const;
 
-  const std::string& version()     const { return version_; }
-  unsigned content_length()        const { return content_length_; }
-  bool     is_content_length_set() const { return content_length_set_; }
-  bool     conn_keep_alive()       const { return conn_keep_alive_; }
-
-  void set_version( const std::string& v );
   void set_content_length( unsigned ln );
   void set_conn_keep_alive( bool );
-
-  //! Adds/alters header option.
-  /*! For example:
-      \code set_option( "allow:", "POST" ); \endcode
-  */
-  void set_option( const std::string& name, const std::string& value );
-
-  //! Remove option from header.
-  void unset_option( const std::string& name );
+  void set_option(const std::string& name, const std::string& value);
 
   //! Return text representation of header including final CRLF.
-  virtual std::string dump() const;
+  std::string dump() const;
 
 protected:
-  //! Register parser for specific option name.
-  void register_parser( const std::string&, Parser );
+  bool option_exists(const std::string&) const;
+  void set_option_default(const std::string& name, const std::string& value);
+  void set_option_default(const std::string& name, unsigned value);
+  void set_option_checked(const std::string& name, const std::string& value);
+  void set_option(const std::string& name, unsigned value);
 
-  void parse( const std::string& );
-  void parse( std::istringstream& );
+  const std::string&  get_head_line() const { return head_line_; }
+  std::string         get_string(const std::string& name) const;
+  unsigned            get_unsigned(const std::string& name) const;
 
-  void read_eol( std::istringstream& );
-  void ignore_line( std::istringstream& );
-  std::string read_option_name( std::istringstream& );
-  std::string read_option_content( std::istringstream& );
+  //
+  // Parser interface
+  //
+
+  typedef boost::function<void (const std::string&)> Option_validator;
+  void register_validator(const std::string&, Option_validator);
+
+  void parse(const std::string&);
 
 private:
-  void init_parser();
+  template <class T>
+  T get_option(const std::string& name) const;
 
-  static void parse_content_type( Header*, std::istringstream& );
-  static void parse_content_length( Header*, std::istringstream& );
-  static void parse_connection( Header*, std::istringstream& );
+  virtual std::string dump_head() const = 0;
+
+private:
+  typedef std::map<std::string, std::string> Options;
+  typedef std::map<std::string, Option_validator> Validators;
+
+  std::string head_line_;
+  Options options_;
+  Validators validators_;
 };
-
 
 //! HTTP request's header.
 class LIBIQXMLRPC_API Request_header: public Header {
   std::string uri_;
-  std::string host_;
-  std::string user_agent_;
 
 public:
   Request_header( const std::string& to_parse );
-  Request_header( std::istringstream& to_parse );
   Request_header( const std::string& uri, const std::string& host );
 
-  ~Request_header();
-
-  Request_header* clone() const { return new Request_header(*this); }
-
-  const std::string& uri()   const { return uri_; }
-  const std::string& host()  const { return host_; }
-  const std::string& agent() const { return user_agent_; }
-
-  std::string dump() const;
+  const std::string& uri() const { return uri_; }
+  std::string host()  const;
+  std::string agent() const;
 
 private:
-  void parse( std::istringstream& );
-  void parse_method( std::istringstream& );
-  static void parse_host( Header*, std::istringstream& );
-  static void parse_user_agent( Header*, std::istringstream& );
+  virtual std::string dump_head() const;
 };
-
 
 //! HTTP response's header.
 class LIBIQXMLRPC_API Response_header: public Header {
   int code_;
   std::string phrase_;
-  std::string server_;
 
 public:
   Response_header( const std::string& to_parse );
-  Response_header( std::istringstream& to_parse );
   Response_header( int = 200, const std::string& = "OK" );
 
-  ~Response_header();
-
-  Response_header* clone() const { return new Response_header(*this); }
-
-  int                code()   const { return code_; }
+  int code() const { return code_; }
   const std::string& phrase() const { return phrase_; }
-  const std::string& server() const { return server_; }
-
-  std::string dump() const;
+  std::string server() const;
 
 private:
-  void parse( std::istringstream& );
   std::string current_date() const;
-
-  static void parse_server( Header*, std::istringstream& );
+  virtual std::string dump_head() const;
 };
-
 
 //! HTTP packet: Header + Content.
 class LIBIQXMLRPC_API Packet {
 protected:
-  http::Header* header_;
+  boost::shared_ptr<http::Header> header_;
   std::string content_;
 
 public:
-  Packet( const Packet& );
   Packet( http::Header* header, const std::string& content );
   virtual ~Packet();
-
-  Packet& operator =( const Packet& );
 
   //! Sets header option "connection: {keep-alive|close}".
   //! By default connection is close.
   void set_keep_alive( bool = true );
 
-  const http::Header* header()  const { return header_; }
+  const http::Header* header()  const { return header_.get(); }
   const std::string&  content() const { return content_; }
 
-  virtual std::string dump() const
+  std::string dump() const
   {
     return header_->dump() + content_;
   }
 };
 
-
-template <class Header_type>
+//! Helper that responsible for constructing HTTP packets of specified type
+//! (request or response).
 class Packet_reader {
   std::string header_cache;
   std::string content_cache;
@@ -225,12 +173,13 @@ public:
     pkt_max_sz = m;
   }
 
+  template <class Header_type>
   Packet* read_packet( const std::string& );
 
 private:
   void clear();
   void check_sz( unsigned );
-  void read_header( const std::string& );
+  bool read_header( const std::string& );
 };
 
 
@@ -243,7 +192,6 @@ public:
   Malformed_packet(const std::string& problem_domain):
     Exception( "Malformed HTTP packet received (" + problem_domain + ")." ) {}
 };
-
 
 //! Exception related to HTTP protocol.
 //! Can be sent as error response to client.
@@ -258,14 +206,12 @@ public:
   std::string dump_error_response() const { return dump(); }
 };
 
-
 //! HTTP/1.1 400 Bad request
 class LIBIQXMLRPC_API Bad_request: public Error_response {
 public:
   Bad_request():
     Error_response( "Bad request", 400 ) {}
 };
-
 
 //! HTTP/1.1 405 Method not allowed
 class LIBIQXMLRPC_API Method_not_allowed: public Error_response {
@@ -277,6 +223,12 @@ public:
   }
 };
 
+//! HTTP/1.1 411 Length Required
+class LIBIQXMLRPC_API Length_required: public Error_response {
+public:
+  Length_required():
+    Error_response( "Content-Length Required", 411 ) {}
+};
 
 //! HTTP/1.1 413 Request Entity Too Large
 class LIBIQXMLRPC_API Request_too_large: public Error_response {
@@ -285,7 +237,6 @@ public:
     Error_response( "Request Entity Too Large", 413 ) {}
 };
 
-
 //! HTTP/1.1 415 Unsupported media type
 class LIBIQXMLRPC_API Unsupported_content_type: public Error_response {
 public:
@@ -293,33 +244,12 @@ public:
     Error_response( "Unsupported media type '" + wrong + "'", 415 ) {}
 };
 
-
 //
 // Packet_reader implementation
 //
-template <class Header_type>
-inline void Packet_reader<Header_type>::clear()
-{
-  header = 0;
-  content_cache.erase();
-  header_cache.erase();
-  constructed = false;
-  total_sz = 0;
-}
 
 template <class Header_type>
-void Packet_reader<Header_type>::check_sz( unsigned sz )
-{
-  if( !pkt_max_sz )
-    return;
-
-  total_sz += sz;
-  if( total_sz >= pkt_max_sz )
-    throw Request_too_large();
-}
-
-template <class Header_type>
-Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
+Packet* Packet_reader::read_packet( const std::string& s )
 {
   if( constructed )
     clear();
@@ -331,21 +261,20 @@ Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
     if( s.empty() )
       throw http::Malformed_packet();
 
-    read_header(s);
+    if (read_header(s))
+      header = new Header_type(header_cache);
   }
   else
     content_cache += s;
 
   if( header )
   {
-    bool ready = s.empty() && !header->is_content_length_set() ||
+    bool ready = s.empty() && !header->content_length() ||
                  content_cache.length() >= header->content_length();
 
     if( ready )
     {
-      if( header->is_content_length_set() )
-        content_cache.erase( header->content_length(), std::string::npos );
-
+      content_cache.erase( header->content_length(), std::string::npos );
       Packet* packet = new Packet( header, content_cache );
       constructed = true;
       return packet;
@@ -353,25 +282,6 @@ Packet* Packet_reader<Header_type>::read_packet( const std::string& s )
   }
 
   return 0;
-}
-
-template <class Header_type>
-void Packet_reader<Header_type>::read_header( const std::string& s )
-{
-  header_cache += s;
-  unsigned i = header_cache.find( "\r\n\r\n" );
-
-  if( i == std::string::npos )
-    i = header_cache.find( "\n\n" );
-
-  if( i == std::string::npos )
-    return;
-
-  std::istringstream ss( header_cache );
-  header = new Header_type( ss );
-
-  for( char c = ss.get(); ss && !ss.eof(); c = ss.get() )
-    content_cache += c;
 }
 
 } // namespace http

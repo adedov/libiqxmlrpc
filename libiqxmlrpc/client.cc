@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: client.cc,v 1.10 2006-09-07 09:35:41 adedov Exp $
+//  $Id: client.cc,v 1.11 2006-09-25 09:00:48 adedov Exp $
 
 #include <libxml++/libxml++.h>
 #include "client.h"
@@ -25,7 +25,7 @@ using namespace iqxmlrpc;
 
 
 Client_connection::Client_connection():
-  read_buf_sz(1024),
+  read_buf_sz(65000),
   read_buf(new char[read_buf_sz]),
   keep_alive(false)
 {
@@ -74,5 +74,5 @@ Response Client_connection::process_session(
 
 http::Packet* Client_connection::read_response( const std::string& s )
 {
-  return preader.read_packet( s );
+  return preader.read_packet<http::Response_header>( s );
 }

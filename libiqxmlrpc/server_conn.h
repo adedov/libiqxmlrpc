@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: server_conn.h,v 1.3 2006-09-07 04:45:21 adedov Exp $
+//  $Id: server_conn.h,v 1.4 2006-09-25 09:00:48 adedov Exp $
 
 #ifndef _iqxmlrpc_server_conn_h_
 #define _iqxmlrpc_server_conn_h_
@@ -39,7 +39,7 @@ class LIBIQXMLRPC_API Server_connection {
 protected:
   iqnet::Inet_addr peer_addr;
   Server *server;
-  http::Packet_reader<http::Request_header> preader;
+  http::Packet_reader preader;
 
   unsigned read_buf_sz;
   char    *read_buf;

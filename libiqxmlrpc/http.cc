@@ -15,14 +15,17 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.cc,v 1.26 2006-09-07 09:35:41 adedov Exp $
+//  $Id: http.cc,v 1.27 2006-09-25 09:00:48 adedov Exp $
 
 #include "sysinc.h"
-#include <iostream>
+#include <algorithm>
+#include <deque>
 #include <functional>
 #include <memory>
-#include <algorithm>
+#include <sstream>
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/optional.hpp>
 #include "http.h"
 #include "method.h"
 
@@ -32,410 +35,278 @@
 #include "../config.h"
 #endif //_WINDOWS
 
-using namespace iqxmlrpc::http;
+namespace iqxmlrpc {
+namespace http {
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-class Header::Option_eq: public std::unary_function<bool, Header::Option> {
-  std::string name;
-
-public:
-  Option_eq( const std::string& n ): name(n) {}
-
-  bool operator ()( const Header::Option& op )
-  {
-    return op.name == name;
-  }
-};
-#endif
+namespace names {
+  const char crlf[]           = "\r\n";
+  const char content_length[] = "content-length";
+  const char content_type[]   = "content-type";
+  const char connection[]     = "connection";
+  const char host[]           = "host";
+  const char user_agent[]     = "user-agent";
+  const char server[]         = "server";
+  const char date[]           = "date";
+} // namespace names
 
 
-Header::Header():
-  content_length_(0),
-  content_length_set_(false),
-  conn_keep_alive_(false)
+namespace validator {
+
+void unsigned_number(const std::string& val)
 {
-  init_parser();
+  const char errmsg[] = "bad format of numeric option";
+
+  try {
+    if (!boost::all(val, boost::is_digit()))
+      throw Malformed_packet(errmsg);
+
+    boost::lexical_cast<unsigned>(val);
+  } catch (const boost::bad_lexical_cast&) {
+    throw Malformed_packet(errmsg);
+  }
 }
 
+void connection(const std::string& val)
+{
+  std::string tmp(val);
+  boost::to_lower(tmp);
+
+  if (tmp != "close" && tmp != "keep-alive")
+    throw Malformed_packet("bad 'connection' option format");
+}
+
+void content_type(const std::string& val)
+{
+  std::string cont_type(val);
+  boost::to_lower(cont_type);
+  boost::trim_right_if(cont_type, boost::is_any_of(";"));
+
+  if( cont_type != "text/xml" )
+    throw Unsupported_content_type(cont_type);
+}
+
+} // namespace validator
+
+
+Header::Header()
+{
+  set_conn_keep_alive(false);
+
+  register_validator(names::content_length, validator::unsigned_number);
+  register_validator(names::content_type, validator::content_type);
+  register_validator(names::connection, validator::connection);
+}
 
 Header::~Header()
 {
 }
 
-
-void Header::set_version( const std::string& v )
+void Header::register_validator(const std::string& name, Header::Option_validator v)
 {
-  version_ = v;
+  validators_[name] = v;
 }
 
-
-void Header::set_content_length( unsigned lth )
+void Header::parse(const std::string& s)
 {
-  content_length_set_ = true;
-  content_length_ = lth;
-  std::ostringstream ss;
-  ss << lth;
+  typedef std::deque<std::string> Tokens;
+  Tokens lines;
+  boost::split(lines, s, boost::is_any_of(names::crlf), boost::token_compress_on);
 
-  set_option( "content-length:", ss.str() );
-
-  if( lth )
-    set_option( "content-type:", "text/xml" );
-  else
-    unset_option( "content-type:" );
-}
-
-
-void Header::set_conn_keep_alive( bool c )
-{
-  set_option( "connection:", c ? "keep-alive" : "close" );
-}
-
-
-inline void Header::init_parser()
-{
-  parsers["content-length:"] = Header::parse_content_length;
-  parsers["content-type:"]   = Header::parse_content_type;
-  parsers["connection:"]     = Header::parse_connection;
-}
-
-
-void Header::register_parser( const std::string& option, Parser parser )
-{
-  parsers[option] = parser;
-}
-
-
-void Header::parse( const std::string& s )
-{
-  std::istringstream ss( s );
-  parse( ss );
-}
-
-
-void Header::parse( std::istringstream& ss )
-{
-  while( ss )
-  {
-    std::string word = read_option_name( ss );
-
-    if( word.empty() )
-    {
-      read_eol(ss);
-      break;
-    }
-
-    set_option( word, read_option_content(ss) );
+  if (!lines.empty()) {
+    head_line_ = lines.front();
+    lines.pop_front();
   }
 
-  for( Options_box::const_iterator i = options.begin(); i != options.end(); ++i )
-  {
-    Parsers_box::const_iterator j = parsers.find( i->name );
+  for (Tokens::iterator i = lines.begin(); i != lines.end(); ++i) {
+    boost::iterator_range<std::string::iterator> j = boost::find_first(*i, ":");
+    if (j.begin() == i->end())
+      throw Malformed_packet("option line does not contain a colon symbol");
 
-    if( j != parsers.end() )
-    {
-      std::istringstream os(i->value);
-      j->second( this, os );
-      continue;
-    }
+    std::string opt_name, opt_value;
+    std::copy(i->begin(), j.begin(), std::back_inserter(opt_name));
+    std::copy(j.end(), i->end(), std::back_inserter(opt_value));
 
-    if( i->name.find(":") == std::string::npos )
-      throw Malformed_packet("no colon symbol in HTTP header row");
+    boost::trim(opt_name);
+    boost::trim(opt_value);
+    boost::to_lower(opt_name);
+    set_option_checked(opt_name, opt_value);
   }
 }
 
-
-void Header::set_option( const std::string& name, const std::string& value )
+template <class T>
+T Header::get_option(const std::string& name) const
 {
-  Option_eq eq( name );
-  Options_box::iterator i = std::find_if( options.begin(), options.end(), eq );
+  Options::const_iterator i = options_.find(name);
 
-  if( i == options.end() )
-  {
-    options.push_back( Option(name, value) );
+  if (i == options_.end()) {
+      throw Malformed_packet("Missing mandatory header option '" + name + "'.");
+  }
+
+  try {
+    return boost::lexical_cast<T>(i->second);
+  } catch (boost::bad_lexical_cast&) {
+    throw Malformed_packet("Header option '" + name + "' has wrong format.");
+  }
+}
+
+std::string Header::get_string(const std::string& name) const
+{
+  return get_option<std::string>(name);
+}
+
+unsigned Header::get_unsigned(const std::string& name) const
+{
+  return get_option<unsigned>(name);
+}
+
+inline
+void Header::set_option_checked(const std::string& name, const std::string& value)
+{
+  Validators::const_iterator v = validators_.find(name);
+  if (v != validators_.end()) {
+    v->second(value);
+  }
+
+  set_option(name, value);
+}
+
+void Header::set_option(const std::string& name, const std::string& value)
+{
+  options_[name] = value;
+}
+
+void Header::set_option(const std::string& name, unsigned value)
+{
+  set_option(name, boost::lexical_cast<std::string>(value));
+}
+
+bool Header::option_exists(const std::string& name) const
+{
+  return options_.find(name) != options_.end();
+}
+
+void Header::set_option_default(const std::string& name, const std::string& value)
+{
+  if (option_exists(name))
     return;
-  }
 
-  i->value = value;
+  set_option(name, value);
 }
-
-
-void Header::unset_option( const std::string& name )
-{
-  Option_eq eq( name );
-  Options_box::iterator i = std::find_if( options.begin(), options.end(), eq );
-
-  if( i != options.end() )
-    options.erase( i );
-}
-
-
-std::string Header::read_option_name( std::istringstream& ss )
-{
-  std::string word;
-
-  while( ss )
-  {
-    char c = ss.get();
-    switch( c )
-    {
-      case ' ':
-      case '\t':
-        return word;
-
-      case '\r':
-      case '\n':
-        ss.putback(c);
-        return word;
-
-      default:
-        word += tolower(c);
-    }
-  }
-
-  throw Malformed_packet("read HTTP parameter name");
-}
-
-
-void Header::read_eol( std::istringstream& ss )
-{
-  static std::string errstr = "unexpected symbols at the end of line";
-
-  char c = ss.get();
-  switch( c )
-  {
-    case '\r':
-      if( ss.get() != '\n' )
-        throw Malformed_packet(errstr);
-      break;
-
-    case '\n':
-      break;
-
-    default:
-      throw Malformed_packet(errstr);
-  }
-}
-
-
-std::string Header::read_option_content( std::istringstream& ss )
-{
-  for( ; ss && (ss.peek() == ' ' || ss.peek() == '\t'); ss.get() );
-
-  if( !ss )
-    throw Malformed_packet("read option content");
-
-  std::string option;
-  while( ss )
-  {
-    if( ss.peek() == '\r' || ss.peek() == '\n' )
-      break;
-
-    option += ss.get();
-  }
-
-  read_eol( ss );
-  return option;
-}
-
-
-void Header::ignore_line( std::istringstream& ss )
-{
-  static std::string errstr = "unexpected symbols in line that should be empty";
-
-  while( ss )
-  {
-    bool cr = false;
-
-    switch( ss.get() )
-    {
-      case '\r':
-        if( cr )
-          throw Malformed_packet(errstr);
-        cr = true;
-        break;
-
-      case '\n':
-        return;
-
-      default:
-        if( cr )
-          throw Malformed_packet(errstr);
-    }
-  }
-}
-
 
 std::string Header::dump() const
 {
-  std::ostringstream ss;
+  std::string retval = dump_head();
 
-  for( Options_box::const_iterator i = options.begin(); i != options.end(); ++i )
-    ss << i->name << " " << i->value << "\r\n";
+  for (Options::const_iterator i = options_.begin(); i != options_.end(); ++i) {
+    retval += i->first + ": " + i->second + names::crlf;
+  }
 
-  return ss.str() + "\r\n";
+  retval += names::crlf;
+  return retval;
 }
 
-
-void Header::parse_content_type( Header* obj, std::istringstream& ss )
+void Header::set_content_length(unsigned len)
 {
-  std::string opt;
-  ss >> opt;
-  boost::to_lower(opt);
-  boost::trim_right_if(opt, boost::is_any_of(";"));
-
-  if( opt != "text/xml" )
-    throw Unsupported_content_type(opt);
+  set_option(names::content_length, len);
 }
 
-
-void Header::parse_content_length( Header* obj, std::istringstream& ss )
+void Header::set_conn_keep_alive(bool c)
 {
-  unsigned i;
-  ss >> i;
-  obj->set_content_length(i);
+  set_option(names::connection, c ? "keep-alive" : "close");
 }
 
-
-void Header::parse_connection( Header* obj, std::istringstream& ss )
+unsigned Header::content_length() const
 {
-  std::string opt;
-  ss >> opt;
-  boost::to_lower(opt);
+  if (!option_exists(names::content_length))
+    throw Length_required();
 
-  if( opt == "keep-alive" )
-    obj->conn_keep_alive_ = true;
-  else if( opt == "close" )
-    obj->conn_keep_alive_ = false;
-  else
-    throw Malformed_packet("parse error in 'Connection' parameter");
+  return get_unsigned(names::content_length);
 }
 
+bool Header::conn_keep_alive() const
+{
+  return get_string(names::connection) == "keep-alive";
+}
 
 // ----------------------------------------------------------------------------
-Request_header::Request_header( const std::string& rstr )
+Request_header::Request_header(const std::string& to_parse)
 {
-  std::istringstream ss( rstr );
-  parse( ss );
+  parse(to_parse);
+  set_option_default(names::host, "");
+  set_option_default(names::user_agent, "unknown");
+
+  // parse method
+  typedef std::deque<std::string> Token;
+  Token method_line;
+  boost::split(method_line, get_head_line(), boost::is_space(), boost::token_compress_on);
+
+  if (method_line.empty())
+    throw Bad_request();
+
+  if( method_line[0] != "POST" )
+    throw Method_not_allowed();
+
+  if (method_line.size() > 1)
+    uri_ = method_line[1];
 }
-
-
-Request_header::Request_header( std::istringstream& ss )
-{
-  parse( ss );
-}
-
 
 Request_header::Request_header(
   const std::string& req_uri,
   const std::string& server_host
 ):
-  uri_(req_uri),
-  host_(server_host),
-  user_agent_(PACKAGE " " VERSION)
+  uri_(req_uri)
 {
-  set_version( "HTTP/1.0" );
-  set_option( "user-agent:", user_agent_ );
-
-  if( !host_.empty() )
-    set_option( "host:", host_ );
+  set_option(names::host, server_host);
+  set_option(names::user_agent, PACKAGE " " VERSION);
+  set_option(names::content_type, "text/xml");
 }
 
-
-Request_header::~Request_header()
+std::string Request_header::dump_head() const
 {
+  return "POST " + uri() + " HTTP/1.0" + names::crlf;
 }
 
-
-std::string Request_header::dump() const
+std::string Request_header::host() const
 {
-  return "POST " + uri() + " " + version() + "\r\n" + Header::dump();
+  return get_string(names::host);
 }
 
-
-void Request_header::parse( std::istringstream& ss )
+std::string Request_header::agent() const
 {
-  register_parser( "user-agent:", Request_header::parse_user_agent );
-  register_parser( "host:", Request_header::parse_host );
-
-  parse_method( ss );
-  Header::parse( ss );
+  return get_string(names::user_agent);
 }
-
-
-void Request_header::parse_method( std::istringstream& ss )
-{
-  std::istringstream rs( read_option_content(ss) );
-  std::string method, version;
-
-  rs >> method;
-  if( method != "POST" )
-    throw Method_not_allowed();
-
-  rs >> uri_;
-  rs >> version;
-  set_version( version );
-}
-
-
-void Request_header::parse_host( Header* obj, std::istringstream& ss )
-{
-  Request_header* req = static_cast<Request_header*>(obj);
-  ss >> req->host_;
-
-  // Compare requested host with actual server hostname?
-}
-
-
-void Request_header::parse_user_agent( Header* obj, std::istringstream& ss )
-{
-  Request_header* req = static_cast<Request_header*>(obj);
-  ss >> req->user_agent_;
-}
-
 
 // ---------------------------------------------------------------------------
-Response_header::Response_header( std::istringstream& ss )
+Response_header::Response_header(const std::string& to_parse)
 {
-  parse( ss );
+  parse(to_parse);
+  set_option_default(names::server, "unknown");
+
+  typedef std::deque<std::string> Token;
+  Token resp_line;
+  boost::split(resp_line, get_head_line(), boost::is_space(), boost::token_compress_on);
+
+  if (resp_line.size() < 2) {
+    throw Malformed_packet("Bad response");
+  }
+
+  try {
+    code_ = boost::lexical_cast<int>(resp_line[1]);
+  } catch (const boost::bad_lexical_cast&) {
+    code_ = 0;
+  }
+
+  if (resp_line.size() > 2)
+    phrase_ = resp_line[2];
 }
-
-
-Response_header::Response_header( const std::string& rstr )
-{
-  std::istringstream ss( rstr );
-  parse( ss );
-}
-
 
 Response_header::Response_header( int c, const std::string& p ):
   code_(c),
-  phrase_(p),
-  server_(PACKAGE " " VERSION)
+  phrase_(p)
 {
-  set_version( "HTTP/1.1" );
-  set_option( "date:", current_date() );
-  set_option( "server:", server() );
+  set_option(names::date, current_date());
+  set_option(names::server, PACKAGE " " VERSION);
 }
-
-
-Response_header::~Response_header()
-{
-}
-
-
-void Response_header::parse( std::istringstream& ss )
-{
-  register_parser( "server:", Response_header::parse_server );
-
-  std::string version;
-  ss >> version;
-  set_version( version );
-  ss >> code_;
-  phrase_ = read_option_content( ss );
-
-  Header::parse( ss );
-}
-
 
 std::string Response_header::current_date() const
 {
@@ -453,21 +324,17 @@ std::string Response_header::current_date() const
   return date_str;
 }
 
-
-std::string Response_header::dump() const
+std::string Response_header::dump_head() const
 {
   std::ostringstream ss;
-  ss << version() << " " << code() <<  " " << phrase() << "\r\n";
-  return ss.str() + Header::dump();
+  ss << "HTTP/1.1 " << code() <<  " " << phrase() << names::crlf;
+  return ss.str();
 }
 
-
-void Response_header::parse_server( Header* obj, std::istringstream& ss )
+std::string Response_header::server() const
 {
-  Response_header* resp = static_cast<Response_header*>(obj);
-  ss >> resp->server_;
+  return get_string(names::server);
 }
-
 
 // ---------------------------------------------------------------------------
 Packet::Packet( Header* h, const std::string& co ):
@@ -477,31 +344,59 @@ Packet::Packet( Header* h, const std::string& co ):
   header_->set_content_length(content_.length());
 }
 
-
-Packet::Packet( const Packet& p ):
-  header_(p.header_->clone()),
-  content_(p.content_)
-{
-}
-
-
 Packet::~Packet()
 {
-  delete header_;
 }
-
-
-Packet& Packet::operator =( const Packet& p )
-{
-  delete header_;
-  header_  = p.header_->clone();
-  content_ = p.content_;
-
-  return *this;
-}
-
 
 void Packet::set_keep_alive( bool keep_alive )
 {
   header_->set_conn_keep_alive( keep_alive );
 }
+
+// ---------------------------------------------------------------------------
+void Packet_reader::clear()
+{
+  header = 0;
+  content_cache.erase();
+  header_cache.erase();
+  constructed = false;
+  total_sz = 0;
+}
+
+void Packet_reader::check_sz( unsigned sz )
+{
+  if( !pkt_max_sz )
+    return;
+
+  if (header) {
+    if (header->content_length() + header_cache.length() >= pkt_max_sz)
+      throw Request_too_large();
+  }
+
+  if( (total_sz += sz) >= pkt_max_sz )
+    throw Request_too_large();
+}
+
+bool Packet_reader::read_header( const std::string& s )
+{
+  using boost::iterator_range;
+  using boost::find_first;
+
+  header_cache += s;
+  iterator_range<std::string::iterator> i = find_first(header_cache, "\r\n\r\n");
+
+  if( i.begin() == i.end() )
+    i = boost::find_first(header_cache, "\n\n");
+
+  if( i.begin() == i.end() )
+    return false;
+
+  std::string tmp;
+  std::copy(header_cache.begin(), i.begin(), std::back_inserter(tmp));
+  std::copy(i.end(), header_cache.end(), std::back_inserter(content_cache));
+  header_cache = tmp;
+  return true;
+}
+
+} // namespace http
+} // namespace iqxmlrpc

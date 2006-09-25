@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: server_conn.cc,v 1.3 2006-09-07 09:35:42 adedov Exp $
+//  $Id: server_conn.cc,v 1.4 2006-09-25 09:00:48 adedov Exp $
 
 #include "server_conn.h"
 #include "server.h"
@@ -25,8 +25,8 @@ using namespace iqxmlrpc;
 Server_connection::Server_connection( const iqnet::Inet_addr& a ):
   peer_addr(a),
   server(0),
-  read_buf_sz(1024),
-  read_buf(new char[1024]),
+  read_buf_sz(65000),
+  read_buf(new char[read_buf_sz]),
   keep_alive(false)
 {
 }
@@ -51,7 +51,7 @@ http::Packet* Server_connection::read_request( const std::string& s )
   try
   {
     preader.set_max_size( server->get_max_request_sz() );
-    http::Packet* r = preader.read_packet(s);
+    http::Packet* r = preader.read_packet<http::Request_header>(s);
 
     if( r )
       keep_alive = r->header()->conn_keep_alive();
