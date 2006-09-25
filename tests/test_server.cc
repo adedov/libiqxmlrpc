@@ -85,6 +85,7 @@ Test_server::Test_server(const Test_server_config& conf):
 
   impl_->log_errors( &std::cerr );
   impl_->enable_introspection();
+  impl_->set_max_request_sz(1024*1024);
   register_user_methods(impl());
 }
 
