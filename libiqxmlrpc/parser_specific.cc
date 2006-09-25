@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: parser_specific.cc,v 1.11 2006-09-07 09:35:42 adedov Exp $
+//  $Id: parser_specific.cc,v 1.12 2006-09-25 08:19:23 adedov Exp $
 
 #include <iostream>
 #include <sstream>
@@ -31,7 +31,7 @@ using namespace iqxmlrpc;
 
 Value_type* Nil_parser::parse_value( const Node* node ) const
 {
-  // TODO: check for empty tag
+  // TODO: check for actual nil tag
   return new Nil();
 }
 
