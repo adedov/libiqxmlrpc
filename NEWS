@@ -1,5 +1,11 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.8.1 - 0.8.2
+  Bugfixes:
+    * Fix communication bug with xmlrpc-c introduced in 0.8.1. Now libiqxmlrpc
+      just searches for inclusion of 'text/xml' string in Content-Type
+      instead of trying parse it in more smart way.
+
 0.8 - 0.8.1
   Bugfixes:
     * [ 1564903 ] Fix core dump that appear on malformed HTTP packet, when

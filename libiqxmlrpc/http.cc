@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.cc,v 1.28 2006-09-25 09:35:23 adedov Exp $
+//  $Id: http.cc,v 1.29 2006-10-10 04:50:41 adedov Exp $
 
 #include "sysinc.h"
 #include <algorithm>
@@ -79,9 +79,8 @@ void content_type(const std::string& val)
 {
   std::string cont_type(val);
   boost::to_lower(cont_type);
-  boost::trim_right_if(cont_type, boost::is_any_of(";"));
 
-  if( cont_type != "text/xml" )
+  if (!boost::find_first(cont_type, "text/xml"))
     throw Unsupported_content_type(cont_type);
 }
 
