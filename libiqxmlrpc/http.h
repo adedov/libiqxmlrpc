@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.h,v 1.24 2006-09-25 09:00:48 adedov Exp $
+//  $Id: http.h,v 1.25 2006-10-12 11:39:26 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -36,15 +36,18 @@ namespace iqxmlrpc {
 */
 namespace http {
 
+//! The level of HTTP sanity checks.
+enum Verification_level { WEAK, STRICT };
+
 //! HTTP header. Responsible for parsing,
 //! creating generic HTTP headers.
 class LIBIQXMLRPC_API Header {
 public:
-  Header();
+  Header(Verification_level = WEAK);
   virtual ~Header();
 
-  unsigned            content_length()  const;
-  bool                conn_keep_alive() const;
+  unsigned  content_length()  const;
+  bool      conn_keep_alive() const;
 
   void set_content_length( unsigned ln );
   void set_conn_keep_alive( bool );
@@ -68,8 +71,12 @@ protected:
   // Parser interface
   //
 
-  typedef boost::function<void (const std::string&)> Option_validator;
-  void register_validator(const std::string&, Option_validator);
+  typedef boost::function<void (const std::string&)> Option_validator_fn;
+
+  void register_validator(
+    const std::string&,
+    Option_validator_fn,
+    Verification_level);
 
   void parse(const std::string&);
 
@@ -80,12 +87,18 @@ private:
   virtual std::string dump_head() const = 0;
 
 private:
+  struct Option_validator {
+    Verification_level level;
+    Option_validator_fn fn;
+  };
+
   typedef std::map<std::string, std::string> Options;
-  typedef std::map<std::string, Option_validator> Validators;
+  typedef std::multimap<std::string, Option_validator> Validators;
 
   std::string head_line_;
   Options options_;
   Validators validators_;
+  Verification_level ver_level_;
 };
 
 //! HTTP request's header.
@@ -93,7 +106,7 @@ class LIBIQXMLRPC_API Request_header: public Header {
   std::string uri_;
 
 public:
-  Request_header( const std::string& to_parse );
+  Request_header( Verification_level, const std::string& to_parse );
   Request_header( const std::string& uri, const std::string& host );
 
   const std::string& uri() const { return uri_; }
@@ -110,7 +123,7 @@ class LIBIQXMLRPC_API Response_header: public Header {
   std::string phrase_;
 
 public:
-  Response_header( const std::string& to_parse );
+  Response_header( Verification_level, const std::string& to_parse );
   Response_header( int = 200, const std::string& = "OK" );
 
   int code() const { return code_; }
@@ -151,6 +164,7 @@ class Packet_reader {
   std::string header_cache;
   std::string content_cache;
   Header* header;
+  Verification_level ver_level_;
   bool constructed;
   unsigned pkt_max_sz;
   unsigned total_sz;
@@ -166,6 +180,11 @@ public:
   {
     if( !constructed )
       delete header;
+  }
+
+  void set_verification_level(Verification_level lev)
+  {
+    ver_level_ = lev;
   }
 
   void set_max_size( unsigned m )
@@ -262,7 +281,7 @@ Packet* Packet_reader::read_packet( const std::string& s )
       throw http::Malformed_packet();
 
     if (read_header(s))
-      header = new Header_type(header_cache);
+      header = new Header_type(ver_level_, header_cache);
   }
   else
     content_cache += s;

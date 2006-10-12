@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.cc,v 1.29 2006-10-10 04:50:41 adedov Exp $
+//  $Id: http.cc,v 1.30 2006-10-12 11:39:26 adedov Exp $
 
 #include "sysinc.h"
 #include <algorithm>
@@ -87,22 +87,27 @@ void content_type(const std::string& val)
 } // namespace validator
 
 
-Header::Header()
+Header::Header(Verification_level lev):
+  ver_level_(lev)
 {
   set_conn_keep_alive(false);
 
-  register_validator(names::content_length, validator::unsigned_number);
-  register_validator(names::content_type, validator::content_type);
-  register_validator(names::connection, validator::connection);
+  register_validator(names::content_length, validator::unsigned_number, WEAK);
+  register_validator(names::content_type, validator::content_type, STRICT);
+  register_validator(names::connection, validator::connection, WEAK);
 }
 
 Header::~Header()
 {
 }
 
-void Header::register_validator(const std::string& name, Header::Option_validator v)
+void Header::register_validator(
+  const std::string& name,
+  Header::Option_validator_fn fn,
+  Verification_level level)
 {
-  validators_[name] = v;
+  Option_validator v = { level, fn };
+  validators_.insert(std::make_pair(name, v));
 }
 
 void Header::parse(const std::string& s)
@@ -161,9 +166,13 @@ unsigned Header::get_unsigned(const std::string& name) const
 inline
 void Header::set_option_checked(const std::string& name, const std::string& value)
 {
-  Validators::const_iterator v = validators_.find(name);
-  if (v != validators_.end()) {
-    v->second(value);
+  std::pair<Validators::const_iterator, Validators::const_iterator> v =
+    validators_.equal_range(name);
+
+  for (Validators::const_iterator i = v.first; i != v.second; ++i)
+  {
+    if (i->second.level <= ver_level_)
+      i->second.fn(value);
   }
 
   set_option(name, value);
@@ -231,7 +240,8 @@ bool Header::conn_keep_alive() const
 }
 
 // ----------------------------------------------------------------------------
-Request_header::Request_header(const std::string& to_parse)
+Request_header::Request_header(Verification_level lev, const std::string& to_parse):
+  Header(lev)
 {
   parse(to_parse);
   set_option_default(names::host, "");
@@ -278,7 +288,8 @@ std::string Request_header::agent() const
 }
 
 // ---------------------------------------------------------------------------
-Response_header::Response_header(const std::string& to_parse)
+Response_header::Response_header(Verification_level lev, const std::string& to_parse):
+  Header(lev)
 {
   parse(to_parse);
   set_option_default(names::server, "unknown");

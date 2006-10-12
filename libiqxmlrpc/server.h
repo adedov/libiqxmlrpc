@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: server.h,v 1.27 2006-09-07 04:45:21 adedov Exp $
+//  $Id: server.h,v 1.28 2006-10-12 11:39:26 adedov Exp $
 
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
@@ -54,6 +54,7 @@ protected:
   bool soft_exit; // Soft exit in process
   std::ostream* log;
   unsigned max_req_sz;
+  http::Verification_level ver_level;
 
 private:
   Method_dispatcher_manager  disp_manager;
@@ -92,6 +93,8 @@ public:
 
   //! Set optional firewall object.
   void set_firewall( iqnet::Firewall_base* );
+
+  void set_verification_level(http::Verification_level);
   /*! \} */
 
   //! \name Run/stop server
@@ -110,6 +113,7 @@ public:
 
   void log_err_msg( const std::string& );
   unsigned get_max_request_sz() const { return max_req_sz; }
+  http::Verification_level get_verification_level() const { return ver_level; }
 
 private:
   void perform_soft_exit();

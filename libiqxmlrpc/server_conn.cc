@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: server_conn.cc,v 1.4 2006-09-25 09:00:48 adedov Exp $
+//  $Id: server_conn.cc,v 1.5 2006-10-12 11:39:26 adedov Exp $
 
 #include "server_conn.h"
 #include "server.h"
@@ -50,6 +50,7 @@ http::Packet* Server_connection::read_request( const std::string& s )
 {
   try
   {
+    preader.set_verification_level( server->get_verification_level() );
     preader.set_max_size( server->get_max_request_sz() );
     http::Packet* r = preader.read_packet<http::Request_header>(s);
 

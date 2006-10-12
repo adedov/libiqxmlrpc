@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: server.cc,v 1.27 2006-09-03 06:57:57 adedov Exp $
+//  $Id: server.cc,v 1.28 2006-10-12 11:39:26 adedov Exp $
 
 #include <memory>
 #include <libxml++/libxml++.h>
@@ -43,6 +43,7 @@ Server::Server(
   soft_exit(false),
   log(0),
   max_req_sz(0),
+  ver_level(http::WEAK),
   interceptors(0)
 {
 }
@@ -86,6 +87,11 @@ void Server::log_errors( std::ostream* log_ )
 void Server::set_max_request_sz( unsigned sz )
 {
   max_req_sz = sz;
+}
+
+void Server::set_verification_level( http::Verification_level lev )
+{
+  ver_level = lev;
 }
 
 void Server::log_err_msg( const std::string& msg )
