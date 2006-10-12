@@ -1,5 +1,14 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.8.2 - 0.8.2a
+  Enhancement:
+    * The two level of verification for HTTP options introduced. By default
+      weakest level is turned on. One can raise verification level on server
+      side by calling Server::set_verification_level method.
+    * Sanity checking for contents of Content-Type is turned off by default.
+      So one can use 'curl' utility without specifying -H "Content-Type: text/xml"
+      parameter.
+
 0.8.1 - 0.8.2
   Bugfixes:
     * Fix communication bug with xmlrpc-c introduced in 0.8.1. Now libiqxmlrpc
