@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: server.cc,v 1.28 2006-10-12 11:39:26 adedov Exp $
+//  $Id: server.cc,v 1.29 2006-10-12 12:31:21 adedov Exp $
 
 #include <memory>
 #include <libxml++/libxml++.h>
@@ -43,7 +43,7 @@ Server::Server(
   soft_exit(false),
   log(0),
   max_req_sz(0),
-  ver_level(http::WEAK),
+  ver_level(http::HTTP_CHECK_WEAK),
   interceptors(0)
 {
 }

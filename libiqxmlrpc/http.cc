@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.cc,v 1.30 2006-10-12 11:39:26 adedov Exp $
+//  $Id: http.cc,v 1.31 2006-10-12 12:31:21 adedov Exp $
 
 #include "sysinc.h"
 #include <algorithm>
@@ -92,9 +92,9 @@ Header::Header(Verification_level lev):
 {
   set_conn_keep_alive(false);
 
-  register_validator(names::content_length, validator::unsigned_number, WEAK);
-  register_validator(names::content_type, validator::content_type, STRICT);
-  register_validator(names::connection, validator::connection, WEAK);
+  register_validator(names::content_length, validator::unsigned_number, HTTP_CHECK_WEAK);
+  register_validator(names::content_type, validator::content_type, HTTP_CHECK_STRICT);
+  register_validator(names::connection, validator::connection, HTTP_CHECK_WEAK);
 }
 
 Header::~Header()

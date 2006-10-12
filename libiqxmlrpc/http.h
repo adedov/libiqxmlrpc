@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: http.h,v 1.25 2006-10-12 11:39:26 adedov Exp $
+//  $Id: http.h,v 1.26 2006-10-12 12:31:21 adedov Exp $
 
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
@@ -37,13 +37,13 @@ namespace iqxmlrpc {
 namespace http {
 
 //! The level of HTTP sanity checks.
-enum Verification_level { WEAK, STRICT };
+enum Verification_level { HTTP_CHECK_WEAK, HTTP_CHECK_STRICT };
 
 //! HTTP header. Responsible for parsing,
 //! creating generic HTTP headers.
 class LIBIQXMLRPC_API Header {
 public:
-  Header(Verification_level = WEAK);
+  Header(Verification_level = HTTP_CHECK_WEAK);
   virtual ~Header();
 
   unsigned  content_length()  const;
