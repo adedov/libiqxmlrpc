@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/wd4800 /wd4267"
 				Optimization="0"
-				AdditionalIncludeDirectories="..;..\libiqxmlrpc;..\win32;&quot;$(OPENSSL_ROOT)\include&quot;;&quot;$(LIBXMLPP)&quot;;&quot;$(LIBXML2)\include&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(ICONV_ROOT)\include&quot;"
+				AdditionalIncludeDirectories="..;..\libiqxmlrpc;..\win32;&quot;$(DEPENDS_ROOT)\include&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;LIBIQXMLRPC_COMPILATION;DLL_EXPORT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
@@ -31,15 +31,15 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"
 				CallingConvention="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libxml++d.lib libxml2.lib iconv.lib charset.lib ssleay32.lib libeay32.lib Ws2_32.lib"
-				AdditionalLibraryDirectories="&quot;$(BOOST_ROOT)\bin\Debug&quot;;&quot;$(BOOST_ROOT)\bin\boost\libs\thread\build\boost_thread.dll\vc-7_1\debug\threading-multi\&quot;;&quot;$(ICONV_ROOT)\lib&quot;;&quot;$(LIBXML2)\lib&quot;;&quot;$(LIBXMLPP)\lib&quot;;&quot;$(OPENSSL_ROOT)\out32dll\debug&quot;"
+				AdditionalDependencies="libxml++d.lib libxml2d.lib iconvd.lib ssleay32d.lib libeay32d.lib Ws2_32.lib"
+				OutputFile="$(OutDir)/$(ProjectName)d.dll"
+				AdditionalLibraryDirectories="&quot;$(DEPENDS_ROOT)\lib&quot;"
 				IgnoreDefaultLibraryNames=""
 				ModuleDefinitionFile=""/>
 			<Tool
@@ -72,28 +72,29 @@
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
-			ConfigurationType="4"
-			UseOfMFC="2"
+			ConfigurationType="2"
+			UseOfMFC="0"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../libiqxmlrpc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;_WINDOWS_COMPILE_TIME"
+				AdditionalIncludeDirectories="..;..\libiqxmlrpc;..\win32;&quot;$(DEPENDS_ROOT)\include&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;LIBIQXMLRPC_COMPILATION;DLL_EXPORT"
 				MinimalRebuild="TRUE"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="FALSE"
 				TreatWChar_tAsBuiltInType="TRUE"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLibrarianTool"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="libxml++.lib libxml2.lib iconv.lib ssleay32.lib libeay32.lib Ws2_32.lib"
+				AdditionalLibraryDirectories="&quot;$(DEPENDS_ROOT)\lib&quot;"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
@@ -113,6 +114,8 @@
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
@@ -149,6 +152,12 @@
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\http.cc">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						GeneratePreprocessedFile="0"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\http_client.cc">
@@ -169,6 +178,12 @@
 				RelativePath=".\libiqxmlrpc.cpp">
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
 					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCLCompilerTool"/>
