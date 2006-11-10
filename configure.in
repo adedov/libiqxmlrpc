@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([libiqxmlrpc], [0.8.2a], [adedov@users.sourceforge.net])
+AC_INIT([libiqxmlrpc], [0.8.3pre], [adedov@users.sourceforge.net])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([libiqxmlrpc/value.h])
 AM_CONFIG_HEADER(config.h)
@@ -69,6 +69,7 @@ AC_OUTPUT(
   libiqxmlrpc/Makefile
   libiqxmlrpc/version.h
   tests/Makefile
+  debian/Makefile
   doc/Makefile
   doc/libiqxmlrpc.doxygen
   win32/Makefile

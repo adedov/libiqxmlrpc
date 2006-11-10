@@ -2,7 +2,6 @@ ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = \
 	m4 \
-	debian \
 	License \
 	ChangeLog \
 	NEWS \
@@ -23,9 +22,10 @@ pkgconfig_DATA = \
 	libiqxmlrpc-client.pc
   
 SUBDIRS = \
+	debian \
+	doc \
 	libiqxmlrpc \
 	tests \
-	doc \
 	win32
 
 rpm:	dist
