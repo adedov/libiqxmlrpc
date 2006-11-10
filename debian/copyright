@@ -1,0 +1,11 @@
+This package was debianized by Anton Dedov <adedov@gmail.com> on
+Tue, 17 Oct 2006 23:00:35 +0700.
+
+It was downloaded from http://libiqxmlrpc.sourceforge.net
+
+Upstream Author: Anton Dedov <adedov@gmail.com>
+
+Copyright: 2003-2007 Anton Dedov
+
+The Debian packaging is (C) 2006, Anton Dedov <adedov@gmail.com> and
+is licensed under the LGPL-2.1, see `/usr/share/common-licenses/GPL-2.1'.
