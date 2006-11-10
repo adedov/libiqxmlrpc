@@ -12,9 +12,12 @@ Requires: openssl, libxml++
 Prefix:   /usr
 
 %description
-Libiqxmlrpc - an object-oriented XML-RPC library written on C++. 
-It provides API for building client/server-side software. 
-It supports HTTP and HTTPS transport portocols as well.
+Libiqxmlrpc - an object-oriented XML-RPC library written in C++.  It provides
+client/server API, supports HTTP and HTTPS transports, both single-threaded and
+multi-threaded computation models on a server side, method interceptors, and
+other features.
+
+This package provides run-time libraries.
 
 %package devel
 Summary: Simple object-oriented XML-RPC client-server solution for C++.
@@ -22,11 +25,12 @@ Group:   Development/Libraries
 Requires: %name, openssl-devel, libxml++-devel
 
 %description devel
-Libiqxmlrpc - an object-oriented XML-RPC library written on C++. 
-It provides API for building client/server-side software. 
-It supports HTTP and HTTPS transport portocols as well.
+Libiqxmlrpc - an object-oriented XML-RPC library written in C++.  It provides
+client/server API, supports HTTP and HTTPS transports, both single-threaded and
+multi-threaded computation models on a server side, method interceptors, and
+other features.
 
-This package contains files, which are required for development purposes.
+This is development package.
 
 %prep
 rm -rf ${RPM_BUILD_ROOT}

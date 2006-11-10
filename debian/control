@@ -12,9 +12,7 @@ Depends: libiqxmlrpc-1.0 (= ${Source-Version})
 Description: Libiqxmlrpc - an object-oriented XML-RPC library written in C++. 
  It provides client/server API, supports HTTP and HTTPS transports, both
  single-threaded and multi-threaded computation models on a server side, method
- interceptors, and other features. It provides API for building
- client/server-side software.  It supports HTTP and HTTPS transport portocols as
- well.
+ interceptors, and other features.
  .
  This is development package.
 
@@ -22,11 +20,9 @@ Package: libiqxmlrpc-1.0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Libiqxmlrpc - an object-oriented XML-RPC library written on C++. 
+Description: Libiqxmlrpc - an object-oriented XML-RPC library written in C++. 
  It provides client/server API, supports HTTP and HTTPS transports, both
  single-threaded and multi-threaded computation models on a server side, method
- interceptors, and other features. It provides API for building
- client/server-side software.  It supports HTTP and HTTPS transport portocols as
- well.
+ interceptors, and other features.
  .
  This package provides run-time libraries.
