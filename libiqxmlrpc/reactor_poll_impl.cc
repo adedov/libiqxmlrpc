@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: reactor_poll_impl.cc,v 1.3 2006-09-07 09:35:42 adedov Exp $
+//  $Id: reactor_poll_impl.cc,v 1.4 2006-11-11 17:49:43 adedov Exp $
 
 #include "config.h"
 
@@ -60,13 +60,21 @@ void Reactor_poll_impl::reset(const HandlerStateList& in)
 
 bool Reactor_poll_impl::poll(HandlerStateList& out, Reactor_base::Timeout to_ms)
 {
-  int code = ::poll( &impl->pfd[0], impl->pfd.size(), to_ms );
+  do {
+    int code = ::poll( &impl->pfd[0], impl->pfd.size(), to_ms );
 
-  if( code < 0 )
-    throw network_error( "poll()" );
+    if( code < 0 )
+    {
+      if (errno == EINTR)
+        continue;
 
-  if( !code )
-    return false;
+      throw network_error( "poll()" );
+    }
+
+    if( !code )
+      return false;
+
+  } while (false);
 
   for( unsigned i = 0; i < impl->pfd.size(); i++ )
   {

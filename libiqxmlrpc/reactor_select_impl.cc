@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //
-//  $Id: reactor_select_impl.cc,v 1.3 2006-09-07 09:35:42 adedov Exp $
+//  $Id: reactor_select_impl.cc,v 1.4 2006-11-11 17:49:43 adedov Exp $
 
 #include "config.h"
 
@@ -66,13 +66,21 @@ bool Reactor_select_impl::poll(HandlerStateList& out, Reactor_base::Timeout to_m
     ptv = &tv;
   }
 
-  int code = ::select( max_fd+1, &read_set, &write_set, &err_set, ptv );
+  do {
+    int code = ::select( max_fd+1, &read_set, &write_set, &err_set, ptv );
 
-  if( code < 0 )
-    throw network_error( "select()" );
+    if( code < 0 )
+    {
+      if (errno == EINTR)
+        continue;
 
-  if( !code )
-    return false;
+      throw network_error( "select()" );
+    }
+
+    if( !code )
+      return false;
+
+  } while (false);
 
   for( HandlerStateList::const_iterator i = hs.begin(); i != hs.end(); ++i )
   {
