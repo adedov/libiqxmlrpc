@@ -1,5 +1,16 @@
 Look into ChangeLog file for full list of changes generated from CVS.
 
+0.8.2a - 0.8.3
+  Additions:
+    * Debian packaging.
+
+  Fixes:
+    * Do not throw exception on select/poll interruption with some signal.
+      E.g during binding with gdb to an existing process.
+    * Refinement for Windows build: now all library dependences should be
+      placed in a single directory, which should be stated with DEPENDS_ROOT
+      environment variable.
+
 0.8.2 - 0.8.2a
   Enhancement:
     * The two level of verification for HTTP options introduced. By default

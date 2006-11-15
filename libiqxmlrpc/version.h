@@ -2,6 +2,6 @@
 #define _LIBIQXMLRPC_WINDOWS_VERSION_FILE_
 
 #define PACKAGE "libiqxmlrpc"
-#define VERSION "0.8.2a"
+#define VERSION "0.8.3"
 
 #endif //_LIBIQXMLRPC_WINDOWS_VERSION_FILE_
