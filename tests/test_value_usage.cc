@@ -52,7 +52,7 @@ void array_test()
   BOOST_CHECK_EQUAL(v.type_name(), "array");
   BOOST_CHECK(v[0].is_string());
   BOOST_CHECK(v[1].is_int());
-  
+
   std::vector<std::string> vec;
   std::fill_n(std::back_inserter(vec), 10, "test");
   v.the_array().assign(vec.begin(), vec.end());
@@ -77,6 +77,15 @@ void array_test()
   }
 }
 
+inline void check_struct_value(const Struct& s)
+{
+  BOOST_CHECK(s.has_field("author"));
+  BOOST_CHECK(s.has_field("title"));
+  BOOST_CHECK(s.has_field("pages"));
+  BOOST_CHECK_EQUAL(s["author"].get_string(), "D.D.Salinger");
+  BOOST_CHECK_EQUAL(s["pages"].get_int(), 250);
+}
+
 void struct_test()
 {
   BOOST_MESSAGE("Struct test...");
@@ -86,33 +95,38 @@ void struct_test()
   s.insert( "author", "D.D.Salinger" );
   s.insert( "title", "The catcher in the rye." );
   s.insert( "pages", 250 );
-  
-  BOOST_CHECK(s.has_field("author"));
-  BOOST_CHECK(s.has_field("title"));
-  BOOST_CHECK(s.has_field("pages"));
-  BOOST_CHECK_EQUAL(s["author"].get_string(), "D.D.Salinger");
-  BOOST_CHECK_EQUAL(s["pages"].get_int(), 250);
+
+  check_struct_value(s);
 
   {
     BOOST_CHECKPOINT("Struct assigment");
     Struct s1;
     s1 = s;
-    BOOST_CHECK(s1.has_field("author"));
-    BOOST_CHECK(s1.has_field("title"));
-    BOOST_CHECK(s1.has_field("pages"));
+    check_struct_value(s1);
   }
 
   {
     BOOST_CHECKPOINT("Struct copy ctor");
     Struct s1(s);
-    BOOST_CHECK(s1.has_field("author"));
-    BOOST_CHECK(s1.has_field("title"));
-    BOOST_CHECK(s1.has_field("pages"));
+    check_struct_value(s1);
+  }
+
+  {
+    BOOST_CHECKPOINT("Struct hand-copy");
+    Struct s1;
+    for (Struct::const_iterator i = s.begin(); i != s.end(); ++i)
+      s1.insert(i->first, *i->second);
+
+    check_struct_value(s1);
   }
 
   {
     Struct s;
     s.insert("pages", 0);
+
+    BOOST_CHECKPOINT("Inserting 0 into struct");
+    BOOST_CHECK(s["pages"].is_int());
+
     BOOST_CHECKPOINT("Suspicious Struct cloning");
     std::auto_ptr<Struct> s1(s.clone());
     BOOST_CHECK(s1->has_field("pages"));
