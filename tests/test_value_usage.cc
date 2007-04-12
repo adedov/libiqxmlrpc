@@ -75,6 +75,20 @@ void array_test()
     std::auto_ptr<Array> a1(a.clone());
     BOOST_CHECK_EQUAL((*a1.get())[0].get_int(), 0);
   }
+
+  {
+    BOOST_CHECKPOINT("Using STL algorithms with Array iterators");
+
+    Array a;
+    std::fill_n(std::back_inserter(a), 10, 5);
+    BOOST_CHECK_EQUAL(a.size(), 10);
+
+    Array b;
+    std::copy(a.begin(), a.end(), std::back_inserter(b));
+
+    BOOST_CHECK_EQUAL(b.size(), 10);
+    BOOST_CHECK_EQUAL(b[5].get_int(), 5);
+  }
 }
 
 inline void check_struct_value(const Struct& s)

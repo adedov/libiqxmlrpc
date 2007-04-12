@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iterator>
 #include "api_export.h"
 #include "except.h"
 #include "util.h"
@@ -171,7 +172,9 @@ public:
 
 
 //! Const interator for Array
-class LIBIQXMLRPC_API Array::const_iterator {
+class LIBIQXMLRPC_API Array::const_iterator:
+  public std::iterator<std::bidirectional_iterator_tag, Value>
+{
   Array::Val_vector::const_iterator i;
 
 public:
