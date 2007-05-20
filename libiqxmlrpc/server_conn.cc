@@ -18,6 +18,7 @@
 //  $Id: server_conn.cc,v 1.5 2006-10-12 11:39:26 adedov Exp $
 
 #include "server_conn.h"
+#include "http_errors.h"
 #include "server.h"
 
 using namespace iqxmlrpc;

@@ -27,6 +27,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
 #include "http.h"
+#include "http_errors.h"
 #include "method.h"
 
 #ifdef _WINDOWS
