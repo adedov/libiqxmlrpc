@@ -23,6 +23,7 @@
 #include <string>
 #include <map>
 #include <boost/utility.hpp>
+#include <boost/scoped_ptr.hpp>
 #include "api_export.h"
 #include "value.h"
 #include "except.h"
@@ -101,18 +102,11 @@ private:
  */
 class LIBIQXMLRPC_API Interceptor: boost::noncopyable {
 public:
-  Interceptor():
-    nested(0) {}
-
-  virtual ~Interceptor()
-  {
-    delete nested;
-  }
+  virtual ~Interceptor() {}
 
   void nest(Interceptor* ic)
   {
-    delete nested;
-    nested = ic;
+    nested.reset(ic);
   }
 
   //! User defined interceptor's code goes here.
@@ -129,11 +123,11 @@ protected:
    */
   void yield(Method* m, const Param_list& params, Value& result)
   {
-    m->process_execution(nested, params, result);
+    m->process_execution(nested.get(), params, result);
   }
 
 private:
-  Interceptor* nested;
+  boost::scoped_ptr<Interceptor> nested;
 };
 
 //! Adapter that allows make server method from plain function.
