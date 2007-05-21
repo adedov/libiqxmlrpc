@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//
-//  $Id: http.cc,v 1.31 2006-10-12 12:31:21 adedov Exp $
 
 #include "sysinc.h"
 #include <algorithm>
@@ -410,5 +408,52 @@ bool Packet_reader::read_header( const std::string& s )
   return true;
 }
 
+template <class Header_type>
+Packet* Packet_reader::read_packet( const std::string& s )
+{
+  if( constructed )
+    clear();
+
+  check_sz( s.length() );
+
+  if( !header )
+  {
+    if( s.empty() )
+      throw http::Malformed_packet();
+
+    if (read_header(s))
+      header = new Header_type(ver_level_, header_cache);
+  }
+  else
+    content_cache += s;
+
+  if( header )
+  {
+    bool ready = s.empty() && !header->content_length() ||
+                 content_cache.length() >= header->content_length();
+
+    if( ready )
+    {
+      content_cache.erase( header->content_length(), std::string::npos );
+      Packet* packet = new Packet( header, content_cache );
+      constructed = true;
+      return packet;
+    }
+  }
+
+  return 0;
+}
+
+Packet* Packet_reader::read_request( const std::string& s )
+{
+  return read_packet<Request_header>(s);
+}
+
+Packet* Packet_reader::read_response( const std::string& s )
+{
+  return read_packet<Response_header>(s);
+}
+
 } // namespace http
 } // namespace iqxmlrpc
+// vim:ts=2:sw=2:et

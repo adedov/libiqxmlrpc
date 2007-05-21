@@ -74,5 +74,5 @@ Response Client_connection::process_session(
 
 http::Packet* Client_connection::read_response( const std::string& s )
 {
-  return preader.read_packet<http::Response_header>( s );
+  return preader.read_response( s );
 }
