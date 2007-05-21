@@ -90,11 +90,13 @@ public:
 
   //! Set maximum size of incoming client's request in bytes.
   void set_max_request_sz( unsigned );
+  unsigned get_max_request_sz() const { return max_req_sz; }
 
   //! Set optional firewall object.
   void set_firewall( iqnet::Firewall_base* );
 
   void set_verification_level(http::Verification_level);
+  http::Verification_level get_verification_level() const { return ver_level; }
   /*! \} */
 
   //! \name Run/stop server
@@ -112,8 +114,6 @@ public:
   void schedule_response( const Response&, Server_connection*, Executor* );
 
   void log_err_msg( const std::string& );
-  unsigned get_max_request_sz() const { return max_req_sz; }
-  http::Verification_level get_verification_level() const { return ver_level; }
 
 private:
   void perform_soft_exit();
