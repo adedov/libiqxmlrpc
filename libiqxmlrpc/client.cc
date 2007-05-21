@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//
-//  $Id: client.cc,v 1.11 2006-09-25 09:00:48 adedov Exp $
 
 #include <libxml++/libxml++.h>
 #include "client.h"
@@ -76,3 +74,5 @@ http::Packet* Client_connection::read_response( const std::string& s )
 {
   return preader.read_response( s );
 }
+
+// vim:ts=2:sw=2:et

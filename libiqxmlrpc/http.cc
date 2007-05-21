@@ -456,4 +456,5 @@ Packet* Packet_reader::read_response( const std::string& s )
 
 } // namespace http
 } // namespace iqxmlrpc
+
 // vim:ts=2:sw=2:et
