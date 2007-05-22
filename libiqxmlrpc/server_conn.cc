@@ -17,6 +17,7 @@
 
 #include "auth_plugin.h"
 #include "server_conn.h"
+#include "http_errors.h"
 #include "server.h"
 
 using namespace iqxmlrpc;

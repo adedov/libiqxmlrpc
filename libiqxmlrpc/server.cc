@@ -19,6 +19,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <libxml++/libxml++.h>
 #include "auth_plugin.h"
+#include "http_errors.h"
 #include "reactor.h"
 #include "server.h"
 #include "request.h"
