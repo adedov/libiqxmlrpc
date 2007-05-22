@@ -7,8 +7,8 @@
 #include "libiqxmlrpc/libiqxmlrpc.h"
 #include "libiqxmlrpc/http_server.h"
 #include "libiqxmlrpc/https_server.h"
-#include "libiqxmlrpc/server.h"
 #include "libiqxmlrpc/executor.h"
+#include "libiqxmlrpc/auth_plugin.h"
 #include "server_config.h"
 #include "methods.h"
 
@@ -41,11 +41,22 @@ public:
     yield(m, p, r);
   }
 };
-   
+
+class PermissiveAuthPlugin: public iqxmlrpc::Auth_Plugin_base {
+public:
+  PermissiveAuthPlugin(): Auth_Plugin_base(true) {}
+
+  bool do_authenticate(const std::string& username, const std::string&) const
+  {
+    return username != "badman";
+  }
+};
+
 class Test_server: boost::noncopyable {
   Test_server_config conf_;
   std::auto_ptr<Executor_factory_base> ef_;
   std::auto_ptr<Server> impl_;
+  PermissiveAuthPlugin auth_plugin_;
 
 public:
   Test_server(const Test_server_config&);
@@ -87,6 +98,8 @@ Test_server::Test_server(const Test_server_config& conf):
   impl_->enable_introspection();
   impl_->set_max_request_sz(1024*1024);
   impl_->set_verification_level(http::HTTP_CHECK_STRICT);
+
+  impl_->set_auth_plugin(auth_plugin_);
 
   register_user_methods(impl());
 }
@@ -145,3 +158,5 @@ test_suite* init_unit_test_suite(int argc, char* argv[])
     throw;
   }
 }
+
+// vim:ts=2:sw=2:et

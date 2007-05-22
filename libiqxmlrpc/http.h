@@ -27,6 +27,8 @@
 
 namespace iqxmlrpc {
 
+class Auth_Plugin_base;
+
 //! XML-RPC HTTP transport-independent infrastructure.
 /*! Contains classes which responsible for transport-indepenent
     HTTP collaboration functionality. Such as packet parsing/constructing,
@@ -110,6 +112,9 @@ public:
   const std::string& uri() const { return uri_; }
   std::string host()  const;
   std::string agent() const;
+ 
+  bool has_authinfo() const; 
+  void get_authinfo(std::string& user, std::string& password) const;
 
 private:
   virtual std::string dump_head() const;
@@ -231,6 +236,16 @@ class LIBIQXMLRPC_API Bad_request: public Error_response {
 public:
   Bad_request():
     Error_response( "Bad request", 400 ) {}
+};
+
+//! HTTP/1.1 401 Unauthorized
+class LIBIQXMLRPC_API Unauthorized: public Error_response {
+public:
+  Unauthorized():
+    Error_response( "Unauthorized", 401 )
+  {
+    header_->set_option( "www-authenticate", "Basic realm=\"\"" );
+  }
 };
 
 //! HTTP/1.1 405 Method not allowed

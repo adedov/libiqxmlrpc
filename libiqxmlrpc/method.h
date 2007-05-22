@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//
-//  $Id: method.h,v 1.22 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
@@ -71,6 +69,7 @@ public:
 private:
   friend class Method_dispatcher_base;
   Data data_;
+  std::string authname_;
 
 public:
   virtual ~Method() {}
@@ -82,6 +81,10 @@ public:
   const std::string&      name()      const { return data_.method_name; }
   const iqnet::Inet_addr& peer_addr() const { return data_.peer_addr; }
   Server_feedback&        server()          { return data_.server_face; }
+
+  bool                    authenticated() const { return !authname_.empty(); }
+  const std::string&      authname()      const { return authname_; }
+  void                    authname(const std::string& n) { authname_ = n; }
 
 private:
   //! Replace it with your actual code.
@@ -211,3 +214,4 @@ private:
 } // namespace iqxmlrpc
 
 #endif
+// vim:ts=2:sw=2:et

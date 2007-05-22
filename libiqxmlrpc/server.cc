@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -14,11 +14,11 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//
-//  $Id: server.cc,v 1.29 2006-10-12 12:31:21 adedov Exp $
 
-#include <memory>
+#include <boost/optional.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <libxml++/libxml++.h>
+#include "auth_plugin.h"
 #include "reactor.h"
 #include "server.h"
 #include "request.h"
@@ -44,7 +44,8 @@ Server::Server(
   log(0),
   max_req_sz(0),
   ver_level(http::HTTP_CHECK_WEAK),
-  interceptors(0)
+  interceptors(0),
+  auth_plugin(0)
 {
 }
 
@@ -94,19 +95,60 @@ void Server::set_verification_level( http::Verification_level lev )
   ver_level = lev;
 }
 
+void Server::set_auth_plugin( const Auth_Plugin_base& ap )
+{
+  auth_plugin = &ap;
+}
+
 void Server::log_err_msg( const std::string& msg )
 {
   if( log )
     *log << msg << std::endl;
 }
 
+namespace {
+
+boost::optional<std::string>
+authenticate(const http::Packet& pkt, const Auth_Plugin_base* ap)
+{
+  using namespace http;
+
+  if (!ap)
+    return boost::optional<std::string>();
+
+  const Request_header& hdr =
+    dynamic_cast<const Request_header&>(*pkt.header());
+
+  if (!hdr.has_authinfo())
+  {
+    if (ap->allow_anonymous())
+      return boost::optional<std::string>();
+
+    throw Unauthorized();
+  }
+
+  std::string username, password;
+  hdr.get_authinfo(username, password);
+
+  if (!ap->authenticate(username, password))
+    throw Unauthorized();
+
+  return username;
+}
+
+} // anonymous namespace
+
 void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 {
+  using boost::scoped_ptr;
+  using boost::optional;
+
   Executor* executor = 0;
 
   try {
-    std::auto_ptr<http::Packet> packet(pkt);
-    std::auto_ptr<Request> req( parse_request(packet->content()) );
+    scoped_ptr<http::Packet> packet(pkt);
+    optional<std::string> authname = authenticate(*pkt, auth_plugin);
+    scoped_ptr<Request> req( parse_request(packet->content()) );
 
     Method::Data mdata = {
       req->get_name(),
@@ -115,6 +157,10 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
     };
 
     Method* meth = disp_manager.create_method( mdata );
+
+    if (authname)
+      meth->authname(authname.get());
+
     executor = exec_factory->create( meth, this, conn );
     executor->set_interceptors(interceptors.get());
     executor->execute( req->get_params() );
@@ -180,3 +226,5 @@ void Server::work()
 }
 
 } // namespace iqxmlrpc
+
+// vim:ts=2:sw=2:et

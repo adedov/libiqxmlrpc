@@ -88,6 +88,7 @@ libiqxmlrpc_client_la_SOURCES = \
 	https_client.cc
 
 libiqxmlrpc_server_la_SOURCES = \
+	auth_plugin.cc \
 	builtins.cc \
 	executor.cc \
 	http_server.cc \

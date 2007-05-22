@@ -45,6 +45,7 @@ namespace names {
   const char user_agent[]     = "user-agent";
   const char server[]         = "server";
   const char date[]           = "date";
+  const char authorization[]  = "authorization";
 } // namespace names
 
 
@@ -283,6 +284,38 @@ std::string Request_header::host() const
 std::string Request_header::agent() const
 {
   return get_string(names::user_agent);
+}
+
+bool Request_header::has_authinfo() const
+{
+  return option_exists(names::authorization);
+}
+
+void Request_header::get_authinfo(std::string& user, std::string& pw) const
+{
+  if (!has_authinfo())
+    throw Unauthorized();
+
+  std::vector<std::string> v;
+  std::string authstring = get_string(names::authorization);
+  boost::split(v, authstring, boost::is_any_of(" \t"));
+
+  if (v.size() != 2)
+    throw Unauthorized();
+
+  boost::to_lower(v[0]);
+  if (v[0] != "basic")
+    throw Unauthorized();
+
+  boost::scoped_ptr<Binary_data> bin_authinfo( Binary_data::from_base64(v[1]) );
+  std::vector<std::string> user_password;
+  boost::split(user_password, bin_authinfo->get_data(), boost::is_any_of(":"));
+
+  if (user_password.size() != 2)
+    throw Bad_request();
+
+  user = user_password[0];
+  pw   = user_password[1];
 }
 
 // ---------------------------------------------------------------------------

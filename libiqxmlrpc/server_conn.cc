@@ -15,6 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
+#include "auth_plugin.h"
 #include "server_conn.h"
 #include "server.h"
 
@@ -50,6 +51,7 @@ http::Packet* Server_connection::read_request( const std::string& s )
   {
     preader.set_verification_level( server->get_verification_level() );
     preader.set_max_size( server->get_max_request_sz() );
+
     http::Packet* r = preader.read_request(s);
 
     if( r )
