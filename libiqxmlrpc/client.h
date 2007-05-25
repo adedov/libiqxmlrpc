@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//
-//  $Id: client.h,v 1.19 2006-09-25 09:00:48 adedov Exp $
 
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
@@ -47,7 +45,8 @@ public:
   Response process_session(
     const Request&,
     const std::string& uri,
-    const std::string& vhost
+    const std::string& vhost,
+    int port
   );
 
   void set_timeout( int seconds )
@@ -142,6 +141,12 @@ public:
     delete tpt;
   }
 
+  //! Set address where actually connect to. <b>Tested with HTTP only.</b>
+  void set_proxy(const iqnet::Inet_addr& addr_)
+  {
+    ctr.set_addr(addr_);
+  }
+
   //! Set timeout for silence on network in seconds.
   /*! \param seconds TO value in seconds, negative number means infinity.
       \note It is not summary timeout.
@@ -181,7 +186,7 @@ Response iqxmlrpc::Client<T>::execute(
   Conn_ptr conn( keep_alive ? tpt : ctr.connect(non_blocking_flag) );
   conn->set_keep_alive( keep_alive );
   conn->set_timeout( timeout );
-  return conn->process_session( req, uri, vhost );
+  return conn->process_session( req, uri, vhost, addr.get_port() );
 }
 
 
@@ -195,3 +200,4 @@ public:
 } // namespace iqxmlrpc
 
 #endif
+// vim:ts=2:sw=2:et

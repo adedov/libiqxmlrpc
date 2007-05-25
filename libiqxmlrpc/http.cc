@@ -264,11 +264,14 @@ Request_header::Request_header(Verification_level lev, const std::string& to_par
 
 Request_header::Request_header(
   const std::string& req_uri,
-  const std::string& server_host
+  const std::string& vhost,
+  int port
 ):
   uri_(req_uri)
 {
-  set_option(names::host, server_host);
+  std::ostringstream host_opt;
+  host_opt << vhost << ":" << port;
+  set_option(names::host, host_opt.str());
   set_option(names::user_agent, PACKAGE " " VERSION);
 }
 

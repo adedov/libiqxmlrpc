@@ -24,6 +24,7 @@
 #include <boost/shared_ptr.hpp>
 #include "api_export.h"
 #include "except.h"
+#include "inet_addr.h"
 
 namespace iqxmlrpc {
 
@@ -107,7 +108,7 @@ class LIBIQXMLRPC_API Request_header: public Header {
 
 public:
   Request_header( Verification_level, const std::string& to_parse );
-  Request_header( const std::string& uri, const std::string& host );
+  Request_header( const std::string& uri, const std::string& vhost, int port );
 
   const std::string& uri() const { return uri_; }
   std::string host()  const;

@@ -37,7 +37,10 @@ Client_connection::~Client_connection()
 
 
 Response Client_connection::process_session(
-  const Request& req, const std::string& uri, const std::string& vhost )
+  const Request& req,
+  const std::string& uri,
+  const std::string& vhost,
+  int port )
 {
   using namespace http;
 
@@ -45,7 +48,7 @@ Response Client_connection::process_session(
   {
     std::auto_ptr<xmlpp::Document> xmldoc( req.to_xml() );
     std::string req_xml_str( xmldoc->write_to_string_formatted( "utf-8" ) );
-    Packet req_p( new Request_header( uri, vhost ), req_xml_str );
+    Packet req_p( new Request_header( uri, vhost, port ), req_xml_str );
     req_p.set_keep_alive( keep_alive );
 
     // Received packet
