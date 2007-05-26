@@ -32,10 +32,6 @@ class Client_connection;
 //! It is responsible for performing RPC calls and connection management.
 class LIBIQXMLRPC_API Client_base: boost::noncopyable {
 public:
-  /*! \param addr Actual server address;
-      \param uri  Requested URI (default "/RPC");
-      \param host Requested virtual host (by default calculated form addr).
-  */
   Client_base(
     const iqnet::Inet_addr& addr,
     const std::string& uri,
@@ -84,6 +80,10 @@ private:
 template <class TRANSPORT>
 class Client: public iqxmlrpc::Client_base {
 public:
+  /*! \param addr Actual server address;
+      \param uri  Requested URI (default "/RPC");
+      \param host Requested virtual host (by default calculated form addr).
+  */
   Client(
     const iqnet::Inet_addr& addr,
     const std::string& uri   = "/RPC",
