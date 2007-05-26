@@ -166,6 +166,13 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
     executor->set_interceptors(interceptors.get());
     executor->execute( req->get_params() );
   }
+  catch( const iqxmlrpc::http::Error_response& e )
+  {
+    log_err_msg( e.what() );
+    std::auto_ptr<Executor> executor_to_delete(executor);
+    http::Packet *pkt = new http::Packet(e);
+    conn->schedule_response( pkt );
+  }
   catch( const iqxmlrpc::Exception& e )
   {
     log_err_msg( std::string("Server: ") + e.what() );
