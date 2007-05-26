@@ -366,7 +366,7 @@ const std::string& Binary_data::get_base64() const
 
 inline void Binary_data::add_base64_char( int idx ) const
 {
-  if( !(base64.length() % chars_in_line) )
+  if( !base64.empty() && !(base64.length() % chars_in_line) )
     base64 += '\n';
 
   base64 += base64_alpha[idx];
