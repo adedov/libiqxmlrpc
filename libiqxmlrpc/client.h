@@ -194,7 +194,7 @@ Response iqxmlrpc::Client<T>::execute(
 class LIBIQXMLRPC_API Client_timeout: public iqxmlrpc::Exception {
 public:
   Client_timeout():
-    Exception( "Broken connection." ) {}
+    Exception( "Connection timeout." ) {}
 };
 
 } // namespace iqxmlrpc
