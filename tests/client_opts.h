@@ -7,6 +7,7 @@
 #include <boost/program_options.hpp>
 #include <boost/scoped_ptr.hpp>
 #include "libiqxmlrpc/libiqxmlrpc.h"
+#include "libiqxmlrpc/client.h"
 
 //! Abstract clients factory base.
 //! Its children should create concrete clients 

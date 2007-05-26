@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -14,18 +14,15 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//
-//  $Id: https_client.h,v 1.8 2006-09-07 04:45:21 adedov Exp $
 
 #ifndef _libiqxmlrpc_https_client_h_
 #define _libiqxmlrpc_https_client_h_
 
-#include <memory>
 #include "api_export.h"
 #include "reactor.h"
 #include "connector.h"
 #include "ssl_connection.h"
-#include "client.h"
+#include "client_conn.h"
 
 namespace iqxmlrpc
 {
@@ -63,3 +60,4 @@ private:
 } // namespace iqxmlrpc
 
 #endif
+// vim:ts=2:sw=2:et

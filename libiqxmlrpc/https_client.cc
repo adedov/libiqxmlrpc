@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -14,10 +14,9 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//
-//  $Id: https_client.cc,v 1.10 2006-09-07 09:35:41 adedov Exp $
 
 #include <iostream>
+#include "client_opts.h"
 #include "https_client.h"
 #include "reactor_impl.h"
 
@@ -51,7 +50,7 @@ http::Packet* Https_client_connection::do_process_session( const std::string& s 
     reg_send_request();
 
   do {
-    int to = timeout >= 0 ? timeout*1000 : -1;
+    int to = opts().timeout() >= 0 ? opts().timeout() * 1000 : -1;
     if( !reactor->handle_events(to) )
       throw Client_timeout();
   }
@@ -89,3 +88,5 @@ void Https_client_connection::recv_succeed( bool&, int req_len, int sz )
     reg_recv( read_buf, read_buf_sz );
   }
 }
+
+// vim:ts=2:sw=2:et

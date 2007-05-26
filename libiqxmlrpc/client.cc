@@ -15,67 +15,112 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
-#include <libxml++/libxml++.h>
 #include "client.h"
-#include "http.h"
+#include "client_conn.h"
+#include "client_opts.h"
 
-using namespace iqxmlrpc;
+namespace iqxmlrpc {
 
+struct Client_base::Impl {
+  Impl(
+    const iqnet::Inet_addr& addr,
+    const std::string& uri,
+    const std::string& vhost
+  ):
+    opts(addr, uri, vhost) {}
 
-Client_connection::Client_connection():
-  read_buf_sz(65000),
-  read_buf(new char[read_buf_sz]),
-  keep_alive(false)
-{
-}
+  Client_options opts;
+  boost::scoped_ptr<Client_connection> conn_cache;
+};
 
-
-Client_connection::~Client_connection()
-{
-  delete[] read_buf;
-}
-
-
-Response Client_connection::process_session(
-  const Request& req,
+Client_base::Client_base(
+  const iqnet::Inet_addr& addr,
   const std::string& uri,
-  const std::string& vhost,
-  int port )
+  const std::string& vhost
+):
+  impl_(new Impl(addr, uri, vhost))
 {
-  using namespace http;
-
-  try
-  {
-    std::auto_ptr<xmlpp::Document> xmldoc( req.to_xml() );
-    std::string req_xml_str( xmldoc->write_to_string_formatted( "utf-8" ) );
-    Packet req_p( new Request_header( uri, vhost, port ), req_xml_str );
-    req_p.set_keep_alive( keep_alive );
-
-    // Received packet
-    std::auto_ptr<Packet> res_p( do_process_session(req_p.dump()) );
-
-    const Response_header* res_h =
-      static_cast<const Response_header*>(res_p->header());
-
-    if( res_h->code() != 200 )
-      throw Error_response( res_h->phrase(), res_h->code() );
-
-    xmlpp::DomParser parser;
-    parser.set_substitute_entities();
-    parser.parse_memory( res_p->content() );
-
-    return Response( parser.get_document() );
-  }
-  catch( const xmlpp::exception& e )
-  {
-    throw Parse_error( e.what() );
-  }
+}
+  
+Client_base::~Client_base()
+{
 }
 
-
-http::Packet* Client_connection::read_response( const std::string& s )
+void Client_base::set_timeout( int seconds )
 {
-  return preader.read_response( s );
+  impl_->opts.set_timeout(seconds);
 }
+
+//! Set connection keep-alive flag
+void Client_base::set_keep_alive( bool keep_alive )
+{
+  impl_->opts.set_keep_alive(keep_alive);
+
+  if (!keep_alive && impl_->conn_cache)
+    impl_->conn_cache.reset();
+}
+
+class Auto_conn: boost::noncopyable {
+public:
+  Auto_conn( Client_base::Impl& client_impl, Client_base& client ):
+    client_impl_(client_impl)
+  {
+    if (opts().keep_alive())
+    {
+      if (!cimpl().conn_cache)
+        cimpl().conn_cache.reset( create_connection(client) );
+      
+      conn_ptr_ = cimpl().conn_cache.get();
+
+    } else {
+      tmp_conn_.reset( create_connection(client) );
+      conn_ptr_ = tmp_conn_.get();
+    }
+  }
+
+  ~Auto_conn()
+  {
+    if (!cimpl().opts.keep_alive())
+      cimpl().conn_cache.reset();
+  }
+
+  Client_connection* operator ->()
+  {
+    return conn_ptr_;
+  }
+
+private:
+  Client_connection* create_connection(Client_base& client)
+  {
+    return client.get_connection(opts().non_blocking());
+  }
+
+  const Client_options& opts()
+  { 
+    return client_impl_.opts;
+  }
+  
+  Client_base::Impl& cimpl()
+  {
+    return client_impl_;
+  }
+
+  Client_base::Impl& client_impl_;
+  boost::scoped_ptr<Client_connection> tmp_conn_;
+  Client_connection* conn_ptr_;
+};
+
+Response Client_base::execute(
+  const std::string& method, const Param_list& pl )
+{
+  Request req( method, pl );
+
+  Auto_conn conn( *impl_.get(), *this );
+  conn->set_options(impl_->opts);
+
+  return conn->process_session( req );
+}
+
+} // namespace iqxmlrpc
 
 // vim:ts=2:sw=2:et

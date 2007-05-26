@@ -25,6 +25,8 @@ pkginclude_HEADERS = \
 	api_export.h \
 	builtins.h \
 	client.h \
+	client_conn.h \
+	client_opts.h \
 	connection.h \
 	connector.h \
 	conn_factory.h \
@@ -84,6 +86,7 @@ libiqxmlrpc_general_la_SOURCES = \
 
 libiqxmlrpc_client_la_SOURCES = \
 	client.cc \
+	client_conn.cc \
 	http_client.cc \
 	https_client.cc
 

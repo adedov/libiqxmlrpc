@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -14,13 +14,12 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//
-//  $Id: http_client.cc,v 1.12 2006-09-07 09:35:41 adedov Exp $
 
 #include <iostream>
 #include "sysinc.h"
-#include "reactor_impl.h"
 #include "http_client.h"
+#include "client_opts.h"
+#include "reactor_impl.h"
 
 using namespace iqxmlrpc;
 using namespace iqnet;
@@ -43,7 +42,7 @@ http::Packet* Http_client_connection::do_process_session( const std::string& s )
   reactor->register_handler( this, Reactor_base::OUTPUT );
 
   do {
-    int to = timeout >= 0 ? timeout*1000 : -1;
+    int to = opts().timeout() >= 0 ? opts().timeout() * 1000 : -1;
     if( !reactor->handle_events(to) )
       throw Client_timeout();
   }
@@ -81,3 +80,5 @@ void Http_client_connection::handle_input( bool& )
   if( resp_packet )
     reactor->unregister_handler( this );
 }
+
+// vim:ts=2:sw=2:et

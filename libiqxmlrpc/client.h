@@ -18,65 +18,34 @@
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
 
-#include <memory>
+#include <boost/scoped_ptr.hpp>
 #include "api_export.h"
-#include "connection.h"
 #include "connector.h"
 #include "request.h"
 #include "response.h"
-#include "http.h"
 
 namespace iqxmlrpc {
 
-//! Transport independent base class for XML-RPC client's connection.
-class LIBIQXMLRPC_API Client_connection {
-  http::Packet_reader preader;
+class Client_connection;
 
-protected:
-  unsigned read_buf_sz;
-  char *read_buf;
-  bool keep_alive;
-  int timeout;
-
+//! Client base class.
+//! It is responsible for performing RPC calls and connection management.
+class LIBIQXMLRPC_API Client_base: boost::noncopyable {
 public:
-  Client_connection();
-  virtual ~Client_connection();
-
-  Response process_session(
-    const Request&,
+  /*! \param addr Actual server address;
+      \param uri  Requested URI (default "/RPC");
+      \param host Requested virtual host (by default calculated form addr).
+  */
+  Client_base(
+    const iqnet::Inet_addr& addr,
     const std::string& uri,
-    const std::string& vhost,
-    int port
+    const std::string& vhost
   );
 
-  void set_timeout( int seconds )
-  {
-    timeout = seconds;
-  }
+  virtual ~Client_base();
 
-  void set_keep_alive( bool keep_alive_ )
-  {
-    keep_alive = keep_alive_;
-  }
-
-  bool get_keep_alive() const
-  {
-    return keep_alive;
-  }
-
-protected:
-  http::Packet* read_response( const std::string& );
-  virtual http::Packet* do_process_session( const std::string& ) = 0;
-};
-
-
-//! Abstract base class for XML-RPC client.
-class LIBIQXMLRPC_API Client_base {
-public:
-  virtual ~Client_base() {}
-
-  //! Pure abstract execute() method
-  virtual Response execute( const std::string&, const Param_list& ) = 0;
+  //! Perform Remote Procedure Call
+  Response execute( const std::string&, const Param_list& );
 
   //! Perform Remote Procedure Call with only one parameter transfered
   Response execute( const std::string& method, const Value& val )
@@ -85,61 +54,43 @@ public:
     pl.push_back( val );
     return execute( method, pl );
   }
+
+  //! Set address where actually connect to. <b>Tested with HTTP only.</b>
+  void set_proxy(const iqnet::Inet_addr&);
+
+  //! Set connection timeout
+  /*! \param seconds TO value in seconds, negative number means infinity.
+      \note It is not summary timeout.
+      \note Timeout gives no effect on connection process.
+  */
+  void set_timeout( int seconds );
+
+  //! Set connection keep-alive flag
+  void set_keep_alive( bool keep_alive );
+
+private:
+  virtual Client_connection* get_connection(bool non_blocking) = 0;
+
+  friend class Auto_conn;
+  class Impl;
+
+  boost::scoped_ptr<Impl> impl_;
 };
 
 
-//! Template for XML-RPC client class.
-template < class Transport >
+//! Template of concrete client class.
+//! It is responsible for conneciton establishment
+//! (i.e. initialization of a concrete transport).
+template <class TRANSPORT>
 class Client: public iqxmlrpc::Client_base {
-  class Conn_ptr
-  {
-    Transport* ptr;
-
-  public:
-    Conn_ptr( Transport *t ):
-      ptr(t) {}
-
-    ~Conn_ptr() { if(!ptr->get_keep_alive()) delete ptr; }
-
-    Transport* operator ->() { return ptr; }
-  };
-
-  iqnet::Inet_addr addr;
-  std::string      uri;
-  std::string      vhost;
-  iqnet::Connector<Transport> ctr;
-  Transport*       tpt;
-
-  bool keep_alive;
-  int  timeout;
-  bool non_blocking_flag;
-
 public:
-  //! Construct the client
-  /*! \param addr_ Actual server address;
-      \param uri_  Requested URI (default "/RPC");
-      \param host_ Requested virtual host (by default calculated form addr).
-  */
   Client(
-    const iqnet::Inet_addr& addr_,
-    const std::string& uri_= "/RPC",
-    const std::string& host_ = ""
+    const iqnet::Inet_addr& addr,
+    const std::string& uri   = "/RPC",
+    const std::string& vhost = ""
   ):
-    addr(addr_),
-    uri(uri_),
-    vhost(host_.empty() ? addr_.get_host_name() : host_),
-    ctr(addr),
-    tpt(0),
-    keep_alive(false),
-    timeout(-1),
-    non_blocking_flag(false)
-  {
-  }
-
-  ~Client()
-  {
-    delete tpt;
-  }
+    Client_base(addr, uri, vhost),
+    ctr(addr) {}
 
   //! Set address where actually connect to. <b>Tested with HTTP only.</b>
   void set_proxy(const iqnet::Inet_addr& addr_)
@@ -147,54 +98,13 @@ public:
     ctr.set_addr(addr_);
   }
 
-  //! Set timeout for silence on network in seconds.
-  /*! \param seconds TO value in seconds, negative number means infinity.
-      \note It is not summary timeout.
-      \note Timeout gives no effect on connection process.
-  */
-  void set_timeout( int seconds )
+private:
+  virtual Client_connection* get_connection(bool non_blocking_flag)
   {
-    if( (timeout = seconds) > 0 )
-      non_blocking_flag = true;
+    return ctr.connect(non_blocking_flag);
   }
 
-  //! Set connection keep-alive
-  void set_keep_alive( bool keep_alive_ )
-  {
-    keep_alive = keep_alive_;
-
-    if( !keep_alive && tpt )
-    {
-      delete tpt;
-      tpt = 0;
-    }
-  }
-
-  //! Perform Remote Procedure Call
-  Response execute( const std::string& method_name, const Param_list& pl );
-};
-
-template <class T>
-Response iqxmlrpc::Client<T>::execute(
-  const std::string& method, const Param_list& pl )
-{
-  Request req( method, pl );
-
-  if( keep_alive && !tpt )
-    tpt = ctr.connect( non_blocking_flag );
-
-  Conn_ptr conn( keep_alive ? tpt : ctr.connect(non_blocking_flag) );
-  conn->set_keep_alive( keep_alive );
-  conn->set_timeout( timeout );
-  return conn->process_session( req, uri, vhost, addr.get_port() );
-}
-
-
-//! Exception which be thrown by client when timeout occured.
-class LIBIQXMLRPC_API Client_timeout: public iqxmlrpc::Exception {
-public:
-  Client_timeout():
-    Exception( "Connection timeout." ) {}
+  iqnet::Connector<TRANSPORT> ctr;
 };
 
 } // namespace iqxmlrpc
