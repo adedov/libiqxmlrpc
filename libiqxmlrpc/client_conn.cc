@@ -45,6 +45,9 @@ Response Client_connection::process_session( const Request& req )
     std::auto_ptr<Request_header> req_h(
       new Request_header(opts().uri(), opts().vhost(), opts().addr().get_port() ));
 
+    if (opts().has_authinfo())
+      req_h->set_authinfo( opts().auth_user(), opts().auth_passwd() );
+
     Packet req_p( req_h.release(), req_xml_str );
     req_p.set_keep_alive( opts().keep_alive() );
 

@@ -21,6 +21,10 @@
 
 namespace iqxmlrpc {
 
+//
+// Client_base::Impl
+//
+
 struct Client_base::Impl {
   Impl(
     const iqnet::Inet_addr& addr,
@@ -33,32 +37,9 @@ struct Client_base::Impl {
   boost::scoped_ptr<Client_connection> conn_cache;
 };
 
-Client_base::Client_base(
-  const iqnet::Inet_addr& addr,
-  const std::string& uri,
-  const std::string& vhost
-):
-  impl_(new Impl(addr, uri, vhost))
-{
-}
-  
-Client_base::~Client_base()
-{
-}
-
-void Client_base::set_timeout( int seconds )
-{
-  impl_->opts.set_timeout(seconds);
-}
-
-//! Set connection keep-alive flag
-void Client_base::set_keep_alive( bool keep_alive )
-{
-  impl_->opts.set_keep_alive(keep_alive);
-
-  if (!keep_alive && impl_->conn_cache)
-    impl_->conn_cache.reset();
-}
+//
+// Auto_conn
+//
 
 class Auto_conn: boost::noncopyable {
 public:
@@ -109,6 +90,42 @@ private:
   boost::scoped_ptr<Client_connection> tmp_conn_;
   Client_connection* conn_ptr_;
 };
+
+//
+// Client_base
+//
+
+Client_base::Client_base(
+  const iqnet::Inet_addr& addr,
+  const std::string& uri,
+  const std::string& vhost
+):
+  impl_(new Impl(addr, uri, vhost))
+{
+}
+  
+Client_base::~Client_base()
+{
+}
+
+void Client_base::set_timeout( int seconds )
+{
+  impl_->opts.set_timeout(seconds);
+}
+
+//! Set connection keep-alive flag
+void Client_base::set_keep_alive( bool keep_alive )
+{
+  impl_->opts.set_keep_alive(keep_alive);
+
+  if (!keep_alive && impl_->conn_cache)
+    impl_->conn_cache.reset();
+}
+
+void Client_base::set_authinfo( const std::string& u, const std::string& p )
+{
+  impl_->opts.set_authinfo( u, p );
+}
 
 Response Client_base::execute(
   const std::string& method, const Param_list& pl )

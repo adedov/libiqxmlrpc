@@ -6,6 +6,7 @@
 #include <boost/test/unit_test.hpp>
 #include "libiqxmlrpc/libiqxmlrpc.h"
 #include "libiqxmlrpc/http_client.h"
+#include "libiqxmlrpc/http_errors.h"
 #include "client_common.h"
 #include "client_opts.h"
 
@@ -37,6 +38,30 @@ void introspection_test()
   {
     BOOST_MESSAGE("\t" + i->get_string());
   }
+}
+
+void auth_test()
+{
+  BOOST_REQUIRE(test_client);
+
+  BOOST_CHECKPOINT("Successful authorization");
+  test_client->set_authinfo("goodman", "");
+  Response retval( test_client->execute("echo_user", 0) );
+  BOOST_CHECK( !retval.is_fault() );
+  BOOST_CHECK_EQUAL( retval.value().get_string(), "goodman" ); 
+
+  try {
+    BOOST_CHECKPOINT("Unsuccessful authorization");
+    test_client->set_authinfo("badman", "");
+    retval = test_client->execute("echo_user", 0);
+
+  } catch (const iqxmlrpc::http::Error_response& e) {
+    test_client->set_authinfo("", "");
+    return;
+  }
+
+  test_client->set_authinfo("", "");
+  BOOST_ERROR("'401 Unauthrozied' required");
 }
 
 void echo_test()
@@ -82,6 +107,7 @@ test_suite* init_unit_test_suite(int argc, char* argv[])
     test->add( BOOST_TEST_CASE(&introspection_test) );
     test->add( BOOST_TEST_CASE(&echo_test) );
     test->add( BOOST_TEST_CASE(&get_file_test) );
+    test->add( BOOST_TEST_CASE(&auth_test) );
 
     if (test_config.stop_server())
       test->add( BOOST_TEST_CASE(&stop_server) );

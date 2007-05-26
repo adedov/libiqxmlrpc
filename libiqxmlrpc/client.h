@@ -64,6 +64,9 @@ public:
   //! Set connection keep-alive flag
   void set_keep_alive( bool keep_alive );
 
+  //! Set data for HTTP Basic authentication
+  void set_authinfo(const std::string& user, const std::string& password);
+
 private:
   virtual Client_connection* get_connection(bool non_blocking) = 0;
 

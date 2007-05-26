@@ -46,6 +46,10 @@ public:
   bool                     non_blocking() const { return non_blocking_flag_; }
   bool                     keep_alive()   const { return keep_alive_; }
 
+  bool                     has_authinfo() const { return !auth_user_.empty(); }
+  const std::string&       auth_user()    const { return auth_user_; }
+  const std::string&       auth_passwd()  const { return auth_passwd_; }
+
   void set_timeout( int seconds )
   {
     if( (timeout_ = seconds) > 0 )
@@ -57,13 +61,23 @@ public:
     keep_alive_ = keep_alive;
   }
 
+  void set_authinfo( const std::string& user, const std::string& password )
+  {
+    auth_user_ = user;
+    auth_passwd_ = password;
+  }
+
 private:
   iqnet::Inet_addr addr_;
   std::string      uri_;
   std::string      vhost_;
   bool             keep_alive_;
+
   int              timeout_;
   bool             non_blocking_flag_;
+
+  std::string      auth_user_;
+  std::string      auth_passwd_;
 };
 
 } // namespace iqxmlrpc

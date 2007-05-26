@@ -46,7 +46,7 @@ class PermissiveAuthPlugin: public iqxmlrpc::Auth_Plugin_base {
 public:
   PermissiveAuthPlugin(): Auth_Plugin_base(true) {}
 
-  bool do_authenticate(const std::string& username, const std::string&) const
+  bool do_authenticate(const std::string& username, const std::string& pw) const
   {
     return username != "badman";
   }
