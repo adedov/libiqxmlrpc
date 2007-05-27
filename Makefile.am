@@ -33,7 +33,7 @@ rpm:	dist
 	rpmbuild -ba $(PACKAGE).spec
 
 clog:
-	cvs2cl --fsf -P -S -b
+	bzr log --short > ChangeLog
 
 mydist:	dist
 	( cd doc; tar cfz ../libiqxmlrpc-doc-@VERSION@.tar.gz index.html libiqxmlrpc.html )
