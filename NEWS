@@ -1,4 +1,16 @@
-Look into ChangeLog file for full list of changes generated from CVS.
+Look into ChangeLog file for full list of changes.
+
+0.8.3 - 0.8.4
+  New features:
+    * HTTP Authorization (client and server).
+    * HTTP(S) Proxy support (on client side).
+
+  Fixes:
+    * Make Array::const_iterator compatible with STL iterators.
+    * Get rid of leading \n character in encoded base64.
+    * Send correct HTTP error packets on HTTP exceptions.
+    * Code cleanups, refactoring.
+    * Compilation warning fixes on Windows (thanks to Max Khon).
 
 0.8.2a - 0.8.3
   Additions:
