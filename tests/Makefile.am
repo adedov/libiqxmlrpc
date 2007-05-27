@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I ../m4
-EXTRA_DIST = data regression.sh
+EXTRA_DIST = data
 LDADD = ../libiqxmlrpc/libiqxmlrpc-client.la \
 	../libiqxmlrpc/libiqxmlrpc-server.la \
 	$(BOOST_THREAD_LIB) \
