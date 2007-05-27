@@ -23,6 +23,7 @@ noinst_HEADERS = \
 pkginclude_HEADERS = \
 	acceptor.h \
 	api_export.h \
+	auth_plugin.h \
 	builtins.h \
 	client.h \
 	client_conn.h \
@@ -34,6 +35,7 @@ pkginclude_HEADERS = \
 	except.h \
 	executor.h \
 	http.h \
+	http_errors.h \
 	http_client.h \
 	http_server.h \
 	https_client.h \
