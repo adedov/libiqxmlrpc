@@ -27,7 +27,7 @@
 namespace iqxmlrpc
 {
 
-//! XML-RPC \b HTTPS client's connection (in blocking mode).
+//! XML-RPC \b HTTPS client's connection.
 class LIBIQXMLRPC_API Https_client_connection:
   public iqxmlrpc::Client_connection,
   public iqnet::ssl::Reaction_connection
