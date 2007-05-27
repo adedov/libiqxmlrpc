@@ -81,12 +81,12 @@ void array_test()
 
     Array a;
     std::fill_n(std::back_inserter(a), 10, 5);
-    BOOST_CHECK_EQUAL(a.size(), 10);
+    BOOST_CHECK_EQUAL(a.size(), 10UL);
 
     Array b;
     std::copy(a.begin(), a.end(), std::back_inserter(b));
 
-    BOOST_CHECK_EQUAL(b.size(), 10);
+    BOOST_CHECK_EQUAL(b.size(), 10UL);
     BOOST_CHECK_EQUAL(b[5].get_int(), 5);
   }
 }
