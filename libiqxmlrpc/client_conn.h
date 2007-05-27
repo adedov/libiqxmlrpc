@@ -38,7 +38,7 @@ public:
   Response process_session(const Request&);
 
 protected:
-  http::Packet* read_response( const std::string& );
+  http::Packet* read_response( const std::string&, bool read_hdr_only = false );
   virtual http::Packet* do_process_session( const std::string& ) = 0;
 
   const Client_options& opts() const { return *options; }

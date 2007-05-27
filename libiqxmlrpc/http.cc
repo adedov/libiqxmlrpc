@@ -451,7 +451,7 @@ bool Packet_reader::read_header( const std::string& s )
 }
 
 template <class Header_type>
-Packet* Packet_reader::read_packet( const std::string& s )
+Packet* Packet_reader::read_packet( const std::string& s, bool hdr_only )
 {
   if( constructed )
     clear();
@@ -471,6 +471,12 @@ Packet* Packet_reader::read_packet( const std::string& s )
 
   if( header )
   {
+    if ( hdr_only )
+    {
+      constructed = true;
+      return new Packet( header, std::string() );
+    }
+
     bool ready = s.empty() && !header->content_length() ||
                  content_cache.length() >= header->content_length();
 
@@ -491,9 +497,9 @@ Packet* Packet_reader::read_request( const std::string& s )
   return read_packet<Request_header>(s);
 }
 
-Packet* Packet_reader::read_response( const std::string& s )
+Packet* Packet_reader::read_response( const std::string& s, bool hdr_only )
 {
-  return read_packet<Response_header>(s);
+  return read_packet<Response_header>(s, hdr_only);
 }
 
 } // namespace http

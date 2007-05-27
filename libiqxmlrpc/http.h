@@ -217,7 +217,7 @@ public:
   }
 
   Packet* read_request( const std::string& );
-  Packet* read_response( const std::string& );
+  Packet* read_response( const std::string&, bool read_header_only );
 
 private:
   void clear();
@@ -225,7 +225,7 @@ private:
   bool read_header( const std::string& );
 
   template <class Header_type>
-  Packet* read_packet( const std::string& );
+  Packet* read_packet( const std::string&, bool = false );
 };
 
 

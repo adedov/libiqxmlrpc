@@ -36,6 +36,8 @@ class LIBIQXMLRPC_API Http_client_connection:
   http::Packet* resp_packet;
 
 public:
+  typedef Http_client_connection Proxy_connection;
+
   Http_client_connection( const iqnet::Socket&, bool non_block );
 
   void handle_input( bool& );

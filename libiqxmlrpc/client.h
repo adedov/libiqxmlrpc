@@ -18,6 +18,7 @@
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
 
+#include <boost/optional.hpp>
 #include <boost/scoped_ptr.hpp>
 #include "api_export.h"
 #include "connector.h"
@@ -96,18 +97,24 @@ public:
     ctr(addr) {}
 
   //! Set address where actually connect to. <b>Tested with HTTP only.</b>
-  void set_proxy(const iqnet::Inet_addr& addr_)
+  void set_proxy(const iqnet::Inet_addr& addr)
   {
-    ctr.set_addr(addr_);
+    proxy_ctr = iqnet::Connector<Proxy_connection>(addr);
   }
 
 private:
   virtual Client_connection* get_connection(bool non_blocking_flag)
   {
+    if (proxy_ctr)
+      return proxy_ctr->connect(non_blocking_flag);
+
     return ctr.connect(non_blocking_flag);
   }
 
   iqnet::Connector<TRANSPORT> ctr;
+
+  typedef typename TRANSPORT::Proxy_connection Proxy_connection;
+  boost::optional<iqnet::Connector<Proxy_connection> > proxy_ctr;
 };
 
 } // namespace iqxmlrpc

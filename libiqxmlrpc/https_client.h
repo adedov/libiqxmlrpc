@@ -18,14 +18,38 @@
 #ifndef _libiqxmlrpc_https_client_h_
 #define _libiqxmlrpc_https_client_h_
 
+#include <boost/scoped_ptr.hpp>
 #include "api_export.h"
-#include "reactor.h"
-#include "connector.h"
-#include "ssl_connection.h"
 #include "client_conn.h"
+#include "connection.h"
+#include "ssl_connection.h"
+#include "reactor.h"
 
 namespace iqxmlrpc
 {
+
+//! XML-RPC \b HTTPS PROXY client connection.
+//! DO NOT USE IT IN YOUR CODE.
+class LIBIQXMLRPC_API Https_proxy_client_connection:
+  public iqxmlrpc::Client_connection,
+  public iqnet::Connection
+{
+public:
+  Https_proxy_client_connection( const iqnet::Socket&, bool non_block_flag );
+
+  void handle_input( bool& );
+  void handle_output( bool& );
+
+protected:
+  http::Packet* do_process_session( const std::string& );
+
+  void setup_tunnel();
+
+  boost::scoped_ptr<iqnet::Reactor_base> reactor;
+  boost::scoped_ptr<http::Packet> resp_packet;
+  bool non_blocking;
+  std::string out_str;
+};
 
 //! XML-RPC \b HTTPS client's connection.
 class LIBIQXMLRPC_API Https_client_connection:
@@ -38,6 +62,8 @@ class LIBIQXMLRPC_API Https_client_connection:
   bool established;
 
 public:
+  typedef Https_proxy_client_connection Proxy_connection;
+
   Https_client_connection( const iqnet::Socket&, bool non_block_flag );
 
   void post_connect()
@@ -51,6 +77,7 @@ public:
   void recv_succeed( bool&, int req_len, int real_len  );
 
 protected:
+  friend class Https_proxy_client_connection;
   http::Packet* do_process_session( const std::string& );
 
 private:
