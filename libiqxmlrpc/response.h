@@ -33,6 +33,11 @@ namespace iqxmlrpc {
 
 class Value;
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#endif
+
 //! XML-RPC response.
 class LIBIQXMLRPC_API Response {
   boost::shared_ptr<Value> value_;
@@ -65,6 +70,10 @@ private:
   void ok_to_xml( xmlpp::Node* ) const;
   void fault_to_xml( xmlpp::Node* ) const;
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 } // namespace iqxmlrpc
 

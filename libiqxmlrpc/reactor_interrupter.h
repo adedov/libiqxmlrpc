@@ -26,6 +26,11 @@
 
 namespace iqnet {
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4275)
+#endif
+
 class LIBIQXMLRPC_API Reactor_interrupter: boost::noncopyable {
 public:
   Reactor_interrupter(Reactor_base*);
@@ -37,6 +42,10 @@ private:
   class Impl;
   Impl* impl_;
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 } // namespace iqnet
 

@@ -91,6 +91,11 @@ private:
   virtual void execute( const Param_list& params, Value& response ) = 0;
 };
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4275)
+#endif
+
 //! Interceptor's base class
 /*! One can use interceptors in order to wrap actual XML-RPC calls
  *  on server side with code that supports particular aspect.
@@ -132,6 +137,10 @@ protected:
 private:
   boost::scoped_ptr<Interceptor> nested;
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 //! Adapter that allows make server method from plain function.
 //! \see Method_function

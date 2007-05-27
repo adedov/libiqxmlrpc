@@ -33,6 +33,11 @@ namespace xmlpp
 namespace iqxmlrpc
 {
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4275)
+#endif
+
 //! Base class for iqxmlrpc exceptions.
 class LIBIQXMLRPC_API Exception: public std::runtime_error {
   int ex_code;
@@ -44,6 +49,9 @@ public:
   virtual int code() const { return ex_code; }
 };
 
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 //! XML Parser error.
 class LIBIQXMLRPC_API Parse_error: public Exception {
@@ -52,6 +60,10 @@ public:
     Exception(std::string("Parser error. ") += d, -32700) {}
 };
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4275)
+#endif
 
 //! XML-RPC structures not conforming to spec.
 class LIBIQXMLRPC_API XML_RPC_violation: public Exception {
@@ -101,6 +113,10 @@ public:
 public:
   Fault( int c, const std::string& s );
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 } // namespace iqxmlrpc
 

@@ -39,6 +39,12 @@ namespace iqxmlrpc {
 
 class Auth_Plugin_base;
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#pragma warning(disable: 4275)
+#endif
+
 //! XML-RPC server.
 class LIBIQXMLRPC_API Server: boost::noncopyable {
 protected:
@@ -122,6 +128,9 @@ private:
   void perform_soft_exit();
 };
 
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 //! Register class Method_class as handler for call "name" with specific server.
 template <class Method_class>

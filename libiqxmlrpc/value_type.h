@@ -86,6 +86,10 @@ public:
   T&       value()       { return value_; }
 };
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#endif
 
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
 /*! \see \ref array_usage */
@@ -262,6 +266,9 @@ public:
   const_iterator end()   const { return values.end(); }
 };
 
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 //! XML-RPC Base64 type.
 class LIBIQXMLRPC_API Binary_data: public Value_type {

@@ -34,6 +34,11 @@ namespace iqxmlrpc {
 
 class Server;
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#endif
+
 //! Base class for XML-RPC server connections.
 class LIBIQXMLRPC_API Server_connection {
 protected:
@@ -67,6 +72,11 @@ public:
 protected:
   http::Packet* read_request( const std::string& );
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#pragma warning(disable: 4251)
+#endif
 
 //! Server connections factory.
 template < class Transport >

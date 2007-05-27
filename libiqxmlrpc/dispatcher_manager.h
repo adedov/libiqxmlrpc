@@ -26,6 +26,11 @@
 
 namespace iqxmlrpc {
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4275)
+#endif
+
 //! Class that encapsulate control of multiple method dispatchers.
 /*! It also provides default method dispatcher that support usual
  *  register_method operation and optionally system one, which holds
@@ -57,6 +62,10 @@ public:
   //! Turns on introspection.
   void enable_introspection();
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 } // namespace iqxmlrpc
 

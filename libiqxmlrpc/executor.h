@@ -22,9 +22,20 @@
 
 #include <vector>
 #include <deque>
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4275)
+#endif
+
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #include "api_export.h"
 #include "lock.h"
 #include "method.h"
@@ -112,6 +123,10 @@ public:
   iqnet::Reactor_base* create_reactor();
 };
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#endif
 
 //! An Executor which plans request to be executed by a pool of threads.
 class LIBIQXMLRPC_API Pool_executor: public Executor {
@@ -127,7 +142,6 @@ public:
   void execute( const Param_list& );
   void process_actual_execution();
 };
-
 
 //! Factory for Pool_executor objects. It is also serves as a pool of threads.
 class LIBIQXMLRPC_API Pool_executor_factory: public Executor_factory_base {
@@ -154,6 +168,10 @@ public:
 
   void register_executor( Pool_executor* );
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 } // namespace iqxmlrpc
 

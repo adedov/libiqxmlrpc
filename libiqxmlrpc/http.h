@@ -40,6 +40,11 @@ namespace http {
 //! The level of HTTP sanity checks.
 enum Verification_level { HTTP_CHECK_WEAK, HTTP_CHECK_STRICT };
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#endif
+
 //! HTTP header. Responsible for parsing,
 //! creating generic HTTP headers.
 class LIBIQXMLRPC_API Header {
@@ -102,6 +107,10 @@ private:
   Verification_level ver_level_;
 };
 
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 //! HTTP request's header.
 class LIBIQXMLRPC_API Request_header: public Header {
   std::string uri_;
@@ -140,6 +149,11 @@ private:
   virtual std::string dump_head() const;
 };
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#endif
+
 //! HTTP packet: Header + Content.
 class LIBIQXMLRPC_API Packet {
 protected:
@@ -162,6 +176,11 @@ public:
     return header_->dump() + content_;
   }
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#pragma warning(disable: 4251)
+#endif
 
 //! Helper that responsible for constructing HTTP packets of specified type
 //! (request or response).

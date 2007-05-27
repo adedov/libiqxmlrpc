@@ -27,11 +27,20 @@
 namespace iqnet
 {
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4275)
+#endif
+
 //! Exception class to wrap a network's subsystem errors.
 class LIBIQXMLRPC_API network_error: public std::runtime_error {
 public:
   network_error( const std::string& msg, bool use_errno = true );
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 } // namespace iqnet
 

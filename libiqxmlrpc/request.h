@@ -37,7 +37,7 @@ class Value;
 typedef std::vector<Value> Param_list;
 
 //! Build request object from XML-formed string.
-Request* LIBIQXMLRPC_API parse_request( const std::string& );
+LIBIQXMLRPC_API  Request* parse_request( const std::string& );
 
 //! Incoming RPC request.
 class LIBIQXMLRPC_API Request {
