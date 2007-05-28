@@ -133,10 +133,16 @@
 				RelativePath="..\libiqxmlrpc\acceptor.cc">
 			</File>
 			<File
+				RelativePath="..\libiqxmlrpc\auth_plugin.cc">
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\builtins.cc">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\client.cc">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\client_conn.cc">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\connection.cc">
@@ -258,10 +264,16 @@
 				RelativePath="..\libiqxmlrpc\api_export.h">
 			</File>
 			<File
+				RelativePath="..\libiqxmlrpc\auth_plugin.h">
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\builtins.h">
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\client.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\client_conn.h">
 			</File>
 			<File
 				RelativePath=".\config.h">
