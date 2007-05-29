@@ -1,5 +1,12 @@
 Look into ChangeLog file for full list of changes.
 
+0.8.4 - 0.8.4a
+  Fixes:
+    * Update MSVC project file.
+    * Fix unresolved symbols error when one try use Client_base::set_proxy
+    * Enhance compatibility with HTTP proxies (e.g. Privoxy). Put full URI in
+      POST header line when client configured work through HTTP proxy.
+
 0.8.3 - 0.8.4
   New features:
     * HTTP Authorization (client and server).
