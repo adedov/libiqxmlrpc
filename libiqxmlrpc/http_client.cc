@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
-#include <iostream>
+#include <sstream>
 #include "sysinc.h"
 #include "http_client.h"
 #include "client_opts.h"
@@ -79,6 +79,23 @@ void Http_client_connection::handle_input( bool& )
 
   if( resp_packet )
     reactor->unregister_handler( this );
+}
+
+//
+// Http_proxy_client_connection
+//
+
+std::string Http_proxy_client_connection::decorate_uri() const
+{
+  std::ostringstream ss;
+  ss << "http://" << opts().vhost() << ':' << opts().addr().get_port();
+
+  if (!opts().uri().empty() && opts().uri()[0] != '/')
+    ss << '/';
+
+  ss << opts().uri();
+
+  return ss.str();
 }
 
 // vim:ts=2:sw=2:et

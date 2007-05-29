@@ -26,6 +26,8 @@
 namespace iqxmlrpc
 {
 
+class Http_proxy_client_connection;
+
 //! XML-RPC \b HTTP client's connection (works in blocking mode).
 class LIBIQXMLRPC_API Http_client_connection:
   public iqxmlrpc::Client_connection,
@@ -36,7 +38,7 @@ class LIBIQXMLRPC_API Http_client_connection:
   http::Packet* resp_packet;
 
 public:
-  typedef Http_client_connection Proxy_connection;
+  typedef Http_proxy_client_connection Proxy_connection;
 
   Http_client_connection( const iqnet::Socket&, bool non_block );
 
@@ -45,6 +47,17 @@ public:
 
 protected:
   http::Packet* do_process_session( const std::string& );
+};
+
+//! XML-RPC \b HTTP PROXY client connection.
+//! DO NOT USE IT IN YOUR CODE.
+class Http_proxy_client_connection: public Http_client_connection {
+public:
+  Http_proxy_client_connection( const iqnet::Socket& s, bool non_block ):
+    Http_client_connection( s, non_block ) {}
+
+private:
+  virtual std::string decorate_uri() const;
 };
 
 } // namespace iqxmlrpc

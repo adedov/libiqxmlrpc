@@ -43,7 +43,10 @@ Response Client_connection::process_session( const Request& req )
     std::string req_xml_str( xmldoc->write_to_string_formatted( "utf-8" ) );
 
     std::auto_ptr<Request_header> req_h(
-      new Request_header(opts().uri(), opts().vhost(), opts().addr().get_port() ));
+      new Request_header(
+        decorate_uri(),
+        opts().vhost(),
+        opts().addr().get_port() ));
 
     if (opts().has_authinfo())
       req_h->set_authinfo( opts().auth_user(), opts().auth_passwd() );
@@ -75,6 +78,11 @@ Response Client_connection::process_session( const Request& req )
 http::Packet* Client_connection::read_response( const std::string& s, bool hdr_only )
 {
   return preader.read_response( s, hdr_only );
+}
+
+std::string Client_connection::decorate_uri() const
+{
+  return opts().uri();
 }
 
 } // namespace iqxmlrpc

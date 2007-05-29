@@ -44,6 +44,8 @@ protected:
   const Client_options& opts() const { return *options; }
 
 private:
+  virtual std::string decorate_uri() const;
+
   http::Packet_reader preader;
   const Client_options* options;
 

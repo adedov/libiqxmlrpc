@@ -50,7 +50,7 @@ public:
     {
       if (!cimpl().conn_cache)
         cimpl().conn_cache.reset( create_connection(client) );
-      
+
       conn_ptr_ = cimpl().conn_cache.get();
 
     } else {
@@ -77,10 +77,10 @@ private:
   }
 
   const Client_options& opts()
-  { 
+  {
     return client_impl_.opts;
   }
-  
+
   Client_base::Impl& cimpl()
   {
     return client_impl_;
