@@ -103,9 +103,14 @@ Client_base::Client_base(
   impl_(new Impl(addr, uri, vhost))
 {
 }
-  
+
 Client_base::~Client_base()
 {
+}
+
+void Client_base::set_proxy( const iqnet::Inet_addr& addr )
+{
+  do_set_proxy( addr );
 }
 
 void Client_base::set_timeout( int seconds )

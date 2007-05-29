@@ -69,6 +69,7 @@ public:
   void set_authinfo(const std::string& user, const std::string& password);
 
 private:
+  virtual void do_set_proxy( const iqnet::Inet_addr& ) = 0;
   virtual Client_connection* get_connection(bool non_blocking) = 0;
 
   friend class Auto_conn;
@@ -96,13 +97,12 @@ public:
     Client_base(addr, uri, vhost),
     ctr(addr) {}
 
-  //! Set address where actually connect to. <b>Tested with HTTP only.</b>
-  void set_proxy(const iqnet::Inet_addr& addr)
+private:
+  virtual void do_set_proxy(const iqnet::Inet_addr& addr)
   {
     proxy_ctr = iqnet::Connector<Proxy_connection>(addr);
   }
 
-private:
   virtual Client_connection* get_connection(bool non_blocking_flag)
   {
     if (proxy_ctr)
