@@ -34,7 +34,7 @@ public:
   {
     std::cout << "Calls Count: " << count << std::endl;
   }
-  
+
   void process(Method* m, const Param_list& p, Value& r)
   {
     std::cout << "Executing " << ++count << " call\n";
@@ -71,7 +71,7 @@ Test_server::Test_server(const Test_server_config& conf):
   ef_(0),
   impl_(0)
 {
-  if (conf.numthreads > 1) 
+  if (conf.numthreads > 1)
   {
     ef_.reset(new Pool_executor_factory(conf.numthreads));
   }
@@ -79,7 +79,7 @@ Test_server::Test_server(const Test_server_config& conf):
   {
     ef_.reset(new Serial_executor_factory);
   }
-  
+
   if (conf.use_ssl)
   {
     namespace ssl = iqnet::ssl;
@@ -131,10 +131,10 @@ test_suite* init_unit_test_suite(int argc, char* argv[])
     Test_server_config conf = Test_server_config::create(argc, argv);
     test_server = new Test_server(conf);
     ::signal(SIGINT, &test_server_sig_handler);
-  
+
     test_suite* test = BOOST_TEST_SUITE("Server test");
     test->add( BOOST_TEST_CASE(&start_test_server) );
-  
+
     return test;
   }
   catch(const iqxmlrpc::Exception& e)
