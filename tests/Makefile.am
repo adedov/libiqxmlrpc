@@ -9,6 +9,7 @@ LDADD = ../libiqxmlrpc/libiqxmlrpc-client.la \
 check_PROGRAMS = \
 	value-usage \
 	server-test \
+	server-stop-test \
 	client-test \
 	client-stress-test 
 
@@ -18,6 +19,9 @@ server_test_SOURCES = \
 	test_server.cc \
 	server_config.cc  server_config.h \
 	methods.cc        methods.h
+
+server_stop_test_SOURCES = \
+	test_server_stop.cc
 
 CLIENT_COMMON_SOURCES = \
 	client_common.cc  client_common.h \
