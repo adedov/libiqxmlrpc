@@ -135,10 +135,10 @@ authenticate(const http::Packet& pkt, const Auth_Plugin_base* ap)
 
   if (!hdr.has_authinfo())
   {
-    if (ap->allow_anonymous())
-      return boost::optional<std::string>();
+    if (!ap->authenticate_anonymous())
+      throw Unauthorized();
 
-    throw Unauthorized();
+    return boost::optional<std::string>();
   }
 
   std::string username, password;

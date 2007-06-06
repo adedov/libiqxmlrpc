@@ -48,7 +48,7 @@ void auth_test()
   test_client->set_authinfo("goodman", "");
   Response retval( test_client->execute("echo_user", 0) );
   BOOST_CHECK( !retval.is_fault() );
-  BOOST_CHECK_EQUAL( retval.value().get_string(), "goodman" ); 
+  BOOST_CHECK_EQUAL( retval.value().get_string(), "goodman" );
 
   try {
     BOOST_CHECKPOINT("Unsuccessful authorization");
@@ -76,7 +76,7 @@ void get_file_test()
 {
   BOOST_REQUIRE(test_client);
   Get_file_proxy get_file(test_client);
-  Response retval( get_file(1048576) ); // request 1Mb 
+  Response retval( get_file(1048576) ); // request 1Mb
 
   const Value& v = retval.value();
   const Binary_data& d = v["data"];
@@ -102,7 +102,7 @@ test_suite* init_unit_test_suite(int argc, char* argv[])
   try {
     test_config.configure(argc, argv);
     test_client = test_config.client_factory()->create();
-   
+
     test_suite* test = BOOST_TEST_SUITE("Client test");
     test->add( BOOST_TEST_CASE(&introspection_test) );
     test->add( BOOST_TEST_CASE(&echo_test) );

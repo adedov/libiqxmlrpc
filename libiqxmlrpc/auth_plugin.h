@@ -25,21 +25,23 @@ namespace iqxmlrpc {
 //! HTTP Authentication plugin.
 class Auth_Plugin_base {
 public:
-  Auth_Plugin_base(bool allow_anonymous);
   virtual ~Auth_Plugin_base() {}
-
-  bool allow_anonymous() const { return allow_anonymous_; }
 
   bool authenticate(
     const std::string& user,
     const std::string& password) const;
+
+  bool authenticate_anonymous() const;
 
 private:
   //! User should implement this function. Method must return true when
   //! authentication succeed. Authorization goes synchronously.
   virtual bool do_authenticate(const std::string&, const std::string&) const = 0;
 
-  bool allow_anonymous_;
+  //! User should implement this function too.
+  //! Just return false to make anonymous requests forbiden or
+  //! return true to allow clients process requests without authentication.
+  virtual bool do_authenticate_anonymous() const = 0;
 };
 
 } // namespace iqxmlrpc

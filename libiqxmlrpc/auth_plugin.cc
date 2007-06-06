@@ -19,16 +19,16 @@
 
 namespace iqxmlrpc {
 
-Auth_Plugin_base::Auth_Plugin_base(bool allow_anonymous):
-  allow_anonymous_(allow_anonymous)
-{
-}
-
 bool Auth_Plugin_base::authenticate(
   const std::string& user,
   const std::string& password) const
 {
   return do_authenticate(user, password);
+}
+
+bool Auth_Plugin_base::authenticate_anonymous() const
+{
+  return do_authenticate_anonymous();
 }
 
 } // namespace iqxmlrpc
