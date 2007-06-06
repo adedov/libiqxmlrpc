@@ -17,8 +17,10 @@ using namespace iqxmlrpc;
 
 class TestServer: boost::noncopyable {
 public:
-  TestServer(int port):
-    serv_(new Http_server(port, new Serial_executor_factory)),
+  TestServer(int port, unsigned threads):
+    serv_(new Http_server(port, threads > 1 ?
+      static_cast<Executor_factory_base*>(new Pool_executor_factory(threads)) :
+      static_cast<Executor_factory_base*>(new Serial_executor_factory))),
     thread_(new boost::thread(boost::bind(&TestServer::run, this)))
   {
   }
@@ -43,9 +45,9 @@ private:
   }
 };
 
-void stop_and_join(boost::condition* on_stop)
+void stop_and_join(unsigned threads, boost::condition* on_stop)
 {
-  TestServer s(3344);
+  TestServer s(3344, threads);
 
   boost::xtime time_wait;
   boost::xtime_get(&time_wait, boost::TIME_UTC);
@@ -58,12 +60,12 @@ void stop_and_join(boost::condition* on_stop)
   on_stop->notify_all();
 }
 
-void stop_test_server()
+void stop_test_server(unsigned server_threads)
 {
   boost::condition stopped;
   boost::mutex c_mutex;
 
-  boost::thread thr(boost::bind(stop_and_join, &stopped));
+  boost::thread thr(boost::bind(stop_and_join, server_threads, &stopped));
 
   boost::xtime time_wait;
   boost::xtime_get(&time_wait, boost::TIME_UTC);
@@ -73,11 +75,22 @@ void stop_test_server()
   BOOST_CHECK( stopped.timed_wait(lck, time_wait) );
 }
 
+void stop_test_server_st()
+{
+  stop_test_server(1);
+}
+
+void stop_test_server_mt()
+{
+  stop_test_server(10);
+}
+
 test_suite* init_unit_test_suite(int argc, char* argv[])
 {
   try {
     test_suite* test = BOOST_TEST_SUITE("Stopping server test");
-    test->add( BOOST_TEST_CASE(&stop_test_server) );
+    test->add( BOOST_TEST_CASE(&stop_test_server_st) );
+    test->add( BOOST_TEST_CASE(&stop_test_server_mt) );
     return test;
   }
   catch(const iqxmlrpc::Exception& e)

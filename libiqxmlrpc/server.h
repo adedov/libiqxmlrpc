@@ -33,6 +33,7 @@
 namespace iqnet
 {
   class Reactor_base;
+  class Reactor_interrupter;
 }
 
 namespace iqxmlrpc {
@@ -52,6 +53,7 @@ protected:
 
   int port;
   std::auto_ptr<iqnet::Reactor_base>          reactor;
+  std::auto_ptr<iqnet::Reactor_interrupter>   interrupter;
   std::auto_ptr<iqnet::Accepted_conn_factory> conn_factory;
   std::auto_ptr<iqnet::Acceptor>              acceptor;
   iqnet::Firewall_base* firewall;
@@ -114,7 +116,10 @@ public:
   void work();
 
   //! Ask server to exit from work() event handle loop.
-  void set_exit_flag() { exit_flag = true; }
+  void set_exit_flag();
+
+  //! Interrupt poll cycle.
+  void interrupt();
   /*! \} */
 
   iqnet::Reactor_base* get_reactor() { return reactor.get(); }

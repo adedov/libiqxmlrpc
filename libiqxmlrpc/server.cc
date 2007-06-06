@@ -21,6 +21,7 @@
 #include "auth_plugin.h"
 #include "http_errors.h"
 #include "reactor.h"
+#include "reactor_interrupter.h"
 #include "server.h"
 #include "request.h"
 #include "response.h"
@@ -37,6 +38,7 @@ Server::Server(
   exec_factory(ef),
   port(p),
   reactor(ef->create_reactor()),
+  interrupter(new iqnet::Reactor_interrupter(reactor.get())),
   conn_factory(cf),
   acceptor(0),
   firewall(0),
@@ -57,6 +59,17 @@ Server::~Server()
 void Server::register_method(const std::string& name, Method_factory_base* f)
 {
   disp_manager.register_method(name, f);
+}
+
+void Server::set_exit_flag()
+{
+  exit_flag = true;
+  interrupt();
+}
+
+void Server::interrupt()
+{
+  interrupter->make_interrupt();
 }
 
 void Server::perform_soft_exit()

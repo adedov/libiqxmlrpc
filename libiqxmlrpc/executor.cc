@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -48,6 +48,11 @@ void Executor::schedule_response( const Response& resp )
   server->schedule_response( resp, conn, this );
 }
 
+
+void Executor::interrupt_server()
+{
+  server->interrupt();
+}
 
 // ----------------------------------------------------------------------------
 void Serial_executor::execute( const Param_list& params )
@@ -172,23 +177,18 @@ void Pool_executor_factory::register_executor( Pool_executor* executor )
 
 
 // ----------------------------------------------------------------------------
-iqnet::Reactor_interrupter* Pool_executor::reactor_interrupter = 0;
-
-
 Pool_executor::Pool_executor(
     Pool_executor_factory* p, Method* m, Server* s, Server_connection* c
   ):
     Executor( m, s, c ),
     pool(p)
 {
-  if( !reactor_interrupter )
-    reactor_interrupter = new iqnet::Reactor_interrupter(s->get_reactor());
 }
 
 
 Pool_executor::~Pool_executor()
 {
-  reactor_interrupter->make_interrupt();
+  interrupt_server();
 }
 
 
@@ -219,3 +219,5 @@ void Pool_executor::process_actual_execution()
     schedule_response( Response( -1, "Unknown Error" ) );
   }
 }
+
+// vim:ts=2:sw=2:et

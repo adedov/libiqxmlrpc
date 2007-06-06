@@ -1,5 +1,5 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
-//  Copyright (C) 2004-2006 Anton Dedov
+//  Copyright (C) 2004-2007 Anton Dedov
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-//
-//  $Id: executor.h,v 1.16 2006-09-07 09:29:46 adedov Exp $
 
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
@@ -39,15 +37,14 @@
 #include "api_export.h"
 #include "lock.h"
 #include "method.h"
-#include "reactor_interrupter.h"
 
 namespace iqnet
 {
   class Reactor_base;
 }
 
-namespace iqxmlrpc
-{
+namespace iqxmlrpc {
+
 class Server;
 class Server_connection;
 class Response;
@@ -88,6 +85,7 @@ public:
 
 protected:
   void schedule_response( const Response& );
+  void interrupt_server();
 };
 
 
@@ -130,8 +128,6 @@ public:
 
 //! An Executor which plans request to be executed by a pool of threads.
 class LIBIQXMLRPC_API Pool_executor: public Executor {
-  static iqnet::Reactor_interrupter* reactor_interrupter;
-
   Pool_executor_factory* pool;
   Param_list params;
 
@@ -176,3 +172,4 @@ public:
 } // namespace iqxmlrpc
 
 #endif
+// vim:ts=2:sw=2:et
