@@ -1,5 +1,20 @@
 Look into ChangeLog file for full list of changes.
 
+0.8.4a - 0.8.5
+  This release introduces interface incompatibilities with 0.8.4.
+
+  Interface changes:
+      An interface of Auth_Plugin_base has been changed. Now one must implement
+      do_authenticate_anonymous instead of transfering flag to Auth_Plugin_base
+      constructor. 
+
+  Fixes:
+    * The fix allows one to stop server by calling Server::set_exit_flag from
+      another thread. This fix should also allow run multiple HTTP servers
+      in one process.
+      
+      This change was inspired by Mikko Sarmanne's patch.
+
 0.8.4 - 0.8.4a
   Fixes:
     * Update MSVC project file.
