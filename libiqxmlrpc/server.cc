@@ -227,12 +227,13 @@ void Server::work()
   for(bool have_handlers = true; have_handlers;)
   {
     if (exit_flag)
-      return;
+      break;
 
     have_handlers = reactor->handle_events();
   }
 
   acceptor.reset(0);
+  exit_flag = false;
 }
 
 } // namespace iqxmlrpc
