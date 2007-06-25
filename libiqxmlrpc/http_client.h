@@ -51,7 +51,9 @@ protected:
 
 //! XML-RPC \b HTTP PROXY client connection.
 //! DO NOT USE IT IN YOUR CODE.
-class Http_proxy_client_connection: public Http_client_connection {
+class LIBIQXMLRPC_API Http_proxy_client_connection:
+  public Http_client_connection
+{
 public:
   Http_proxy_client_connection( const iqnet::Socket& s, bool non_block ):
     Http_client_connection( s, non_block ) {}
