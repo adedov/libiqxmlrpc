@@ -21,8 +21,10 @@ void stop_server()
 {
   BOOST_REQUIRE(test_client);
   Stop_server_proxy stop(test_client);
-  Response retval( stop() );
-  BOOST_REQUIRE(!retval.is_fault());
+
+  try {
+    stop();
+  } catch (const iqnet::network_error&) {}
 }
 
 void introspection_test()

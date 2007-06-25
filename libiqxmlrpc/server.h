@@ -59,7 +59,6 @@ protected:
   iqnet::Firewall_base* firewall;
 
   bool exit_flag;
-  bool soft_exit; // Soft exit in process
   std::ostream* log;
   unsigned max_req_sz;
   http::Verification_level ver_level;
@@ -128,9 +127,6 @@ public:
   void schedule_response( const Response&, Server_connection*, Executor* );
 
   void log_err_msg( const std::string& );
-
-private:
-  void perform_soft_exit();
 };
 
 #ifdef _MSC_VER

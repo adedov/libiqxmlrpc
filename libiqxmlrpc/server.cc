@@ -43,7 +43,6 @@ Server::Server(
   acceptor(0),
   firewall(0),
   exit_flag(false),
-  soft_exit(false),
   log(0),
   max_req_sz(0),
   ver_level(http::HTTP_CHECK_WEAK),
@@ -70,12 +69,6 @@ void Server::set_exit_flag()
 void Server::interrupt()
 {
   interrupter->make_interrupt();
-}
-
-void Server::perform_soft_exit()
-{
-  delete acceptor.release();
-  soft_exit = true;
 }
 
 void Server::push_interceptor(Interceptor* ic)
@@ -231,19 +224,15 @@ void Server::work()
     acceptor->set_firewall( firewall );
   }
 
-  try {
-    for(bool have_handlers = true; have_handlers;)
-    {
-      if( exit_flag && !soft_exit )
-        perform_soft_exit();
-
-      have_handlers = reactor->handle_events();
-    }
-  }
-  catch ( const iqnet::Reactor_base::No_handlers& )
+  for(bool have_handlers = true; have_handlers;)
   {
-    // Soft exit performed.
+    if (exit_flag)
+      return;
+
+    have_handlers = reactor->handle_events();
   }
+
+  acceptor.reset(0);
 }
 
 } // namespace iqxmlrpc
