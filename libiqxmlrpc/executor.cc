@@ -116,6 +116,9 @@ void Pool_executor_factory::Pool_thread::operator ()()
     {
       pool->req_queue_cond.wait(lk);
 
+      if (pool->is_being_destructed())
+        return;
+
       if (pool->req_queue.empty())
         continue;
     }
@@ -138,6 +141,9 @@ Pool_executor_factory::Pool_executor_factory(unsigned numthreads)
 
 Pool_executor_factory::~Pool_executor_factory()
 {
+  destruction_started();
+  threads.join_all();
+
   util::delete_ptrs(pool.begin(), pool.end());
   scoped_lock lk(req_queue_lock);
   util::delete_ptrs(req_queue.begin(), req_queue.end());
@@ -173,6 +179,23 @@ void Pool_executor_factory::register_executor( Pool_executor* executor )
   scoped_lock lk(req_queue_lock);
   req_queue.push_back(executor);
   req_queue_cond.notify_all();
+}
+
+
+void Pool_executor_factory::destruction_started()
+{
+  scoped_lock lk(destructor_lock);
+  in_destructor = true;
+
+  scoped_lock lk_(req_queue_lock);
+  req_queue_cond.notify_all();
+}
+
+
+bool Pool_executor_factory::is_being_destructed()
+{
+  scoped_lock lk(destructor_lock);
+  return in_destructor;
 }
 
 

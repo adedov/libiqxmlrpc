@@ -152,6 +152,9 @@ class LIBIQXMLRPC_API Pool_executor_factory: public Executor_factory_base {
   boost::mutex               req_queue_lock;
   boost::condition           req_queue_cond;
 
+  bool          in_destructor;
+  boost::mutex  destructor_lock;
+
 public:
   Pool_executor_factory(unsigned num_threads);
   ~Pool_executor_factory();
@@ -163,6 +166,13 @@ public:
   void add_threads(unsigned num);
 
   void register_executor( Pool_executor* );
+
+private:
+  // Pool_thread interface
+  bool is_being_destructed();
+
+private:
+  void destruction_started();
 };
 
 #ifdef _MSC_VER
