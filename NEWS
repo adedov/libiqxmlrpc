@@ -1,5 +1,15 @@
 Look into ChangeLog file for full list of changes.
 
+0.8.5 - 0.8.6
+  Several fixes related to starting/stopping server:
+    * Server no longer wait for all open connections to close on exit.
+      This is much more secure behavior.
+    * Now it is safe using the same Server object after work/set_exit_flag
+      cycle.
+    * Fix thread-leaks in Pool_executor_factory.
+
+  Compilation fix on Windows.
+
 0.8.4a - 0.8.5
   This release introduces interface incompatibilities with 0.8.4.
 
