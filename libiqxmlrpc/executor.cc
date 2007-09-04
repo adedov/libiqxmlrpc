@@ -133,7 +133,8 @@ void Pool_executor_factory::Pool_thread::operator ()()
 
 
 // ----------------------------------------------------------------------------
-Pool_executor_factory::Pool_executor_factory(unsigned numthreads)
+Pool_executor_factory::Pool_executor_factory(unsigned numthreads):
+  in_destructor(false)
 {
   add_threads(numthreads);
 }
