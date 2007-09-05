@@ -179,7 +179,7 @@ void Pool_executor_factory::register_executor( Pool_executor* executor )
 {
   scoped_lock lk(req_queue_lock);
   req_queue.push_back(executor);
-  req_queue_cond.notify_all();
+  req_queue_cond.notify_one();
 }
 
 
