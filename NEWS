@@ -1,5 +1,9 @@
 Look into ChangeLog file for full list of changes.
 
+0.8.6 - 0.8.6a
+  * Fix undefined behavior in Pool_executor, introduced in 0.8.6.
+  * Fix undefined behavior in http module built with MSVC 8.
+
 0.8.5 - 0.8.6
   Several fixes related to starting/stopping server:
     * Server no longer wait for all open connections to close on exit.
