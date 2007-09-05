@@ -368,9 +368,9 @@ std::string Response_header::current_date() const
   char *oldlocale = setlocale( LC_TIME, 0 );
   setlocale( LC_TIME, "C" );
 
-  char date_str[30];
-  date_str[29] = 0;
-  strftime( date_str, 30, "%a, %d %b %Y %T %Z", bdt );
+  char date_str[31];
+  date_str[30] = 0;
+  strftime( date_str, 30, "%a, %d %b %Y %H:%M:%S GMT", bdt );
 
   setlocale( LC_TIME, oldlocale );
   return date_str;
