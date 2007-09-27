@@ -45,7 +45,6 @@ typedef Scalar<std::string> String;
 
 
 //! Base type for XML-RPC types.
-/*! \see \ref value_types */
 class LIBIQXMLRPC_API Value_type {
 public:
   virtual ~Value_type() {}
@@ -69,7 +68,6 @@ public:
 
 
 //! Template for scalar types based on Value_type (e.g. Int, String, etc.)
-/*! \see \ref value_types */
 template <class T>
 class Scalar: public Value_type {
 protected:
@@ -92,7 +90,6 @@ public:
 #endif
 
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
-/*! \see \ref array_usage */
 class LIBIQXMLRPC_API Array: public Value_type {
   typedef std::vector<Value*> Val_vector;
   typedef Val_vector::iterator iterator;
@@ -220,7 +217,6 @@ inline Array::const_iterator Array::end() const
 
 
 //! XML-RPC array type. Operates with objects of type Value, not Value_type.
-/*! \see \ref struct_usage */
 class LIBIQXMLRPC_API Struct: public Value_type {
 public:
   //! Exception which is being thrown when user tries

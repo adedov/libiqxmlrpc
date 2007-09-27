@@ -36,10 +36,8 @@ namespace xmlpp {
 namespace iqxmlrpc
 {
 
-//! Proxy class to access XML-RPC values by users.
-/*! For more documentation please look into \ref value_usage .
-    \exception Bad_cast
-*/
+//! Proxy class to access XML-RPC values by library users.
+/*! \exception Bad_cast */
 class LIBIQXMLRPC_API Value {
 public:
   //! Bad_cast is being thrown on illegal
