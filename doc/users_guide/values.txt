@@ -1,0 +1,192 @@
+% vim: ft=viki:tw=78:noet
+
+* Value Manipulation
+#OPT: id=ValueManipulation
+#LIST plain! sub!: toc
+
+The table below demonstrates mapping between standard XML-RPC types and
+library classes that should be used for creation of values of corresponding
+type. Namespace prefix __iqxmlrpc__ omitted. 
+
+|| XML-RPC	|| {arg: _L} ||
+ | boolean	| Value |
+ | i4		| Value |
+ | double	| Value |
+ | string	| Value |
+ | date/time	| Date_time |
+ | base64	| Binary_data |
+ | array	| Array |
+ | struct	| Struct |
+ | [[http://ontosys.com/xml-rpc/extensions.php][nil]]		| Nil |
+
+As you can see, __Value__ class is suggested to be used for constructing
+most of scalars (i.e. atomic values). Exceptions are date/time and base64
+types. Values of complex types, e.g. __arrays__ and __structs__ are being
+constructed with distinct classes.
+
+However, the Value class is the central entity in library that responsible for
+value manipulation. Though, there are classes that manipulate non-trivial
+value types, such as Binary_data or Array, the actual values will be
+eventually appeared within objects of Value class.
+
+** Value Container
+
+There is a super-container class called iqxmlrpc::Value that may hold values
+of any type described in XML-RPC standard. It tries to provide power of
+variables in dynamic languages, i.e. anyone can change their type (by
+assigning a new value) but they cannot be misinterpreted as a value of wrong
+type.
+
+One can directly assign Value objects with __scalars__:
+#Code id=value1 syntax=c++ <<EOC
+Value v = 10;
+v = "Hello";
+v = 1.05;
+v = false;
+EOC
+
+The class also contains type casting operators for most scalar types. So it is
+possible use Value objects where more native types required:
+#Code id=value2 syntax=c++ <<EOC
+void foo(const std::string&);
+void bar(int);
+
+Value v1 = "test";
+Value v2 = 100;
+foo(v1);
+bar(v2);
+
+// ambiguity: use get_xxx methods
+std::cout << v1.get_string();
+std::cout << v2.get_int();
+EOC
+
+Misinterpreting type of Value object will cause Value::Bad_cast exception. If
+in doubt, check if some object has type you are interesting in:
+#Code id=value3 syntax=c++ <<EOC
+if ( not v1.is_int() ) {
+	// ...
+}
+EOC
+
+** Arrays
+
+Arrays are being constructed as an objects of iqxmlrpc::Array class.
+Array::push_back method should be used for appending new tailing elements.
+Square braces __[]__ operator provides access to array elements in a usual way.
+#Code id=array1 syntax=c++ <<EOC
+Array a;
+a.push_back(1);
+a.push_back(0.5);
+a.push_back(Array());
+
+assert( a.size() == 3 );
+assert( a[0] == 0.5 );
+assert( a[2].is_array() );
+EOC
+
+Certainly, objects of Array class may be assigned to Value. Values also have
+methods that partially cover interface of Array class it-self, so one can
+operate with arrays using Value object too. Method Value::the_array provides
+reference to an Array object.
+#Code id=array2 syntax=c++ <<EOC
+Value v = Array();
+v.push_back( 10 );
+
+assert( v.is_array() );
+assert( v.size() == 1 );
+assert( v[0] == 10 );
+assert( *v.arr_begin() == 10 );
+EOC
+
+*** Array Iterators
+
+Array objects have iterators that compatible with STL ones. There is also
+__assign__ method that allows easily convert sequences into XML-RPC arrays.
+#Code id=array3 syntax=c++ <<EOC
+void f(const std::vector<int>& vi)
+{
+	Array a;
+	a.assign(vi.begin(), vi.end());
+
+	unsigned vidx = 0;
+	for (Array::const_iterator i = a.begin(); i != a.end(); ++i) {
+		assert( i->get_int() == vi[vidx++] );
+	}
+}
+
+Value gen();
+
+void g(Array& a, unsigned n)
+{
+	std::generate_n(std::back_inserter(a), n, g);
+}
+EOC
+
+** Structs
+
+Structures are very essential part of most of all XML-RPC communications.
+It is because they allow assigning meanings to a particular data. Actually,
+structures are maps between string and any XML-RPC values. In {arg: _L}
+structures are constructed by creating instance of iqxmlrpc::Struct class.
+
+Method __insert__ should be used for inserting new mapping into a struct. There
+is also square braces __[]__ operators that allow accessing existing elements
+of structures. Unlike std::map, iqxmlrpc::Struct's operator [] does not insert
+inexistent element into structure but throws Struct::No_field exception. So,
+if unsure check element's presence with __has_field__ method.
+
+#Code id=struct1 syntax=c++ <<EOC
+Struct s;
+s.insert("title", "Eternal Sunshine of The Spotless Mind");
+s.insert("imdb_no", "tt0338013");
+s.insert("issued", 2004);
+
+assert( s["issued"] == 2004 );
+assert( s.has_field("title") );
+EOC
+
+As in Array case, Struct can be assigned to a Value (just because Value is the
+only type that used in composing and parsing of XML-RPC packets). And as in
+Array case, Value class allows some manipulation with structures it contains.
+#Code id=struct2 syntax=c++ <<EOC
+Value v = Struct();
+
+assert( v.is_struct() );
+
+v.insert("field", Array());
+v["field"].push_back(0);
+EOC
+
+** Binary Data
+
+The class iqxmlrpc::Binary_data allows send/receive binary data that is being
+transfered through the network in BASE64 form. An object of Binary_data class
+can be constructed from raw data as well as from encoded text.
+
+#Code id=bindata1 syntax=c++ <<EOC
+std::string raw = "Hello, World!";
+
+std::auto_ptr<Binary_data> b( Binary_data::from_data(raw) );
+std::string enc = b->get_base64();
+
+assert( enc == "SGVsbG8sIFdvcmxkIQ==" );
+
+b.reset( Binary_data::from_base64(enc) );
+
+assert( b->get_data() == raw );
+EOC
+
+Binary_data object can be also constructed from byte sequence not only
+std::string.
+#Code id=bindata2 syntax=c++ <<EOC
+Binary_data*
+void encode(const char* buf, size_t size)
+{
+	return Binary_data::from_data(buf, size);
+}
+EOC
+
+** Data/Time
+
+__TBD__

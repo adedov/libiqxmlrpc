@@ -1,0 +1,21 @@
+% vim: ft=viki:tw=78:noet
+
+#VAR: css=deplate.css|screen +tabbar-right.css|screen +serif.css
+#VAR id=noSwallow
+#VAR autoindex=true
+
+#VAR: _L=Libiqxmlrpc
+#VAR: _V=0.8.4
+#DONTIDX: {arg:_L}
+#DONTIDX: XML-RPC
+
+* Introduction
+
+This document is going to be a user guide for
+[[http://libiqxmlrpc.sourceforge.net][{arg:_L}]] library. It is free C++
+library that implements [[http://www.xmlrpc.com][XML-RPC]] protocol. 
+
+#INCLUDE: values.txt
+#INCLUDE: server.txt
+
+#LIST: index

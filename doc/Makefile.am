@@ -1,6 +1,8 @@
 EXTRA_DIST = \
 	libiqxmlrpc.doxygen \
-	libiqxmlrpc.doxygen.in
+	libiqxmlrpc.doxygen.in \
+	users_guide/*.txt \
+	users_guide/gen.sh
 
 DOCDIR=${prefix}/share/doc/@PACKAGE@
 MKDOC=X@MAKEDOCS@
