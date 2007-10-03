@@ -108,8 +108,10 @@ server objects with specific underlying transport.
 The following example demonstrates creation of both HTTP and HTTPS servers
 depending on users' needs.
 
-#IDX iqxmlrpc::Http_server
-#IDX iqxmlrpc::Https_server
+#IDX: iqxmlrpc::Http_server ;
+#IDX: iqxmlrpc::Https_server ;
+#IDX: HTTP ; HTTPS ;
+
 #Code id=create_server syntax=c++ <<EOC
 #include <boost/optional.hpp>
 #include <libiqxmlrpc/libiqxmlrpc.h>
@@ -140,7 +142,7 @@ EOC
 
 ** Server Sample
 
-#IDX Server Sample
+#IDX: Server Sample ;
 #Code id=server_sample syntax=c++ <<EOC
 #include <iostream>
 #include <libiqxmlrpc/libiqxmlrpc.h>
