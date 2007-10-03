@@ -15,7 +15,10 @@ This document is going to be a user guide for
 [[http://libiqxmlrpc.sourceforge.net][{arg:_L}]] library. It is free C++
 library that implements [[http://www.xmlrpc.com][XML-RPC]] protocol. 
 
+__Generated: {date: now}__
+
 #INCLUDE: values.txt
+#INCLUDE: client.txt
 #INCLUDE: server.txt
 
 #LIST: index

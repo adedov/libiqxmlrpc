@@ -1,0 +1,119 @@
+% vim: ft=viki:tw=78:noet
+
+* Writing Clients
+#OPT: id=WritingClients
+#LIST plain! sub!: toc
+
+** Quick Start
+
+Lets start with simple example that will demonstrate basic XML-RPC client.
+This client example designed to be compatible with
+[[WritingServer#server_sample][server example]].
+
+#IDX: Client Sample ;
+#Code id=client_sample syntax=c++ <<EOC
+#include <iostream>
+#include <libiqxmlrpc/libiqxmlrpc.h>
+#include <libiqxmlrpc/http_client.h>
+
+int main()
+{
+  using namespace iqxmlrpc;
+
+  // 1: Create a client object
+  Client<Http_client_connection> client(iqnet::Inet_addr(3344));
+
+  // 2: Fill method parameters
+  Param_list pl;
+  pl.push_back(Struct());
+  pl[0].insert("var1", 1);
+  pl[0].insert("var2", "value");
+
+  // 3: Call a remote method
+  Response r = client.execute("echo", pl);
+
+  // 4: Process method output
+  assert(r.value()["var1"].get_int() == 1);
+  assert(r.value()["var2"].get_string() == "value");
+}
+EOC
+
+Comments with figures state different phases of a process of writing client
+code with Libiqxmlrpc. Here they are:
+ - Create and configure client object
+ - Make remote invocations
+   - Construct a set of parameters
+   - Call a remote method
+   - Treat method output
+
+A following sections say more about those phases.
+
+** Setting Up a Client
+
+#IDX: iqxmlrpc::Client_base ;
+
+Library has a base class iqxmlrpc::Client_base that does not depend on
+transport details and can be used in users' code. This class provides
+comprehensive interface for client-oriented operations:
+ - Configuration of client connections:
+   - Specify proxy settings
+   - Specify connection timeout
+   - Specify keep-alive flag
+   - Manage client authorization
+ - Remote methods execution
+
+This section takes care questions about client configuration.
+
+*** Create Client
+
+#IDX: iqxmlrpc::Client<TRANSPORT> ;
+#IDX: HTTP ; HTTPS ;
+
+Library also provides a template class iqxmlrpc::Client<TRANSPORT>
+that is instantiated into Client_base child. It has been made in order to
+simplify creation of client objects binded to a concrete transport (namely
+HTTP or HTTPS). User just needs to specify correct TRANSPORT parameter for his
+situation:
+
+#IDX: iqxmlrpc::Http_client_connection ;
+#IDX: iqxmlrpc::Https_client_connection ;
+
+ - Http_client_connection
+ - Https_client_connection
+
+In a common case client creation code will look like a following:
+#Code id=client_creation_common syntax=c++ <<EOC
+iqxmlrpc::Client<TRANSPORT> client( iqnet::Inet_addr(host, port), "/RPC2" );
+EOC
+
+#IDX: URI ;
+
+An /RPC2 string is an URI that can be configured by a owner of a remote
+service.
+
+One can fearlessly substitute TRANSPORT template argument with
+Http_client_connection in an example above. However, enabling HTTPS needs some
+additional magic from a developer. I.e. one must initialize SSL subsystem
+before creating any SSL connection:
+
+#Code id=client_https syntax=c++ <<EOC
+#include <libiqxmlrpc/libiqxmlrpc.h>
+#include <libiqxmlrpc/https_client.h>
+
+using namespace iqxmlrpc;
+
+Client_base*
+create_https_client(iqnet::Inet_addr addr, const std::string& uri)
+{
+	// Initialize SSL subsystem
+	iqnet::ssl::ctx = iqnet::ssl::Ctx::client_only();
+
+	return new Client<Https_client_connection>(addr, uri);
+}
+EOC
+
+*** Configure Client
+__TODO__
+
+** Calling Remote Procedure
+__TODO__
