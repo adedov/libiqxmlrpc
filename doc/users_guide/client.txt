@@ -14,6 +14,7 @@ This client example designed to be compatible with
 #Code id=client_sample syntax=c++ <<EOC
 #include <iostream>
 #include <libiqxmlrpc/libiqxmlrpc.h>
+#include <libiqxmlrpc/client.h>
 #include <libiqxmlrpc/http_client.h>
 
 int main()
@@ -52,34 +53,32 @@ A following sections say more about those phases.
 
 #IDX: iqxmlrpc::Client_base ;
 
-Library has a base class iqxmlrpc::Client_base that does not depend on
-transport details and can be used in users' code. This class provides
-comprehensive interface for client-oriented operations:
- - Configuration of client connections:
-   - Specify proxy settings
-   - Specify connection timeout
-   - Specify keep-alive flag
-   - Manage client authorization
- - Remote methods execution
+An abstract base class iqxmlrpc::Client_base provides interface for client
+configuration and execution of remote methods. In summary, this interface
+allows one to: 
 
-This section takes care questions about client configuration.
+ - Configure client connections:
+   - Specify Proxy Settings
+   - Specify Connection Timeout
+   - Specify Keep-alive Flag
+   - Manage Client Authorization
+ - Method Execution
 
 *** Create Client
 
 #IDX: iqxmlrpc::Client<TRANSPORT> ;
 #IDX: HTTP ; HTTPS ;
 
-Library also provides a template class iqxmlrpc::Client<TRANSPORT>
-that is instantiated into Client_base child. It has been made in order to
-simplify creation of client objects binded to a concrete transport (namely
-HTTP or HTTPS). User just needs to specify correct TRANSPORT parameter for his
-situation:
+However, the first thing a developer need, is to create an instance of
+Client_base. Concrete sub-classes of Client_base take care of a transport used
+to communicate remote service. There is template class
+iqxmlrpc::Client<TRANSPORT> that should be used for instantiating Client_base
+children. User must specify appropriate TRANSPORT parameter for his situation,
+depending on transport required (HTTP or HTTPS).
 
-#IDX: iqxmlrpc::Http_client_connection ;
-#IDX: iqxmlrpc::Https_client_connection ;
-
- - Http_client_connection
- - Https_client_connection
+Possible options are:
+ - iqxmlrpc::Http_client_connection {idx: iqxmlrpc::Http_client_connection }
+ - iqxmlrpc::Https_client_connection {idx: iqxmlrpc::Https_client_connection }
 
 In a common case client creation code will look like a following:
 #Code id=client_creation_common syntax=c++ <<EOC
@@ -112,8 +111,148 @@ create_https_client(iqnet::Inet_addr addr, const std::string& uri)
 }
 EOC
 
-*** Configure Client
-__TODO__
+*** Configure Client Connections
+**** Specify Proxy Settings
 
-** Calling Remote Procedure
-__TODO__
+ Client_base::set_proxy :: This method allows one set an HTTP proxy host for
+     all client's outgoing connections.
+
+#Code id=set_proxy syntax=c++ <<EOC
+	Client<Http_client_connection> client(Inet_addr("host.com", 8080));
+	client.set_proxy(Inet_addr("my.proxy.com", 80));
+EOC
+
+**** Specify Connection Timeout
+#IDX: iqxmlrpc::Client_timeout ;
+
+ Client_base::set_timeout :: This method sets connection timeout in seconds.
+     A negative value means no timeout. Library throws
+     iqxmlrpc::Client_timeout exception during processing remote call in case
+     when time is out.
+
+#Code id=set_timeout syntax=c++ <<EOC
+void timed_call(Client_base& client, int timeout)
+{
+	client.set_timeout(timeout);
+
+	try {
+		Response r = client.execute("foo", Value());
+		// work with r ...
+
+	} catch(const Client_timeout&) {
+		// handle connection timeout
+	}
+}
+EOC
+
+ !!! Note that timeout specified with set_timeout method does not affect
+     connecting process.
+
+**** Specify Keep-alive Flag
+
+ Client_base::set_keep_alive :: This method manages HTTP keep-alive facility
+     on a client connection. If one enables this flag and remote server
+     supports this facility then all subsequent method execution request will
+     go through the same open connection.
+     
+#Code id=set_keep_alive syntax=c++ <<EOC
+void banch_of_requests(Client_base& client)
+{
+	// Ask server to not close connection after response
+	client.set_keep_alive(true);
+
+	client.execute("foo", Value());
+
+	// Hope, the same connection.
+	// Depending on server implementation.
+	client.execute("bar", Value());
+}
+EOC
+
+**** Manage Client Authorization
+
+ Client_base::set_authinfo :: This method sets user/password pair to pass
+     through HTTP authentication mechanism.
+
+#Code id=set_authinfo syntax=c++ <<EOC
+	client.set_authinfo("admin", "12345");
+EOC
+
+ !!! Note that though library allows use set_authinfo with plain a HTTP
+     connections, one should not rely on it because in this case your
+     credential information may become available to traffic sniffers.
+
+** Method Execution
+
+*** Calling Remote Method
+
+XML-RPC standard allows transfer a number of input parameters to a remote
+procedure. Actually, quite often XML-RPC APIs take in account only first of
+them, and require transferring parameters in a key-value form. Just because
+this method is much more convenient and reflects to a dynamic nature of
+XML-RPC it-self.
+
+Library provides comfortable way for both approaches. The __iqxmlrpc::Client__
+provides two overloaded interface for calling remote methods:
+
+#Code id=execute_signature syntax=c++ <<EOC
+namespace iqxmlrpc {
+
+typedef std::vector<Value> Param_list;
+
+class Client {
+public:
+	// ...
+	Response execute( const std::string& method, const Param_list& );
+	Response execute( const std::string& method, const Value& );
+};
+
+} // namespace iqxmlrpc
+EOC
+
+Both methods accept name of calling method as a first parameter. A former
+allows transfer an array of input parameters (as the standard
+suggests).
+
+A second one puts specified value into first element of array of parameters
+and just calls a first one.
+
+*** Deal with Method Responses
+
+An XML-RPC response may be of two types: __method output__, and __failure
+report__. Objects of __iqxmlrpc::Response__ class serve a destination for
+result of a remote call and may hold either type of response.
+
+A __Response::value__ method gives user access to a received result. And
+__Response::is_fault__ allows user check if received XML-RPC packet contained
+failure notice. If user try access response value with __value__ method and an
+object is actually containing an XML-RPC failure notice then exception that
+contain all information about failure would be thrown. This behavior gives
+user ability write a code in optimistic manner.
+
+__Response::failure_code__ and __Response::failure_string__ methods gives an
+alternative way to retrieve information about failure.
+
+ ### Please note that Response objects may contain only XML-RPC failures. 
+ Failures form a network layer or some HTTP issues are always exceptions.
+
+#Code id=method_call syntax=c++ <<EOC
+std::string get_name_of_object(Client_base& client, int object_id)
+{
+	try {
+		Response r = client("get_object_name", object_id);
+		return r.value().get_string();
+
+	} catch (const Client_timeout&) {
+		std::cerr << "Timeout" << std::endl;
+		exit(1);
+
+	} catch (const Exception& e) {
+		std::cerr
+		    << "XML-RPC error "
+		    << e.code() << ": " << e.what()
+		    << std::endl;
+		exit(2);
+	}
+}
+EOC
