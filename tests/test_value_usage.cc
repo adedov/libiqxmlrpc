@@ -5,7 +5,7 @@
 #include <boost/test/unit_test.hpp>
 #include "libiqxmlrpc/value.h"
 
-using namespace boost::unit_test_framework;
+using namespace boost::unit_test;
 using namespace iqxmlrpc;
 
 void nil_test()
@@ -162,15 +162,22 @@ void date_time_test()
   BOOST_FAIL("TEST NOT IMPLEMENTED!");
 }
 
-test_suite* init_unit_test_suite( int argc, char* argv[] )
+bool init_tests()
 {
-  test_suite* test = BOOST_TEST_SUITE("Value types usage test");
-  test->add( BOOST_TEST_CASE(&nil_test) );
-  test->add( BOOST_TEST_CASE(&scalar_test) );
-  test->add( BOOST_TEST_CASE(&array_test) );
-  test->add( BOOST_TEST_CASE(&struct_test) );
+  test_suite& test = framework::master_test_suite();
+  test.add( BOOST_TEST_CASE(&nil_test) );
+  test.add( BOOST_TEST_CASE(&scalar_test) );
+  test.add( BOOST_TEST_CASE(&array_test) );
+  test.add( BOOST_TEST_CASE(&struct_test) );
 //  test->add( BOOST_TEST_CASE(&binary_test) );
 //  test->add( BOOST_TEST_CASE(&date_time_test) );
 
-  return test;
+  return true;
 }
+
+int main( int argc, char* argv[] )
+{
+  boost::unit_test::unit_test_main( &init_tests, argc, argv );
+}
+
+// vim:ts=2:sw=2:et

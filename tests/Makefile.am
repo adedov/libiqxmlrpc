@@ -1,5 +1,6 @@
 ACLOCAL_AMFLAGS = -I ../m4
 EXTRA_DIST = data
+CXXFLAGS += -DBOOST_TEST_DYN_LINK
 LDADD = ../libiqxmlrpc/libiqxmlrpc-client.la \
 	../libiqxmlrpc/libiqxmlrpc-server.la \
 	$(BOOST_THREAD_LIB) \
