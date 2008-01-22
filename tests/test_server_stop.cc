@@ -95,32 +95,20 @@ void stop_test_server_mt(unsigned fnum)
   stop_test_server(16);
 }
 
-test_suite* init_unit_test_suite(int argc, char* argv[])
+bool init_tests()
 {
-  try {
-    test_suite* test = BOOST_TEST_SUITE("Stopping server test");
-    test->add( BOOST_TEST_CASE(&stop_test_server_st) );
+  test_suite& test = framework::master_test_suite();
+  test.add( BOOST_TEST_CASE(&stop_test_server_st) );
 
-    for (unsigned i = 0; i < 50; ++i)
-      test->add( BOOST_TEST_CASE(boost::bind(stop_test_server_mt, i)));
+  for (unsigned i = 0; i < 50; ++i)
+    test.add( BOOST_TEST_CASE(boost::bind(stop_test_server_mt, i)));
 
-    return test;
-  }
-  catch(const iqxmlrpc::Exception& e)
-  {
-    std::cerr << "iqxmlrpc E: " << e.what() << std::endl;
-    throw;
-  }
-  catch(const iqnet::network_error& e)
-  {
-    std::cerr << "iqnet E: " << e.what() << std::endl;
-    throw;
-  }
-  catch(...)
-  {
-    std::cerr << "Unexpected exception" << std::endl;
-    throw;
-  }
+  return true;
+}
+
+int main(int argc, char* argv[])
+{
+  boost::unit_test::unit_test_main( &init_tests, argc, argv );
 }
 
 // vim:ts=2:sw=2:et

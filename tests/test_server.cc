@@ -12,7 +12,7 @@
 #include "server_config.h"
 #include "methods.h"
 
-using namespace boost::unit_test_framework;
+using namespace boost::unit_test;
 using namespace iqxmlrpc;
 
 class LogInterceptor: public Interceptor {
@@ -130,38 +130,32 @@ void start_test_server()
   test_server->work();
 }
 
-test_suite* init_unit_test_suite(int argc, char* argv[])
+bool init_tests()
+{
+  test_suite& test = framework::master_test_suite();
+  test.add( BOOST_TEST_CASE(&start_test_server) );
+  return true;
+}
+
+int main( int argc, char* argv[] )
 {
   try {
     Test_server_config conf = Test_server_config::create(argc, argv);
     test_server = new Test_server(conf);
     ::signal(SIGINT, &test_server_sig_handler);
-
-    test_suite* test = BOOST_TEST_SUITE("Server test");
-    test->add( BOOST_TEST_CASE(&start_test_server) );
-
-    return test;
-  }
-  catch(const iqxmlrpc::Exception& e)
-  {
-    std::cerr << "iqxmlrpc E: " << e.what() << std::endl;
-    throw;
-  }
-  catch(const iqnet::network_error& e)
-  {
-    std::cerr << "iqnet E: " << e.what() << std::endl;
-    throw;
   }
   catch(const Test_server_config::Malformed_config& e)
   {
     std::cerr << e.what() << std::endl;
-    return 0;
+    return 1;
   }
-  catch(...)
+  catch(const std::exception& e)
   {
-    std::cerr << "Unexpected exception" << std::endl;
-    throw;
+    std::cerr << "E: " << e.what() << std::endl;
+    return 1;
   }
+
+  boost::unit_test::unit_test_main( &init_tests, argc, argv );
 }
 
 // vim:ts=2:sw=2:et

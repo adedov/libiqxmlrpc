@@ -10,7 +10,7 @@
 #include "client_common.h"
 #include "client_opts.h"
 
-using namespace boost::unit_test_framework;
+using namespace boost::unit_test;
 using namespace iqxmlrpc;
 
 // Global
@@ -99,27 +99,33 @@ void get_file_test()
   BOOST_CHECK(gen_md5->get_base64() == m.get_base64());
 }
 
-test_suite* init_unit_test_suite(int argc, char* argv[])
+bool init_tests()
+{
+  test_suite& test = framework::master_test_suite();
+
+  test.add( BOOST_TEST_CASE(&introspection_test) );
+  test.add( BOOST_TEST_CASE(&echo_test) );
+  test.add( BOOST_TEST_CASE(&get_file_test) );
+  test.add( BOOST_TEST_CASE(&auth_test) );
+
+  if (test_config.stop_server())
+    test.add( BOOST_TEST_CASE(&stop_server) );
+
+  return true;
+}
+
+int main(int argc, char* argv[])
 {
   try {
     test_config.configure(argc, argv);
     test_client = test_config.client_factory()->create();
 
-    test_suite* test = BOOST_TEST_SUITE("Client test");
-    test->add( BOOST_TEST_CASE(&introspection_test) );
-    test->add( BOOST_TEST_CASE(&echo_test) );
-    test->add( BOOST_TEST_CASE(&get_file_test) );
-    test->add( BOOST_TEST_CASE(&auth_test) );
-
-    if (test_config.stop_server())
-      test->add( BOOST_TEST_CASE(&stop_server) );
-
-    return test;
+    boost::unit_test::unit_test_main( &init_tests, argc, argv );
   }
   catch (const std::exception& e)
   {
     std::cerr << e.what() << std::endl;
-    return 0;
+    return 1;
   }
 }
 

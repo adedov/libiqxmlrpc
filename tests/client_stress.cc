@@ -10,19 +10,19 @@
 #include "client_common.h"
 #include "client_opts.h"
 
-using namespace boost::unit_test_framework;
+using namespace boost::unit_test;
 using namespace boost::program_options;
 using namespace iqxmlrpc;
 
 class Stress_test_opts: public Client_opts {
   int client_threads_;
   int calls_per_thread_;
-  
+
 public:
   Stress_test_opts():
     client_threads_(1),
     calls_per_thread_(1)
-  { 
+  {
     opts_.add_options()
       ("client-threads",   value<int>(&client_threads_))
       ("calls-per-thread", value<int>(&calls_per_thread_));
@@ -74,33 +74,39 @@ void stress_test()
 {
   boost::timer timer;
   boost::thread_group thrds;
-    
-  for(int i = 0; i < test_config.client_threads(); ++i) 
+
+  for(int i = 0; i < test_config.client_threads(); ++i)
     thrds.create_thread(&do_test);
 
   thrds.join_all();
-  
+
   std::ostringstream ss;
   ss << "Stress test elapsed time: " << timer.elapsed();
   BOOST_MESSAGE(ss.str());
 }
 
-test_suite* init_unit_test_suite(int argc, char* argv[])
+bool init_tests()
+{
+  test_suite& test = framework::master_test_suite();
+  test.add( BOOST_TEST_CASE(&stress_test) );
+
+  if (test_config.stop_server())
+    test.add( BOOST_TEST_CASE(&stop_test_server) );
+
+  return true;
+}
+
+int main(int argc, char* argv[])
 {
   try {
     test_config.configure(argc, argv);
-  
-    test_suite* test = BOOST_TEST_SUITE("Client-server stress test");
-    test->add( BOOST_TEST_CASE(&stress_test) );
-
-    if (test_config.stop_server())
-      test->add( BOOST_TEST_CASE(&stop_test_server) );
-
-    return test;
+    boost::unit_test::unit_test_main( &init_tests, argc, argv );
   }
   catch (const std::exception& e)
   {
     std::cerr << e.what() << std::endl;
-    return 0;
+    return 1;
   }
 }
+
+// vim:ts=2:sw=2:et
