@@ -60,8 +60,8 @@ pkginclude_HEADERS = \
 	util.h \
 	value_type.h \
 	value_type_visitor.h \
-	value.h
-#  xml_util.h
+	value.h \
+  xml_utils.h
 
 libiqxmlrpc_general_la_SOURCES = \
 	acceptor.cc \
@@ -84,7 +84,8 @@ libiqxmlrpc_general_la_SOURCES = \
 	value_type.cc \
 	value_type_visitor.cc \
 	value_type_xml.cc \
-	value.cc
+	value.cc \
+	xml_utils.cc
 
 libiqxmlrpc_client_la_SOURCES = \
 	client.cc \

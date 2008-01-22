@@ -203,10 +203,7 @@ void Server::schedule_response(
   const Response& resp, Server_connection* conn, Executor* exec )
 {
   std::auto_ptr<Executor> executor_to_delete(exec);
-
-  std::auto_ptr<xmlpp::Document> xmldoc( resp.to_xml() );
-  std::string resp_str = xmldoc->write_to_string_formatted( "utf-8" );
-
+  std::string resp_str = resp.dump_xml(true);
   http::Packet *packet = new http::Packet(new http::Response_header(), resp_str);
   conn->schedule_response( packet );
 }

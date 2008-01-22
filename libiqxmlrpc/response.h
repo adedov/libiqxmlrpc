@@ -23,9 +23,9 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "api_export.h"
+#include "xml_utils.h"
 
 namespace xmlpp {
-  class Document;
   class Node;
 }
 
@@ -39,7 +39,7 @@ class Value;
 #endif
 
 //! XML-RPC response.
-class LIBIQXMLRPC_API Response {
+class LIBIQXMLRPC_API Response: public Serializable_to_xml {
   boost::shared_ptr<Value> value_;
   int fault_code_;
   std::string fault_string_;
@@ -49,8 +49,6 @@ public:
   Response( const xmlpp::Node* );
   Response( Value* );
   Response( int fault_code, const std::string& fault_string );
-
-  xmlpp::Document* to_xml() const;
 
   //! Returns response value or throws iqxmlrpc::Fault in case of fault.
   const Value& value() const;
@@ -66,6 +64,8 @@ private:
   void parse( const xmlpp::Node* );
   void parse_param( const xmlpp::Node* );
   void parse_fault( const xmlpp::Node* );
+
+  virtual xmlpp::Document* to_xml() const;
 
   void ok_to_xml( xmlpp::Node* ) const;
   void fault_to_xml( xmlpp::Node* ) const;

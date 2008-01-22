@@ -39,8 +39,7 @@ Response Client_connection::process_session( const Request& req )
 
   try
   {
-    std::auto_ptr<xmlpp::Document> xmldoc( req.to_xml() );
-    std::string req_xml_str( xmldoc->write_to_string_formatted( "utf-8" ) );
+    std::string req_xml_str( req.dump_xml(true) );
 
     std::auto_ptr<Request_header> req_h(
       new Request_header(

@@ -24,9 +24,9 @@
 #include <vector>
 #include "api_export.h"
 #include "value.h"
+#include "xml_utils.h"
 
 namespace xmlpp {
-  class Document;
   class Node;
 }
 
@@ -40,7 +40,7 @@ typedef std::vector<Value> Param_list;
 LIBIQXMLRPC_API  Request* parse_request( const std::string& );
 
 //! Incoming RPC request.
-class LIBIQXMLRPC_API Request {
+class LIBIQXMLRPC_API Request: public Serializable_to_xml {
 public:
   typedef Param_list::const_iterator const_iterator;
 
@@ -54,8 +54,6 @@ public:
   Request( const std::string& name, const Param_list& params );
   virtual ~Request();
 
-  xmlpp::Document* to_xml() const;
-
   const std::string& get_name()   const { return name; }
   const Param_list&  get_params() const { return params; }
 
@@ -63,6 +61,7 @@ private:
   void parse( const xmlpp::Node* );
   void parse_name( const xmlpp::Node* );
   void parse_params( const xmlpp::Node* );
+  virtual xmlpp::Document* to_xml() const;
 };
 
 } // namespace iqxmlrpc
