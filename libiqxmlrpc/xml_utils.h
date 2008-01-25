@@ -21,7 +21,6 @@
 #define _iqxmlrpc_xml_utils_h_
 
 #include <string>
-#include <libxml++/document.h>
 #include "api_export.h"
 
 namespace xmlpp {
