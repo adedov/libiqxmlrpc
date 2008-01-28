@@ -27,6 +27,23 @@
 
 namespace iqxmlrpc {
 
+Response parse_response( const std::string& response_string )
+{
+  try {
+    xmlpp::DomParser parser;
+    parser.set_substitute_entities();
+    parser.parse_memory( response_string );
+
+    return Response( parser.get_document() );
+  }
+  catch( xmlpp::exception& e )
+  {
+    throw Parse_error( e.what() );
+  }
+}
+
+
+//-----------------------------------------------------------------------------
 Response::Response( const xmlpp::Document* doc )
 {
   parse( doc->get_root_node() );

@@ -62,11 +62,7 @@ Response Client_connection::process_session( const Request& req )
     if( res_h->code() != 200 )
       throw Error_response( res_h->phrase(), res_h->code() );
 
-    xmlpp::DomParser parser;
-    parser.set_substitute_entities();
-    parser.parse_memory( res_p->content() );
-
-    return Response( parser.get_document() );
+    return parse_response( res_p->content() );
   }
   catch( const xmlpp::exception& e )
   {

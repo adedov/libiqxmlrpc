@@ -31,12 +31,16 @@ namespace xmlpp {
 
 namespace iqxmlrpc {
 
+class Response;
 class Value;
 
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4251)
 #endif
+
+//! Build response object from XML-formed string.
+LIBIQXMLRPC_API Response parse_response( const std::string& );
 
 //! XML-RPC response.
 class LIBIQXMLRPC_API Response: public Serializable_to_xml {
