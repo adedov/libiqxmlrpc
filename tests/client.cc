@@ -58,6 +58,7 @@ void auth_test()
     retval = test_client->execute("echo_user", 0);
 
   } catch (const iqxmlrpc::http::Error_response& e) {
+    BOOST_CHECK_EQUAL(e.response_header()->code(), 401);
     test_client->set_authinfo("", "");
     return;
   }

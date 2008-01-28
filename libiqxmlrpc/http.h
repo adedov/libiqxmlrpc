@@ -249,6 +249,12 @@ public:
 
   ~Error_response() throw() {};
 
+  const Response_header* response_header() const
+  {
+	  return dynamic_cast<const Response_header*>(header());
+  }
+
+  // deprecated
   std::string dump_error_response() const { return dump(); }
 };
 
