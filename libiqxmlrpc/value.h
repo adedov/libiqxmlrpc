@@ -44,8 +44,7 @@ public:
   //! type conversion or Value::get_X() call.
   class Bad_cast: public Exception {
   public:
-    Bad_cast():
-      Exception( "iqxmlrpc::Value: incorrect type was requested." ) {}
+    Bad_cast();
   };
 
 private:
@@ -72,89 +71,73 @@ public:
 
   //! \name Type identification
   //! \{
-  bool is_nil()    const { return can_cast<Nil>(); }
-  bool is_int()    const { return can_cast<Int>(); }
-  bool is_bool()   const { return can_cast<Bool>(); }
-  bool is_double() const { return can_cast<Double>(); }
-  bool is_string() const { return can_cast<String>(); }
-  bool is_binary() const { return can_cast<Binary_data>(); }
-  bool is_datetime() const { return can_cast<Date_time>(); }
-  bool is_array()  const { return can_cast<Array>(); }
-  bool is_struct() const { return can_cast<Struct>(); }
+  bool is_nil()    const;
+  bool is_int()    const;
+  bool is_bool()   const;
+  bool is_double() const;
+  bool is_string() const;
+  bool is_binary() const;
+  bool is_datetime() const;
+  bool is_array()  const;
+  bool is_struct() const;
 
-  const std::string& type_name() const { return value->type_name(); }
+  const std::string& type_name() const;
   //! \}
 
   //! \name Access scalar value
   //! \{
-  int         get_int()    const { return cast<Int>()->value(); }
-  bool        get_bool()   const { return cast<Bool>()->value(); }
-  double      get_double() const { return cast<Double>()->value(); }
-  std::string get_string() const { return cast<String>()->value(); }
-  Binary_data get_binary() const { return Binary_data(*cast<Binary_data>()); }
-  Date_time   get_datetime() const { return Date_time(*cast<Date_time>()); }
+  int         get_int()    const;
+  bool        get_bool()   const;
+  double      get_double() const;
+  std::string get_string() const;
+  Binary_data get_binary() const;
+  Date_time   get_datetime() const;
 
-  operator int()         const { return get_int(); }
-  operator bool()        const { return get_bool(); }
-  operator double()      const { return get_double(); }
-  operator std::string() const { return get_string(); }
-  operator Binary_data() const { return get_binary(); }
-  operator struct tm()   const { return get_datetime().get_tm(); }
+  operator int()         const;
+  operator bool()        const;
+  operator double()      const;
+  operator std::string() const;
+  operator Binary_data() const;
+  operator struct tm()   const;
   //! \}
 
   //! \name Array functions
   //! \{
   //! Access inner Array value
-  Array& the_array() { return *cast<Array>(); }
-  const Array& the_array() const { return *cast<Array>(); }
+  Array& the_array();
+  const Array& the_array() const;
 
-  unsigned size() const { return cast<Array>()->size(); }
+  unsigned size() const;
   const Value& operator []( int ) const;
   Value&       operator []( int );
 
-  void push_back( const Value& v ) { cast<Array>()->push_back(v); }
+  void push_back( const Value& v );
 
-  Array::const_iterator arr_begin() const { return cast<Array>()->begin(); }
-  Array::const_iterator arr_end()   const { return cast<Array>()->end(); }
+  Array::const_iterator arr_begin() const;
+  Array::const_iterator arr_end() const;
   //! \}
 
   //! \name Struct functions
   //! \{
   //! Access inner Struct value.
-  Struct& the_struct() { return *cast<Struct>(); }
-  const Struct& the_struct() const { return *cast<Struct>(); }
+  Struct& the_struct();
+  const Struct& the_struct() const;
 
-  bool has_field( const std::string& f ) const
-  {
-    return cast<Struct>()->has_field(f);
-  }
+  bool has_field( const std::string& f ) const;
 
   const Value& operator []( const char* ) const;
   Value&       operator []( const char* );
   const Value& operator []( const std::string& ) const;
   Value&       operator []( const std::string& );
 
-  void insert( const std::string& n, const Value& v )
-  {
-    cast<Struct>()->insert(n,v);
-  }
+  void insert( const std::string& n, const Value& v );
   //! \}
 
   void apply_visitor(Value_type_visitor&) const;
 
 private:
-  template <class T> T* cast() const
-  {
-    T* t = dynamic_cast<T*>( value );
-    if( !t )
-      throw Bad_cast();
-    return t;
-  }
-
-  template <class T> bool can_cast() const
-  {
-    return dynamic_cast<T*>( value );
-  }
+  template <class T> T* cast() const;
+  template <class T> bool can_cast() const;
 };
 
 void LIBIQXMLRPC_API value_to_xml(const Value&, xmlpp::Node*);
