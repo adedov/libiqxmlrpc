@@ -69,7 +69,7 @@ public:
 
 //! Template for scalar types based on Value_type (e.g. Int, String, etc.)
 template <class T>
-class Scalar: public Value_type {
+class LIBIQXMLRPC_API Scalar: public Value_type {
 protected:
   T value_;
 
