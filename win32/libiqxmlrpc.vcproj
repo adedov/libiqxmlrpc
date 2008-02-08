@@ -252,6 +252,9 @@
 			<File
 				RelativePath="..\libiqxmlrpc\value_type_xml.cc">
 			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\xml_utils.cc">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -391,6 +394,9 @@
 			</File>
 			<File
 				RelativePath="..\libiqxmlrpc\version.h">
+			</File>
+			<File
+				RelativePath="..\libiqxmlrpc\xml_utils.h">
 			</File>
 		</Filter>
 		<Filter
