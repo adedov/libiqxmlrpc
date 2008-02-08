@@ -32,6 +32,8 @@
   #else
     #define LIBIQXMLRPC_API
   #endif // LIBIQXMLRPC_COMPILATION && DLL_EXPORT
+#elif defined(__GNUC__) && __GNUC__ > 3
+  #define LIBIQXMLRPC_API __attribute__((visibility("default")))
 #else
   #define LIBIQXMLRPC_API
 #endif // LIBIQXMLRPC_DLL
