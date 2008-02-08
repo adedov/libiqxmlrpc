@@ -81,6 +81,10 @@ void Https_server_connection::send_succeed( bool& terminate )
     terminate = reg_shutdown();
 }
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4996)
+#endif
 
 void Https_server_connection::schedule_response( http::Packet* pkt )
 {
@@ -91,6 +95,9 @@ void Https_server_connection::schedule_response( http::Packet* pkt )
   reg_send( send_buf, response.length() );
 }
 
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 void Https_server_connection::log_exception( const std::exception& ex )
 {

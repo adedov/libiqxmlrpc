@@ -25,7 +25,8 @@ namespace iqxmlrpc {
 // Client_base::Impl
 //
 
-struct Client_base::Impl {
+class Client_base::Impl {
+public:
   Impl(
     const iqnet::Inet_addr& addr,
     const std::string& uri,

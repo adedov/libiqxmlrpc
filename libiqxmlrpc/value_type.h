@@ -30,6 +30,11 @@
 #include "except.h"
 #include "util.h"
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4275)
+#endif
+
 //! XML-RPC library
 namespace iqxmlrpc {
 
@@ -202,7 +207,6 @@ public:
     return !(*this == ci );
   }
 };
-
 
 inline Array::const_iterator Array::begin() const
 {

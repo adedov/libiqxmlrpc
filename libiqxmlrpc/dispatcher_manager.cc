@@ -99,7 +99,8 @@ private:
 // Method dispatcher menager
 //
 
-struct Method_dispatcher_manager::Impl {
+class Method_dispatcher_manager::Impl {
+public:
   typedef std::deque<Method_dispatcher_base*> DispatchersSet;
   DispatchersSet dispatchers;
   Default_method_dispatcher* default_disp;

@@ -39,6 +39,11 @@ typedef std::vector<Value> Param_list;
 //! Build request object from XML-formed string.
 LIBIQXMLRPC_API  Request* parse_request( const std::string& );
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#endif
+
 //! Incoming RPC request.
 class LIBIQXMLRPC_API Request: public Serializable_to_xml {
 public:
@@ -63,6 +68,10 @@ private:
   void parse_params( const xmlpp::Node* );
   virtual xmlpp::Document* to_xml() const;
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 } // namespace iqxmlrpc
 

@@ -29,6 +29,11 @@ namespace iqxmlrpc {
 
 class Client_connection;
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#endif
+
 //! Client base class.
 //! It is responsible for performing RPC calls and connection management.
 class LIBIQXMLRPC_API Client_base: boost::noncopyable {
@@ -78,6 +83,9 @@ private:
   boost::scoped_ptr<Impl> impl_;
 };
 
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 //! Template of concrete client class.
 //! It is responsible for conneciton establishment

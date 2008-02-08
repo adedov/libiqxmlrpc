@@ -31,6 +31,12 @@
 namespace iqnet
 {
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#pragma warning(disable: 4275)
+#endif
+
 //! Reactor implementation helper based on select() system call.
 class LIBIQXMLRPC_API Reactor_select_impl: boost::noncopyable {
   Socket::Handler max_fd;
@@ -44,6 +50,10 @@ public:
   void reset(const Reactor_base::HandlerStateList&);
   bool poll(Reactor_base::HandlerStateList& out, Reactor_base::Timeout);
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 } // namespace iqnet
 

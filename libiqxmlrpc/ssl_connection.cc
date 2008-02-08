@@ -213,7 +213,7 @@ void ssl::Reaction_connection::switch_state( bool& terminate )
 //    std::cout << "need_write" << std::endl;
     reactor->register_handler( this, Reactor_base::OUTPUT );
   }
-  catch( const ssl::connection_close& e )
+  catch( const ssl::connection_close& )
   {
 //    std::cout << "connection_close " << e.is_clean() << std::endl;
     reg_shutdown();
