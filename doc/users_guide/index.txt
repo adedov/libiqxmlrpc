@@ -1,6 +1,6 @@
 % vim: ft=viki:tw=78:noet
 
-#VAR: css=deplate.css|screen +tabbar-right.css|screen +serif.css
+#VAR: css=deplate.css|screen +tabbar-right.css
 #VAR id=noSwallow
 #VAR autoindex=true
 
