@@ -230,7 +230,7 @@ object is actually containing an XML-RPC failure notice then exception that
 contain all information about failure would be thrown. This behavior gives
 user ability write a code in optimistic manner.
 
-__Response::failure_code__ and __Response::failure_string__ methods gives an
+__Response::fault_code__ and __Response::fault_string__ methods gives an
 alternative way to retrieve information about failure.
 
  ### Please note that Response objects may contain only XML-RPC failures. 
