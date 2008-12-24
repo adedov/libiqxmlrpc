@@ -34,6 +34,3 @@ rpm:	dist
 
 clog:
 	bzr log --short > ChangeLog
-
-mydist:	dist
-	( cd doc; tar cfz ../libiqxmlrpc-doc-@VERSION@.tar.gz index.html libiqxmlrpc.html )
