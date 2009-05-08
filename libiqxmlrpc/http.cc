@@ -22,6 +22,7 @@
 #include <memory>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
 #include "http.h"
@@ -362,15 +363,16 @@ Response_header::Response_header( int c, const std::string& p ):
 
 std::string Response_header::current_date() const
 {
-  time_t t;
-  time( &t );
-  struct tm* bdt = gmtime( &t );
+  using namespace boost::posix_time;
+  ptime p = second_clock::universal_time();
+  struct tm bdt = to_tm(p);
+
   char *oldlocale = setlocale( LC_TIME, 0 );
   setlocale( LC_TIME, "C" );
 
   char date_str[31];
   date_str[30] = 0;
-  strftime( date_str, 30, "%a, %d %b %Y %H:%M:%S GMT", bdt );
+  strftime( date_str, 30, "%a, %d %b %Y %H:%M:%S GMT", &bdt );
 
   setlocale( LC_TIME, oldlocale );
   return date_str;
