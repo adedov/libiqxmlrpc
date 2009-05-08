@@ -39,7 +39,7 @@ Response Client_connection::process_session( const Request& req )
 
   try
   {
-    std::string req_xml_str( req.dump_xml(true) );
+    std::string req_xml_str( req.dump_xml(false) );
 
     std::auto_ptr<Request_header> req_h(
       new Request_header(
