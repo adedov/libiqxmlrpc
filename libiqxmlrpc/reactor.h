@@ -37,8 +37,8 @@ public:
   //! If this handler used as Reactor stopper.
   virtual bool is_stopper() const { return false; }
 
-  virtual void handle_input( bool& terminate ) {}
-  virtual void handle_output( bool& terminate ) {}
+  virtual void handle_input( bool& /* terminate */) {}
+  virtual void handle_output( bool& /* terminate */) {}
 
   //! Invoked by Reactor when handle_X()
   //! sets terminate variable to true.
