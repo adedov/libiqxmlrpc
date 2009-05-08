@@ -20,6 +20,7 @@
 #include <string.h>
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "value_type.h"
 #include "value_type_visitor.h"
 #include "value.h"
@@ -512,10 +513,9 @@ Date_time::Date_time( const struct tm* t )
 
 Date_time::Date_time( bool use_lt )
 {
-  time_t t;
-  ::time( &t );
-  struct tm *ptm = use_lt ? localtime( &t ) : gmtime( &t );
-  tm_ = *ptm;
+  using namespace boost::posix_time;
+  ptime p = use_lt ? second_clock::local_time() : second_clock::universal_time();
+  tm_ = to_tm(p);
 }
 
 
