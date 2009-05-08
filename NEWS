@@ -1,5 +1,11 @@
 Look into ChangeLog file for full list of changes.
 
+0.8.7 - 0.8.8
+  * Increase thread-safety in Inet_addr class.
+  * Increase thread-safety in Date_time, http server
+    (by using boost data_time instead of localtime/gmtime functions).
+  * Turn off XML-formatting for XML-RPC requests/responses.
+
 0.8.6a - 0.8.7
   This release introduces binary incompatibilities with 0.8.6a.
 
