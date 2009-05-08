@@ -53,7 +53,7 @@ Inet_addr::Inet_addr( const std::string& host_, int port_ ):
   hent = ::gethostbyname( host.c_str() );
 
   if( !hent ) {
-    throw network_error( "gethostbyname: " + std::string(hstrerror(local_h_errno)), false );
+    throw network_error( "gethostbyname" );
   }
 
 #endif
