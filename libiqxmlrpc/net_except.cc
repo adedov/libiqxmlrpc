@@ -20,14 +20,35 @@
 #include "sysinc.h"
 #include "net_except.h"
 
+namespace {
+
+inline std::string
+exception_message(const std::string& prefix, bool use_errno)
+{
+  std::string retval = prefix;
+
+  if (use_errno)
+  {
+    retval += ": ";
+
+    char buf[256];
+    buf[255] = 0;
+
+#ifndef _WINDOWS
+    strerror_r( errno, buf, sizeof(buf) - 1 );
+#else
+    strerror_s( buf, sizeof(buf) - 1, WSAGetLastError() );
+#endif
+
+    retval += std::string(buf);
+  }
+
+  return retval;
+}
+
+}
 
 iqnet::network_error::network_error( const std::string& msg, bool use_errno ):
-  std::runtime_error(
-#ifdef _WINDOWS
-    use_errno?(strerror(errno)):msg)
-#else
-    // not compiles under VC++ :(
-    use_errno ? (msg + std::string(": ") + strerror(errno)) : msg )
-#endif // _WINDOWS
+  std::runtime_error( exception_message(msg, use_errno) )
 {
 }

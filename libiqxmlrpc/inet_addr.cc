@@ -28,7 +28,7 @@ std::string iqnet::get_host_name()
 {
   char buf[256];
   buf[255] = 0;
-  ::gethostname( buf, 255 );
+  ::gethostname( buf, sizeof(buf) );
 
   return buf;
 }
@@ -37,9 +37,26 @@ std::string iqnet::get_host_name()
 Inet_addr::Inet_addr( const std::string& host_, int port_ ):
   host(host_), port(port_)
 {
-  struct hostent *hent = gethostbyname( host.c_str() );
-  if( !hent )
-    throw network_error( "gethostbyname" );
+  struct hostent* hent = 0;
+
+#ifndef _WINDOWS
+  struct hostent hent_local;
+  char buf[255];
+  int local_h_errno = 0;
+  ::gethostbyname_r( host.c_str(), &hent_local, buf, sizeof(buf), &hent, &local_h_errno );
+
+  if( !hent ) {
+    throw network_error( "gethostbyname: " + std::string(hstrerror(local_h_errno)), false );
+  }
+
+#else
+  hent = ::gethostbyname( host.c_str() );
+
+  if( !hent ) {
+    throw network_error( "gethostbyname: " + std::string(hstrerror(local_h_errno)), false );
+  }
+
+#endif
 
   sa.sin_family = PF_INET;
   sa.sin_port = htons(port);
