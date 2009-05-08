@@ -31,10 +31,9 @@
 #include <time.h>
 
 #if defined(_WINDOWS)
-  #define _WINSOCKAPI_ // to prevent winsock usage instead of Winsock2
   #include <windows.h>
   #include <Winsock2.h>
-  #include <ws2tcpip.h> 
+  #include <ws2tcpip.h>
 #else
   #include <unistd.h>
   #include <netdb.h>
