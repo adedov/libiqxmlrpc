@@ -5,6 +5,8 @@ Look into ChangeLog file for full list of changes.
   * Increase thread-safety in Date_time, http server
     (by using boost data_time instead of localtime/gmtime functions).
   * Turn off XML-formatting for XML-RPC requests/responses.
+  * Remove users guide from sources because it lives now at
+    libiqxmlrpc.wikidot.com.
 
 0.8.6a - 0.8.7
   This release introduces binary incompatibilities with 0.8.6a.
