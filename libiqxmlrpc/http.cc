@@ -468,7 +468,7 @@ Packet* Packet_reader::read_packet( const std::string& s, bool hdr_only )
       return new Packet( header, std::string() );
     }
 
-    bool ready = s.empty() && !header->content_length() ||
+    bool ready = (header->content_length() == 0 && s.empty()) ||
                  content_cache.length() >= header->content_length();
 
     if( ready )
