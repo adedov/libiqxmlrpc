@@ -67,15 +67,6 @@ void unsigned_number(const std::string& val)
   }
 }
 
-void connection(const std::string& val)
-{
-  std::string tmp(val);
-  boost::to_lower(tmp);
-
-  if (tmp != "close" && tmp != "keep-alive")
-    throw Malformed_packet("bad 'connection' option format");
-}
-
 void content_type(const std::string& val)
 {
   std::string cont_type(val);
@@ -91,11 +82,9 @@ void content_type(const std::string& val)
 Header::Header(Verification_level lev):
   ver_level_(lev)
 {
-  set_conn_keep_alive(false);
-
+  set_option_default(names::connection, "close");
   register_validator(names::content_length, validator::unsigned_number, HTTP_CHECK_WEAK);
   register_validator(names::content_type, validator::content_type, HTTP_CHECK_STRICT);
-  register_validator(names::connection, validator::connection, HTTP_CHECK_WEAK);
 }
 
 Header::~Header()
