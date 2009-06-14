@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([libiqxmlrpc], [0.8.8], [adedov@users.sourceforge.net])
+AC_INIT([libiqxmlrpc], [0.8.9], [adedov@users.sourceforge.net])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([libiqxmlrpc/value.h])
 AM_CONFIG_HEADER(config.h)

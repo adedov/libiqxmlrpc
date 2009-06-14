@@ -1,5 +1,10 @@
 Look into ChangeLog file for full list of changes.
 
+0.8.8 - 0.8.9
+  * Fix compatibility with Perl XML-RPC: Do not validate "Connection" HTTP
+    header option. Check if it contain "keep-alive" token otherwise ignore
+    anything.
+
 0.8.7 - 0.8.8
   * Increase thread-safety in Inet_addr class.
   * Increase thread-safety in Date_time, http server
