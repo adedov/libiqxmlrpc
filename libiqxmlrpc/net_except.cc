@@ -17,6 +17,7 @@
 //
 //  $Id: net_except.cc,v 1.5 2006-09-07 09:35:42 adedov Exp $
 
+#include <string.h>
 #include "sysinc.h"
 #include "net_except.h"
 
@@ -33,14 +34,17 @@ exception_message(const std::string& prefix, bool use_errno)
 
     char buf[256];
     buf[255] = 0;
+    char* b = buf;
 
-#ifndef _WINDOWS
+#if not defined _WINDOWS && defined _GNU_SOURCE
+    b = strerror_r( errno, buf, sizeof(buf) - 1 );
+#elif not defined _WINDOWS
     strerror_r( errno, buf, sizeof(buf) - 1 );
 #else
     strerror_s( buf, sizeof(buf) - 1, WSAGetLastError() );
 #endif
 
-    retval += std::string(buf);
+    retval += std::string(b);
   }
 
   return retval;
@@ -52,3 +56,5 @@ iqnet::network_error::network_error( const std::string& msg, bool use_errno ):
   std::runtime_error( exception_message(msg, use_errno) )
 {
 }
+
+// vim:ts=2:sw=2:et
