@@ -20,9 +20,9 @@
 #ifndef _iqxmlrpc_dispatcher_manager_
 #define _iqxmlrpc_dispatcher_manager_
 
-#include <boost/noncopyable.hpp>
-#include "api_export.h"
 #include "method.h"
+
+#include <boost/noncopyable.hpp>
 
 namespace iqxmlrpc {
 

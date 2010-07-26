@@ -17,15 +17,17 @@
 //
 //  $Id: parser.cc,v 1.13 2006-09-07 09:35:42 adedov Exp $
 
-#include <stdexcept>
-#include <functional>
-#include <algorithm>
-#include "sysinc.h"
 #include "parser.h"
+
+#include "sysinc.h"
 #include "except.h"
 #include "parser_specific.h"
-#include "value_type.h"
 #include "value.h"
+#include "value_type.h"
+
+#include <algorithm>
+#include <functional>
+#include <stdexcept>
 
 using namespace iqxmlrpc;
 

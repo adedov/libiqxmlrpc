@@ -16,16 +16,7 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
 #include "sysinc.h"
-#include <algorithm>
-#include <deque>
-#include <functional>
-#include <memory>
-#include <sstream>
-#include <boost/algorithm/string.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/optional.hpp>
-#include "http.h"
+
 #include "http_errors.h"
 #include "method.h"
 
@@ -34,6 +25,17 @@
 #else
 #include "../config.h"
 #endif //_WINDOWS
+
+#include <boost/algorithm/string.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/optional.hpp>
+
+#include <algorithm>
+#include <deque>
+#include <functional>
+#include <memory>
+#include <sstream>
 
 namespace iqxmlrpc {
 namespace http {

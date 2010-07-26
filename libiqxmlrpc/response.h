@@ -20,10 +20,11 @@
 #ifndef _iqxmlrpc_response_h_
 #define _iqxmlrpc_response_h_
 
-#include <string>
-#include <boost/shared_ptr.hpp>
-#include "api_export.h"
 #include "xml_utils.h"
+
+#include <boost/shared_ptr.hpp>
+
+#include <string>
 
 namespace xmlpp {
   class Node;

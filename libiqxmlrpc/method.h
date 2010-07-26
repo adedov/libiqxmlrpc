@@ -18,14 +18,15 @@
 #ifndef _iqxmlrpc_method_h_
 #define _iqxmlrpc_method_h_
 
-#include <string>
-#include <map>
-#include <boost/utility.hpp>
-#include <boost/scoped_ptr.hpp>
-#include "api_export.h"
-#include "value.h"
 #include "except.h"
 #include "inet_addr.h"
+#include "value.h"
+
+#include <boost/utility.hpp>
+#include <boost/scoped_ptr.hpp>
+
+#include <map>
+#include <string>
 
 namespace iqxmlrpc
 {

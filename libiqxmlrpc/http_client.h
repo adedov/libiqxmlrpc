@@ -18,10 +18,9 @@
 #ifndef _libiqxmlrpc_http_client_h_
 #define _libiqxmlrpc_http_client_h_
 
-#include "api_export.h"
-#include "reactor.h"
-#include "connector.h"
 #include "client_conn.h"
+#include "connector.h"
+#include "reactor.h"
 
 namespace iqxmlrpc
 {

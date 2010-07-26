@@ -17,9 +17,9 @@
 //
 //  $Id: net_except.cc,v 1.5 2006-09-07 09:35:42 adedov Exp $
 
-#include <string.h>
-#include "sysinc.h"
 #include "net_except.h"
+
+#include <string.h>
 
 namespace {
 
@@ -36,9 +36,9 @@ exception_message(const std::string& prefix, bool use_errno)
     buf[255] = 0;
     char* b = buf;
 
-#if not defined _WINDOWS && defined _GNU_SOURCE
+#if !defined _WINDOWS && defined _GNU_SOURCE
     b = strerror_r( errno, buf, sizeof(buf) - 1 );
-#elif not defined _WINDOWS
+#elif !defined _WINDOWS
     strerror_r( errno, buf, sizeof(buf) - 1 );
 #else
     strerror_s( buf, sizeof(buf) - 1, WSAGetLastError() );

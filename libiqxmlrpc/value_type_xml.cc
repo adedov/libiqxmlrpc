@@ -17,10 +17,12 @@
 //
 //  $Id: value_type_xml.cc,v 1.1 2006-08-30 18:01:36 adedov Exp $
 
+#include "value_type_xml.h"
+
+#include "utf_conv.h"
+
 #include <boost/lexical_cast.hpp>
 #include <libxml++/libxml++.h>
-#include "value_type_xml.h"
-#include "utf_conv.h"
 
 namespace iqxmlrpc {
 namespace type_names {

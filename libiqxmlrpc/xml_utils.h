@@ -20,8 +20,9 @@
 #ifndef _iqxmlrpc_xml_utils_h_
 #define _iqxmlrpc_xml_utils_h_
 
-#include <string>
 #include "api_export.h"
+
+#include <string>
 
 namespace xmlpp {
   class Document;

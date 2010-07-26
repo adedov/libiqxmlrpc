@@ -20,15 +20,14 @@
 #ifndef _libiqxmlrpc_utf_conv_h_
 #define _libiqxmlrpc_utf_conv_h_
 
-#include <string>
+#include "except.h"
+#include "value.h"
 
 extern "C" {
   #include <iconv.h>
 }
 
-#include "api_export.h"
-#include "except.h"
-#include "value.h"
+#include <string>
 
 namespace iqxmlrpc {
 

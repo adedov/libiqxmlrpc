@@ -17,8 +17,9 @@
 //
 //  $Id: utf_conv.cc,v 1.9 2006-09-07 09:35:42 adedov Exp $
 
-#include <errno.h>
 #include "utf_conv.h"
+
+#include <errno.h>
 
 using namespace iqxmlrpc;
 

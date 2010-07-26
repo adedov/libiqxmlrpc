@@ -17,11 +17,13 @@
 //
 //  $Id: dispatcher_manager.cc,v 1.1 2006-09-03 06:57:57 adedov Exp $
 
-#include <map>
-#include <deque>
-#include <algorithm>
 #include "dispatcher_manager.h"
+
 #include "builtins.h"
+
+#include <algorithm>
+#include <deque>
+#include <map>
 
 namespace iqxmlrpc {
 

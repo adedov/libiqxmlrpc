@@ -25,14 +25,10 @@
 #ifndef _iqxmlrpc_sysinc_h_
 #define _iqxmlrpc_sysinc_h_
 
-#include <ctype.h>
-#include <locale.h>
-#include <stdlib.h>
-#include <time.h>
-
 #if defined(_WINDOWS)
-  #include <windows.h>
+  #define BOOST_ALL_NO_LIB
   #include <Winsock2.h>
+  #include <windows.h>
   #include <ws2tcpip.h>
 #else
   #include <unistd.h>
@@ -46,6 +42,10 @@
   #include <netinet/tcp.h>
 #endif //_WINDOWS
 
+#include <ctype.h>
+#include <locale.h>
+#include <stdlib.h>
+#include <time.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>

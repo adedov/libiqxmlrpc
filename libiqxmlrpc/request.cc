@@ -17,13 +17,16 @@
 //
 //  $Id: request.cc,v 1.8 2006-09-07 09:35:42 adedov Exp $
 
-#include <libxml++/libxml++.h>
-#include <memory>
 #include "request.h"
+
+#include "except.h"
 #include "parser.h"
 #include "value.h"
 #include "value_type_xml.h"
-#include "except.h"
+
+#include <libxml++/libxml++.h>
+
+#include <memory>
 
 namespace iqxmlrpc {
 

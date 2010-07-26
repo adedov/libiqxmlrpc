@@ -20,11 +20,11 @@
 #ifndef _iqxmlrpc_request_h_
 #define _iqxmlrpc_request_h_
 
-#include <string>
-#include <vector>
-#include "api_export.h"
 #include "value.h"
 #include "xml_utils.h"
+
+#include <string>
+#include <vector>
 
 namespace xmlpp {
   class Node;

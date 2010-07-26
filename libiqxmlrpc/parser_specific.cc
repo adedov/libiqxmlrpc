@@ -17,13 +17,14 @@
 //
 //  $Id: parser_specific.cc,v 1.12 2006-09-25 08:19:23 adedov Exp $
 
-#include <iostream>
-#include <sstream>
 #include "parser_specific.h"
-#include "value_type.h"
-#include "value.h"
+
 #include "except.h"
 #include "utf_conv.h"
+#include "value.h"
+#include "value_type.h"
+
+#include <sstream>
 
 using namespace xmlpp;
 using namespace iqxmlrpc;

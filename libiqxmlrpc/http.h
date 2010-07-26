@@ -18,13 +18,14 @@
 #ifndef _libiqxmlrpc_http_h_
 #define _libiqxmlrpc_http_h_
 
-#include <map>
-#include <string>
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
-#include "api_export.h"
 #include "except.h"
 #include "inet_addr.h"
+
+#include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
+
+#include <map>
+#include <string>
 
 namespace iqxmlrpc {
 

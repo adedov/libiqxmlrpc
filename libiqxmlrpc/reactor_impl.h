@@ -20,12 +20,8 @@
 #ifndef _iqxmlrpc_reactor_impl_h_
 #define _iqxmlrpc_reactor_impl_h_
 
-#include <assert.h>
-#include <map>
-#include <algorithm>
-#include <boost/utility.hpp>
-#include "reactor.h"
 #include "config.h"
+#include "reactor.h"
 
 #ifdef HAVE_POLL
 #include "reactor_poll_impl.h"
@@ -40,6 +36,12 @@
     typedef Reactor_select_impl ReactorImpl;
   }
 #endif // HAVE_POLL
+
+#include <boost/utility.hpp>
+
+#include <assert.h>
+#include <map>
+#include <algorithm>
 
 namespace iqnet
 {

@@ -17,9 +17,11 @@
 //
 //  $Id: value_type_visitor.cc,v 1.1 2006-08-31 17:15:26 adedov Exp $
 
-#include <iostream>
-#include "value.h"
 #include "value_type_visitor.h"
+
+#include "value.h"
+
+#include <iostream>
 
 namespace iqxmlrpc {
 

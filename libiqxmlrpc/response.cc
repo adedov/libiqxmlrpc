@@ -17,13 +17,16 @@
 //
 //  $Id: response.cc,v 1.13 2006-09-07 09:35:42 adedov Exp $
 
-#include <memory>
-#include <libxml++/libxml++.h>
 #include "response.h"
+
+#include "except.h"
 #include "parser.h"
 #include "value.h"
 #include "value_type_xml.h"
-#include "except.h"
+
+#include <libxml++/libxml++.h>
+
+#include <memory>
 
 namespace iqxmlrpc {
 

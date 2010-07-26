@@ -18,8 +18,8 @@
 #ifndef _iqxmlrpc_executor_h_
 #define _iqxmlrpc_executor_h_
 
-#include <vector>
-#include <deque>
+#include "lock.h"
+#include "method.h"
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -34,9 +34,8 @@
 #pragma warning(pop)
 #endif
 
-#include "api_export.h"
-#include "lock.h"
-#include "method.h"
+#include <deque>
+#include <vector>
 
 namespace iqnet
 {

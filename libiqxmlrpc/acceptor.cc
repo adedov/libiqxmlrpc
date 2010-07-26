@@ -17,13 +17,12 @@
 //
 //  $Id: acceptor.cc,v 1.11 2006-09-07 09:35:41 adedov Exp $
 
-#include <iostream>
-#include "sysinc.h"
 #include "acceptor.h"
+
 #include "connection.h"
 #include "conn_factory.h"
-#include "net_except.h"
 #include "inet_addr.h"
+#include "net_except.h"
 
 using namespace iqnet;
 

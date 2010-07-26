@@ -20,9 +20,9 @@
 #ifndef _libiqnet_net_except_h_
 #define _libiqnet_net_except_h_
 
-#include <stdexcept>
 #include "api_export.h"
-#include "sysinc.h"
+
+#include <stdexcept>
 
 namespace iqnet
 {

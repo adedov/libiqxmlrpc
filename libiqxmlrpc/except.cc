@@ -17,9 +17,11 @@
 //
 //  $Id: except.cc,v 1.7 2006-09-07 09:35:41 adedov Exp $
 
-#include <libxml++/libxml++.h>
-#include <sstream>
 #include "except.h"
+
+#include <libxml++/libxml++.h>
+
+#include <sstream>
 
 using namespace iqxmlrpc;
 

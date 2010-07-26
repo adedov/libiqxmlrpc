@@ -20,7 +20,6 @@
 #ifndef _iqxmlrpc_buildins_h_
 #define _iqxmlrpc_buildins_h_
 
-#include "api_export.h"
 #include "method.h"
 
 namespace iqxmlrpc {

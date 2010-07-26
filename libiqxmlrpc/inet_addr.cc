@@ -17,8 +17,8 @@
 //
 //  $Id: inet_addr.cc,v 1.4 2006-09-07 09:35:42 adedov Exp $
 
-#include "sysinc.h"
 #include "inet_addr.h"
+
 #include "net_except.h"
 
 using namespace iqnet;

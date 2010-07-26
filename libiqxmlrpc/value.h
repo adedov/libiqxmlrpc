@@ -20,14 +20,14 @@
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
 
-#include <string>
-#include <vector>
-#include <map>
-#include <typeinfo>
-#include <iosfwd>
-#include "api_export.h"
-#include "value_type.h"
 #include "except.h"
+#include "value_type.h"
+
+#include <iosfwd>
+#include <map>
+#include <string>
+#include <typeinfo>
+#include <vector>
 
 namespace xmlpp {
   class Node;

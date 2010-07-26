@@ -18,17 +18,17 @@
 #ifndef _iqxmlrpc_server_h_
 #define _iqxmlrpc_server_h_
 
-#include <memory>
-#include <ostream>
-#include "api_export.h"
 #include "acceptor.h"
+#include "builtins.h"
 #include "connection.h"
 #include "conn_factory.h"
-#include "executor.h"
 #include "dispatcher_manager.h"
+#include "executor.h"
 #include "http.h"
-#include "builtins.h"
 #include "util.h"
+
+#include <memory>
+#include <ostream>
 
 namespace iqnet
 {

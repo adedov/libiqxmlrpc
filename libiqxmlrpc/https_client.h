@@ -18,12 +18,12 @@
 #ifndef _libiqxmlrpc_https_client_h_
 #define _libiqxmlrpc_https_client_h_
 
-#include <boost/scoped_ptr.hpp>
-#include "api_export.h"
 #include "client_conn.h"
 #include "connection.h"
-#include "ssl_connection.h"
 #include "reactor.h"
+#include "ssl_connection.h"
+
+#include <boost/scoped_ptr.hpp>
 
 namespace iqxmlrpc
 {

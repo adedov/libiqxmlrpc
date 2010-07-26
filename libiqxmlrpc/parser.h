@@ -20,9 +20,12 @@
 #ifndef _iqxmlrpc_parser_h_
 #define _iqxmlrpc_parser_h_
 
-#include <vector>
-#include <string>
+#include "sysinc.h"
+
 #include <libxml++/libxml++.h>
+
+#include <string>
+#include <vector>
 
 namespace iqxmlrpc {
 

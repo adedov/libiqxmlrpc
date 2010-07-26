@@ -20,13 +20,10 @@
 #ifndef _iqxmlrpc_reactor_poll_impl_h_
 #define _iqxmlrpc_reactor_poll_impl_h_
 
-#include "config.h"
-
 #ifdef HAVE_POLL
-#include <boost/utility.hpp>
-#include "api_export.h"
 #include "reactor.h"
-#include "sysinc.h"
+
+#include <boost/utility.hpp>
 
 namespace iqnet
 {

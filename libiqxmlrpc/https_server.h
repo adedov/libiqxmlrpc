@@ -20,10 +20,9 @@
 #ifndef _libiqxmlrpc_https_server_h_
 #define _libiqxmlrpc_https_server_h_
 
-#include "api_export.h"
-#include "ssl_connection.h"
-#include "server_conn.h"
 #include "server.h"
+#include "server_conn.h"
+#include "ssl_connection.h"
 
 namespace iqxmlrpc
 {

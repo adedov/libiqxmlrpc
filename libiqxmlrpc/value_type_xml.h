@@ -17,8 +17,9 @@
 //
 //  $Id: value_type_xml.h,v 1.2 2006-09-06 17:10:56 adedov Exp $
 
-#include <string>
 #include "value_type_visitor.h"
+
+#include <string>
 
 namespace xmlpp
 {

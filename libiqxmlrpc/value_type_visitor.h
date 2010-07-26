@@ -20,9 +20,9 @@
 #ifndef _iqxmlrpc_value_type_visitor_base_
 #define _iqxmlrpc_value_type_visitor_base_
 
-#include <iosfwd>
-#include "api_export.h"
 #include "value_type.h"
+
+#include <iosfwd>
 
 namespace iqxmlrpc {
 

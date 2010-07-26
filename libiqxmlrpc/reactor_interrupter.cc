@@ -17,13 +17,15 @@
 //
 //  $Id: reactor_interrupter.cc,v 1.2 2006-09-07 09:35:42 adedov Exp $
 
-#include <memory>
-#include <boost/thread/mutex.hpp>
-#include <boost/optional.hpp>
 #include "reactor_interrupter.h"
+#include "connection.h"
 #include "lock.h"
 #include "socket.h"
-#include "connection.h"
+
+#include <boost/optional.hpp>
+#include <boost/thread/mutex.hpp>
+
+#include <memory>
 
 namespace iqnet {
 

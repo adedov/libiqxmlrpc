@@ -20,11 +20,11 @@
 #include "config.h"
 
 #ifdef HAVE_POLL
-#include <vector>
+#include "reactor_poll_impl.h"
+
 #include <deque>
 #include <sys/poll.h>
-#include "sysinc.h"
-#include "reactor_poll_impl.h"
+#include <vector>
 
 using namespace iqnet;
 

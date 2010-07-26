@@ -18,8 +18,9 @@
 #ifndef _libiqnet_connector_h_
 #define _libiqnet_connector_h_
 
-#include <string>
 #include "socket.h"
+
+#include <string>
 
 namespace iqnet
 {

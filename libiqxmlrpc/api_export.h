@@ -20,6 +20,8 @@
 #ifndef _libiqxmlrpc_api_export_
 #define _libiqxmlrpc_api_export_
 
+#include "sysinc.h"
+
 #if defined(_WINDOWS) || defined(__MINGW32__)
   #define LIBIQXMLRPC_DLL
 #endif // _WINDOWS || __MINGW32__

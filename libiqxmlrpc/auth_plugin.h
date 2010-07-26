@@ -18,6 +18,8 @@
 #ifndef _iqxmlrpc_http_auth_plugin_
 #define _iqxmlrpc_http_auth_plugin_
 
+#include "sysinc.h"
+
 #include <string>
 
 namespace iqxmlrpc {

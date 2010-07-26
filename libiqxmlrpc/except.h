@@ -20,8 +20,9 @@
 #ifndef _iqxmlrpc_except_h_
 #define _iqxmlrpc_except_h_
 
-#include <stdexcept>
 #include "api_export.h"
+
+#include <stdexcept>
 
 namespace xmlpp
 {

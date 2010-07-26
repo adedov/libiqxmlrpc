@@ -20,9 +20,9 @@
 #ifndef _iqxmlrpc_reactor_interrupter_h_
 #define _iqxmlrpc_reactor_interrupter_h_
 
-#include <boost/utility.hpp>
-#include "api_export.h"
 #include "reactor.h"
+
+#include <boost/utility.hpp>
 
 namespace iqnet {
 

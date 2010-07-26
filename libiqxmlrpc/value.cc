@@ -17,10 +17,12 @@
 //
 //  $Id: value.cc,v 1.12 2006-09-07 09:35:42 adedov Exp $
 
-#include <stdexcept>
 #include "value.h"
+
 #include "value_type_visitor.h"
 #include "value_type_xml.h"
+
+#include <stdexcept>
 
 namespace iqxmlrpc {
 

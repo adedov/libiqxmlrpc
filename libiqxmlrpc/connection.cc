@@ -17,7 +17,6 @@
 //
 //  $Id: connection.cc,v 1.7 2006-09-07 09:35:41 adedov Exp $
 
-#include "sysinc.h"
 #include "connection.h"
 #include "net_except.h"
 

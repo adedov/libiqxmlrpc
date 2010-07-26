@@ -17,8 +17,6 @@
 //
 //  $Id: http_server.cc,v 1.9 2006-09-07 09:35:41 adedov Exp $
 
-#include <iostream>
-#include "sysinc.h"
 #include "http_server.h"
 #include "server.h"
 

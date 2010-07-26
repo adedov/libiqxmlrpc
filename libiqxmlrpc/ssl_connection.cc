@@ -17,9 +17,9 @@
 //
 //  $Id: ssl_connection.cc,v 1.6 2006-09-07 09:35:42 adedov Exp $
 
-//#include <iostream>
-#include <openssl/err.h>
 #include "ssl_connection.h"
+
+#include <openssl/err.h>
 
 using namespace iqnet;
 

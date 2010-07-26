@@ -20,7 +20,6 @@
 #ifndef _iqxmlrpc_server_conn_h_
 #define _iqxmlrpc_server_conn_h_
 
-#include "api_export.h"
 #include "connection.h"
 #include "conn_factory.h"
 #include "http.h"

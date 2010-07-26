@@ -17,15 +17,18 @@
 //
 //  $Id: value_type.cc,v 1.25 2006-09-07 09:35:42 adedov Exp $
 
-#include <string.h>
-#include <algorithm>
-#include <boost/lexical_cast.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 #include "value_type.h"
-#include "value_type_visitor.h"
-#include "value.h"
+
 #include "utf_conv.h"
 #include "util.h"
+#include "value.h"
+#include "value_type_visitor.h"
+
+#include <boost/lexical_cast.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <algorithm>
+#include <string.h>
 
 namespace iqxmlrpc {
 namespace type_names {

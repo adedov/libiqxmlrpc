@@ -20,9 +20,9 @@
 #ifndef _libiqnet_inet_addr_h_
 #define _libiqnet_inet_addr_h_
 
-#include <string>
 #include "api_export.h"
-#include "sysinc.h"
+
+#include <string>
 
 //! Object-oriented networking/multithreading infrastructure.
 namespace iqnet

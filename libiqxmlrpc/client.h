@@ -18,12 +18,12 @@
 #ifndef _iqxmlrpc_client_h_
 #define _iqxmlrpc_client_h_
 
-#include <boost/optional.hpp>
-#include <boost/scoped_ptr.hpp>
-#include "api_export.h"
 #include "connector.h"
 #include "request.h"
 #include "response.h"
+
+#include <boost/optional.hpp>
+#include <boost/scoped_ptr.hpp>
 
 namespace iqxmlrpc {
 

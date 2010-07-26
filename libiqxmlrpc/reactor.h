@@ -20,11 +20,11 @@
 #ifndef _libiqnet_reactor_h_
 #define _libiqnet_reactor_h_
 
-#include <list>
-#include "api_export.h"
-#include "net_except.h"
 #include "lock.h"
+#include "net_except.h"
 #include "socket.h"
+
+#include <list>
 
 namespace iqnet
 {

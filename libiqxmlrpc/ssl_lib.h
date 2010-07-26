@@ -21,9 +21,11 @@
 #ifndef _libiqnet_ssl_lib_h_
 #define _libiqnet_ssl_lib_h_
 
-#include <openssl/ssl.h>
-#include <stdexcept>
 #include "api_export.h"
+
+#include <openssl/ssl.h>
+
+#include <stdexcept>
 
 namespace iqnet {
 namespace ssl {

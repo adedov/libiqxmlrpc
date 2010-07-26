@@ -17,13 +17,14 @@
 //
 //  $Id: executor.cc,v 1.17 2006-09-07 09:35:41 adedov Exp $
 
-#include <memory>
 #include "executor.h"
 #include "except.h"
-#include "response.h"
 #include "reactor_impl.h"
+#include "response.h"
 #include "server.h"
 #include "util.h"
+
+#include <memory>
 
 using namespace iqxmlrpc;
 typedef boost::mutex::scoped_lock scoped_lock;

@@ -20,7 +20,6 @@
 #include "config.h"
 
 #ifndef HAVE_POLL
-#include "sysinc.h"
 #include "reactor_select_impl.h"
 
 using namespace iqnet;

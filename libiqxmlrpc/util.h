@@ -20,10 +20,12 @@
 #ifndef _iqxmlrpc_util_h_
 #define _iqxmlrpc_util_h_
 
+#include "lock.h"
+
+#include <boost/utility.hpp>
+
 #include <functional>
 #include <memory>
-#include <boost/utility.hpp>
-#include "libiqxmlrpc/lock.h"
 
 namespace iqxmlrpc {
 namespace util {

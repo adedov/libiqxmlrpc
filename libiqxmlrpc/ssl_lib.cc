@@ -17,14 +17,16 @@
 //
 //  $Id: ssl_lib.cc,v 1.5 2006-09-07 09:35:42 adedov Exp $
 
+#include "ssl_lib.h"
+
+#include "net_except.h"
+
 #include <openssl/rsa.h>
 #include <openssl/crypto.h>
 #include <openssl/x509.h>
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include "net_except.h"
-#include "ssl_lib.h"
 
 using namespace iqnet::ssl;
 

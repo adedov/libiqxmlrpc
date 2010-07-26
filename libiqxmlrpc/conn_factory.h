@@ -20,9 +20,9 @@
 #ifndef _libiqnet_connection_factory_
 #define _libiqnet_connection_factory_
 
-#include <string>
-#include "api_export.h"
 #include "inet_addr.h"
+
+#include <string>
 
 namespace iqnet
 {

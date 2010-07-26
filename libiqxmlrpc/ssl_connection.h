@@ -20,12 +20,12 @@
 #ifndef _libiqnet_ssl_connection_
 #define _libiqnet_ssl_connection_
 
-#include <openssl/ssl.h>
-#include "api_export.h"
-#include "reactor.h"
 #include "connection.h"
-#include "ssl_lib.h"
 #include "conn_factory.h"
+#include "reactor.h"
+#include "ssl_lib.h"
+
+#include <openssl/ssl.h>
 
 namespace iqnet {
 namespace ssl {

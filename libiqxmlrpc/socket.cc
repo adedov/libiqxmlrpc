@@ -17,9 +17,8 @@
 //
 //  $Id: socket.cc,v 1.11 2006-09-07 09:35:42 adedov Exp $
 
-#include <iostream>
-#include "sysinc.h"
 #include "socket.h"
+
 #include "net_except.h"
 
 using namespace iqnet;

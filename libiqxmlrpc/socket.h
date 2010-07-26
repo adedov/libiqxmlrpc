@@ -20,7 +20,6 @@
 #ifndef _libiqnet_socket_h_
 #define _libiqnet_socket_h_
 
-#include "api_export.h"
 #include "inet_addr.h"
 
 namespace iqnet

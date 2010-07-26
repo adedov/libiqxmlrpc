@@ -17,11 +17,13 @@
 //
 //  $Id: method.cc,v 1.13 2006-09-07 09:35:42 adedov Exp $
 
-#include <algorithm>
 #include "method.h"
-#include "server.h" // Server_feedback
+
 #include "except.h"
+#include "server.h" // Server_feedback
 #include "util.h"
+
+#include <algorithm>
 
 using namespace iqxmlrpc;
 

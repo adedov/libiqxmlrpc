@@ -15,10 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
-#include <libxml++/libxml++.h>
 #include "client_conn.h"
 #include "client_opts.h"
 #include "http.h"
+
+#include <libxml++/libxml++.h>
 
 namespace iqxmlrpc {
 

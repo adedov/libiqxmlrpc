@@ -21,7 +21,6 @@
 #define _libiqnet_lock_h_
 
 #include "api_export.h"
-#include "sysinc.h"
 
 namespace iqnet
 {

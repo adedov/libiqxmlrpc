@@ -31,9 +31,9 @@
 #define _libiqxmlrpc_h_
 
 #include "except.h"
-#include "value.h"
-#include "response.h"
 #include "method.h"
+#include "response.h"
 #include "utf_conv.h"
+#include "value.h"
 
 #endif

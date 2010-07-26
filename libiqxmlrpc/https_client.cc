@@ -15,10 +15,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
-#include <boost/lexical_cast.hpp>
-#include "client_opts.h"
 #include "https_client.h"
+
+#include "client_opts.h"
 #include "reactor_impl.h"
+
+#include <boost/lexical_cast.hpp>
 
 using namespace iqnet;
 

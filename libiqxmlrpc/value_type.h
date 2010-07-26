@@ -21,14 +21,14 @@
 #ifndef _iqxmlrpc_value_type_h_
 #define _iqxmlrpc_value_type_h_
 
-#include <time.h>
-#include <string>
-#include <vector>
-#include <map>
-#include <iterator>
-#include "api_export.h"
 #include "except.h"
 #include "util.h"
+
+#include <iterator>
+#include <map>
+#include <string>
+#include <time.h>
+#include <vector>
 
 #ifdef _MSC_VER
 #pragma warning(push)

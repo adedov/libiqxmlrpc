@@ -17,9 +17,11 @@
 //
 //  $Id$
 
-#include <memory>
-#include <libxml++/document.h>
 #include "xml_utils.h"
+
+#include <libxml++/document.h>
+
+#include <memory>
 
 using namespace iqxmlrpc;
 
