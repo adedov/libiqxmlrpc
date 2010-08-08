@@ -22,8 +22,6 @@
 
 #include "inet_addr.h"
 
-#include <string>
-
 namespace iqnet
 {
 
