@@ -81,14 +81,3 @@ void Acceptor::accept()
 
   factory->create_accepted( new_sock );
 }
-
-
-/* const Inet_addr Acceptor::get_addr_listening() const
-{
-  struct sockaddr_in addr;
-  socklen_t len;
-
-  getsockname( sock, reinterpret_cast<sockaddr*>(&addr), &len );
-  return Inet_addr( addr );
-}
-*/

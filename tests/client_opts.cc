@@ -8,11 +8,11 @@ using namespace iqxmlrpc;
 using namespace boost::program_options;
 
 Client_opts::Client_opts():
-  client_factory_(0),
   port_(0),
   proxy_port_(0),
   use_ssl_(false),
   stop_server_(false),
+  timeout_(0),
   opts_()
 {
   opts_.add_options()
@@ -21,7 +21,8 @@ Client_opts::Client_opts():
     ("proxy-host", value<std::string>(&proxy_host_))
     ("proxy-port", value<int>(&proxy_port_))
     ("use-ssl", value<bool>(&use_ssl_))
-    ("stop-server", value<bool>(&stop_server_));
+    ("stop-server", value<bool>(&stop_server_))
+    ("timeout", value<int>(&timeout_));
 }
 
 Client_opts::~Client_opts()
@@ -36,24 +37,33 @@ void Client_opts::configure(int argc, char** argv)
 
   if (!port_)
     throw_bad_config();
-  
+}
+
+iqxmlrpc::Client_base*
+Client_opts::create_instance() const
+{
+  Client_base* retval = 0;
+
   if (use_ssl_)
   {
     namespace ssl = iqnet::ssl;
     if (!ssl::ctx)
       ssl::ctx = ssl::Ctx::client_only();
 
-    client_factory_.reset(new Client_factory<Https_client_connection>());
+    retval = new Client<Https_client_connection>(addr());
   }
   else
   {
-    client_factory_.reset(new Client_factory<Http_client_connection>());
+    retval = new Client<Http_client_connection>(addr());
   }
 
-  client_factory_->set_addr(addr());
-
   if (proxy_set())
-    client_factory_->set_proxy_addr(proxy_addr());
+    retval->set_proxy(proxy_addr());
+
+  if (timeout())
+    retval->set_timeout(timeout());
+
+  return retval;
 }
 
 void Client_opts::throw_bad_config()
@@ -62,7 +72,7 @@ void Client_opts::throw_bad_config()
   ss << opts_;
   throw Bad_config(ss.str());
 }
-  
+
 iqnet::Inet_addr Client_opts::get_inet_addr(const std::string& h, int p) const
 {
   std::string host = h.empty() ? "localhost" : h;

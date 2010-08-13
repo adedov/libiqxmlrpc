@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
 {
   try {
     test_config.configure(argc, argv);
-    test_client = test_config.client_factory()->create();
+    test_client = test_config.create_instance();
 
     boost::unit_test::unit_test_main( &init_tests, argc, argv );
   }

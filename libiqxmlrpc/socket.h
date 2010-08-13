@@ -63,7 +63,7 @@ public:
   void   bind( const std::string& host, int port );
   void   listen( unsigned backlog = 5 );
   Socket accept();
-  void   connect( const iqnet::Inet_addr& );
+  bool   connect( const iqnet::Inet_addr& );
 
   //! Returns an inet addr the socket asscociated with.
   Inet_addr get_addr() const;

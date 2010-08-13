@@ -18,49 +18,40 @@
 #ifndef _libiqnet_connector_h_
 #define _libiqnet_connector_h_
 
-#include "socket.h"
+#include "client_conn.h"
 
-#include <string>
+namespace iqnet {
 
-namespace iqnet
-{
-
-//! Connector template.
-template <class Conn_type>
-class Connector {
+class LIBIQXMLRPC_API Connector_base {
   Inet_addr peer_addr;
 
 public:
-  Connector( const iqnet::Inet_addr& peer ):
-    peer_addr(peer) {}
+  Connector_base( const iqnet::Inet_addr& peer );
+  virtual ~Connector_base();
 
   //! Process connection.
-  /*! Usage example:
-      \code
-        class My_conn: public iqnet::Connection {...};
-        ...
-        iqnet::Inet_addr addr( "xyz.com", 1234 );
-        iqnet::Connector<My_conn> ctr( addr );
-        My_conn* conn = ctr.connect();
-      \endcode
-  */
-  Conn_type* connect( bool non_block_flag )
+  iqxmlrpc::Client_connection* connect(int timeout);
+
+private:
+  virtual iqxmlrpc::Client_connection*
+  create_connection(const Socket&) = 0;
+};
+
+template <class Conn_type>
+class Connector: public Connector_base {
+public:
+  Connector( const iqnet::Inet_addr& peer ):
+    Connector_base(peer)
   {
-    Socket sock;
-    sock.connect( peer_addr );
-    Conn_type* c = new Conn_type( sock, non_block_flag );
+  }
+
+private:
+  virtual iqxmlrpc::Client_connection*
+  create_connection(const Socket& s)
+  {
+    Conn_type* c = new Conn_type( s, true );
     c->post_connect();
     return c;
-  }
-
-  void set_addr( const iqnet::Inet_addr& addr )
-  {
-    peer_addr = addr;
-  }
-
-  const Inet_addr& get_addr() const
-  {
-    return peer_addr;
   }
 };
 

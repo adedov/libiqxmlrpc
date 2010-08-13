@@ -17,8 +17,8 @@
 //
 //  $Id: socket.cc,v 1.11 2006-09-07 09:35:42 adedov Exp $
 
+#include <errno.h>
 #include "socket.h"
-
 #include "net_except.h"
 
 using namespace iqnet;
@@ -163,15 +163,22 @@ Socket Socket::accept()
 }
 
 
-void Socket::connect( const iqnet::Inet_addr& peer_addr )
+bool Socket::connect( const iqnet::Inet_addr& peer_addr )
 {
-  const sockaddr* saddr =
-    reinterpret_cast<const sockaddr*>(peer_addr.get_sockaddr());
+  const sockaddr* saddr = reinterpret_cast<const sockaddr*>(peer_addr.get_sockaddr());
 
-  if( ::connect(sock, saddr, sizeof(sockaddr_in)) )
-    throw network_error( "Socket::connect" );
+  int code = ::connect(sock, saddr, sizeof(sockaddr_in));
+  bool wouldblock = false;
+
+  if( code == -1 ) {
+    wouldblock = errno == EINPROGRESS;
+
+    if (!wouldblock)
+      throw network_error( "Socket::connect" );
+  }
 
   peer = peer_addr;
+  return !wouldblock;
 }
 
 

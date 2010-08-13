@@ -35,15 +35,15 @@ public:
 // Global configuration
 Stress_test_opts test_config;
 
-// Stress test thread function 
+// Stress test thread function
 void do_test()
 {
   BOOST_MESSAGE("Threaded_client started.");
 
   try {
-    std::auto_ptr<Client_base> client(test_config.client_factory()->create());
+    std::auto_ptr<Client_base> client(test_config.create_instance());
     Get_file_proxy get_file(client.get());
-    
+
     for (int i = 0; i < test_config.calls_per_thread(); ++i) {
       Response r( get_file(65536) );
       BOOST_REQUIRE(!r.is_fault());
@@ -63,8 +63,7 @@ void do_test()
 
 void stop_test_server()
 {
-  BOOST_REQUIRE(test_config.client_factory());
-  std::auto_ptr<Client_base> client(test_config.client_factory()->create());
+  std::auto_ptr<Client_base> client(test_config.create_instance());
   Stop_server_proxy stop(client.get());
   Response r( stop() );
   BOOST_REQUIRE(!r.is_fault());

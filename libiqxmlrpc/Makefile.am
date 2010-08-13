@@ -88,6 +88,7 @@ libiqxmlrpc_general_la_SOURCES = \
 	xml_utils.cc
 
 libiqxmlrpc_client_la_SOURCES = \
+	connector.cc \
 	client.cc \
 	client_conn.cc \
 	http_client.cc \

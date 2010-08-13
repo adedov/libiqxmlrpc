@@ -24,8 +24,6 @@
 #include "reactor.h"
 #include "socket.h"
 
-#include <string>
-
 namespace iqnet {
 
 class Accepted_conn_factory;
@@ -62,8 +60,6 @@ public:
   virtual ~Acceptor();
 
   void set_firewall( iqnet::Firewall_base* );
-
-//  const iqnet::Inet_addr get_addr_listening() const;
 
   void handle_input( bool& );
 

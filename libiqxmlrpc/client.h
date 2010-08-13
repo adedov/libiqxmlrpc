@@ -62,8 +62,6 @@ public:
 
   //! Set connection timeout
   /*! \param seconds TO value in seconds, negative number means infinity.
-      \note It is not summary timeout.
-      \note Timeout gives no effect on connection process.
   */
   void set_timeout( int seconds );
 
@@ -73,9 +71,12 @@ public:
   //! Set data for HTTP Basic authentication
   void set_authinfo(const std::string& user, const std::string& password);
 
+protected:
+  int timeout() const;
+
 private:
   virtual void do_set_proxy( const iqnet::Inet_addr& ) = 0;
-  virtual Client_connection* get_connection(bool non_blocking) = 0;
+  virtual Client_connection* get_connection() = 0;
 
   friend class Auto_conn;
   class Impl;
@@ -111,12 +112,12 @@ private:
     proxy_ctr = iqnet::Connector<Proxy_connection>(addr);
   }
 
-  virtual Client_connection* get_connection(bool non_blocking_flag)
+  virtual Client_connection* get_connection()
   {
     if (proxy_ctr)
-      return proxy_ctr->connect(non_blocking_flag);
+      return proxy_ctr->connect(timeout());
 
-    return ctr.connect(non_blocking_flag);
+    return ctr.connect(timeout());
   }
 
   iqnet::Connector<TRANSPORT> ctr;

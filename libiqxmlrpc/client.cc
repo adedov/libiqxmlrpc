@@ -74,7 +74,7 @@ public:
 private:
   Client_connection* create_connection(Client_base& client)
   {
-    return client.get_connection(opts().non_blocking());
+    return client.get_connection();
   }
 
   const Client_options& opts()
@@ -117,6 +117,11 @@ void Client_base::set_proxy( const iqnet::Inet_addr& addr )
 void Client_base::set_timeout( int seconds )
 {
   impl_->opts.set_timeout(seconds);
+}
+
+int Client_base::timeout() const
+{
+  return impl_->opts.timeout();
 }
 
 //! Set connection keep-alive flag
