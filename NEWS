@@ -1,5 +1,12 @@
 Look into ChangeLog file for full list of changes.
 
+0.8.9 - 0.8.10
+  * Client_base::set_timeout now affects connection process too.
+  * Fix compatibility with xmlrpc++: do not throw error on absent
+    <params> section in request.
+  * Fix minor bug related to error reporting on different platforms.
+  * Fix some warnings on Windows (James Adkison).
+
 0.8.8 - 0.8.9
   * Fix compatibility with Perl XML-RPC: Do not validate "Connection" HTTP
     header option. Check if it contain "keep-alive" token otherwise ignore
