@@ -98,11 +98,15 @@ inline void Request::parse( const xmlpp::Node* node )
     throw XML_RPC_violation::at_node(node);
 
   xmlpp::Node::NodeList nlist = Parser::instance()->elements_only( node );
-  if( nlist.size() != 2 )
+
+  size_t nlist_size = nlist.size();
+  if( nlist_size < 1 || nlist_size > 2 )
     throw XML_RPC_violation::at_node(node);
 
   parse_name( nlist.front() );
-  parse_params( nlist.back() );
+
+  if (nlist_size == 2)
+    parse_params( nlist.back() );
 }
 
 

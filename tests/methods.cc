@@ -31,7 +31,9 @@ void echo_method(
   iqxmlrpc::Value& retval )
 {
   BOOST_MESSAGE("Echo method invoked.");
-  retval = args[0];
+
+  if (args.size())
+    retval = args[0];
 }
 
 void echo_user(
