@@ -145,6 +145,9 @@
 				RelativePath="..\libiqxmlrpc\client_conn.cc">
 			</File>
 			<File
+				RelativePath="..\libiqxmlrpc\connector.cc">
+			</File>
+			<File
 				RelativePath="..\libiqxmlrpc\connection.cc">
 			</File>
 			<File
