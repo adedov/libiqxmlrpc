@@ -27,19 +27,7 @@
 namespace iqnet {
 
 class Accepted_conn_factory;
-
-//! Firewall base class.
-/*! Used by Acceptor to find out whether it should
-    accept XML-RPC requests from specific IP.
-*/
-class LIBIQXMLRPC_API Firewall_base {
-public:
-  virtual ~Firewall_base() {}
-
-  //! Must return bool to grant client to send request.
-  virtual bool grant( const iqnet::Inet_addr& ) = 0;
-};
-
+class Firewall_base;
 
 //! An implementation of pattern that separates TCP-connection
 //! establishment from connection handling.

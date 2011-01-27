@@ -24,6 +24,7 @@
 #include "conn_factory.h"
 #include "dispatcher_manager.h"
 #include "executor.h"
+#include "firewall.h"
 #include "http.h"
 #include "util.h"
 

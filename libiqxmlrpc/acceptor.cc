@@ -21,6 +21,7 @@
 
 #include "connection.h"
 #include "conn_factory.h"
+#include "firewall.h"
 #include "inet_addr.h"
 #include "net_except.h"
 
@@ -68,15 +69,18 @@ void Acceptor::accept()
 {
   Socket new_sock( sock.accept() );
 
-  if( firewall )
+  if( firewall && !firewall->grant( new_sock.get_peer_addr() ) )
   {
-    if( !firewall->grant( new_sock.get_peer_addr() ) )
+    std::string msg = firewall->message();
+
+    if (!msg.empty())
     {
-      // Just close socket.
-      // So client should receive "connection reset by peer" message.
-      new_sock.close();
-      return;
+      new_sock.send_shutdown(msg.c_str(), msg.size());
+    } else {
+      new_sock.shutdown();
     }
+
+    return;
   }
 
   factory->create_accepted( new_sock );

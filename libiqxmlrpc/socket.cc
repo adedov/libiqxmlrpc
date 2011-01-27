@@ -33,10 +33,6 @@ Socket::Socket()
 #ifndef _WINDOWS
   int enable = 1;
   setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable) );
-
-  struct linger ling;
-  ling.l_onoff = 0;
-  setsockopt( sock, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling) );
 #endif //_WINDOWS
 }
 
@@ -121,6 +117,13 @@ int Socket::recv( char* buf, int len )
   return ret;
 }
 
+void Socket::send_shutdown( const char* data, int len )
+{
+  send(data, len);
+  struct linger ling = {1, 0};
+  ::setsockopt( sock, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling) );
+  ::shutdown( sock, 1 );
+}
 
 void Socket::bind( int port )
 {

@@ -56,6 +56,7 @@ public:
 
   /*! \b Can \b not cause SIGPIPE signal. */
   virtual int send( const char*, int );
+  virtual void send_shutdown( const char*, int );
   /*! \b Can \b not cause SIGPIPE signal. */
   virtual int recv( char*, int );
 
