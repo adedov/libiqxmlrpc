@@ -43,7 +43,6 @@ public:
   virtual ~Connection();
 
   void finish();
-  void handle_error( bool& );
 
   virtual void post_accept() {}
   virtual void post_connect() {}

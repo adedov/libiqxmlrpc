@@ -43,18 +43,6 @@ void Connection::finish()
 }
 
 
-void Connection::handle_error( bool& )
-{
-  int sock_err = sock.get_last_error();
-
-  if( sock_err )
-  {
-    errno = sock_err;
-    throw network_error( "Connection::throw_sock_exception" );
-  }
-}
-
-
 int Connection::send( const char* data, int len )
 {
   return sock.send( data, len );
