@@ -26,8 +26,8 @@ using namespace iqnet;
 
 std::string iqnet::get_host_name()
 {
-  char buf[256];
-  buf[255] = 0;
+  char buf[1024];
+  buf[1024] = 0;
   ::gethostname( buf, sizeof(buf) );
 
   return buf;
@@ -41,7 +41,7 @@ Inet_addr::Inet_addr( const std::string& host_, int port_ ):
 
 #ifndef _WINDOWS
   struct hostent hent_local;
-  char buf[255];
+  char buf[1024];
   int local_h_errno = 0;
   ::gethostbyname_r( host.c_str(), &hent_local, buf, sizeof(buf), &hent, &local_h_errno );
 
