@@ -83,6 +83,8 @@ bool Reactor_poll_impl::poll(HandlerStateList& out, Reactor_base::Timeout to_ms)
       Reactor_base::HandlerState hs(impl->pfd[i].fd);
       hs.revents |= impl->pfd[i].revents & POLLIN  ? Reactor_base::INPUT : 0;
       hs.revents |= impl->pfd[i].revents & POLLOUT ? Reactor_base::OUTPUT : 0;
+      hs.revents |= impl->pfd[i].revents & POLLERR ? Reactor_base::OUTPUT : 0;
+      hs.revents |= impl->pfd[i].revents & POLLHUP ? Reactor_base::OUTPUT : 0;
       out.push_back( hs );
     }
   }

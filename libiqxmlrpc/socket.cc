@@ -201,8 +201,8 @@ Inet_addr Socket::get_addr() const
 int Socket::get_last_error()
 {
   int err = 0;
-  socklen_t int_sz = 0;
 #ifndef _WINDOWS
+  socklen_t int_sz = sizeof(err);
   ::getsockopt( sock, SOL_SOCKET, SO_ERROR, &err, &int_sz );
 #else
   err=WSAGetLastError();

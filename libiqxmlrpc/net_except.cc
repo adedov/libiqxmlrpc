@@ -24,7 +24,7 @@
 namespace {
 
 inline std::string
-exception_message(const std::string& prefix, bool use_errno)
+exception_message(const std::string& prefix, bool use_errno, int myerrno)
 {
   std::string retval = prefix;
 
@@ -36,10 +36,12 @@ exception_message(const std::string& prefix, bool use_errno)
     buf[255] = 0;
     char* b = buf;
 
+    myerrno = myerrno ? myerrno : errno;	
+
 #if !defined _WINDOWS && defined _GNU_SOURCE
-    b = strerror_r( errno, buf, sizeof(buf) - 1 );
+    b = strerror_r( myerrno, buf, sizeof(buf) - 1 );
 #elif !defined _WINDOWS
-    strerror_r( errno, buf, sizeof(buf) - 1 );
+    strerror_r( myerrno, buf, sizeof(buf) - 1 );
 #else
     strerror_s( buf, sizeof(buf) - 1, WSAGetLastError() );
 #endif
@@ -52,8 +54,8 @@ exception_message(const std::string& prefix, bool use_errno)
 
 }
 
-iqnet::network_error::network_error( const std::string& msg, bool use_errno ):
-  std::runtime_error( exception_message(msg, use_errno) )
+iqnet::network_error::network_error( const std::string& msg, bool use_errno, int myerrno ):
+  std::runtime_error( exception_message(msg, use_errno, myerrno) )
 {
 }
 

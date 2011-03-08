@@ -38,9 +38,10 @@ struct Connect_processor: public Event_handler {
   void handle_output( bool& terminate )
   {
     terminate = true;
+    int err = sock.get_last_error();
 
-    if (sock.get_last_error() != 0) {
-      throw network_error("connector");
+    if (err) {
+      throw network_error("Connector", true, err);
     }
   }
 };
