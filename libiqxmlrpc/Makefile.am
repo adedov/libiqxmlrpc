@@ -34,6 +34,7 @@ pkginclude_HEADERS = \
 	dispatcher_manager.h \
 	except.h \
 	executor.h \
+	firewall.h \
 	http.h \
 	http_errors.h \
 	http_client.h \
