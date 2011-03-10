@@ -27,7 +27,7 @@ using namespace iqnet;
 std::string iqnet::get_host_name()
 {
   char buf[1024];
-  buf[1024] = 0;
+  buf[1023] = 0;
   ::gethostname( buf, sizeof(buf) );
 
   return buf;
