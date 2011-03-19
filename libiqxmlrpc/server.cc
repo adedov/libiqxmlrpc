@@ -30,88 +30,131 @@
 
 namespace iqxmlrpc {
 
+struct Server::Impl {
+  Executor_factory_base* exec_factory;
+
+  int port;
+  std::auto_ptr<iqnet::Reactor_base>          reactor;
+  std::auto_ptr<iqnet::Reactor_interrupter>   interrupter;
+  std::auto_ptr<iqnet::Accepted_conn_factory> conn_factory;
+  std::auto_ptr<iqnet::Acceptor>              acceptor;
+  iqnet::Firewall_base* firewall;
+
+  bool exit_flag;
+  std::ostream* log;
+  unsigned max_req_sz;
+  http::Verification_level ver_level;
+
+  Method_dispatcher_manager  disp_manager;
+  std::auto_ptr<Interceptor> interceptors;
+  const Auth_Plugin_base*    auth_plugin;
+
+  Impl( 
+    int p,
+    iqnet::Accepted_conn_factory* cf,
+    Executor_factory_base* ef):
+      exec_factory(ef),
+      port(p),
+      reactor(ef->create_reactor()),
+      interrupter(new iqnet::Reactor_interrupter(reactor.get())),
+      conn_factory(cf),
+      acceptor(0),
+      firewall(0),
+      exit_flag(false),
+      log(0),
+      max_req_sz(0),
+      ver_level(http::HTTP_CHECK_WEAK),
+      interceptors(0),
+      auth_plugin(0)
+  {
+  }
+};
+
 // ---------------------------------------------------------------------------
 Server::Server(
   int p,
   iqnet::Accepted_conn_factory* cf,
-  Executor_factory_base* ef
-):
-  exec_factory(ef),
-  port(p),
-  reactor(ef->create_reactor()),
-  interrupter(new iqnet::Reactor_interrupter(reactor.get())),
-  conn_factory(cf),
-  acceptor(0),
-  firewall(0),
-  exit_flag(false),
-  log(0),
-  max_req_sz(0),
-  ver_level(http::HTTP_CHECK_WEAK),
-  interceptors(0),
-  auth_plugin(0)
+  Executor_factory_base* ef):
+    impl(new Server::Impl(p, cf, ef))
 {
 }
 
 Server::~Server()
 {
+  delete impl;
 }
 
 void Server::register_method(const std::string& name, Method_factory_base* f)
 {
-  disp_manager.register_method(name, f);
+  impl->disp_manager.register_method(name, f);
 }
 
 void Server::set_exit_flag()
 {
-  exit_flag = true;
+  impl->exit_flag = true;
   interrupt();
 }
 
 void Server::interrupt()
 {
-  interrupter->make_interrupt();
+  impl->interrupter->make_interrupt();
+}
+
+iqnet::Reactor_base* Server::get_reactor()
+{
+  return impl->reactor.get();
 }
 
 void Server::push_interceptor(Interceptor* ic)
 {
-  ic->nest(interceptors.release());
-  interceptors.reset(ic);
+  ic->nest(impl->interceptors.release());
+  impl->interceptors.reset(ic);
 }
 
 void Server::push_dispatcher(Method_dispatcher_base* disp)
 {
-  disp_manager.push_back(disp);
+  impl->disp_manager.push_back(disp);
 }
 
 void Server::enable_introspection()
 {
-  disp_manager.enable_introspection();
+  impl->disp_manager.enable_introspection();
 }
 
 void Server::log_errors( std::ostream* log_ )
 {
-  log = log_;
+  impl->log = log_;
 }
 
 void Server::set_max_request_sz( unsigned sz )
 {
-  max_req_sz = sz;
+  impl->max_req_sz = sz;
+}
+
+unsigned Server::get_max_request_sz() const
+{
+  return impl->max_req_sz;
 }
 
 void Server::set_verification_level( http::Verification_level lev )
 {
-  ver_level = lev;
+  impl->ver_level = lev;
+}
+
+http::Verification_level Server::get_verification_level() const
+{
+  return impl->ver_level;
 }
 
 void Server::set_auth_plugin( const Auth_Plugin_base& ap )
 {
-  auth_plugin = &ap;
+  impl->auth_plugin = &ap;
 }
 
 void Server::log_err_msg( const std::string& msg )
 {
-  if( log )
-    *log << msg << std::endl;
+  if( impl->log )
+    *impl->log << msg << std::endl;
 }
 
 namespace {
@@ -155,7 +198,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 
   try {
     scoped_ptr<http::Packet> packet(pkt);
-    optional<std::string> authname = authenticate(*pkt, auth_plugin);
+    optional<std::string> authname = authenticate(*pkt, impl->auth_plugin);
     scoped_ptr<Request> req( parse_request(packet->content()) );
 
     Method::Data mdata = {
@@ -164,13 +207,13 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
       Server_feedback(this)
     };
 
-    Method* meth = disp_manager.create_method( mdata );
+    Method* meth = impl->disp_manager.create_method( mdata );
 
     if (authname)
       meth->authname(authname.get());
 
-    executor = exec_factory->create( meth, this, conn );
-    executor->set_interceptors(interceptors.get());
+    executor = impl->exec_factory->create( meth, this, conn );
+    executor->set_interceptors(impl->interceptors.get());
     executor->execute( req->get_params() );
   }
   catch( const iqxmlrpc::http::Error_response& e )
@@ -211,27 +254,32 @@ void Server::schedule_response(
 
 void Server::set_firewall( iqnet::Firewall_base* _firewall )
 {
-   firewall = _firewall;
+   impl->firewall = _firewall;
 }
 
 void Server::work()
 {
-  if( !acceptor.get() )
+  if( !impl->acceptor.get() )
   {
-    acceptor.reset(new iqnet::Acceptor( port, conn_factory.get(), reactor.get()));
-    acceptor->set_firewall( firewall );
+    impl->acceptor.reset(new iqnet::Acceptor( impl->port, get_conn_factory(), get_reactor()));
+    impl->acceptor->set_firewall( impl->firewall );
   }
 
   for(bool have_handlers = true; have_handlers;)
   {
-    if (exit_flag)
+    if (impl->exit_flag)
       break;
 
-    have_handlers = reactor->handle_events();
+    have_handlers = get_reactor()->handle_events();
   }
 
-  acceptor.reset(0);
-  exit_flag = false;
+  impl->acceptor.reset(0);
+  impl->exit_flag = false;
+}
+
+iqnet::Accepted_conn_factory* Server::get_conn_factory()
+{
+  return impl->conn_factory.get();
 }
 
 } // namespace iqxmlrpc

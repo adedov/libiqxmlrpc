@@ -60,7 +60,7 @@ public:
   Http_server(int port, Executor_factory_base* ef):
     Server(port, new Conn_factory, ef)
   {
-    static_cast<Conn_factory*>(conn_factory.get())->post_init(this, reactor.get());
+    static_cast<Conn_factory*>(get_conn_factory())->post_init(this, get_reactor());
   }
 };
 

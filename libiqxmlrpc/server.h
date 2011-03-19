@@ -49,26 +49,6 @@ class Auth_Plugin_base;
 
 //! XML-RPC server.
 class LIBIQXMLRPC_API Server: boost::noncopyable {
-protected:
-  Executor_factory_base* exec_factory;
-
-  int port;
-  std::auto_ptr<iqnet::Reactor_base>          reactor;
-  std::auto_ptr<iqnet::Reactor_interrupter>   interrupter;
-  std::auto_ptr<iqnet::Accepted_conn_factory> conn_factory;
-  std::auto_ptr<iqnet::Acceptor>              acceptor;
-  iqnet::Firewall_base* firewall;
-
-  bool exit_flag;
-  std::ostream* log;
-  unsigned max_req_sz;
-  http::Verification_level ver_level;
-
-private:
-  Method_dispatcher_manager  disp_manager;
-  std::auto_ptr<Interceptor> interceptors;
-  const Auth_Plugin_base*    auth_plugin;
-
 public:
   Server(
     int port,
@@ -99,13 +79,13 @@ public:
 
   //! Set maximum size of incoming client's request in bytes.
   void set_max_request_sz( unsigned );
-  unsigned get_max_request_sz() const { return max_req_sz; }
+  unsigned get_max_request_sz() const;
 
   //! Set optional firewall object.
   void set_firewall( iqnet::Firewall_base* );
 
   void set_verification_level(http::Verification_level);
-  http::Verification_level get_verification_level() const { return ver_level; }
+  http::Verification_level get_verification_level() const;
 
   void set_auth_plugin(const Auth_Plugin_base&);
   /*! \} */
@@ -122,12 +102,19 @@ public:
   void interrupt();
   /*! \} */
 
-  iqnet::Reactor_base* get_reactor() { return reactor.get(); }
+  iqnet::Reactor_base* get_reactor();
 
   void schedule_execute( http::Packet*, Server_connection* );
   void schedule_response( const Response&, Server_connection*, Executor* );
 
   void log_err_msg( const std::string& );
+
+protected:
+  iqnet::Accepted_conn_factory* get_conn_factory();
+
+private:
+  class Impl;
+  Impl *impl;
 };
 
 #ifdef _MSC_VER
