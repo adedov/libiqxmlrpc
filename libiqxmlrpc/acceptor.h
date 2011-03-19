@@ -32,7 +32,7 @@ class Firewall_base;
 //! An implementation of pattern that separates TCP-connection
 //! establishment from connection handling.
 /*!
-    Acceptor uses creates server-side socket on port 'port'
+    Acceptor binds server-side socket to specified bind_addr
     and waits for incoming connections. When incoming connection
     is occured the Acceptor is using instance of Connection_factory
     to create a specific connection handler.
@@ -44,7 +44,7 @@ class LIBIQXMLRPC_API Acceptor: public Event_handler {
   Firewall_base* firewall;
 
 public:
-  Acceptor( int port, Accepted_conn_factory*, Reactor_base* );
+  Acceptor( const iqnet::Inet_addr& bind_addr, Accepted_conn_factory*, Reactor_base* );
   virtual ~Acceptor();
 
   void set_firewall( iqnet::Firewall_base* );

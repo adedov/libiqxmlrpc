@@ -28,12 +28,12 @@
 using namespace iqnet;
 
 
-Acceptor::Acceptor( int port, Accepted_conn_factory* factory_, Reactor_base* reactor_ ):
+Acceptor::Acceptor( const iqnet::Inet_addr& bind_addr, Accepted_conn_factory* factory_, Reactor_base* reactor_ ):
   factory(factory_),
   reactor(reactor_),
   firewall(0)
 {
-  sock.bind( port );
+  sock.bind( bind_addr );
   listen();
   reactor->register_handler( this, Reactor_base::INPUT );
 }

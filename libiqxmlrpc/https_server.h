@@ -58,8 +58,8 @@ class LIBIQXMLRPC_API Https_server: public Server {
   typedef Server_conn_factory<Https_server_connection> Conn_factory;
 
 public:
-  Https_server(int port, Executor_factory_base* ef):
-    Server(port, new Conn_factory, ef)
+  Https_server(const iqnet::Inet_addr& bind_addr, Executor_factory_base* ef):
+    Server(bind_addr, new Conn_factory, ef)
   {
     static_cast<Conn_factory*>(get_conn_factory())->post_init(this, get_reactor());
   }

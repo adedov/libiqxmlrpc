@@ -15,6 +15,11 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
+#include <boost/optional.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <libxml++/libxml++.h>
+#include <memory>
+
 #include "server.h"
 #include "auth_plugin.h"
 #include "http_errors.h"
@@ -24,16 +29,13 @@
 #include "response.h"
 #include "server_conn.h"
 
-#include <boost/optional.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <libxml++/libxml++.h>
-
 namespace iqxmlrpc {
 
 struct Server::Impl {
   Executor_factory_base* exec_factory;
 
-  int port;
+  iqnet::Inet_addr bind_addr;
+
   std::auto_ptr<iqnet::Reactor_base>          reactor;
   std::auto_ptr<iqnet::Reactor_interrupter>   interrupter;
   std::auto_ptr<iqnet::Accepted_conn_factory> conn_factory;
@@ -49,12 +51,12 @@ struct Server::Impl {
   std::auto_ptr<Interceptor> interceptors;
   const Auth_Plugin_base*    auth_plugin;
 
-  Impl( 
-    int p,
+  Impl(
+    const iqnet::Inet_addr& addr,
     iqnet::Accepted_conn_factory* cf,
     Executor_factory_base* ef):
       exec_factory(ef),
-      port(p),
+      bind_addr(addr),
       reactor(ef->create_reactor()),
       interrupter(new iqnet::Reactor_interrupter(reactor.get())),
       conn_factory(cf),
@@ -72,10 +74,10 @@ struct Server::Impl {
 
 // ---------------------------------------------------------------------------
 Server::Server(
-  int p,
+  const iqnet::Inet_addr& addr,
   iqnet::Accepted_conn_factory* cf,
   Executor_factory_base* ef):
-    impl(new Server::Impl(p, cf, ef))
+    impl(new Server::Impl(addr, cf, ef))
 {
 }
 
@@ -261,7 +263,7 @@ void Server::work()
 {
   if( !impl->acceptor.get() )
   {
-    impl->acceptor.reset(new iqnet::Acceptor( impl->port, get_conn_factory(), get_reactor()));
+    impl->acceptor.reset(new iqnet::Acceptor( impl->bind_addr, get_conn_factory(), get_reactor()));
     impl->acceptor->set_firewall( impl->firewall );
   }
 

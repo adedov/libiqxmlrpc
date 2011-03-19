@@ -72,7 +72,7 @@ private:
 Reactor_interrupter::Impl::Impl(Reactor_base* reactor)
 {
   Socket srv;
-  srv.bind("127.0.0.1", 0); // bind to port 0, which means any port beyond 1024
+  srv.bind(Inet_addr("127.0.0.1", 0)); // bind to port 0, which means any port beyond 1024
   srv.listen(1);
 
   Inet_addr srv_addr(srv.get_addr());

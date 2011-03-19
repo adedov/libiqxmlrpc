@@ -28,9 +28,6 @@
 #include "http.h"
 #include "util.h"
 
-#include <memory>
-#include <ostream>
-
 namespace iqnet
 {
   class Reactor_base;
@@ -51,7 +48,7 @@ class Auth_Plugin_base;
 class LIBIQXMLRPC_API Server: boost::noncopyable {
 public:
   Server(
-    int port,
+    const iqnet::Inet_addr& addr,
     iqnet::Accepted_conn_factory* conn_factory,
     Executor_factory_base* executor_factory );
 

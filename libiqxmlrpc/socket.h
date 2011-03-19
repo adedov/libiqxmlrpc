@@ -60,8 +60,7 @@ public:
   /*! \b Can \b not cause SIGPIPE signal. */
   virtual int recv( char*, int );
 
-  void   bind( int port );
-  void   bind( const std::string& host, int port );
+  void   bind( const Inet_addr& addr );
   void   listen( unsigned backlog = 5 );
   Socket accept();
   bool   connect( const iqnet::Inet_addr& );

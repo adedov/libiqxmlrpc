@@ -21,6 +21,7 @@
 #define _libiqxmlrpc_http_server_h_
 
 #include "connector.h"
+#include "inet_addr.h"
 #include "server.h"
 #include "server_conn.h"
 
@@ -57,8 +58,8 @@ class LIBIQXMLRPC_API Http_server: public Server {
   typedef Server_conn_factory<Http_server_connection> Conn_factory;
 
 public:
-  Http_server(int port, Executor_factory_base* ef):
-    Server(port, new Conn_factory, ef)
+  Http_server(const iqnet::Inet_addr& bind_addr, Executor_factory_base* ef):
+    Server(bind_addr, new Conn_factory, ef)
   {
     static_cast<Conn_factory*>(get_conn_factory())->post_init(this, get_reactor());
   }

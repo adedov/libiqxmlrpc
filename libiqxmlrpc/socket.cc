@@ -24,7 +24,6 @@
 
 using namespace iqnet;
 
-
 Socket::Socket()
 {
   if( (sock = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP )) == -1 )
@@ -36,19 +35,16 @@ Socket::Socket()
 #endif //_WINDOWS
 }
 
-
 Socket::Socket( Socket::Handler h, const Inet_addr& addr ):
   sock(h),
   peer(addr)
 {
 }
 
-
 void Socket::shutdown()
 {
   ::shutdown( sock, 2 );
 }
-
 
 void Socket::close()
 {
@@ -58,7 +54,6 @@ void Socket::close()
   ::close( sock );
 #endif //_WINDOWS
 }
-
 
 void Socket::set_non_blocking( bool flag )
 {
@@ -74,7 +69,6 @@ void Socket::set_non_blocking( bool flag )
     throw network_error( "Socket::set_non_blocking" );
 #endif //_WINDOWS
 }
-
 
 #ifndef MSG_NOSIGNAL
 #ifndef WINDOWS_
@@ -102,7 +96,6 @@ int Socket::send( const char* data, int len )
   return ret;
 }
 
-
 int Socket::recv( char* buf, int len )
 {
 #ifdef _WINDOWS
@@ -125,34 +118,19 @@ void Socket::send_shutdown( const char* data, int len )
   ::shutdown( sock, 1 );
 }
 
-void Socket::bind( int port )
+void Socket::bind( const Inet_addr& addr )
 {
-  Inet_addr addr( port );
-  const sockaddr* saddr =
-    reinterpret_cast<const sockaddr*>(addr.get_sockaddr());
+  const sockaddr* saddr = reinterpret_cast<const sockaddr*>(addr.get_sockaddr());
 
   if( ::bind( sock, saddr, sizeof(sockaddr_in) ) == -1 )
     throw network_error( "Socket::bind" );
 }
-
-
-void Socket::bind( const std::string& host, int port )
-{
-  Inet_addr addr( host, port );
-  const sockaddr* saddr =
-    reinterpret_cast<const sockaddr*>(addr.get_sockaddr());
-
-  if( ::bind( sock, saddr, sizeof(sockaddr_in) ) == -1 )
-    throw network_error( "Socket::bind" );
-}
-
 
 void Socket::listen( unsigned blog )
 {
   if( ::listen( sock, blog ) == -1 )
     throw network_error( "Socket::listen" );
 }
-
 
 Socket Socket::accept()
 {
@@ -165,7 +143,6 @@ Socket Socket::accept()
 
   return Socket( new_sock, Inet_addr(addr) );
 }
-
 
 bool Socket::connect( const iqnet::Inet_addr& peer_addr )
 {
@@ -185,7 +162,6 @@ bool Socket::connect( const iqnet::Inet_addr& peer_addr )
   return !wouldblock;
 }
 
-
 Inet_addr Socket::get_addr() const
 {
   sockaddr_in saddr;
@@ -196,7 +172,6 @@ Inet_addr Socket::get_addr() const
 
   return Inet_addr(reinterpret_cast<const sockaddr_in&>(saddr));
 }
-
 
 int Socket::get_last_error()
 {
