@@ -4,8 +4,8 @@ Look into ChangeLog file for full list of changes.
   This realease is binary incompatible with previous ones!
 
   * Firewall now sends HTTP 403 Forbidden as a default reject action.
-  * Icrease buffer size for hostname calculations (thanks to Ryan Bryan).
-  * Fix hang in client during connection to server that rejects connections on specific port.
+  * Icrease buffer size for hostname calculations (thanks to Ryan Braud).
+  * Fix hang in client during connection to server that rejects connections on specific port (thanks to Ryan Braud for bug report).
   * Fix coredump in case if name of struct member contains XML tags.
   * API enhancments: Http_server and Https_server allow binding to specific IP, not only port.
 
