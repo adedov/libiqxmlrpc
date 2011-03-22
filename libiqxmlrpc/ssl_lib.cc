@@ -55,8 +55,7 @@ Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client
 {
   init_library();
 
-  SSL_METHOD* meth = client ? SSLv23_method() : SSLv23_server_method();
-  ctx = SSL_CTX_new( meth );
+  ctx = SSL_CTX_new( client ? SSLv23_method() : SSLv23_server_method() );
 
   if(
     !SSL_CTX_use_certificate_file( ctx, cert_path.c_str(), SSL_FILETYPE_PEM ) ||
@@ -71,8 +70,7 @@ Ctx::Ctx()
 {
   init_library();
 
-  SSL_METHOD *meth = SSLv23_client_method();
-  ctx = SSL_CTX_new( meth );
+  ctx = SSL_CTX_new( SSLv23_client_method() );
 }
 
 
