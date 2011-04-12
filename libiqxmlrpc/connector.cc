@@ -41,6 +41,7 @@ struct Connect_processor: public Event_handler {
     int err = sock.get_last_error();
 
     if (err) {
+      sock.close();
       throw network_error("Connector", true, err);
     }
   }
