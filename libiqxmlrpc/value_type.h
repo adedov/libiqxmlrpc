@@ -282,7 +282,6 @@ public:
 
 private:
   static const char base64_alpha[64];
-  enum { chars_in_line = 64 };
 
   std::string data;
   mutable std::string base64;

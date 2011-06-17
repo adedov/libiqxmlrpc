@@ -47,7 +47,7 @@ void auth_test()
   BOOST_REQUIRE(test_client);
 
   BOOST_CHECKPOINT("Successful authorization");
-  test_client->set_authinfo("goodman", "");
+  test_client->set_authinfo("goodman", "loooooooooooooooooongpaaaaaaaaaaaassssswwwwwwoooooord");
   Response retval( test_client->execute("echo_user", 0) );
   BOOST_CHECK( !retval.is_fault() );
   BOOST_CHECK_EQUAL( retval.value().get_string(), "goodman" );
