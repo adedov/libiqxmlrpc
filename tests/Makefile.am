@@ -12,7 +12,9 @@ check_PROGRAMS = \
 	server-test \
 	server-stop-test \
 	client-test \
-	client-stress-test 
+	client-stress-test \
+	dump-perf \
+	parse-perf
 
 value_usage_SOURCES = test_value_usage.cc
 
@@ -35,3 +37,9 @@ client_test_SOURCES = \
 client_stress_test_SOURCES = \
 	${CLIENT_COMMON_SOURCES} \
 	client_stress.cc
+
+dump_perf_SOURCES = \
+	dump_performance.cc
+
+parse_perf_SOURCES = \
+	parse_performance.cc
