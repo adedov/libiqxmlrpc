@@ -123,7 +123,8 @@ enum ValueBuilderState {
   BINARY,
   TIME,
   STRUCT,
-  ARRAY
+  ARRAY,
+  NIL
 };
 
 ValueBuilder::ValueBuilder(Parser& parser):
@@ -140,6 +141,7 @@ ValueBuilder::ValueBuilder(Parser& parser):
     { VALUE,  TIME,   "dateXXX" },
     { VALUE,  STRUCT, "struct" },
     { VALUE,  ARRAY,  "array" },
+    { VALUE,  NIL,    "nil" },
     { 0, 0, 0 }
   };
   state_.set_transitions(trans);
@@ -155,6 +157,10 @@ ValueBuilder::do_visit_element(const std::string& tagname)
 
   case ARRAY:
     retval = sub_build<Value_type*, ArrayBuilder>(true);
+    break;
+
+  case NIL:
+    retval = new Nil();
     break;
 
   default:

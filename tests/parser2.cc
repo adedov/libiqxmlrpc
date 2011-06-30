@@ -30,6 +30,7 @@ void test_parse_scalar()
   BOOST_CHECK_EQUAL(parse_value("<boolean>0</boolean>").get_bool(), false);
   BOOST_CHECK_EQUAL(parse_value("<double>123.45</double>").get_double(), 123.45);
   BOOST_CHECK_EQUAL(parse_value("<string>str</string>").get_string(), "str");
+  BOOST_CHECK(parse_value("<nil/>").is_nil());
 }
 
 void test_parse_array()
@@ -116,14 +117,6 @@ void test_parse_formatted()
 // request
 //
 
-Request my_parse_request(const std::string& s)
-{
-  Parser p(s);
-  RequestBuilder b(p);
-  b.build();
-  return b.get();
-}
-
 void test_parse_request()
 {
   std::string r = "<methodCall> \
@@ -140,19 +133,19 @@ void test_parse_request()
   </params> \
 </methodCall>";
 
-  Request req = my_parse_request(r);
-  BOOST_CHECK_EQUAL(req.get_name(), "get_weather");
-  BOOST_CHECK_EQUAL(req.get_params().size(), 2);
-  BOOST_CHECK_EQUAL(req.get_params().front().get_string(), "Krasnoyarsk");
-  BOOST_CHECK_EQUAL(req.get_params().back().get_string(), "now");
+  std::auto_ptr<Request> req(parse_request(r));
+  BOOST_CHECK_EQUAL(req->get_name(), "get_weather");
+  BOOST_CHECK_EQUAL(req->get_params().size(), 2);
+  BOOST_CHECK_EQUAL(req->get_params().front().get_string(), "Krasnoyarsk");
+  BOOST_CHECK_EQUAL(req->get_params().back().get_string(), "now");
 }
 
 void test_parse_request_no_params()
 {
   std::string r = "<methodCall><methodName>do_something</methodName></methodCall>";
-  Request req = my_parse_request(r);
-  BOOST_CHECK_EQUAL(req.get_name(), "do_something");
-  BOOST_CHECK_EQUAL(req.get_params().size(), 0);
+  std::auto_ptr<Request> req(parse_request(r));
+  BOOST_CHECK_EQUAL(req->get_name(), "do_something");
+  BOOST_CHECK_EQUAL(req->get_params().size(), 0);
 }
 
 //

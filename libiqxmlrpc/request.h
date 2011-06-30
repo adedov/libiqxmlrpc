@@ -26,10 +26,6 @@
 #include <string>
 #include <vector>
 
-namespace xmlpp {
-  class Node;
-}
-
 namespace iqxmlrpc {
 
 class Request;
@@ -49,24 +45,16 @@ class LIBIQXMLRPC_API Request: public Serializable_to_xml {
 public:
   typedef Param_list::const_iterator const_iterator;
 
-private:
-  std::string name;
-  Param_list  params;
-
-public:
-  Request( const xmlpp::Document* );
-  Request( const xmlpp::Node* );
   Request( const std::string& name, const Param_list& params );
-  virtual ~Request();
 
   const std::string& get_name()   const { return name; }
   const Param_list&  get_params() const { return params; }
 
 private:
-  void parse( const xmlpp::Node* );
-  void parse_name( const xmlpp::Node* );
-  void parse_params( const xmlpp::Node* );
   virtual xmlpp::Document* to_xml() const;
+
+  std::string name;
+  Param_list  params;
 };
 
 #ifdef _MSC_VER

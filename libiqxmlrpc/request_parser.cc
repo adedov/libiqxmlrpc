@@ -46,10 +46,10 @@ RequestBuilder::do_visit_element(const std::string& tagname)
   }
 }
 
-Request
+Request*
 RequestBuilder::get()
 {
-  return Request(method_name_, params_);
+  return new Request(method_name_, params_);
 }
 
 } // namespace iqxmlrpc

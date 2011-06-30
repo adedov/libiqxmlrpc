@@ -10,7 +10,7 @@ class RequestBuilder: public BuilderBase {
 public:
   RequestBuilder(Parser&);
 
-  Request
+  Request*
   get();
 
 private:
