@@ -195,6 +195,9 @@ ValueBuilder::do_visit_text(const std::string& text)
     break;
 
   case BINARY:
+    retval = Binary_data::from_base64(text);
+    break;
+
   case TIME:
   default:
     throw std::runtime_error("not implemented yet");

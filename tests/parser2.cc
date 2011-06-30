@@ -30,6 +30,7 @@ void test_parse_scalar()
   BOOST_CHECK_EQUAL(parse_value("<boolean>0</boolean>").get_bool(), false);
   BOOST_CHECK_EQUAL(parse_value("<double>123.45</double>").get_double(), 123.45);
   BOOST_CHECK_EQUAL(parse_value("<string>str</string>").get_string(), "str");
+  BOOST_CHECK_EQUAL(parse_value("<base64>V2h5IHNob3VsZCBJIGJsYW1lIGhlcg==</base64>").get_binary().get_data(), "Why should I blame her");
   BOOST_CHECK(parse_value("<nil/>").is_nil());
 }
 
@@ -152,14 +153,6 @@ void test_parse_request_no_params()
 // response
 //
 
-Response my_parse_response(const std::string& s)
-{
-  Parser p(s);
-  ResponseBuilder b(p);
-  b.build();
-  return b.get();
-}
-
 void test_parse_ok_response()
 {
   std::string r = "<methodResponse> \
@@ -177,7 +170,7 @@ void test_parse_ok_response()
   </params> \
 </methodResponse>";
 
-  Response res = my_parse_response(r);
+  Response res = parse_response(r);
   BOOST_CHECK(res.value().is_struct());
   BOOST_CHECK_EQUAL(res.value().the_struct().size(), 1);
   BOOST_CHECK_EQUAL(res.value()["temp"].get_double(), 15.5);
@@ -204,7 +197,7 @@ void test_parse_fault_response()
   </params> \
 </methodResponse>";
 
-  Response res = my_parse_response(r);
+  Response res = parse_response(r);
   BOOST_CHECK(res.is_fault());
   BOOST_CHECK_EQUAL(res.fault_code(), 143);
   BOOST_CHECK_EQUAL(res.fault_string(), "Out of beer");
@@ -220,11 +213,11 @@ bool init_tests()
   test.add( BOOST_TEST_CASE(&test_parse_nested_struct) );
   test.add( BOOST_TEST_CASE(&test_parse_unknown_type) );
   test.add( BOOST_TEST_CASE(&test_parse_formatted) );
-//  test.add( BOOST_TEST_CASE(&parse_binary) );
 
   test.add( BOOST_TEST_CASE(&test_parse_request) );
   test.add( BOOST_TEST_CASE(&test_parse_request_no_params) );
   test.add( BOOST_TEST_CASE(&test_parse_ok_response) );
+
   return true;
 }
 

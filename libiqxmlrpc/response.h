@@ -45,13 +45,7 @@ LIBIQXMLRPC_API Response parse_response( const std::string& );
 
 //! XML-RPC response.
 class LIBIQXMLRPC_API Response: public Serializable_to_xml {
-  boost::shared_ptr<Value> value_;
-  int fault_code_;
-  std::string fault_string_;
-
 public:
-  Response( const xmlpp::Document* );
-  Response( const xmlpp::Node* );
   Response( Value* );
   Response( int fault_code, const std::string& fault_string );
 
@@ -66,14 +60,14 @@ public:
   const std::string& fault_string() const { return fault_string_; }
 
 private:
-  void parse( const xmlpp::Node* );
-  void parse_param( const xmlpp::Node* );
-  void parse_fault( const xmlpp::Node* );
-
   virtual xmlpp::Document* to_xml() const;
 
   void ok_to_xml( xmlpp::Node* ) const;
   void fault_to_xml( xmlpp::Node* ) const;
+
+  boost::shared_ptr<Value> value_;
+  int fault_code_;
+  std::string fault_string_;
 };
 
 #ifdef _MSC_VER

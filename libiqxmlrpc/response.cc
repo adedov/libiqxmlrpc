@@ -18,9 +18,9 @@
 //  $Id: response.cc,v 1.13 2006-09-07 09:35:42 adedov Exp $
 
 #include "response.h"
+#include "response_parser.h"
 
 #include "except.h"
-#include "parser.h"
 #include "value.h"
 #include "value_type_xml.h"
 
@@ -30,47 +30,27 @@
 
 namespace iqxmlrpc {
 
-Response parse_response( const std::string& response_string )
+Response
+parse_response( const std::string& response_string )
 {
-  try {
-    xmlpp::DomParser parser;
-    parser.set_substitute_entities();
-    parser.parse_memory( response_string );
-
-    return Response( parser.get_document() );
-  }
-  catch( xmlpp::exception& e )
-  {
-    throw Parse_error( e.what() );
-  }
+  Parser parser(response_string);
+  ResponseBuilder builder(parser);
+  builder.build();
+  return builder.get();
 }
 
 
 //-----------------------------------------------------------------------------
-Response::Response( const xmlpp::Document* doc )
-{
-  parse( doc->get_root_node() );
-}
-
-
-Response::Response( const xmlpp::Node* node )
-{
-  parse( node );
-}
-
-
 Response::Response( Value* v ):
   value_(v)
 {
 }
-
 
 Response::Response( int fcode, const std::string& fstring ):
   fault_code_(fcode),
   fault_string_(fstring)
 {
 }
-
 
 xmlpp::Document* Response::to_xml() const
 {
@@ -85,7 +65,6 @@ xmlpp::Document* Response::to_xml() const
   return doc.release();
 }
 
-
 const Value& Response::value() const
 {
   if( is_fault() )
@@ -93,52 +72,6 @@ const Value& Response::value() const
 
   return *value_;
 }
-
-
-void Response::parse( const xmlpp::Node* node )
-{
-  xmlpp::Node* n = Parser::instance()->single_element( node );
-
-  if( n->get_name() == "params" )
-    parse_param( n );
-  else if( n->get_name() == "fault" )
-    parse_fault( n );
-  else
-    throw XML_RPC_violation::at_node(n);
-}
-
-
-inline void Response::parse_param( const xmlpp::Node* node )
-{
-  Parser *parser = Parser::instance();
-
-  xmlpp::Node* param = parser->single_element(node);
-  if( param->get_name() != "param" )
-    throw XML_RPC_violation::at_node(param);
-
-  xmlpp::Node* valnode = parser->single_element(param);
-  value_.reset(parser->parse_value( valnode ));
-}
-
-
-inline void Response::parse_fault( const xmlpp::Node* node )
-{
-  xmlpp::Node* valnode = Parser::instance()->single_element(node);
-  std::auto_ptr<Value> fault_(Parser::instance()->parse_value(valnode));
-  Value& fault = *fault_.get();
-
-  static std::string err( "malformed structure of fault response." );
-
-  if( !fault.has_field("faultCode") || !fault.has_field("faultString") )
-    throw XML_RPC_violation::caused( err );
-
-  if( !fault["faultCode"].is_int() || !fault["faultString"].is_string() )
-    throw XML_RPC_violation::caused( err );
-
-  fault_code_   = fault["faultCode"];
-  fault_string_ = fault["faultString"].get_string();
-}
-
 
 inline void Response::ok_to_xml( xmlpp::Node* p ) const
 {
@@ -148,7 +81,6 @@ inline void Response::ok_to_xml( xmlpp::Node* p ) const
   Element* param_el  = params_el->add_child( "param" );
   value_to_xml(*value_, param_el);
 }
-
 
 inline void Response::fault_to_xml( xmlpp::Node* p ) const
 {
