@@ -1,17 +1,19 @@
 ACLOCAL_AMFLAGS = -I ../m4
 EXTRA_DIST = data
-CXXFLAGS += -DBOOST_TEST_DYN_LINK
+CXXFLAGS += -DBOOST_TEST_DYN_LINK 
 LDADD = ../libiqxmlrpc/libiqxmlrpc-client.la \
 	../libiqxmlrpc/libiqxmlrpc-server.la \
 	$(BOOST_THREAD_LIB) \
 	$(BOOST_UNIT_TEST_FRAMEWORK_LIB) \
-	$(BOOST_PROGRAM_OPTIONS_LIB)
+	$(BOOST_PROGRAM_OPTIONS_LIB)\
+	-ltcmalloc
 
 check_PROGRAMS = \
 	value-usage \
 	server-test \
 	server-stop-test \
 	client-test \
+	parser2-test \
 	client-stress-test \
 	dump-perf \
 	parse-perf
@@ -37,6 +39,8 @@ client_test_SOURCES = \
 client_stress_test_SOURCES = \
 	${CLIENT_COMMON_SOURCES} \
 	client_stress.cc
+
+parser2_test_SOURCES = parser2.cc
 
 dump_perf_SOURCES = \
 	dump_performance.cc

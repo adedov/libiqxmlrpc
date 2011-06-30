@@ -8,7 +8,7 @@ void dump_test()
 {
   Array arr;
 
-  for (int i = 0; i < 100000; ++i) {
+  for (int i = 0; i < 300000; ++i) {
     Struct s;
     s.insert("f1", "field 1");
     s.insert("f2", "field 2");

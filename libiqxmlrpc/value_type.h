@@ -253,6 +253,7 @@ public:
   const std::string& type_name() const;
   void apply_visitor(Value_type_visitor&) const;
 
+  size_t size() const;
   bool has_field( const std::string& ) const;
 
   const Value& operator []( const std::string& ) const;

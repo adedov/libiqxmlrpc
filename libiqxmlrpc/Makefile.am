@@ -1,4 +1,4 @@
-LDFLAGS += -version-info @LIBIQXMLRPC_VERSION@
+LDFLAGS += -version-info @LIBIQXMLRPC_VERSION@ -ltcmalloc
 
 noinst_LTLIBRARIES = libiqxmlrpc-general.la
 libiqxmlrpc_general_la_LIBADD = ${LIBXMLPP_LIBS} ${OPENSSL_LIBS}
@@ -73,11 +73,14 @@ libiqxmlrpc_general_la_SOURCES = \
 	inet_addr.cc \
 	net_except.cc \
 	parser.cc \
+	parser2.cc \
 	parser_specific.cc \
 	reactor_poll_impl.cc \
 	reactor_select_impl.cc \
 	request.cc \
+	request_parser.cc \
 	response.cc \
+	response_parser.cc \
 	socket.cc \
 	ssl_lib.cc \
 	ssl_connection.cc \
@@ -86,6 +89,7 @@ libiqxmlrpc_general_la_SOURCES = \
 	value_type_visitor.cc \
 	value_type_xml.cc \
 	value.cc \
+	value_parser.cc \
 	xml_utils.cc
 
 libiqxmlrpc_client_la_SOURCES = \

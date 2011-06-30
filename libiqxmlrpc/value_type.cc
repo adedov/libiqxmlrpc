@@ -265,6 +265,12 @@ void Struct::apply_visitor(Value_type_visitor& v) const
 }
 
 
+size_t Struct::size() const
+{
+  return values.size();
+}
+
+
 bool Struct::has_field( const std::string& f ) const
 {
   return values.find(f) != values.end();
