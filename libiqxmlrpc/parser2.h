@@ -39,7 +39,7 @@ protected:
   {
     BUILDER b(parser_);
     b.build(flat);
-    return b.retval;
+    return b.result();
   }
 
   virtual void

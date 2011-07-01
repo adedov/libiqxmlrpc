@@ -6,6 +6,13 @@
 
 namespace iqxmlrpc {
 
+ValueBuilderBase::ValueBuilderBase(Parser& parser, bool expect_text):
+  BuilderBase(parser, expect_text)
+{
+}
+
+namespace {
+
 class StructBuilder: public ValueBuilderBase {
 public:
   StructBuilder(Parser& parser):
@@ -20,7 +27,7 @@ public:
       { 0, 0, 0 }
     };
     state_.set_transitions(trans);
-    retval = proxy_ = new Struct();
+    retval.reset(proxy_ = new Struct());
   }
 
 private:
@@ -85,7 +92,7 @@ public:
       { 0, 0, 0 }
     };
     state_.set_transitions(trans);
-    retval = proxy_ = new Array();
+    retval.reset(proxy_ = new Array());
   }
 
 private:
@@ -108,11 +115,7 @@ private:
   Array* proxy_;
 };
 
-ValueBuilderBase::ValueBuilderBase(Parser& parser, bool expect_text):
-  BuilderBase(parser, expect_text),
-  retval(0)
-{
-}
+} // anonymous namespace
 
 enum ValueBuilderState {
   VALUE,
@@ -152,15 +155,15 @@ ValueBuilder::do_visit_element(const std::string& tagname)
 {
   switch (state_.change(tagname)) {
   case STRUCT:
-    retval = sub_build<Value_type*, StructBuilder>(true);
+    retval.reset(sub_build<Value_type*, StructBuilder>(true));
     break;
 
   case ARRAY:
-    retval = sub_build<Value_type*, ArrayBuilder>(true);
+    retval.reset(sub_build<Value_type*, ArrayBuilder>(true));
     break;
 
   case NIL:
-    retval = new Nil();
+    retval.reset(new Nil());
     break;
 
   default:
@@ -179,27 +182,27 @@ ValueBuilder::do_visit_text(const std::string& text)
   case VALUE:
     finish = true;
   case STRING:
-    retval = new String(text);
+    retval.reset(new String(text));
     break;
 
   case INT:
-    retval = new Int(lexical_cast<int>(text));
+    retval.reset(new Int(lexical_cast<int>(text)));
     break;
 
   case BOOL:
-    retval = new Bool(bool(lexical_cast<int>(text)));
+    retval.reset(new Bool(bool(lexical_cast<int>(text))));
     break;
 
   case DOUBLE:
-    retval = new Double(lexical_cast<double>(text));
+    retval.reset(new Double(lexical_cast<double>(text)));
     break;
 
   case BINARY:
-    retval = Binary_data::from_base64(text);
+    retval.reset(Binary_data::from_base64(text));
     break;
 
   case TIME:
-    retval = new Date_time(text);
+    retval.reset(new Date_time(text));
     break;
 
   default:

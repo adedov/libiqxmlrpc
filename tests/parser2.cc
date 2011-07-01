@@ -20,7 +20,7 @@ Value parse_value(const std::string& s)
   Parser p(s);
   ValueBuilder b(p);
   b.build();
-  return b.retval;
+  return Value(b.result());
 }
 
 void test_parse_scalar()

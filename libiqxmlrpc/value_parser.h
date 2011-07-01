@@ -10,7 +10,14 @@ class ValueBuilderBase: public BuilderBase {
 public:
   ValueBuilderBase(Parser& parser, bool expect_text = false);
 
-  Value_type* retval;
+  Value_type*
+  result()
+  {
+    return retval.release();
+  }
+
+protected:
+  std::auto_ptr<Value_type> retval;
 };
 
 class ValueBuilder: public ValueBuilderBase {
