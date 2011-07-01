@@ -138,7 +138,7 @@ ValueBuilder::ValueBuilder(Parser& parser):
     { VALUE,  BOOL,   "boolean" },
     { VALUE,  DOUBLE, "double" },
     { VALUE,  BINARY, "base64" },
-    { VALUE,  TIME,   "dateXXX" },
+    { VALUE,  TIME,   "dateTime.iso8601" },
     { VALUE,  STRUCT, "struct" },
     { VALUE,  ARRAY,  "array" },
     { VALUE,  NIL,    "nil" },
@@ -199,8 +199,11 @@ ValueBuilder::do_visit_text(const std::string& text)
     break;
 
   case TIME:
+    retval = new Date_time(text);
+    break;
+
   default:
-    throw std::runtime_error("not implemented yet");
+    throw XML_RPC_violation::caused(parser_.context());
   }
 
   return finish;

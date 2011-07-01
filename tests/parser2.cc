@@ -31,6 +31,7 @@ void test_parse_scalar()
   BOOST_CHECK_EQUAL(parse_value("<double>123.45</double>").get_double(), 123.45);
   BOOST_CHECK_EQUAL(parse_value("<string>str</string>").get_string(), "str");
   BOOST_CHECK_EQUAL(parse_value("<base64>V2h5IHNob3VsZCBJIGJsYW1lIGhlcg==</base64>").get_binary().get_data(), "Why should I blame her");
+  BOOST_CHECK_EQUAL(parse_value("<dateTime.iso8601>19980717T14:08:55</dateTime.iso8601>").get_datetime().to_string(), "19980717T14:08:55");
   BOOST_CHECK(parse_value("<nil/>").is_nil());
 }
 
