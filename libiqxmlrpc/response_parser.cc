@@ -57,11 +57,11 @@ ResponseBuilder::parse_fault()
   Value v = sub_build<Value_type*, ValueBuilder>();
 
   if (!v.is_struct())
-    throw XML_RPC_violation::caused(parser_.context());
+    throw XML_RPC_violation(parser_.context());
 
   Struct s = v.the_struct();
   if (s.size() != 2 || !s.has_field(fcode) || !s.has_field(fstr))
-    throw XML_RPC_violation::caused(parser_.context());
+    throw XML_RPC_violation(parser_.context());
 
   fault_code_ = s[fcode].get_int();
   fault_str_  = s[fstr].get_string();
@@ -76,7 +76,7 @@ ResponseBuilder::get()
   if (fault_str_)
     return Response(fault_code_, fault_str_.get());
 
-    throw XML_RPC_violation::caused(parser_.context());
+  throw XML_RPC_violation("No valid response was found");
 }
 
 } // namespace iqxmlrpc

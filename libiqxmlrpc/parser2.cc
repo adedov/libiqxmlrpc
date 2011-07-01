@@ -71,7 +71,7 @@ BuilderBase::do_visit_text(const std::string&)
 {
   if (expect_text_) {
     // proper handler was not implemented
-    throw XML_RPC_violation::caused(parser_.context());
+    throw XML_RPC_violation(parser_.context());
   }
 
   return false;
@@ -231,7 +231,7 @@ StateMachine::change(const std::string& tag)
 
   if (!found) {
     std::string err = "unexpected tag <" + std::string(tag) + "> at " + parser_.context();
-    throw XML_RPC_violation::caused(err);
+    throw XML_RPC_violation(err);
   }
 
   curr_ = trans_[i].new_state;

@@ -70,7 +70,6 @@ libiqxmlrpc_general_la_SOURCES = \
 	acceptor.cc \
 	connection.cc \
 	dispatcher_manager.cc \
-	except.cc \
 	http.cc \
 	inet_addr.cc \
 	net_except.cc \

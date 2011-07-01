@@ -24,11 +24,6 @@
 
 #include <stdexcept>
 
-namespace xmlpp
-{
-  class Node;
-};
-
 // Exceptions are conformant ot Fault Code Interoperability, version 20010516.
 // http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php
 namespace iqxmlrpc
@@ -69,17 +64,12 @@ public:
 //! XML-RPC structures not conforming to spec.
 class LIBIQXMLRPC_API XML_RPC_violation: public Exception {
 public:
-  static XML_RPC_violation at_node( const xmlpp::Node* );
-  static XML_RPC_violation caused( const std::string&, const xmlpp::Node* = 0 );
-
   XML_RPC_violation():
     Exception("Server error. XML-RPC violation.", -32600) {}
 
-private:
   XML_RPC_violation( const std::string& s ):
     Exception(std::string("Server error. XML-RPC violation: ") += s, -32600) {}
 };
-
 
 //! Exception is being thrown when user tries to create
 //! Method object for unregistered name.
@@ -89,7 +79,6 @@ public:
     Exception((std::string("Server error. Method '") += name) += "' not found.", -32601) {}
 };
 
-
 //! Invalid method parameters exception.
 class LIBIQXMLRPC_API Invalid_meth_params: public Exception {
 public:
@@ -97,22 +86,12 @@ public:
     Exception( "Server error. Invalid method parameters.", -32602 ) {}
 };
 
-
 //! Exception which user should throw from Method to
 //! initiate fault response.
 class LIBIQXMLRPC_API Fault: public Exception {
 public:
-  class LIBIQXMLRPC_API FCI_violation: public std::runtime_error {
-  public:
-    FCI_violation():
-      runtime_error(
-        "You should not specify application specific error codes "
-        "in interval [-32768, -32000]."
-      ) {};
-  };
-
-public:
-  Fault( int c, const std::string& s );
+  Fault( int c, const std::string& s ):
+    Exception(s, c) {}
 };
 
 #ifdef _MSC_VER

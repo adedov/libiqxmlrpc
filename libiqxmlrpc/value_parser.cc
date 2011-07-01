@@ -54,7 +54,7 @@ private:
       break;
 
     default:
-      throw XML_RPC_violation::caused(parser_.context());
+      throw XML_RPC_violation(parser_.context());
     }
   }
 
@@ -63,7 +63,7 @@ private:
   {
     if (tagname == "member") {
       if (state_.get_state() != VALUE_READ) {
-        throw XML_RPC_violation::caused(parser_.context());
+        throw XML_RPC_violation(parser_.context());
       }
 
       Value_ptr v(new Value(value_));
@@ -206,7 +206,7 @@ ValueBuilder::do_visit_text(const std::string& text)
     break;
 
   default:
-    throw XML_RPC_violation::caused(parser_.context());
+    throw XML_RPC_violation(parser_.context());
   }
 
   return finish;
