@@ -104,13 +104,20 @@ public:
   bool
   read()
   {
-    if (xmlTextReaderRead(reader) > 0) {
+    int code = xmlTextReaderRead(reader);
+
+    if (code > 0) {
       int type = node_type();
       is_text = type == XML_READER_TYPE_TEXT;
       element_begin = type == XML_READER_TYPE_ELEMENT;
       element_end = type == XML_READER_TYPE_END_ELEMENT;
       in_element = element_begin || element_end;
       return true;
+    }
+
+    if (code < 0) {
+      xmlErrorPtr err = xmlGetLastError();
+      throw Parse_error(err ? err->message : "unknown parsing error");
     }
 
     return false;

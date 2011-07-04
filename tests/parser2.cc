@@ -61,6 +61,12 @@ void test_parse_unknown_type()
   BOOST_CHECK_THROW(parse_value("<abc>0</abc>"), XML_RPC_violation);
 }
 
+void test_parse_bad_xml()
+{
+  BOOST_CHECK_THROW(parse_value("not valid <xml>"), Parse_error);
+  BOOST_CHECK_THROW(parse_value("<doc></abc></doc>"), Parse_error);
+}
+
 void test_parse_simple_struct()
 {
   Struct s = parse_value(
@@ -213,6 +219,7 @@ bool init_tests()
   test.add( BOOST_TEST_CASE(&test_parse_simple_struct) );
   test.add( BOOST_TEST_CASE(&test_parse_nested_struct) );
   test.add( BOOST_TEST_CASE(&test_parse_unknown_type) );
+  test.add( BOOST_TEST_CASE(&test_parse_bad_xml) );
   test.add( BOOST_TEST_CASE(&test_parse_formatted) );
 
   test.add( BOOST_TEST_CASE(&test_parse_request) );
