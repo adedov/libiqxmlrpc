@@ -33,7 +33,6 @@
 #include "except.h"
 #include "method.h"
 #include "response.h"
-#include "utf_conv.h"
 #include "value.h"
 
 #endif

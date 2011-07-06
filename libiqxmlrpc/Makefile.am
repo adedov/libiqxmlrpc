@@ -59,7 +59,6 @@ pkginclude_HEADERS = \
 	ssl_lib.h \
 	ssl_connection.h \
 	sysinc.h \
-	utf_conv.h \
 	util.h \
 	value_type.h \
 	value_type_visitor.h \
@@ -83,7 +82,6 @@ libiqxmlrpc_general_la_SOURCES = \
 	socket.cc \
 	ssl_lib.cc \
 	ssl_connection.cc \
-	utf_conv.cc \
 	value_type.cc \
 	value_type_visitor.cc \
 	value_type_xml.cc \

@@ -19,8 +19,8 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include "value.h"
 #include "value_type_xml.h"
-#include "utf_conv.h"
 
 namespace iqxmlrpc {
 
@@ -61,7 +61,7 @@ void Value_type_to_xml::do_visit_bool(bool val)
 
 void Value_type_to_xml::do_visit_string(const std::string& val)
 {
-  add_textnode("string", config::cs_conv->to_utf(val));
+  add_textnode("string", val);
 }
 
 void Value_type_to_xml::do_visit_struct(const Struct& s)
