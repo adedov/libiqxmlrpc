@@ -17,7 +17,6 @@
 
 #include <boost/optional.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <libxml++/libxml++.h>
 #include <memory>
 
 #include "server.h"

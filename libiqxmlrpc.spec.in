@@ -7,8 +7,8 @@ URL:      http://libiqxmlrpc.sourceforge.net
 Group:    System Environment/Libraries
 Source:   libiqxmlrpc-@VERSION@.tar.gz
 BuildRoot: %{_tmppath}/%{name}-buildroot-%{version}-%{release}
-BuildRequires: doxygen, openssl-devel, libxml++-devel
-Requires: openssl, libxml++
+BuildRequires: doxygen, openssl-devel, libxml2-devel
+Requires: openssl, libxml2
 Prefix:   /usr
 
 %description
@@ -22,7 +22,7 @@ This package provides run-time libraries.
 %package devel
 Summary: Simple object-oriented XML-RPC client-server solution for C++.
 Group:   Development/Libraries
-Requires: %name, openssl-devel, libxml++-devel
+Requires: %name, openssl-devel, libxml2-devel
 
 %description devel
 Libiqxmlrpc - an object-oriented XML-RPC library written in C++.  It provides
