@@ -20,11 +20,10 @@
 #ifndef _iqxmlrpc_request_h_
 #define _iqxmlrpc_request_h_
 
-#include "value.h"
-#include "xml_utils.h"
-
 #include <string>
 #include <vector>
+
+#include "value.h"
 
 namespace iqxmlrpc {
 
@@ -35,13 +34,16 @@ typedef std::vector<Value> Param_list;
 //! Build request object from XML-formed string.
 LIBIQXMLRPC_API  Request* parse_request( const std::string& );
 
+//! Dump Request to XML.
+LIBIQXMLRPC_API std::string dump_request( const Request& );
+
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4251)
 #endif
 
 //! Incoming RPC request.
-class LIBIQXMLRPC_API Request: public Serializable_to_xml {
+class LIBIQXMLRPC_API Request {
 public:
   typedef Param_list::const_iterator const_iterator;
 
@@ -51,8 +53,6 @@ public:
   const Param_list&  get_params() const { return params; }
 
 private:
-  virtual xmlpp::Document* to_xml() const;
-
   std::string name;
   Param_list  params;
 };

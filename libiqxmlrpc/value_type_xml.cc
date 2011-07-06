@@ -17,85 +17,75 @@
 //
 //  $Id: value_type_xml.cc,v 1.1 2006-08-30 18:01:36 adedov Exp $
 
-#include "value_type_xml.h"
+#include <boost/lexical_cast.hpp>
 
+#include "value_type_xml.h"
 #include "utf_conv.h"
 
-#include <boost/lexical_cast.hpp>
-#include <libxml++/libxml++.h>
-
 namespace iqxmlrpc {
-namespace type_names {
-  const std::string nil_type_name     = "nil";
-  const std::string int_type_name     = "i4";
-  const std::string bool_type_name    = "boolean";
-  const std::string double_type_name  = "double";
-  const std::string string_type_name  = "string";
-  const std::string array_type_name   = "array";
-  const std::string struct_type_name  = "struct";
-  const std::string base64_type_name  = "base64";
-  const std::string date_type_name    = "dateTime.iso8601";
-} // namespace type_names
+
+typedef XmlBuilder::Node XmlNode;
+
+inline void
+Value_type_to_xml::add_textnode(const char* name, const std::string& cont)
+{
+  XmlNode n(builder_, name);
+  n.set_textdata(cont);
+}
 
 void Value_type_to_xml::do_visit_value(const Value_type& v)
 {
-  xmlpp::Element* el = parent_->add_child( "value" );
-  Value_type_to_xml vis(el);
-  v.apply_visitor(vis);
+  XmlNode value(builder_, "value");
+  v.apply_visitor(*this);
 }
 
 void Value_type_to_xml::do_visit_nil()
 {
-  parent_->add_child(type_names::nil_type_name);
+  XmlNode(builder_, "nil");
 }
 
 void Value_type_to_xml::do_visit_int(int val)
 {
-  add_child_with_content(
-    type_names::int_type_name, boost::lexical_cast<std::string>(val));
+  add_textnode("i4", boost::lexical_cast<std::string>(val));
 }
 
 void Value_type_to_xml::do_visit_double(double val)
 {
-  add_child_with_content(
-    type_names::double_type_name, boost::lexical_cast<std::string>(val));
+  add_textnode("double", boost::lexical_cast<std::string>(val));
 }
 
 void Value_type_to_xml::do_visit_bool(bool val)
 {
-  add_child_with_content(
-    type_names::bool_type_name, val ? "1" : "0");
+  add_textnode("boolean", val ? "1" : "0");
 }
 
 void Value_type_to_xml::do_visit_string(const std::string& val)
 {
-  add_child_with_content(
-    type_names::string_type_name, config::cs_conv->to_utf(val));
+  add_textnode("string", config::cs_conv->to_utf(val));
 }
 
 void Value_type_to_xml::do_visit_struct(const Struct& s)
 {
-  xmlpp::Element* str_el = parent_->add_child(type_names::struct_type_name);
+  XmlNode st(builder_, "struct");
 
   typedef Struct::const_iterator CI;
   for(CI i = s.begin(); i != s.end(); ++i )
   {
-    xmlpp::Element* mbr_el = str_el->add_child( "member" );
-    xmlpp::Element* name_el = mbr_el->add_child( "name" );
-    name_el->add_child_text( i->first );
+    XmlNode member(builder_, "member");
+    add_textnode("name", i->first);
 
-    Value_type_to_xml vis(mbr_el);
+    Value_type_to_xml vis(builder_);
     i->second->apply_visitor(vis);
   }
 }
 
 void Value_type_to_xml::do_visit_array(const Array& a)
 {
-  xmlpp::Element* arr_el = parent_->add_child( type_names::array_type_name );
-  xmlpp::Element* el = arr_el->add_child( "data" );
+  XmlNode arr(builder_, "array");
+  XmlNode data(builder_, "data");
 
   typedef Array::const_iterator CI;
-  Value_type_to_xml vis(el);
+  Value_type_to_xml vis(builder_);
 
   for(CI i = a.begin(); i != a.end(); ++i ) {
     i->apply_visitor(vis);
@@ -104,25 +94,12 @@ void Value_type_to_xml::do_visit_array(const Array& a)
 
 void Value_type_to_xml::do_visit_base64(const Binary_data& bin)
 {
-  add_child_with_content(
-    type_names::base64_type_name, bin.get_base64());
+  add_textnode("base64", bin.get_base64());
 }
 
 void Value_type_to_xml::do_visit_datetime(const Date_time& d)
 {
-  add_child_with_content(
-    type_names::date_type_name, d.to_string());
-}
-
-//
-// utils
-//
-
-inline
-void Value_type_to_xml::add_child_with_content(
-  const std::string& name, const std::string& cont)
-{
-  parent_->add_child(name)->add_child_text(cont);
+  add_textnode("dateTime.iso8601", d.to_string());
 }
 
 } // namespace iqxmlrpc

@@ -20,21 +20,15 @@
 #ifndef _iqxmlrpc_value_h_
 #define _iqxmlrpc_value_h_
 
-#include "except.h"
-#include "value_type.h"
-
 #include <iosfwd>
-#include <map>
 #include <string>
 #include <typeinfo>
 #include <vector>
 
-namespace xmlpp {
-  class Node;
-}
+#include "except.h"
+#include "value_type.h"
 
-namespace iqxmlrpc
-{
+namespace iqxmlrpc {
 
 //! Proxy class to access XML-RPC values by library users.
 /*! \exception Bad_cast */
@@ -140,7 +134,8 @@ private:
   template <class T> bool can_cast() const;
 };
 
-void LIBIQXMLRPC_API value_to_xml(const Value&, xmlpp::Node*);
+class XmlBuilder;
+void LIBIQXMLRPC_API value_to_xml(XmlBuilder&, const Value&);
 void LIBIQXMLRPC_API print_value(const Value&, std::ostream&);
 
 } // namespace iqxmlrpc

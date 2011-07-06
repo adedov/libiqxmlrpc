@@ -17,22 +17,17 @@
 //
 //  $Id: value_type_xml.h,v 1.2 2006-09-06 17:10:56 adedov Exp $
 
-#include "value_type_visitor.h"
-
 #include <string>
-
-namespace xmlpp
-{
-  class Node;
-}
+#include "value_type_visitor.h"
+#include "xml_utils.h"
 
 namespace iqxmlrpc {
 
 //! Value_type visitor that converts values into XML-RPC representation.
 class Value_type_to_xml: public Value_type_visitor {
 public:
-  Value_type_to_xml(xmlpp::Node* parent):
-    parent_(parent) {}
+  Value_type_to_xml(XmlBuilder& builder):
+    builder_(builder) {}
 
 private:
   virtual void do_visit_value(const Value_type&);
@@ -46,9 +41,9 @@ private:
   virtual void do_visit_base64(const Binary_data&);
   virtual void do_visit_datetime(const Date_time&);
 
-  void add_child_with_content(const std::string&, const std::string&);
+  void add_textnode(const char* name, const std::string& data);
 
-  xmlpp::Node* parent_;
+  XmlBuilder& builder_;
 };
 
 } // namespace iqxmlrpc

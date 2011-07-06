@@ -17,20 +17,60 @@
 //
 //  $Id$
 
+#include <stdexcept>
 #include "xml_utils.h"
-
-#include <libxml++/document.h>
-
-#include <memory>
 
 using namespace iqxmlrpc;
 
-std::string Serializable_to_xml::dump_xml(bool format_output) const
+//
+// XmlBuilder::Node
+//
+
+XmlBuilder::Node::Node(XmlBuilder& w, const char* name):
+  ctx(w)
 {
-  std::auto_ptr<xmlpp::Document> doc( to_xml() );
-  return format_output ?
-    doc->write_to_string_formatted( "utf-8" ) :
-    doc->write_to_string( "utf-8" );
+  xmlTextWriterStartElement(ctx.writer, reinterpret_cast<const xmlChar*>(name)); // TODO check
+}
+
+XmlBuilder::Node::~Node()
+{
+  if (!std::uncaught_exception())
+    xmlTextWriterEndElement(ctx.writer);
+}
+
+void
+XmlBuilder::Node::set_textdata(const std::string& data)
+{
+  xmlTextWriterWriteString(ctx.writer, reinterpret_cast<const xmlChar*>(data.c_str())); // TODO check
+}
+
+//
+// XmlBuilder
+//
+
+XmlBuilder::XmlBuilder()
+{
+  buf = xmlBufferCreate(); // TODO check NULL
+  writer = xmlNewTextWriterMemory(buf, 0); // TODO check NULL
+  xmlTextWriterStartDocument(writer, NULL, "UTF-8", NULL); // TODO
+}
+
+XmlBuilder::~XmlBuilder()
+{
+  xmlFreeTextWriter(writer);
+  xmlBufferFree(buf);
+}
+
+void
+XmlBuilder::stop()
+{
+  xmlTextWriterEndDocument(writer);
+}
+
+std::string
+XmlBuilder::content() const
+{
+  return std::string(reinterpret_cast<const char*>(buf->content), buf->use);
 }
 
 // vim:ts=2:sw=2:et

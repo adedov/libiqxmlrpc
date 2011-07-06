@@ -21,7 +21,7 @@ void dump_test()
   time_t t1, t2;
   time(&t1);
   Response r(v);
-  std::string s = r.dump_xml(true);
+  std::string s = dump_response(r);
   time(&t2);
 
   std::cout << "Spent time " << t2 - t1 << std::endl;

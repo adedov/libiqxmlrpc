@@ -17,16 +17,14 @@
 //
 //  $Id: response.cc,v 1.13 2006-09-07 09:35:42 adedov Exp $
 
+#include <boost/foreach.hpp>
+
 #include "response.h"
 #include "response_parser.h"
 
 #include "except.h"
 #include "value.h"
 #include "value_type_xml.h"
-
-#include <libxml++/libxml++.h>
-
-#include <memory>
 
 namespace iqxmlrpc {
 
@@ -39,8 +37,32 @@ parse_response( const std::string& response_string )
   return builder.get();
 }
 
+std::string
+dump_response( const Response& response )
+{
+  XmlBuilder writer;
+  XmlBuilder::Node root(writer, "methodResponse");
 
-//-----------------------------------------------------------------------------
+  if (!response.is_fault()) {
+    XmlBuilder::Node params(writer, "params");
+    XmlBuilder::Node param(writer, "param");
+    value_to_xml(writer, response.value());
+  } else {
+    Struct fault;
+    fault.insert( "faultCode", response.fault_code() );
+    fault.insert( "faultString", response.fault_string() );
+    Value v( fault );
+    value_to_xml(writer, fault);
+  }
+
+  writer.stop();
+  return writer.content();
+}
+
+//
+// Response
+//
+
 Response::Response( Value* v ):
   value_(v)
 {
@@ -52,47 +74,12 @@ Response::Response( int fcode, const std::string& fstring ):
 {
 }
 
-xmlpp::Document* Response::to_xml() const
-{
-  std::auto_ptr<xmlpp::Document> doc( new xmlpp::Document() );
-  xmlpp::Element* el = doc->create_root_node( "methodResponse" );
-
-  if( is_fault() )
-    fault_to_xml( el );
-  else
-    ok_to_xml( el );
-
-  return doc.release();
-}
-
 const Value& Response::value() const
 {
   if( is_fault() )
     throw iqxmlrpc::Exception( fault_string_, fault_code_ );
 
   return *value_;
-}
-
-inline void Response::ok_to_xml( xmlpp::Node* p ) const
-{
-  using namespace xmlpp;
-
-  Element* params_el = p->add_child( "params" );
-  Element* param_el  = params_el->add_child( "param" );
-  value_to_xml(*value_, param_el);
-}
-
-inline void Response::fault_to_xml( xmlpp::Node* p ) const
-{
-  using namespace xmlpp;
-
-  Element* fault_el = p->add_child( "fault" );
-
-  Struct fault;
-  fault.insert( "faultCode", fault_code_ );
-  fault.insert( "faultString", fault_string_ );
-  Value v( fault );
-  value_to_xml(v, fault_el);
 }
 
 } // namespace iqxmlrpc

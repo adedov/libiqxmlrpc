@@ -22,22 +22,38 @@
 
 #include "api_export.h"
 
+#include <boost/utility.hpp>
 #include <string>
-
-namespace xmlpp {
-  class Document;
-}
+#include <libxml/xmlwriter.h>
 
 namespace iqxmlrpc {
 
-class LIBIQXMLRPC_API Serializable_to_xml {
+class XmlBuilder: boost::noncopyable {
 public:
-  virtual ~Serializable_to_xml() {}
+  class Node {
+  public:
+    Node(XmlBuilder&, const char* name);
+    ~Node();
 
-  std::string dump_xml(bool format_output) const;
+    void
+    set_textdata(const std::string&);
+
+  private:
+    XmlBuilder& ctx;
+  };
+
+  XmlBuilder();
+  ~XmlBuilder();
+
+  void
+  stop();
+
+  std::string
+  content() const;
 
 private:
-  virtual xmlpp::Document* to_xml() const = 0;
+  xmlBufferPtr buf;
+  xmlTextWriterPtr writer;
 };
 
 } // namespace iqxmlrpc

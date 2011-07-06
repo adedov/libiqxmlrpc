@@ -20,15 +20,9 @@
 #ifndef _iqxmlrpc_response_h_
 #define _iqxmlrpc_response_h_
 
-#include "xml_utils.h"
-
 #include <boost/shared_ptr.hpp>
-
 #include <string>
-
-namespace xmlpp {
-  class Node;
-}
+#include "api_export.h"
 
 namespace iqxmlrpc {
 
@@ -43,8 +37,11 @@ class Value;
 //! Build response object from XML-formed string.
 LIBIQXMLRPC_API Response parse_response( const std::string& );
 
+//! Dump response to XML.
+LIBIQXMLRPC_API std::string dump_response( const Response& );
+
 //! XML-RPC response.
-class LIBIQXMLRPC_API Response: public Serializable_to_xml {
+class LIBIQXMLRPC_API Response {
 public:
   Response( Value* );
   Response( int fault_code, const std::string& fault_string );
@@ -60,11 +57,6 @@ public:
   const std::string& fault_string() const { return fault_string_; }
 
 private:
-  virtual xmlpp::Document* to_xml() const;
-
-  void ok_to_xml( xmlpp::Node* ) const;
-  void fault_to_xml( xmlpp::Node* ) const;
-
   boost::shared_ptr<Value> value_;
   int fault_code_;
   std::string fault_string_;

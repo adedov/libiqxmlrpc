@@ -17,12 +17,12 @@
 //
 //  $Id: value.cc,v 1.12 2006-09-07 09:35:42 adedov Exp $
 
-#include "value.h"
+#include <stdexcept>
 
+#include "value.h"
 #include "value_type_visitor.h"
 #include "value_type_xml.h"
 
-#include <stdexcept>
 
 namespace iqxmlrpc {
 
@@ -322,9 +322,9 @@ void Value::apply_visitor(Value_type_visitor& v) const
 // Free functions
 //
 
-void value_to_xml(const Value& v, xmlpp::Node* node)
+void value_to_xml(XmlBuilder& builder, const Value& v)
 {
-  Value_type_to_xml vis(node);
+  Value_type_to_xml vis(builder);
   v.apply_visitor(vis);
 }
 
