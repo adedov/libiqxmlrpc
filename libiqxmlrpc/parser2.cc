@@ -5,9 +5,6 @@
 #include "parser2.h"
 #include "except.h"
 
-// debug
-#include <iostream>
-
 namespace iqxmlrpc {
 
 inline std::string

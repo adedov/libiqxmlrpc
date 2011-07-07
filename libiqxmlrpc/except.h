@@ -56,6 +56,13 @@ public:
     Exception(std::string("Parser error. ") += d, -32700) {}
 };
 
+//! XML Parser error.
+class LIBIQXMLRPC_API XmlBuild_error: public Exception {
+public:
+  XmlBuild_error( const std::string& d ):
+    Exception(std::string("XML build error. ") += d, -32705) {}
+};
+
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4275)

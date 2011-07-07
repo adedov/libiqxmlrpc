@@ -18,9 +18,24 @@
 //  $Id$
 
 #include <stdexcept>
+#include "except.h"
 #include "xml_builder.h"
 
-using namespace iqxmlrpc;
+namespace iqxmlrpc {
+
+namespace {
+
+template <class T>
+void
+throwBuildError(T res, T err_res)
+{
+  if (res == err_res) {
+    xmlErrorPtr err = xmlGetLastError();
+    throw XmlBuild_error(err ? err->message : "unknown error");
+  }
+}
+
+} // anonymous namespace
 
 //
 // XmlBuilder::Node
@@ -29,7 +44,8 @@ using namespace iqxmlrpc;
 XmlBuilder::Node::Node(XmlBuilder& w, const char* name):
   ctx(w)
 {
-  xmlTextWriterStartElement(ctx.writer, reinterpret_cast<const xmlChar*>(name)); // TODO check
+  const xmlChar* xname = reinterpret_cast<const xmlChar*>(name);
+  throwBuildError(xmlTextWriterStartElement(ctx.writer, xname), -1);
 }
 
 XmlBuilder::Node::~Node()
@@ -41,7 +57,8 @@ XmlBuilder::Node::~Node()
 void
 XmlBuilder::Node::set_textdata(const std::string& data)
 {
-  xmlTextWriterWriteString(ctx.writer, reinterpret_cast<const xmlChar*>(data.c_str())); // TODO check
+  const xmlChar* xdata = reinterpret_cast<const xmlChar*>(data.c_str());
+  throwBuildError(xmlTextWriterWriteString(ctx.writer, xdata), -1);
 }
 
 //
@@ -50,9 +67,9 @@ XmlBuilder::Node::set_textdata(const std::string& data)
 
 XmlBuilder::XmlBuilder()
 {
-  buf = xmlBufferCreate(); // TODO check NULL
-  writer = xmlNewTextWriterMemory(buf, 0); // TODO check NULL
-  xmlTextWriterStartDocument(writer, NULL, "UTF-8", NULL); // TODO
+  buf = xmlBufferCreate();
+  throwBuildError(writer = xmlNewTextWriterMemory(buf, 0), (xmlTextWriter*)0);
+  throwBuildError(xmlTextWriterStartDocument(writer, NULL, "UTF-8", NULL), -1);
 }
 
 XmlBuilder::~XmlBuilder()
@@ -64,13 +81,15 @@ XmlBuilder::~XmlBuilder()
 void
 XmlBuilder::stop()
 {
-  xmlTextWriterEndDocument(writer);
+  throwBuildError(xmlTextWriterEndDocument(writer), -1);
 }
 
 std::string
 XmlBuilder::content() const
 {
-  return std::string(reinterpret_cast<const char*>(buf->content), buf->use);
+  const char* cdata = reinterpret_cast<const char*>(buf->content);
+  return std::string(cdata, buf->use);
 }
 
+} // namespace iqxmlrpc
 // vim:ts=2:sw=2:et
