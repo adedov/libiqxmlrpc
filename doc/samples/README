@@ -1,0 +1,8 @@
+The primary goal for this samples is to check if user may successfully build
+code that uses library, installed into default location.
+
+So first install library using "sudo make install" command and then you would
+be able to complile samples using following commands:
+
+g++ `pkg-config --libs --cflags libiqxmlrpc` server.cc -o server
+g++ `pkg-config --libs --cflags libiqxmlrpc` client.cc -o client
