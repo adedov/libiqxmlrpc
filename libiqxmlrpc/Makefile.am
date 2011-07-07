@@ -21,7 +21,8 @@ noinst_HEADERS = \
 	reactor_impl.h \
 	reactor_poll_impl.h \
 	reactor_select_impl.h \
-	value_type_xml.h
+	value_type_xml.h \
+	xml_builder.h
 
 pkginclude_HEADERS = \
 	acceptor.h \
@@ -62,8 +63,7 @@ pkginclude_HEADERS = \
 	util.h \
 	value_type.h \
 	value_type_visitor.h \
-	value.h \
-  xml_utils.h
+	value.h
 
 libiqxmlrpc_general_la_SOURCES = \
 	acceptor.cc \
@@ -87,7 +87,7 @@ libiqxmlrpc_general_la_SOURCES = \
 	value_type_xml.cc \
 	value.cc \
 	value_parser.cc \
-	xml_utils.cc
+	xml_builder.cc
 
 libiqxmlrpc_client_la_SOURCES = \
 	connector.cc \

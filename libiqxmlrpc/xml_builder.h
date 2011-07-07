@@ -17,8 +17,8 @@
 //
 //  $Id$
 
-#ifndef _iqxmlrpc_xml_utils_h_
-#define _iqxmlrpc_xml_utils_h_
+#ifndef _iqxmlrpc_xml_builder_h_
+#define _iqxmlrpc_xml_builder_h_
 
 #include "api_export.h"
 

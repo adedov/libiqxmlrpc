@@ -18,7 +18,7 @@
 //  $Id$
 
 #include <stdexcept>
-#include "xml_utils.h"
+#include "xml_builder.h"
 
 using namespace iqxmlrpc;
 

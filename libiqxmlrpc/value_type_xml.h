@@ -19,9 +19,10 @@
 
 #include <string>
 #include "value_type_visitor.h"
-#include "xml_utils.h"
 
 namespace iqxmlrpc {
+
+class XmlBuilder;
 
 //! Value_type visitor that converts values into XML-RPC representation.
 class Value_type_to_xml: public Value_type_visitor {

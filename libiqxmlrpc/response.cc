@@ -25,6 +25,7 @@
 #include "except.h"
 #include "value.h"
 #include "value_type_xml.h"
+#include "xml_builder.h"
 
 namespace iqxmlrpc {
 

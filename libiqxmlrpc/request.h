@@ -28,7 +28,6 @@
 namespace iqxmlrpc {
 
 class Request;
-class Value;
 typedef std::vector<Value> Param_list;
 
 //! Build request object from XML-formed string.
