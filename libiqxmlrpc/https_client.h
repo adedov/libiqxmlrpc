@@ -18,6 +18,7 @@
 #ifndef _libiqxmlrpc_https_client_h_
 #define _libiqxmlrpc_https_client_h_
 
+#include "client.h"
 #include "client_conn.h"
 #include "connection.h"
 #include "reactor.h"
