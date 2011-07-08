@@ -2,7 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = \
 	m4 \
-	License \
+	LICENSE \
 	ChangeLog \
 	NEWS \
 	README \

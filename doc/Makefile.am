@@ -1,4 +1,5 @@
 EXTRA_DIST = \
+	samples \
 	libiqxmlrpc.doxygen \
 	libiqxmlrpc.doxygen.in
 
