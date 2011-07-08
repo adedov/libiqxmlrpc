@@ -1,5 +1,23 @@
 Look into ChangeLog file for full list of changes.
 
+0.9.0 - 0.10.0
+  This realease is binary incompatible with previous ones!
+
+  News:
+    The library is now licensed under 2-clause BSD license.
+
+  Enchancements:
+    * New XML parser and XML serializer based on libxml2 xmlreader/xmlwriter
+      technology. This change DRAMATICALLY decreases memory usage of XML parse/dump tasks
+      for LARGE datasets and significantly improves XML parse/dump performance
+      (20-30%) for LARGE datasets.
+    * Get rid of libxml++ dependency.
+
+  Fixes:
+    * Fixes broken requests with authorization with big enough login/password pair.
+    * Fix socket resource leak in case of error occured during connection process.
+    * Fix build with openssl 1.0 (by Max Khon).
+
 0.8.10 - 0.9.0
   This realease is binary incompatible with previous ones!
 
