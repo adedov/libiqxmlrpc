@@ -2,7 +2,7 @@ Name:     @PACKAGE@
 Version:  @VERSION@
 Release:  1
 Summary:  Simple object-oriented XML-RPC client-server solution for C++.
-License:  LGPL
+License:  BSD
 URL:      http://libiqxmlrpc.sourceforge.net
 Group:    System Environment/Libraries
 Source:   libiqxmlrpc-@VERSION@.tar.gz

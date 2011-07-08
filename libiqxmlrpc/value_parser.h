@@ -1,3 +1,6 @@
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2011 Anton Dedov
+
 #ifndef _iqxmlrpc_value_parser_h_
 #define _iqxmlrpc_value_parser_h_
 

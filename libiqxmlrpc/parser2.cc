@@ -1,3 +1,6 @@
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2011 Anton Dedov
+
 #include <algorithm>
 #include <stdexcept>
 #include <libxml/xmlreader.h>
@@ -6,6 +9,8 @@
 #include "except.h"
 
 namespace iqxmlrpc {
+
+namespace {
 
 inline std::string
 to_string(xmlChar* s)
@@ -18,6 +23,8 @@ to_string(xmlChar* s)
 
   return std::string();
 }
+
+} // nameless namespace
 
 //
 // BuilderBase

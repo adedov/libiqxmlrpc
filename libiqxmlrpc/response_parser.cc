@@ -1,3 +1,6 @@
+//  Libiqxmlrpc - an object-oriented XML-RPC solution.
+//  Copyright (C) 2011 Anton Dedov
+
 #include <stdexcept>
 #include "except.h"
 #include "response_parser.h"
