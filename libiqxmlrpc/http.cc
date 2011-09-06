@@ -5,12 +5,7 @@
 
 #include "http_errors.h"
 #include "method.h"
-
-#ifdef _WINDOWS
 #include "version.h"
-#else
-#include "../config.h"
-#endif //_WINDOWS
 
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
