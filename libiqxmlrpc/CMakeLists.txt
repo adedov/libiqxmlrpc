@@ -18,7 +18,63 @@ else(${HAVE_POLL})
 endif(${HAVE_POLL})
 message("Using ${REACTOR_IMPL} reactor implementation")
 
+set(PUBLIC_HEADERS
+  acceptor.h
+  api_export.h
+  auth_plugin.h
+  builtins.h
+  client.h
+  client_conn.h
+  client_opts.h
+  connection.h
+  connector.h
+  conn_factory.h
+  dispatcher_manager.h
+  except.h
+  executor.h
+  firewall.h
+  http.h
+  http_errors.h
+  http_client.h
+  http_server.h
+  https_client.h
+  https_server.h
+  inet_addr.h
+  libiqxmlrpc.h
+  lock.h
+  method.h
+  net_except.h
+  reactor.h
+  reactor_interrupter.h
+  request.h
+  response.h
+  server_conn.h
+  server.h
+  socket.h
+  ssl_lib.h
+  ssl_connection.h
+  sysinc.h
+  util.h
+  value_type.h
+  value_type_visitor.h
+  value.h
+)
+
+set(PRIVATE_HEADERS
+  parser2.h
+  value_parser.h
+  request_parser.h
+  response_parser.h
+  reactor_impl.h
+  reactor_poll_impl.h
+  reactor_select_impl.h
+  value_type_xml.h
+  xml_builder.h
+)
+
 add_library(iqxmlrpc SHARED
+  ${PUBLIC_HEADERS}
+  ${PRIVATE_HEADERS}
   acceptor.cc
   auth_plugin.cc
   builtins.cc
@@ -61,3 +117,6 @@ target_link_libraries(iqxmlrpc
   ${XML2_LIBRARIES}
   ${OPENSSL_LIBRARIES}
 )
+
+install(TARGETS iqxmlrpc LIBRARY DESTINATION lib)
+install(FILES ${PUBLIC_HEADERS} DESTINATION include)
