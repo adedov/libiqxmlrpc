@@ -8,3 +8,7 @@ option(build_tests "Build tests?" OFF)
 if (build_tests)
 	add_subdirectory(tests)
 endif (build_tests)
+
+set(CPACK_PACKAGE_NAME libiqxmlrpc)
+set(CPACK_PACKAGE_VERSION ${Libiqxmlrpc_VERSION})
+include(CPack)

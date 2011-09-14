@@ -1,10 +1,10 @@
-prefix=@prefix@
+prefix=@CMAKE_INSTALL_PREFIX@
 libdir=${prefix}/lib
 includedir=${prefix}/include/
 
 Name: libiqxmlrpc
 Description: Object-oriented C++ XML-RPC library.
-Version: @VERSION@
+Version: @Libiqxmlrpc_VERSION@
 Requires: libxml-2.0
-Libs: -L${libdir} -liqxmlrpc @BOOST_THREAD_LIB@ @OPENSSL_LIBS@ 
+Libs: -L${libdir} -liqxmlrpc @PC_BOOST_LIBRARIES@ @PC_OPENSSL_LDFLAGS@
 Cflags: -I${includedir}

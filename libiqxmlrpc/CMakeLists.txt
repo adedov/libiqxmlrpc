@@ -118,5 +118,10 @@ target_link_libraries(iqxmlrpc
   ${OPENSSL_LIBRARIES}
 )
 
+string(REPLACE ";" " " PC_BOOST_LIBRARIES "${Boost_LIBRARIES}")
+string(REPLACE ";" " " PC_OPENSSL_LDFLAGS "${OPENSSL_LDFLAGS}")
+configure_file(../libiqxmlrpc.pc.in libiqxmlrpc.pc @ONLY)
+
 install(TARGETS iqxmlrpc LIBRARY DESTINATION lib)
-install(FILES ${PUBLIC_HEADERS} DESTINATION include)
+install(FILES ${PUBLIC_HEADERS} DESTINATION include/libiqxmlrpc)
+install(FILES libiqxmlrpc.pc DESTINATION lib/pkgconfig)
