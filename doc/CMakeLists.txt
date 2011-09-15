@@ -8,6 +8,12 @@ endif (DOXYGEN_NOTFOUND)
 
 configure_file(libiqxmlrpc.doxygen.in libiqxmlrpc.doxygen @ONLY)
 
-add_custom_target(doxygen_docs ALL
+add_custom_target(libiqxmlrpc.html ALL
 	doxygen libiqxmlrpc.doxygen	
 	DEPENDS libiqxmlrpc.doxygen)
+
+set(PROJ_DOC share/doc/libiqxmlrpc-${Libiqxmlrpc_VERSION})
+install(DIRECTORY libiqxmlrpc.html DESTINATION ${PROJ_DOC})
+install(FILES ../LICENSE ../NEWS ../README DESTINATION ${PROJ_DOC})
+
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES libiqxmlrpc.html)
