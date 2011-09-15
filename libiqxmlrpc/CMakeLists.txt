@@ -16,7 +16,7 @@ if(${HAVE_POLL})
 else(${HAVE_POLL})
 	set(REACTOR_IMPL "select")
 endif(${HAVE_POLL})
-message("Using ${REACTOR_IMPL} reactor implementation")
+message("iqxmlrpc: Using ${REACTOR_IMPL} reactor implementation")
 
 set(PUBLIC_HEADERS
   acceptor.h

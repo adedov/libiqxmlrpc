@@ -9,6 +9,11 @@ if (build_tests)
 	add_subdirectory(tests)
 endif (build_tests)
 
+option(build_docs "Build doxygen docs?" ON)
+if (build_docs)
+	add_subdirectory(doc)
+endif (build_docs)
+
 set(CPACK_PACKAGE_NAME libiqxmlrpc)
 set(CPACK_PACKAGE_VERSION ${Libiqxmlrpc_VERSION})
 include(CPack)
