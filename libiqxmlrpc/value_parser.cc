@@ -5,7 +5,6 @@
 #include <boost/lexical_cast.hpp>
 #include "except.h"
 #include "value_parser.h"
-#include <iostream>
 
 namespace iqxmlrpc {
 
@@ -51,6 +50,7 @@ private:
 
     case VALUE_READ:
       value_ = sub_build<Value_type*, ValueBuilder>();
+      value_ = value_ ? value_ : new String("");
       break;
 
     case MEMBER:
@@ -109,7 +109,9 @@ private:
   do_visit_element(const std::string& tagname)
   {
     if (state_.change(tagname) == VALUES) {
-      Value_ptr v(new Value(sub_build<Value_type*, ValueBuilder>()));
+      Value_type* tmp = sub_build<Value_type*, ValueBuilder>();
+      tmp = tmp ? tmp : new String("");
+      Value_ptr v(new Value(tmp));
       proxy_->push_back(v);
     }
   }
@@ -170,8 +172,29 @@ ValueBuilder::do_visit_element(const std::string& tagname)
     break;
 
   default:
-    // wait for text
+    // wait for text within <i4>...</i4>, etc...
     break;
+  }
+}
+
+void
+ValueBuilder::do_visit_element_end(const std::string& tag)
+{
+  if (retval.get())
+    return;
+
+  switch (state_.get_state()) {
+  case VALUE:
+  case STRING:
+    retval.reset(new String(""));
+    break;
+
+  case BINARY:
+    retval.reset(Binary_data::from_data(""));
+    break;
+
+  default:
+    throw XML_RPC_violation(parser_.context());
   }
 }
 

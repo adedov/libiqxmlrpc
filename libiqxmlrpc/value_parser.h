@@ -31,6 +31,9 @@ private:
   virtual void
   do_visit_element(const std::string&);
 
+  virtual void
+  do_visit_element_end(const std::string&);
+
   virtual bool
   do_visit_text(const std::string&);
 

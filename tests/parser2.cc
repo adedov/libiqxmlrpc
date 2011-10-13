@@ -45,15 +45,24 @@ void test_parse_array()
       "<value><string>str</string></value>"
       "<value>str2</value>"
       "<value><boolean>1</boolean></value>"
+      "<value>"
+          "<struct>"
+          "<member><name>v1</name><value>str</value></member>"
+          "<member><name>v2</name><value><int>123</int></value></member>"
+          "</struct>"
+      "</value>"
       "</data>"
     "</array>").the_array();
 
-  BOOST_CHECK_EQUAL(v.size(), 5);
+  BOOST_CHECK_EQUAL(v.size(), 6);
   BOOST_CHECK_EQUAL(v[0].get_int(), 123);
   BOOST_CHECK_EQUAL(v[1].get_double(), 123.456);
   BOOST_CHECK_EQUAL(v[2].get_string(), "str");
   BOOST_CHECK_EQUAL(v[3].get_string(), "str2");
   BOOST_CHECK_EQUAL(v[4].get_bool(), true);
+  BOOST_CHECK(v[5].is_struct());
+  BOOST_CHECK_EQUAL(v[5].the_struct().size(), 2);
+  BOOST_CHECK_EQUAL(v[5].the_struct()["v2"].get_int(), 123);
 }
 
 void test_parse_unknown_type()
@@ -74,12 +83,14 @@ void test_parse_simple_struct()
       "<member><name>v1</name><value>str</value></member>"
       "<member><name>v2</name><value><int>123</int></value></member>"
       "<member><name>v3</name><value><string>str2</string></value></member>"
+      "<member><name/><value><string>str2</string></value></member>"
     "</struct>").the_struct();
 
-  BOOST_CHECK_EQUAL(s.size(), 3);
+  BOOST_CHECK_EQUAL(s.size(), 4);
   BOOST_CHECK_EQUAL(s["v1"].get_string(), "str");
   BOOST_CHECK_EQUAL(s["v2"].get_int(), 123);
   BOOST_CHECK_EQUAL(s["v3"].get_string(), "str2");
+  BOOST_CHECK_EQUAL(s[""].get_string(), "str2");
 }
 
 void test_parse_nested_struct()
@@ -119,6 +130,67 @@ void test_parse_formatted()
 </struct>");
 
   BOOST_CHECK(v.is_struct());
+}
+
+void test_parse_emptiness()
+{
+  BOOST_CHECK_THROW(parse_value("<int></int>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<int/>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<i4></i4>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<i4/>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<double></double>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<double/>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<boolean></boolean>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<boolean/>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<datetime.iso8601></datetime.iso8601>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<dateTime.iso8601/>"), XML_RPC_violation);
+
+  BOOST_CHECK_EQUAL(parse_value("<string/>").get_string(), "");
+  BOOST_CHECK_EQUAL(parse_value("<string></string>").get_string(), "");
+  BOOST_CHECK_EQUAL(parse_value("<base64/>").get_binary().get_data(), "");
+  BOOST_CHECK_EQUAL(parse_value("<base64></base64>").get_binary().get_data(), "");
+
+  //
+  // Arrays with empty values
+  BOOST_CHECK_EQUAL(parse_value("<array/>").the_array().size(), 0);
+  BOOST_CHECK_EQUAL(parse_value("<array></array>").the_array().size(), 0);
+  BOOST_CHECK_EQUAL(parse_value("<array><data></data></array>").the_array().size(), 0);
+
+  Array a1 = parse_value("<array><data><value/></data></array>").the_array();
+  BOOST_CHECK_EQUAL(a1.size(), 1);
+  BOOST_CHECK_EQUAL(a1[0].get_string(), "");
+
+  Array a2 = parse_value("<array><data><value></value></data></array>").the_array();
+  BOOST_CHECK_EQUAL(a2.size(), 1);
+  BOOST_CHECK_EQUAL(a2[0].get_string(), "");
+
+  //
+  // Structs with empty values
+  BOOST_CHECK_EQUAL(parse_value("<struct/>").the_struct().size(), 0);
+  BOOST_CHECK_EQUAL(parse_value("<struct></struct>").the_struct().size(), 0);
+  BOOST_CHECK_THROW(parse_value("<struct><member></member></struct>").the_struct(), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<struct><member><value/></member></struct>").the_struct(), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<struct><member><name/></member></struct>").the_struct(), XML_RPC_violation);
+
+  Struct s1 = parse_value("<struct><member><name/><value>123</value></member></struct>").the_struct();
+  BOOST_CHECK_EQUAL(s1.size(), 1);
+  BOOST_CHECK_EQUAL(s1[""].get_string(), "123");
+
+  Struct s2 = parse_value("<struct><member><name></name><value/></member></struct>").the_struct();
+  BOOST_CHECK_EQUAL(s2.size(), 1);
+  BOOST_CHECK_EQUAL(s2[""].get_string(), "");
+
+  Struct s3 = parse_value("<struct><member><name></name><value></value></member></struct>").the_struct();
+  BOOST_CHECK_EQUAL(s3.size(), 1);
+  BOOST_CHECK_EQUAL(s3[""].get_string(), "");
+
+  Struct s4 = parse_value("<struct><member><name/><value></value></member></struct>").the_struct();
+  BOOST_CHECK_EQUAL(s4.size(), 1);
+  BOOST_CHECK_EQUAL(s4[""].get_string(), "");
+
+  Struct s5 = parse_value("<struct><member><name/><value/></member></struct>").the_struct();
+  BOOST_CHECK_EQUAL(s5.size(), 1);
+  BOOST_CHECK_EQUAL(s5[""].get_string(), "");
 }
 
 //
@@ -221,6 +293,7 @@ bool init_tests()
   test.add( BOOST_TEST_CASE(&test_parse_unknown_type) );
   test.add( BOOST_TEST_CASE(&test_parse_bad_xml) );
   test.add( BOOST_TEST_CASE(&test_parse_formatted) );
+  test.add( BOOST_TEST_CASE(&test_parse_emptiness) );
 
   test.add( BOOST_TEST_CASE(&test_parse_request) );
   test.add( BOOST_TEST_CASE(&test_parse_request_no_params) );
