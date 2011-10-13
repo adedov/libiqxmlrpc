@@ -1,5 +1,9 @@
 Look into ChangeLog file for full list of changes.
 
+0.10.0 - 0.10.1
+* Fix incorrect dump/parse of fault responses.
+* Fix COREDUMPS on empty values during request/response parsing.
+
 0.9.0 - 0.10.0
   This realease is binary incompatible with previous ones!
 
