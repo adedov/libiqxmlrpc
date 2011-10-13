@@ -13,6 +13,7 @@ void register_user_methods(iqxmlrpc::Server& s)
   register_method<serverctl_stop>(s, "serverctl.stop");
   register_method(s, "echo", echo_method);
   register_method(s, "echo_user", echo_user);
+  register_method(s, "error_method", error_method);
   register_method<Get_file>(s, "get_file");
 }
 
@@ -43,6 +44,15 @@ void echo_user(
 {
   BOOST_MESSAGE("echo_user method invoked.");
   retval = m->authname();
+}
+
+void error_method(
+  iqxmlrpc::Method* m,
+  const iqxmlrpc::Param_list&,
+  iqxmlrpc::Value& retval )
+{
+  BOOST_MESSAGE("error_method method invoked.");
+  throw iqxmlrpc::Fault(123, "My fault");
 }
 
 namespace 

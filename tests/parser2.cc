@@ -258,13 +258,12 @@ void test_parse_ok_response()
 void test_parse_fault_response()
 {
   std::string r = "<methodResponse> \
-  <fault> \
-    <param> \
+    <fault> \
       <value> \
        <struct> \
         <member> \
           <name>faultCode</name> \
-          <value>143</value> \
+          <value><int>143</int></value> \
         </member> \
         <member> \
           <name>faultString</name> \
@@ -272,8 +271,7 @@ void test_parse_fault_response()
         </member> \
        </struct> \
       </value> \
-    </param> \
-  </params> \
+    </fault> \
 </methodResponse>";
 
   Response res = parse_response(r);
@@ -298,6 +296,7 @@ bool init_tests()
   test.add( BOOST_TEST_CASE(&test_parse_request) );
   test.add( BOOST_TEST_CASE(&test_parse_request_no_params) );
   test.add( BOOST_TEST_CASE(&test_parse_ok_response) );
+  test.add( BOOST_TEST_CASE(&test_parse_fault_response) );
 
   return true;
 }

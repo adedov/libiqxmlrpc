@@ -13,6 +13,7 @@ public:
 
 void echo_method(iqxmlrpc::Method*, const iqxmlrpc::Param_list&, iqxmlrpc::Value&);
 void echo_user(iqxmlrpc::Method*, const iqxmlrpc::Param_list&, iqxmlrpc::Value&);
+void error_method(iqxmlrpc::Method*, const iqxmlrpc::Param_list&, iqxmlrpc::Value&);
 
 class Get_file: public iqxmlrpc::Method {
 public:

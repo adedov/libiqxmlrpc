@@ -75,6 +75,15 @@ void echo_test()
   BOOST_CHECK(retval.value().get_string() == "Hello");
 }
 
+void error_method_test()
+{
+  BOOST_REQUIRE(test_client);
+  Error_proxy err(test_client);
+  Response retval(err(""));
+  BOOST_CHECK(retval.is_fault());
+  BOOST_CHECK(retval.fault_code() == 123 && retval.fault_string() == "My fault");
+}
+
 void get_file_test()
 {
   BOOST_REQUIRE(test_client);
@@ -106,6 +115,7 @@ bool init_tests()
 
   test.add( BOOST_TEST_CASE(&introspection_test) );
   test.add( BOOST_TEST_CASE(&echo_test) );
+  test.add( BOOST_TEST_CASE(&error_method_test) );
   test.add( BOOST_TEST_CASE(&get_file_test) );
   test.add( BOOST_TEST_CASE(&auth_test) );
 
