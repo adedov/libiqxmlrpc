@@ -88,10 +88,7 @@ BuilderBase::do_visit_text(const std::string&)
 struct Parser::Impl {
 public:
   Impl(const std::string& str):
-    element_begin(false),
-    element_end(false),
-    in_element(false),
-    is_text(false)
+    pushed_back(false)
   {
     buf = xmlParserInputBufferCreateMem(str.data(), str.length(), XML_CHAR_ENCODING_NONE);
     // TODO: check buf is not 0
@@ -105,26 +102,57 @@ public:
     xmlFreeParserInputBuffer(buf);
   }
 
-  bool
+  struct ParseStep {
+    bool done;
+    bool element_begin;
+    bool element_end;
+    bool is_empty;
+    bool is_text;
+
+    ParseStep():
+      done(false),
+      is_empty(false)
+    {
+    }
+
+    ParseStep(int type, xmlTextReaderPtr reader):
+      done(false),
+      element_begin(type == XML_READER_TYPE_ELEMENT),
+      element_end(type == XML_READER_TYPE_END_ELEMENT),
+      is_empty(element_begin && xmlTextReaderIsEmptyElement(reader)),
+      is_text(type == XML_READER_TYPE_TEXT)
+    {
+    }
+  };
+
+  ParseStep
   read()
   {
-    int code = xmlTextReaderRead(reader);
-
-    if (code > 0) {
-      int type = node_type();
-      is_text = type == XML_READER_TYPE_TEXT;
-      element_begin = type == XML_READER_TYPE_ELEMENT;
-      element_end = type == XML_READER_TYPE_END_ELEMENT;
-      in_element = element_begin || element_end;
-      return true;
+    if (pushed_back) {
+      pushed_back = false;
+      return curr;
     }
+
+    if (curr.is_empty) {
+      curr.element_begin = false;
+      curr.element_end = true;
+      curr.is_empty = false;
+      return curr;
+    }
+
+    int code = xmlTextReaderRead(reader);
+    curr.done = true;
 
     if (code < 0) {
       xmlErrorPtr err = xmlGetLastError();
       throw Parse_error(err ? err->message : "unknown parsing error");
     }
 
-    return false;
+    if (code > 0) {
+      curr = ParseStep(node_type(), reader);
+    }
+
+    return curr;
   }
 
   int
@@ -160,10 +188,8 @@ public:
 
   xmlParserInputBufferPtr buf;
   xmlTextReaderPtr reader;
-  bool element_begin;
-  bool element_end;
-  bool in_element;
-  bool is_text;
+  ParseStep curr;
+  bool pushed_back;
 };
 
 Parser::Parser(const std::string& buf):
@@ -174,36 +200,31 @@ Parser::Parser(const std::string& buf):
 void
 Parser::parse(BuilderBase& builder)
 {
-  while (impl_->read()) {
-    if (impl_->in_element) {
-      std::string name = impl_->tag_name();
+  for (Impl::ParseStep p = impl_->read(); !p.done; p = impl_->read()) {
 
-      if (impl_->element_begin) {
-        builder.visit_element(name);
-      } else {
-        bool finish_step = builder.visit_element_end(name);
-        if (finish_step)
-          break;
+    if (p.element_begin) {
+      builder.visit_element(impl_->tag_name());
+
+    } else if (p.element_end) {
+      if (!builder.depth()) {
+        impl_->pushed_back = true;
+        break;
       }
-    }
 
-    if (impl_->is_text && builder.expects_text()) {
+      if (builder.visit_element_end(impl_->tag_name()))
+        break;
+
+    } else if (p.is_text && builder.expects_text()) {
       if (builder.visit_text(get_data()))
         break;
     }
-  }
+  } // for
 }
 
 std::string
 Parser::get_data()
 {
   return impl_->read_data();
-}
-
-bool
-Parser::is_text_node()
-{
-  return impl_->node_type() == XML_READER_TYPE_TEXT;
 }
 
 std::string

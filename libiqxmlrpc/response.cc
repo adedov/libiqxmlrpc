@@ -33,10 +33,10 @@ dump_response( const Response& response )
     XmlBuilder::Node param(writer, "param");
     value_to_xml(writer, response.value());
   } else {
+    XmlBuilder::Node fault_node(writer, "fault");
     Struct fault;
     fault.insert( "faultCode", response.fault_code() );
     fault.insert( "faultString", response.fault_string() );
-    Value v( fault );
     value_to_xml(writer, fault);
   }
 

@@ -15,6 +15,7 @@ enum ResponseBuilderState {
   OK_PARAM,
   OK_PARAM_VALUE,
   FAULT_RESPONSE,
+  FAULT_RESPONSE_VALUE
 };
 
 ResponseBuilder::ResponseBuilder(Parser& parser):
@@ -27,6 +28,7 @@ ResponseBuilder::ResponseBuilder(Parser& parser):
     { OK_RESPONSE, OK_PARAM, "param" },
     { OK_PARAM, OK_PARAM_VALUE, "value" },
     { RESPONSE, FAULT_RESPONSE, "fault" },
+    { FAULT_RESPONSE, FAULT_RESPONSE_VALUE, "value" },
     { 0, 0, 0 }
   };
   state_.set_transitions(trans);
@@ -40,7 +42,7 @@ ResponseBuilder::do_visit_element(const std::string& tagname)
     parse_ok();
     break;
 
-  case FAULT_RESPONSE:
+  case FAULT_RESPONSE_VALUE:
     parse_fault();
     break;
   }

@@ -5,8 +5,7 @@ LDADD = ../libiqxmlrpc/libiqxmlrpc-client.la \
 	../libiqxmlrpc/libiqxmlrpc-server.la \
 	$(BOOST_THREAD_LIB) \
 	$(BOOST_UNIT_TEST_FRAMEWORK_LIB) \
-	$(BOOST_PROGRAM_OPTIONS_LIB)\
-	-ltcmalloc
+	$(BOOST_PROGRAM_OPTIONS_LIB)
 
 check_PROGRAMS = \
 	value-usage \

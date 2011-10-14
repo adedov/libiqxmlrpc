@@ -32,6 +32,12 @@ public:
     return expect_text_;
   }
 
+  int
+  depth() const
+  {
+    return depth_;
+  }
+
   void
   build(bool flat = false);
 
@@ -71,9 +77,6 @@ public:
 
   std::string
   context() const;
-
-  bool
-  is_text_node();
 
 private:
   class Impl;

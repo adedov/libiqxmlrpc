@@ -43,6 +43,12 @@ public:
     Method_proxy(cb, "echo") {}
 };
 
+class Error_proxy: public Method_proxy {
+public:
+  Error_proxy(iqxmlrpc::Client_base* cb):
+    Method_proxy(cb, "error_method") {}
+};
+
 class Get_file_proxy: public Method_proxy {
 public:
   Get_file_proxy(iqxmlrpc::Client_base* cb):

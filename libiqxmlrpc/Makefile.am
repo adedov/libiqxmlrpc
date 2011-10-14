@@ -1,4 +1,4 @@
-LDFLAGS += -version-info @LIBIQXMLRPC_VERSION@ -ltcmalloc
+LDFLAGS += -version-info @LIBIQXMLRPC_VERSION@
 
 noinst_LTLIBRARIES = libiqxmlrpc-general.la
 libiqxmlrpc_general_la_LIBADD = ${LIBXML2_LIBS} ${OPENSSL_LIBS}
