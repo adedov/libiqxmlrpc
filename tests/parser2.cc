@@ -164,6 +164,11 @@ void test_parse_emptiness()
   BOOST_CHECK_EQUAL(a2.size(), 1);
   BOOST_CHECK_EQUAL(a2[0].get_string(), "");
 
+  Array a3 = parse_value("<array><data><value><struct/></value><value><struct/></value></data></array>").the_array();
+  BOOST_CHECK_EQUAL(a3.size(), 2);
+  BOOST_CHECK_EQUAL(a3[0].the_struct().size(), 0);
+  BOOST_CHECK_EQUAL(a3[1].the_struct().size(), 0);
+
   //
   // Structs with empty values
   BOOST_CHECK_EQUAL(parse_value("<struct/>").the_struct().size(), 0);
@@ -191,6 +196,14 @@ void test_parse_emptiness()
   Struct s5 = parse_value("<struct><member><name/><value/></member></struct>").the_struct();
   BOOST_CHECK_EQUAL(s5.size(), 1);
   BOOST_CHECK_EQUAL(s5[""].get_string(), "");
+
+  Struct s6 = parse_value("<struct><member><name>var1</name><value><array><data><value><struct></struct></value></data></array></value></member></struct>").the_struct();
+  BOOST_CHECK(s6.has_field("var1"));
+  print_value(s6, std::cout);
+
+  Struct s7 = parse_value("<struct><member><name>var1</name><value><array><data><value><struct/></value></data></array></value></member></struct>").the_struct();
+  BOOST_CHECK(s7.has_field("var1"));
+  print_value(s7, std::cout);
 }
 
 //

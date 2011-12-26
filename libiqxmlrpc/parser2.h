@@ -20,10 +20,10 @@ public:
   void
   visit_element(const std::string& tag);
 
-  bool
+  void
   visit_element_end(const std::string& tag);
 
-  bool
+  void
   visit_text(const std::string&);
 
   bool
@@ -36,6 +36,12 @@ public:
   depth() const
   {
     return depth_;
+  }
+
+  bool
+  wants_exit() const
+  {
+    return want_exit_;
   }
 
   void
@@ -51,18 +57,25 @@ protected:
     return b.result();
   }
 
+  void
+  want_exit()
+  {
+    want_exit_ = true;
+  }
+
   virtual void
   do_visit_element(const std::string&) = 0;
 
   virtual void
   do_visit_element_end(const std::string&);
 
-  virtual bool
+  virtual void
   do_visit_text(const std::string&);
 
   Parser& parser_;
   int depth_;
   bool expect_text_;
+  bool want_exit_;
 };
 
 class Parser {

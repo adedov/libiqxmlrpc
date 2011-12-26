@@ -175,6 +175,9 @@ ValueBuilder::do_visit_element(const std::string& tagname)
     // wait for text within <i4>...</i4>, etc...
     break;
   }
+
+  if (retval.get())
+    want_exit();
 }
 
 void
@@ -198,15 +201,14 @@ ValueBuilder::do_visit_element_end(const std::string& tag)
   }
 }
 
-bool
+void
 ValueBuilder::do_visit_text(const std::string& text)
 {
   using boost::lexical_cast;
-  bool finish = false;
 
   switch (state_.get_state()) {
   case VALUE:
-    finish = true;
+    want_exit();
   case STRING:
     retval.reset(new String(text));
     break;
@@ -234,8 +236,6 @@ ValueBuilder::do_visit_text(const std::string& text)
   default:
     throw XML_RPC_violation(parser_.context());
   }
-
-  return finish;
 }
 
 } // namespace iqxmlrpc

@@ -33,6 +33,7 @@ to_string(xmlChar* s)
 BuilderBase::BuilderBase(Parser& p, bool t):
   parser_(p),
   depth_(0),
+  want_exit_(false),
   expect_text_(t)
 {
 }
@@ -51,18 +52,20 @@ BuilderBase::visit_element(const std::string& tag)
   do_visit_element(tag);
 }
 
-bool
+void
 BuilderBase::visit_element_end(const std::string& tag)
 {
   depth_--;
   do_visit_element_end(tag);
-  return !depth_;
+
+  if (!depth_)
+    want_exit();
 }
 
-bool
+void
 BuilderBase::visit_text(const std::string& text)
 {
-  return do_visit_text(text);
+  do_visit_text(text);
 }
 
 void
@@ -70,15 +73,13 @@ BuilderBase::do_visit_element_end(const std::string&)
 {
 }
 
-bool
+void
 BuilderBase::do_visit_text(const std::string&)
 {
   if (expect_text_) {
     // proper handler was not implemented
     throw XML_RPC_violation(parser_.context());
   }
-
-  return false;
 }
 
 //
@@ -201,7 +202,6 @@ void
 Parser::parse(BuilderBase& builder)
 {
   for (Impl::ParseStep p = impl_->read(); !p.done; p = impl_->read()) {
-
     if (p.element_begin) {
       builder.visit_element(impl_->tag_name());
 
@@ -211,13 +211,15 @@ Parser::parse(BuilderBase& builder)
         break;
       }
 
-      if (builder.visit_element_end(impl_->tag_name()))
-        break;
+      builder.visit_element_end(impl_->tag_name());
 
     } else if (p.is_text && builder.expects_text()) {
-      if (builder.visit_text(get_data()))
-        break;
+      builder.visit_text(get_data());
     }
+
+    if (builder.wants_exit())
+      break;
+
   } // for
 }
 

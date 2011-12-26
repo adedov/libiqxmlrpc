@@ -34,7 +34,7 @@ private:
   virtual void
   do_visit_element_end(const std::string&);
 
-  virtual bool
+  virtual void
   do_visit_text(const std::string&);
 
   StateMachine state_;
