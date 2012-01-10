@@ -1,5 +1,9 @@
 Look into ChangeLog file for full list of changes.
 
+0.10.1 - 0.11
+* Fix parser's incorrect behavior for some corner cases.
+* Move away from automake to cmake.
+
 0.10.0 - 0.10.1
 * Fix incorrect dump/parse of fault responses.
 * Fix COREDUMPS on empty values during request/response parsing.
