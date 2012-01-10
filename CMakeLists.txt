@@ -14,6 +14,9 @@ if (build_docs)
 	add_subdirectory(doc)
 endif (build_docs)
 
+add_custom_target(clog
+	COMMAND bzr log --short > ChangeLog)
+
 add_custom_target(dist
 	COMMAND bzr export --root=libiqxmlrpc-${Libiqxmlrpc_VERSION} libiqxmlrpc-${Libiqxmlrpc_VERSION}.tar.bz2
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
