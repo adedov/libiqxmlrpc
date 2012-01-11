@@ -34,8 +34,9 @@ XmlBuilder::Node::Node(XmlBuilder& w, const char* name):
 
 XmlBuilder::Node::~Node()
 {
-  if (!std::uncaught_exception())
+  if (!std::uncaught_exception()) {
     xmlTextWriterEndElement(ctx.writer);
+  }
 }
 
 void
@@ -71,7 +72,8 @@ XmlBuilder::stop()
 std::string
 XmlBuilder::content() const
 {
-  const char* cdata = reinterpret_cast<const char*>(buf->content);
+  xmlTextWriterFlush(writer);
+  const char* cdata = reinterpret_cast<const char*>(xmlBufferContent(buf));
   return std::string(cdata, buf->use);
 }
 
