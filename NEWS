@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.11 - 0.11.1
+* Fix xml-writer compatibility with libxml2-2.6.
+
 0.10.1 - 0.11
 * Fix parser's incorrect behavior for some corner cases.
 * Move away from automake to cmake.
