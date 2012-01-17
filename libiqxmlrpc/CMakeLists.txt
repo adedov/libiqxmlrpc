@@ -1,22 +1,21 @@
 include(FindBoost)
-include(FindPkgConfig)
+include(FindLibXml2)
+include(FindOpenSSL)
 include(CheckFunctionExists)
 
 find_package(Boost 1.41.0 COMPONENTS date_time thread)
-pkg_check_modules(XML2 REQUIRED libxml-2.0)
-pkg_check_modules(OPENSSL REQUIRED openssl)
+include_directories(${XML2_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+
 check_function_exists(poll HAVE_POLL)
-
-configure_file(config.h.in config.h)
-configure_file(version.h.in version.h)
-include_directories(${XML2_INCLUDE_DIRS})
-
 if(${HAVE_POLL})
 	set(REACTOR_IMPL "poll")
 else(${HAVE_POLL})
 	set(REACTOR_IMPL "select")
 endif(${HAVE_POLL})
 message("iqxmlrpc: Using ${REACTOR_IMPL} reactor implementation")
+
+configure_file(config.h.in config.h)
+configure_file(version.h.in version.h)
 
 set(PUBLIC_HEADERS
   acceptor.h
