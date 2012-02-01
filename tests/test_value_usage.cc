@@ -113,6 +113,18 @@ void struct_test()
   check_struct_value(s);
 
   {
+    BOOST_CHECKPOINT("Struct iterators");
+    Struct::const_iterator it = s.find("author");
+    BOOST_CHECK_EQUAL( (*it->second).get_string(), "D.D.Salinger" );
+    BOOST_CHECK( s.find("nonexistent") == s.end() );
+
+    s.insert( "nonexistent", 0 );
+    BOOST_CHECK( s.find("nonexistent") != s.end() );
+    s.erase( "nonexistent" );
+    BOOST_CHECK( s.find("nonexistent") == s.end() );
+  }
+
+  {
     BOOST_CHECKPOINT("Struct assigment");
     Struct s1;
     s1 = s;

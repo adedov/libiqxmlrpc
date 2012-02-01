@@ -249,6 +249,11 @@ public:
 
   const_iterator begin() const { return values.begin(); }
   const_iterator end()   const { return values.end(); }
+
+  const_iterator find( const std::string& key ) const { return values.find(key); }
+  iterator find( const std::string& key ) { return values.find(key); }
+
+  void erase( const std::string& key ) { values.erase(key); }
 };
 
 #ifdef _MSC_VER
@@ -332,3 +337,4 @@ public:
 } // namespace iqxmlrpc
 
 #endif
+// vim:ts=2:sw=2:et
