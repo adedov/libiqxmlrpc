@@ -290,16 +290,18 @@ void Struct::clear()
   values.clear();
 }
 
-
 void Struct::insert( const std::string& f, Value_ptr val )
 {
-  values[f] = val.release();
+  Value*& tmp = values[f];
+  delete tmp;
+  tmp = val.release();
 }
 
 
 void Struct::insert( const std::string& f, const Value& val )
 {
-  values[f] = new Value(val);
+  Value_ptr p(new Value(val));
+  insert(f, p);
 }
 
 
