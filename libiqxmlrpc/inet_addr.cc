@@ -27,7 +27,11 @@ Inet_addr::Inet_addr( const std::string& host_, int port_ ):
   struct hostent hent_local;
   char buf[1024];
   int local_h_errno = 0;
+#if defined(__sun) || defined(sun)
+  hent = ::gethostbyname_r( host.c_str(), &hent_local, buf, sizeof(buf), &local_h_errno );
+#else
   ::gethostbyname_r( host.c_str(), &hent_local, buf, sizeof(buf), &hent, &local_h_errno );
+#endif
 
   if( !hent ) {
     throw network_error( "gethostbyname: " + std::string(hstrerror(local_h_errno)), false );
