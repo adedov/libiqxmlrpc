@@ -38,27 +38,25 @@ Stress_test_opts test_config;
 // Stress test thread function
 void do_test()
 {
-  BOOST_MESSAGE("Threaded_client started.");
-
   try {
     std::auto_ptr<Client_base> client(test_config.create_instance());
     Get_file_proxy get_file(client.get());
 
     for (int i = 0; i < test_config.calls_per_thread(); ++i) {
       Response r( get_file(65536) );
-      BOOST_REQUIRE(!r.is_fault());
+
+      if (r.is_fault())
+        std::cerr << "Fault response: " << r.fault_string() << std::endl;
     }
   }
   catch(const std::exception& e)
   {
-    BOOST_ERROR(e.what());
+    std::cerr << "E: " << e.what() << std::endl;
   }
   catch(...)
   {
-    BOOST_ERROR("Unexpected exception");
+    std::cerr << "Unexpected exception" << std::endl;
   }
-
-  BOOST_MESSAGE("Threaded_client stoped.");
 }
 
 void stop_test_server()
