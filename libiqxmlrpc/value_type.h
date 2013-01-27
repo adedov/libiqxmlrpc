@@ -149,12 +149,7 @@ public:
 
   //! Clears array and assigns from specified container's interval.
   template <class In>
-  void assign( In first, In last )
-  {
-    clear();
-    for( ; first != last; ++first )
-      values.push_back( new Value(*first) );
-  }
+  void assign( In first, In last );
 
   Array::const_iterator begin() const;
   Array::const_iterator end()   const;

@@ -124,4 +124,6 @@ void LIBIQXMLRPC_API print_value(const Value&, std::ostream&);
 
 } // namespace iqxmlrpc
 
+#include "value_type.inl"
+
 #endif
