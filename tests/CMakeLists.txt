@@ -1,4 +1,4 @@
-find_package(Boost 1.41.0 COMPONENTS unit_test_framework program_options)
+find_package(Boost 1.41.0 COMPONENTS unit_test_framework program_options thread)
 
 include_directories(${PROJECT_SOURCE_DIR})
 add_definitions(-DBOOST_TEST_DYN_LINK)
@@ -12,5 +12,5 @@ add_executable(server-test test_server.cc server_config.h server_config.cc metho
 add_executable(server-stop-test test_server_stop.cc)
 
 foreach(t value-test parser-test client-test client-stress-test server-test server-stop-test)
-	target_link_libraries(${t} iqxmlrpc ${Boost_LIBRARIES})
+	target_link_libraries(${t} iqxmlrpc ${Boost_LIBRARIES} ${Boost_THREAD_LIBRARY})
 endforeach(t)
