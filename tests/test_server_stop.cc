@@ -12,6 +12,12 @@
 #include "libiqxmlrpc/http_server.h"
 #include "libiqxmlrpc/executor.h"
 
+#if BOOST_VERSION >= 105000
+#define MY_BOOST_TIME_UTC boost::TIME_UTC_
+#else
+#define MY_BOOST_TIME_UTC boost::TIME_UTC
+#endif
+
 using namespace boost::unit_test_framework;
 using namespace iqxmlrpc;
 
@@ -52,7 +58,7 @@ void stop_and_join(unsigned threads, boost::condition* on_stop)
   TestServer s(3344, threads);
 
   boost::xtime time_wait;
-  boost::xtime_get(&time_wait, boost::TIME_UTC);
+  boost::xtime_get(&time_wait, MY_BOOST_TIME_UTC);
   time_wait.sec += 1;
 
   boost::thread::sleep(time_wait);
@@ -71,13 +77,13 @@ void stop_test_server(unsigned server_threads)
 
   {
   boost::xtime time_wait;
-  boost::xtime_get(&time_wait, boost::TIME_UTC);
+  boost::xtime_get(&time_wait, MY_BOOST_TIME_UTC);
   time_wait.sec += 1;
   boost::thread::sleep(time_wait);
   }
 
   boost::xtime time_wait;
-  boost::xtime_get(&time_wait, boost::TIME_UTC);
+  boost::xtime_get(&time_wait, MY_BOOST_TIME_UTC);
   time_wait.sec += 3;
 
   boost::mutex::scoped_lock lck(c_mutex);
