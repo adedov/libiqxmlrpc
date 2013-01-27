@@ -45,7 +45,7 @@ void Acceptor::handle_input( bool& )
 
 inline void Acceptor::listen()
 {
-  sock.listen( 5 );
+  sock.listen( 100 );
 }
 
 
