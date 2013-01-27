@@ -55,6 +55,7 @@ set(PUBLIC_HEADERS
   sysinc.h
   util.h
   value_type.h
+  value_type.inl
   value_type_visitor.h
   value.h
 )
