@@ -95,6 +95,7 @@ public:
     // TODO: check buf is not 0
     reader = xmlNewTextReader(buf, 0);
     // TODO: check reader is not 0
+    xmlTextReaderSetParserProp(reader, XML_PARSER_SUBST_ENTITIES, 0); // No XXE
   }
 
   ~Impl()
