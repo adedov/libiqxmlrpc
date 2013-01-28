@@ -24,8 +24,6 @@ public:
   void post_accept() { Reaction_connection::post_accept(); }
   void finish() { delete this; }
 
-  void schedule_response( http::Packet* );
-
   bool catch_in_reactor() const { return true; }
   void log_exception( const std::exception& );
   void log_unknown_exception();
@@ -35,6 +33,7 @@ protected:
   void accept_succeed();
   void recv_succeed( bool& terminate, int req_len, int real_len );
   void send_succeed( bool& terminate );
+  virtual void do_schedule_response();
 };
 
 //! XML-RPC server that works over secured HTTP connections (HTTPS).

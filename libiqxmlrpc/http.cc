@@ -31,6 +31,7 @@ namespace names {
   const char server[]         = "server";
   const char date[]           = "date";
   const char authorization[]  = "authorization";
+  const char expect_continue[]= "expect";
 } // namespace names
 
 
@@ -59,6 +60,15 @@ void content_type(const std::string& val)
     throw Unsupported_content_type(cont_type);
 }
 
+void expect_continue(const std::string& val)
+{
+  std::string exp(val);
+  boost::to_lower(exp);
+
+  if (!boost::starts_with(exp, "100-continue"))
+    throw Expectation_failed();
+}
+
 } // namespace validator
 
 
@@ -67,6 +77,7 @@ Header::Header(Verification_level lev):
 {
   set_option_default(names::connection, "close");
   register_validator(names::content_length, validator::unsigned_number, HTTP_CHECK_WEAK);
+  register_validator(names::expect_continue, validator::expect_continue, HTTP_CHECK_WEAK);
   register_validator(names::content_type, validator::content_type, HTTP_CHECK_STRICT);
 }
 
@@ -210,6 +221,11 @@ unsigned Header::content_length() const
 bool Header::conn_keep_alive() const
 {
   return get_string(names::connection) == "keep-alive";
+}
+
+bool Header::expect_continue() const
+{
+  return option_exists(names::expect_continue);
 }
 
 // ----------------------------------------------------------------------------
@@ -464,6 +480,11 @@ Packet* Packet_reader::read_packet( const std::string& s, bool hdr_only )
   }
 
   return 0;
+}
+
+bool Packet_reader::expect_continue() const
+{
+  return header && header->expect_continue();
 }
 
 Packet* Packet_reader::read_request( const std::string& s )

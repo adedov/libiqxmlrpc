@@ -30,11 +30,13 @@ public:
   void handle_input( bool& );
   void handle_output( bool& );
 
-  void schedule_response( http::Packet* packet );
 
   bool catch_in_reactor() const { return true; }
   void log_exception( const std::exception& );
   void log_unknown_exception();
+
+private:
+  virtual void do_schedule_response();
 };
 
 //! XML-RPC server that works over plain HTTP connections.

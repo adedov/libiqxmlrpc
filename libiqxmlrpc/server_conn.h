@@ -50,10 +50,12 @@ public:
     server = s;
   }
 
-  virtual void schedule_response( http::Packet* );
+  void schedule_response( http::Packet* );
 
 protected:
   http::Packet* read_request( const std::string& );
+
+  virtual void do_schedule_response() = 0;
 };
 
 #ifdef _MSC_VER

@@ -41,6 +41,7 @@ public:
 
   unsigned  content_length()  const;
   bool      conn_keep_alive() const;
+  bool      expect_continue() const;
 
   void set_content_length( unsigned ln );
   void set_conn_keep_alive( bool );
@@ -109,8 +110,8 @@ public:
   const std::string& uri() const { return uri_; }
   std::string host()  const;
   std::string agent() const;
- 
-  bool has_authinfo() const; 
+
+  bool has_authinfo() const;
   void get_authinfo(std::string& user, std::string& password) const;
   void set_authinfo(const std::string& user, const std::string& password);
 
@@ -177,6 +178,7 @@ class Packet_reader {
   Header* header;
   Verification_level ver_level_;
   bool constructed;
+  bool need_continue;
   unsigned pkt_max_sz;
   unsigned total_sz;
 
@@ -203,6 +205,7 @@ public:
     pkt_max_sz = m;
   }
 
+  bool expect_continue() const;
   Packet* read_request( const std::string& );
   Packet* read_response( const std::string&, bool read_header_only );
 

@@ -2,7 +2,6 @@
 //  Copyright (C) 2011 Anton Dedov
 
 #include "https_server.h"
-
 #include "server.h"
 
 using namespace iqxmlrpc;
@@ -40,7 +39,8 @@ void Https_server_connection::recv_succeed
 
     if( !packet )
     {
-      my_reg_recv();
+      if (!send_buf)
+        my_reg_recv();
       return;
     }
 
@@ -71,10 +71,8 @@ void Https_server_connection::send_succeed( bool& terminate )
 #pragma warning(disable: 4996)
 #endif
 
-void Https_server_connection::schedule_response( http::Packet* pkt )
+void Https_server_connection::do_schedule_response()
 {
-  Server_connection::schedule_response( pkt );
-
   send_buf = new char[response.length()];
   response.copy( send_buf, std::string::npos );
   reg_send( send_buf, response.length() );
@@ -96,3 +94,5 @@ void Https_server_connection::log_unknown_exception()
 {
   server->log_err_msg( "iqxmlrpc::Https_server_connection: unknown exception." );
 }
+
+// vim:et:sw=2:ts=2

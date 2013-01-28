@@ -76,9 +76,8 @@ void Http_server_connection::handle_output( bool& terminate )
 }
 
 
-void Http_server_connection::schedule_response( http::Packet* pkt )
+void Http_server_connection::do_schedule_response()
 {
-  Server_connection::schedule_response( pkt );
   reactor->register_handler( this, iqnet::Reactor_base::OUTPUT );
 }
 

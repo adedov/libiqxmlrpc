@@ -38,11 +38,15 @@ http::Packet* Server_connection::read_request( const std::string& s )
   {
     preader.set_verification_level( server->get_verification_level() );
     preader.set_max_size( server->get_max_request_sz() );
-
     http::Packet* r = preader.read_request(s);
 
-    if( r )
+    if( r ) {
       keep_alive = r->header()->conn_keep_alive();
+    } else if( preader.expect_continue() ) {
+      response = "HTTP/1.1 100\r\n\r\n";
+      keep_alive = true;
+      do_schedule_response();
+    }
 
     return r;
   }
@@ -58,6 +62,7 @@ void Server_connection::schedule_response( http::Packet* pkt )
   std::auto_ptr<http::Packet> p(pkt);
   p->set_keep_alive( keep_alive );
   response = p->dump();
+  do_schedule_response();
 }
 
 // vim:ts=2:sw=2:et

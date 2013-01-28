@@ -57,6 +57,13 @@ public:
     Error_response( "Unsupported media type '" + wrong + "'", 415 ) {}
 };
 
+//! HTTP/1.1 417 Unsupported expectation
+class LIBIQXMLRPC_API Expectation_failed: public Error_response {
+public:
+  Expectation_failed():
+    Error_response( "Expectation Failed", 417 ) {}
+};
+
 } // namespace http
 } // namespace iqxmlrpc
 
