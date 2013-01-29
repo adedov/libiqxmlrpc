@@ -7,14 +7,70 @@
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <boost/thread/mutex.hpp>
+
+#ifndef _WIN32
+#include <pthread.h>
+#endif
 
 #include "ssl_lib.h"
 #include "net_except.h"
+
+namespace iqxmlrpc {
+
+//
+// Mutli-threading support stuff
+//
+
+class LockContainer: boost::noncopyable {
+public:
+  LockContainer():
+    size(CRYPTO_num_locks()),
+    locks(new boost::mutex[size])
+  {
+  }
+
+  ~LockContainer()
+  {
+    for (size_t i=0; i < size; ++i)
+      locks[i].unlock();
+
+    delete[] locks;
+  }
+
+  size_t size;
+  boost::mutex* locks;
+};
+
+void
+openssl_lock_callback(int mode, int n, const char* file, int line)
+{
+  static LockContainer lks;
+  // assert n < lks.size
+
+  boost::mutex& m = lks.locks[n];
+  if (mode & CRYPTO_LOCK) {
+    m.lock();
+  } else {
+    m.unlock();
+  }
+}
+
+#ifndef _WIN32
+unsigned long
+openssl_id_function()
+{
+  return reinterpret_cast<unsigned long>(pthread_self());
+}
+#endif
+
+} // namespace iqxmlrpc
 
 using namespace iqnet::ssl;
 
 iqnet::ssl::Ctx* iqnet::ssl::ctx = 0;
 bool Ctx::initialized = false;
+boost::mutex ssl_init_mutex;
 
 Ctx* Ctx::client_server( const std::string& cert_path, const std::string& key_path )
 {
@@ -64,10 +120,16 @@ Ctx::~Ctx()
 
 void Ctx::init_library()
 {
+  boost::mutex::scoped_lock lk(ssl_init_mutex);
+
   if( !Ctx::initialized )
   {
     SSL_load_error_strings();
     SSL_library_init();
+    CRYPTO_set_locking_callback(&iqxmlrpc::openssl_lock_callback);
+#ifndef _WIN32
+    CRYPTO_set_id_callback(&iqxmlrpc::openssl_id_function);
+#endif
     Ctx::initialized = true;
   }
 }
