@@ -97,8 +97,8 @@ int Socket::recv( char* buf, int len )
 void Socket::send_shutdown( const char* data, int len )
 {
   send(data, len);
-  struct linger ling = {1, 0};
-  ::setsockopt( sock, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling) );
+  const struct linger ling = {1, 0};
+  ::setsockopt( sock, SOL_SOCKET, SO_LINGER, reinterpret_cast<const char*>(&ling), sizeof(ling) );
   ::shutdown( sock, 1 );
 }
 
