@@ -32,9 +32,12 @@ public:
 
   ~LockContainer()
   {
-    for (size_t i=0; i < size; ++i)
-      locks[i].unlock();
+    CRYPTO_set_locking_callback(0);
+#ifdef WIN32
+    CRYPTO_set_id_callback(0);
+#endif
 
+    // do not try to unlock locks
     delete[] locks;
   }
 
@@ -70,7 +73,7 @@ using namespace iqnet::ssl;
 
 iqnet::ssl::Ctx* iqnet::ssl::ctx = 0;
 bool Ctx::initialized = false;
-boost::mutex ssl_init_mutex;
+boost::mutex ssl_init_mutex; // = new boost::mutex;
 
 Ctx* Ctx::client_server( const std::string& cert_path, const std::string& key_path )
 {
