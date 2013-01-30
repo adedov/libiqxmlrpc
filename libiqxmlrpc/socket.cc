@@ -14,9 +14,18 @@ Socket::Socket()
     throw network_error( "Socket::Socket" );
 
 #ifndef _WINDOWS
+  {
   int enable = 1;
   setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable) );
+  }
 #endif //_WINDOWS
+
+#if defined(__APPLE__)
+  {
+  int enable = 1;
+  setsockopt( sock, SOL_SOCKET, SO_NOSIGPIPE, &enable, sizeof(enable) );
+  }
+#endif
 }
 
 Socket::Socket( Socket::Handler h, const Inet_addr& addr ):
@@ -54,25 +63,16 @@ void Socket::set_non_blocking( bool flag )
 #endif //_WINDOWS
 }
 
-#ifndef MSG_NOSIGNAL
-#ifndef WINDOWS_
-// MSG_NOSIGNAL tells send() and recv() not to generate SIGPIPE when
-// the other side closes the connection.  This is a nice feature, but
-// unfortunately not portable.
-//#warning "Allowing Broken Pipe signals (SIGPIPE) due to lack of MSG_NOSIGNAL."
-//#warning "If you get unwanted Broken Pipe signals, consider ignoring them:"
-//#warning "signal(SIGPIPE, SIG_IGN);"
-#endif // WINDOWS_
-#define MSG_NOSIGNAL 0
+#if defined(MSG_NOSIGNAL)
+#warning "defined"
+#define IQXMLRPC_NOPIPE MSG_NOSIGNAL
+#else
+#define IQXMLRPC_NOPIPE 0
 #endif
 
 int Socket::send( const char* data, int len )
 {
-#ifdef _WINDOWS
-  int ret = ::send( sock, data, len, 0);
-#else
-  int ret = ::send( sock, data, len, MSG_NOSIGNAL );
-#endif //_WINDOWS
+  int ret = ::send( sock, data, len, IQXMLRPC_NOPIPE);
 
   if( ret == -1 )
     throw network_error( "Socket::send" );
@@ -82,11 +82,7 @@ int Socket::send( const char* data, int len )
 
 int Socket::recv( char* buf, int len )
 {
-#ifdef _WINDOWS
   int ret = ::recv( sock, buf, len, 0 );
-#else
-  int ret = ::recv( sock, buf, len, MSG_NOSIGNAL );
-#endif //_WINDOWS
 
   if( ret == -1 )
     throw network_error( "Socket::recv" );
