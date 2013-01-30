@@ -64,7 +64,6 @@ void Socket::set_non_blocking( bool flag )
 }
 
 #if defined(MSG_NOSIGNAL)
-#warning "defined"
 #define IQXMLRPC_NOPIPE MSG_NOSIGNAL
 #else
 #define IQXMLRPC_NOPIPE 0
