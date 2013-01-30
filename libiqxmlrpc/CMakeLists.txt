@@ -112,6 +112,10 @@ add_library(iqxmlrpc SHARED
   xml_builder.cc
 )
 
+if(WIN32)
+	add_definitions(-DLIBIQXMLRPC_COMPILATION -DDLL_EXPORT)
+endif()
+
 target_link_libraries(iqxmlrpc
   ${Boost_LIBRARIES}
   ${XML2_LIBRARIES} # obsolete
