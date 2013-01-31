@@ -65,7 +65,7 @@ Inet_addr::Inet_addr( const std::string& host_, int port_ ):
 
 
 Inet_addr::Inet_addr( int port_ ):
-  host("127.0.0.1"), port(port_)
+  host("0.0.0.0"), port(port_)
 {
   sa.sin_family = PF_INET;
   sa.sin_port = htons(port);
