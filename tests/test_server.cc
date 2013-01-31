@@ -12,6 +12,10 @@
 #include "server_config.h"
 #include "methods.h"
 
+#if defined(WIN32)
+#include <winsock2.h>
+#endif
+
 using namespace boost::unit_test;
 using namespace iqxmlrpc;
 
@@ -124,6 +128,13 @@ void test_server_sig_handler(int)
 int
 main(int argc, const char** argv)
 {
+#if defined(WIN32)
+  WORD wVersionRequested;
+  WSADATA wsaData;
+  wVersionRequested = MAKEWORD(2, 2);
+  WSAStartup(wVersionRequested, &wsaData);
+#endif
+
   try {
     Test_server_config conf(argc, argv);
     test_server = new Test_server(conf);

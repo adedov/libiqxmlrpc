@@ -11,6 +11,10 @@
 #include "client_common.h"
 #include "client_opts.h"
 
+#if defined(WIN32)
+#include <winsock2.h>
+#endif
+
 using namespace boost::unit_test;
 using namespace boost::program_options;
 using namespace iqxmlrpc;
@@ -41,6 +45,13 @@ class ClientFixture {
 public:
   ClientFixture()
   {
+#if defined(WIN32)
+    WORD wVersionRequested;
+    WSADATA wsaData;
+    wVersionRequested = MAKEWORD(2, 2);
+    WSAStartup(wVersionRequested, &wsaData);
+#endif
+
     int argc = boost::unit_test::framework::master_test_suite().argc;
     char** argv = boost::unit_test::framework::master_test_suite().argv;
     test_config.configure(argc, argv);

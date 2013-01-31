@@ -13,5 +13,5 @@ add_executable(server-test test_server.cc server_config.h server_config.cc metho
 
 #foreach(t value-test parser-test client-test client-stress-test server-test server-stop-test)
 foreach(t value-test parser-test client-test client-stress-test server-test)
-	target_link_libraries(${t} iqxmlrpc ${Boost_LIBRARIES} ${Boost_THREAD_LIBRARY})
+	target_link_libraries(${t} iqxmlrpc ${Boost_LIBRARIES})
 endforeach(t)
