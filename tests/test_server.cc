@@ -1,3 +1,4 @@
+#define BOOST_TEST_MODULE test_server
 #include <signal.h>
 #include <memory>
 #include <iostream>
@@ -58,7 +59,6 @@ public:
 };
 
 class Test_server: boost::noncopyable {
-  Test_server_config conf_;
   std::auto_ptr<Executor_factory_base> ef_;
   std::auto_ptr<Server> impl_;
   PermissiveAuthPlugin auth_plugin_;
@@ -71,8 +71,9 @@ public:
   void work();
 };
 
+Test_server* test_server = 0;
+
 Test_server::Test_server(const Test_server_config& conf):
-  conf_(conf),
   ef_(0),
   impl_(0)
 {
@@ -114,8 +115,6 @@ void Test_server::work()
   impl_->work();
 }
 
-Test_server* test_server = 0;
-
 // Ctrl-C handler
 void test_server_sig_handler(int)
 {
@@ -123,39 +122,21 @@ void test_server_sig_handler(int)
     test_server->impl().set_exit_flag();
 }
 
-// Tests.
-void start_test_server()
+class TestConfig {
+public:
+  TestConfig()
+  {
+      ::signal(SIGINT, &test_server_sig_handler);
+  }
+};
+
+BOOST_GLOBAL_FIXTURE( TestConfig );
+
+BOOST_AUTO_TEST_CASE( start_test_server )
 {
-  BOOST_REQUIRE(test_server);
+  Test_server_config conf;
+  test_server = new Test_server(conf);
   test_server->work();
-}
-
-bool init_tests()
-{
-  test_suite& test = framework::master_test_suite();
-  test.add( BOOST_TEST_CASE(&start_test_server) );
-  return true;
-}
-
-int main( int argc, char* argv[] )
-{
-  try {
-    Test_server_config conf = Test_server_config::create(argc, argv);
-    test_server = new Test_server(conf);
-    ::signal(SIGINT, &test_server_sig_handler);
-  }
-  catch(const Test_server_config::Malformed_config& e)
-  {
-    std::cerr << e.what() << std::endl;
-    return 1;
-  }
-  catch(const std::exception& e)
-  {
-    std::cerr << "E: " << e.what() << std::endl;
-    return 1;
-  }
-
-  boost::unit_test::unit_test_main( &init_tests, argc, argv );
 }
 
 // vim:ts=2:sw=2:et

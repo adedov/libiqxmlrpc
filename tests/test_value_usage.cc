@@ -1,3 +1,4 @@
+#define BOOST_TEST_MODULE value_test
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -8,14 +9,14 @@
 using namespace boost::unit_test;
 using namespace iqxmlrpc;
 
-void nil_test()
+BOOST_AUTO_TEST_CASE( nil_test )
 {
   BOOST_MESSAGE("Nil test...");
   Value nil = Nil();
   BOOST_CHECK(nil.is_nil());
 }
 
-void scalar_test()
+BOOST_AUTO_TEST_CASE( scalar_test )
 {
   BOOST_MESSAGE("Scalar types test...");
 
@@ -38,7 +39,7 @@ void scalar_test()
   BOOST_CHECK_EQUAL(vs.type_name(), "string");
 }
 
-void array_test()
+BOOST_AUTO_TEST_CASE( array_test )
 {
   BOOST_MESSAGE("Array test...");
 
@@ -100,7 +101,7 @@ inline void check_struct_value(const Struct& s)
   BOOST_CHECK_EQUAL(s["pages"].get_int(), 250);
 }
 
-void struct_test()
+BOOST_AUTO_TEST_CASE( struct_test )
 {
   BOOST_MESSAGE("Struct test...");
 
@@ -162,34 +163,18 @@ void struct_test()
   BOOST_CHECK_EQUAL(v.type_name(), "struct");
 }
 
-void binary_test()
+#if 0
+BOOST_AUTO_TEST_CASE( binary_test )
 {
   BOOST_MESSAGE("Binary_data test...");
   BOOST_FAIL("TEST NOT IMPLEMENTED!");
 }
 
-void date_time_test()
+BOOST_AUTO_TEST_CASE( date_time_test )
 {
   BOOST_MESSAGE("Date_time test...");
   BOOST_FAIL("TEST NOT IMPLEMENTED!");
 }
-
-bool init_tests()
-{
-  test_suite& test = framework::master_test_suite();
-  test.add( BOOST_TEST_CASE(&nil_test) );
-  test.add( BOOST_TEST_CASE(&scalar_test) );
-  test.add( BOOST_TEST_CASE(&array_test) );
-  test.add( BOOST_TEST_CASE(&struct_test) );
-//  test->add( BOOST_TEST_CASE(&binary_test) );
-//  test->add( BOOST_TEST_CASE(&date_time_test) );
-
-  return true;
-}
-
-int main( int argc, char* argv[] )
-{
-  boost::unit_test::unit_test_main( &init_tests, argc, argv );
-}
+#endif
 
 // vim:ts=2:sw=2:et

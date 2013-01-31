@@ -1,3 +1,4 @@
+#define BOOST_TEST_MODULE test_client
 #include <stdlib.h>
 #include <openssl/md5.h>
 #include <iostream>
@@ -17,17 +18,20 @@ using namespace iqxmlrpc;
 Client_opts test_config;
 Client_base* test_client = 0;
 
-void stop_server()
-{
-  BOOST_REQUIRE(test_client);
-  Stop_server_proxy stop(test_client);
+class ClientFixture {
+public:
+  ClientFixture()
+  {
+    int argc = boost::unit_test::framework::master_test_suite().argc;
+    char** argv = boost::unit_test::framework::master_test_suite().argv;
+    test_config.configure(argc, argv);
+    test_client = test_config.create_instance();
+  }
+};
 
-  try {
-    stop();
-  } catch (const iqnet::network_error&) {}
-}
+BOOST_GLOBAL_FIXTURE( ClientFixture );
 
-void introspection_test()
+BOOST_AUTO_TEST_CASE( introspection_test )
 {
   BOOST_REQUIRE(test_client);
   Introspection_proxy introspect(test_client);
@@ -42,7 +46,7 @@ void introspection_test()
   }
 }
 
-void auth_test()
+BOOST_AUTO_TEST_CASE( auth_test )
 {
   BOOST_REQUIRE(test_client);
 
@@ -67,7 +71,7 @@ void auth_test()
   BOOST_ERROR("'401 Unauthrozied' required");
 }
 
-void echo_test()
+BOOST_AUTO_TEST_CASE( echo_test )
 {
   BOOST_REQUIRE(test_client);
   Echo_proxy echo(test_client);
@@ -75,7 +79,7 @@ void echo_test()
   BOOST_CHECK(retval.value().get_string() == "Hello");
 }
 
-void error_method_test()
+BOOST_AUTO_TEST_CASE( error_method_test )
 {
   BOOST_REQUIRE(test_client);
   Error_proxy err(test_client);
@@ -84,7 +88,7 @@ void error_method_test()
   BOOST_CHECK(retval.fault_code() == 123 && retval.fault_string() == "My fault");
 }
 
-void get_file_test()
+BOOST_AUTO_TEST_CASE( get_file_test )
 {
   BOOST_REQUIRE(test_client);
   Get_file_proxy get_file(test_client);
@@ -109,35 +113,17 @@ void get_file_test()
   BOOST_CHECK(gen_md5->get_base64() == m.get_base64());
 }
 
-bool init_tests()
+BOOST_AUTO_TEST_CASE( stop_server )
 {
-  test_suite& test = framework::master_test_suite();
+  if (!test_config.stop_server())
+    return;
 
-  test.add( BOOST_TEST_CASE(&introspection_test) );
-  test.add( BOOST_TEST_CASE(&echo_test) );
-  test.add( BOOST_TEST_CASE(&error_method_test) );
-  test.add( BOOST_TEST_CASE(&get_file_test) );
-  test.add( BOOST_TEST_CASE(&auth_test) );
+  BOOST_REQUIRE(test_client);
+  Stop_server_proxy stop(test_client);
 
-  if (test_config.stop_server())
-    test.add( BOOST_TEST_CASE(&stop_server) );
-
-  return true;
-}
-
-int main(int argc, char* argv[])
-{
   try {
-    test_config.configure(argc, argv);
-    test_client = test_config.create_instance();
-
-    boost::unit_test::unit_test_main( &init_tests, argc, argv );
-  }
-  catch (const std::exception& e)
-  {
-    std::cerr << e.what() << std::endl;
-    return 1;
-  }
+    stop();
+  } catch (const iqnet::network_error&) {}
 }
 
 // vim:ts=2:sw=2:et

@@ -9,8 +9,9 @@ set(CLIENT_COMMON_SRC client_common.h client_common.cc client_opts.h client_opts
 add_executable(client-test ${CLIENT_COMMON_SRC} client.cc)
 add_executable(client-stress-test ${CLIENT_COMMON_SRC} client_stress.cc)
 add_executable(server-test test_server.cc server_config.h server_config.cc methods.h methods.cc)
-add_executable(server-stop-test test_server_stop.cc)
+#add_executable(server-stop-test test_server_stop.cc)
 
-foreach(t value-test parser-test client-test client-stress-test server-test server-stop-test)
+#foreach(t value-test parser-test client-test client-stress-test server-test server-stop-test)
+foreach(t value-test parser-test client-test client-stress-test server-test)
 	target_link_libraries(${t} iqxmlrpc ${Boost_LIBRARIES} ${Boost_THREAD_LIBRARY})
 endforeach(t)
