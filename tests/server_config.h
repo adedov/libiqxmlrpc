@@ -13,7 +13,7 @@ struct Test_server_config {
   int port;
   unsigned numthreads;
 
-  Test_server_config();
+  Test_server_config(int argc, const char** argv);
 };
 
 class Test_server_config::Malformed_config: public std::runtime_error {

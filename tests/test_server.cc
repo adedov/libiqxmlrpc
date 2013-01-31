@@ -1,4 +1,3 @@
-#define BOOST_TEST_MODULE test_server
 #include <signal.h>
 #include <memory>
 #include <iostream>
@@ -122,21 +121,20 @@ void test_server_sig_handler(int)
     test_server->impl().set_exit_flag();
 }
 
-class TestConfig {
-public:
-  TestConfig()
-  {
-      ::signal(SIGINT, &test_server_sig_handler);
-  }
-};
-
-BOOST_GLOBAL_FIXTURE( TestConfig );
-
-BOOST_AUTO_TEST_CASE( start_test_server )
+int
+main(int argc, const char** argv)
 {
-  Test_server_config conf;
-  test_server = new Test_server(conf);
-  test_server->work();
+  try {
+    Test_server_config conf(argc, argv);
+    test_server = new Test_server(conf);
+    ::signal(SIGINT, &test_server_sig_handler);
+    test_server->work();
+    return 0;
+
+  } catch (const std::exception& e) {
+    std::cerr << "E: " << e.what() << std::endl;
+    return 1;
+  }
 }
 
 // vim:ts=2:sw=2:et
