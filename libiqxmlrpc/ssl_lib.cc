@@ -7,16 +7,19 @@
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include <boost/thread/mutex.hpp>
 
-#ifndef _WIN32
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/once.hpp>
+
+#ifndef WIN32
 #include <pthread.h>
 #endif
 
 #include "ssl_lib.h"
 #include "net_except.h"
 
-namespace iqxmlrpc {
+namespace iqnet {
+namespace ssl {
 
 //
 // Mutli-threading support stuff
@@ -30,16 +33,7 @@ public:
   {
   }
 
-  ~LockContainer()
-  {
-    CRYPTO_set_locking_callback(0);
-#ifdef WIN32
-    CRYPTO_set_id_callback(0);
-#endif
-
-    // do not try to unlock locks
-    delete[] locks;
-  }
+  ~LockContainer();
 
   size_t size;
   boost::mutex* locks;
@@ -67,13 +61,38 @@ openssl_id_function()
 }
 #endif
 
-} // namespace iqxmlrpc
+LockContainer::~LockContainer()
+{
+   if (CRYPTO_get_locking_callback() == &openssl_lock_callback)
+    CRYPTO_set_locking_callback(0);
 
-using namespace iqnet::ssl;
+#ifndef _WIN32
+  if (CRYPTO_get_id_callback() == &openssl_id_function)
+    CRYPTO_set_id_callback(0);
+#endif
 
-iqnet::ssl::Ctx* iqnet::ssl::ctx = 0;
-bool Ctx::initialized = false;
-boost::mutex ssl_init_mutex; // = new boost::mutex;
+  // do not try to unlock locks
+  delete[] locks;
+}
+
+void
+init_library()
+{
+  SSL_load_error_strings();
+  SSL_library_init();
+
+  if (CRYPTO_get_locking_callback() != 0)
+    CRYPTO_set_locking_callback(&openssl_lock_callback);
+
+#ifndef _WIN32
+  if (CRYPTO_get_id_callback())
+    CRYPTO_set_id_callback(&openssl_id_function);
+#endif
+}
+
+Ctx* iqnet::ssl::ctx = 0;
+boost::once_flag ssl_init;
+
 
 Ctx* Ctx::client_server( const std::string& cert_path, const std::string& key_path )
 {
@@ -95,8 +114,7 @@ Ctx* Ctx::client_only()
 
 Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client )
 {
-  init_library();
-
+  boost::call_once(ssl_init, init_library);
   ctx = SSL_CTX_new( client ? SSLv23_method() : SSLv23_server_method() );
 
   if(
@@ -110,8 +128,7 @@ Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client
 
 Ctx::Ctx()
 {
-  init_library();
-
+  boost::call_once(ssl_init, init_library);
   ctx = SSL_CTX_new( SSLv23_client_method() );
 }
 
@@ -121,29 +138,12 @@ Ctx::~Ctx()
 }
 
 
-void Ctx::init_library()
-{
-  boost::mutex::scoped_lock lk(ssl_init_mutex);
-
-  if( !Ctx::initialized )
-  {
-    SSL_load_error_strings();
-    SSL_library_init();
-    CRYPTO_set_locking_callback(&iqxmlrpc::openssl_lock_callback);
-#ifndef _WIN32
-    CRYPTO_set_id_callback(&iqxmlrpc::openssl_id_function);
-#endif
-    Ctx::initialized = true;
-  }
-}
-
-
 // ----------------------------------------------------------------------------
 iqnet::ssl::exception::exception() throw():
   ssl_err( ERR_get_error() ),
 	  msg( ERR_reason_error_string(ssl_err) )
 {
-	msg.insert(0,"iqnet::ssl");
+	msg.insert(0, "SSL: ");
 }
 
 
@@ -151,7 +151,7 @@ iqnet::ssl::exception::exception( unsigned long err ) throw():
   ssl_err(err),
   msg( ERR_reason_error_string(ssl_err) )
 {
-	msg.insert(0,"iqnet::ssl");
+	msg.insert(0, "SSL: ");
 }
 
 
@@ -159,7 +159,7 @@ iqnet::ssl::exception::exception( const std::string& msg_ ) throw():
   ssl_err(0),
   msg( msg_ )
 {
-	msg.insert(0,"iqnet::ssl");
+	msg.insert(0, "SSL: ");
 }
 
 
@@ -197,3 +197,6 @@ void iqnet::ssl::throw_io_exception( SSL* ssl, int ret )
       throw io_error( code );
   }
 }
+
+} // namespace ssl
+} // namespace iqnet
