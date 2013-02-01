@@ -26,6 +26,16 @@ to_string(xmlChar* s)
 
 } // nameless namespace
 
+struct LibxmlInitializer {
+  LibxmlInitializer()
+  {
+    // http://www.xmlsoft.org/threads.html
+    xmlInitParser();
+  }
+};
+
+LibxmlInitializer libxml_init;
+
 //
 // BuilderBase
 //
