@@ -57,7 +57,7 @@ openssl_lock_callback(int mode, int n, const char* file, int line)
 unsigned long
 openssl_id_function()
 {
-  return reinterpret_cast<unsigned long>(pthread_self());
+  return (unsigned long)(pthread_self());
 }
 #endif
 
