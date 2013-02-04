@@ -131,7 +131,11 @@ bool Socket::connect( const iqnet::Inet_addr& peer_addr )
   bool wouldblock = false;
 
   if( code == -1 ) {
+#ifndef WIN32
     wouldblock = errno == EINPROGRESS;
+#else
+    wouldblock = get_last_error() == WSAEWOULDBLOCK;
+#endif
 
     if (!wouldblock)
       throw network_error( "Socket::connect" );

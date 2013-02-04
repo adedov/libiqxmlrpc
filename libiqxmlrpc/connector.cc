@@ -6,6 +6,12 @@
 
 namespace iqnet {
 
+#if defined(WIN32)
+#define IQXMLRPC_INPROGRESS WSAEWOULDBLOCK
+#else
+#define IQXMLRPC_INPROGRESS EINPROGRESS
+#endif
+
 struct Connect_processor: public Event_handler {
   Reactor_base& reactor;
   Socket sock;
@@ -26,7 +32,7 @@ struct Connect_processor: public Event_handler {
     terminate = true;
     int err = sock.get_last_error();
 
-    if (err) {
+    if (err && err != IQXMLRPC_INPROGRESS) {
       sock.close();
       throw network_error("Connector", true, err);
     }
