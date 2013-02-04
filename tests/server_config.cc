@@ -7,7 +7,8 @@ Test_server_config::Malformed_cmd_line::Malformed_cmd_line():
 {
 }
 
-Test_server_config::Test_server_config(int argc, const char** argv)
+Test_server_config::Test_server_config(int argc, const char** argv):
+  use_ssl(false)
 {
   if (argc != 3 && argc != 4)
     throw Malformed_cmd_line();
