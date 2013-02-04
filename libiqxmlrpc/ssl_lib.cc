@@ -90,7 +90,7 @@ init_library()
 #endif
 }
 
-Ctx* iqnet::ssl::ctx = 0;
+Ctx* ctx = 0;
 boost::once_flag ssl_init;
 
 
@@ -139,7 +139,7 @@ Ctx::~Ctx()
 
 
 // ----------------------------------------------------------------------------
-iqnet::ssl::exception::exception() throw():
+exception::exception() throw():
   ssl_err( ERR_get_error() ),
 	  msg( ERR_reason_error_string(ssl_err) )
 {
@@ -147,7 +147,7 @@ iqnet::ssl::exception::exception() throw():
 }
 
 
-iqnet::ssl::exception::exception( unsigned long err ) throw():
+exception::exception( unsigned long err ) throw():
   ssl_err(err),
   msg( ERR_reason_error_string(ssl_err) )
 {
@@ -155,7 +155,7 @@ iqnet::ssl::exception::exception( unsigned long err ) throw():
 }
 
 
-iqnet::ssl::exception::exception( const std::string& msg_ ) throw():
+exception::exception( const std::string& msg_ ) throw():
   ssl_err(0),
   msg( msg_ )
 {
@@ -164,7 +164,7 @@ iqnet::ssl::exception::exception( const std::string& msg_ ) throw():
 
 
 // ----------------------------------------------------------------------------
-void iqnet::ssl::throw_io_exception( SSL* ssl, int ret )
+void throw_io_exception( SSL* ssl, int ret )
 {
   int code = SSL_get_error( ssl, ret );
   switch( code )
