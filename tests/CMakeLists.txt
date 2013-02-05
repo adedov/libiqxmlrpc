@@ -1,17 +1,25 @@
 find_package(Boost 1.41.0 COMPONENTS unit_test_framework program_options thread)
 
-include_directories(${PROJECT_SOURCE_DIR})
-add_definitions(-DBOOST_TEST_DYN_LINK)
+include_directories(${OPENSSL_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${PROJECT_SOURCE_DIR})
 
-add_executable(value-test test_value_usage.cc)
-add_executable(parser-test parser2.cc)
+if (NOT Boost_USE_STATIC_LIBS)
+	add_definitions(-DBOOST_TEST_DYN_LINK)
+endif (NOT Boost_USE_STATIC_LIBS)
+
+macro (iqxmlrpc_test test_name)
+	message("Add test ${test_name}")
+	add_executable(${test_name} ${ARGN})
+	target_link_libraries(${test_name} iqxmlrpc ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES})
+endmacro (iqxmlrpc_test)
+
+iqxmlrpc_test(value-test test_value_usage.cc)
+iqxmlrpc_test(server-test test_server.cc server_config.h server_config.cc methods.h methods.cc)
 set(CLIENT_COMMON_SRC client_common.h client_common.cc client_opts.h client_opts.cc)
-add_executable(client-test ${CLIENT_COMMON_SRC} client.cc)
-add_executable(client-stress-test ${CLIENT_COMMON_SRC} client_stress.cc)
-add_executable(server-test test_server.cc server_config.h server_config.cc methods.h methods.cc)
-#add_executable(server-stop-test test_server_stop.cc)
+iqxmlrpc_test(client-test ${CLIENT_COMMON_SRC} client.cc)
+iqxmlrpc_test(client-stress-test ${CLIENT_COMMON_SRC} client_stress.cc)
 
-#foreach(t value-test parser-test client-test client-stress-test server-test server-stop-test)
-foreach(t value-test parser-test client-test client-stress-test server-test)
-	target_link_libraries(${t} iqxmlrpc ${Boost_LIBRARIES})
-endforeach(t)
+if (NOT WIN32)
+	iqxmlrpc_test(parser-test parser2.cc)
+endif (NOT WIN32)
+
+# TODO: server-stop-test
