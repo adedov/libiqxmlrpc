@@ -1,5 +1,24 @@
 Look into ChangeLog file for full list of changes.
 
+0.11.1 - 0.12
+  API Changes:
+    * New Struct::find and Struct::erase methods
+
+  Security/Stablity/Compliance/Bugs:
+    * Fix XXE vuln. on old libxml2 implementations.
+    * Change server's backlog to 100 (was 5).
+    * Fix some memory leaks on corner cases.
+    * Fix complatibility with Curl-based clients that send expect:100-continue
+    * Initialize OpenSSL-locking on library load (if it was not initialized)
+    * Initialize libxml2 properly for supporting thread-safety
+    * Fix non-blocking connector (client) on Windows
+
+  Build and Platforms:
+    * Full-fledged support for Mac OS X
+    * Compilation fix on Solaris
+    * Support for Boost > 1.50
+    * Working builds (and tests) on Windows with CMake
+
 0.11 - 0.11.1
 * Fix xml-writer compatibility with libxml2-2.6.
 
