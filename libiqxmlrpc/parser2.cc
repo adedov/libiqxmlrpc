@@ -7,6 +7,7 @@
 #include <libxml/xmlIO.h>
 #include "parser2.h"
 #include "except.h"
+#include <iostream>
 
 namespace iqxmlrpc {
 
@@ -188,7 +189,15 @@ public:
   std::string
   read_data()
   {
-    return to_string(xmlTextReaderReadString(reader));
+    if (!curr.is_text && !curr.element_end)
+    {
+      read();
+      if (!curr.is_text && !curr.element_end) {
+        std::string err = "text is expected at " + get_context();
+        throw XML_RPC_violation(err);
+      }
+    }
+    return to_string(xmlTextReaderValue(reader));
   }
 
   std::string
