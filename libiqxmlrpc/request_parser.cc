@@ -6,7 +6,6 @@
 #include "except.h"
 #include "request_parser.h"
 #include "value_parser.h"
-#include <iostream>
 
 namespace iqxmlrpc {
 
@@ -52,7 +51,10 @@ RequestBuilder::do_visit_element(const std::string& tagname)
 Request*
 RequestBuilder::get()
 {
-  return new Request(method_name_, params_);
+  if (!method_name_)
+    throw XML_RPC_violation("No method name specified");
+
+  return new Request(method_name_.get(), params_);
 }
 
 } // namespace iqxmlrpc

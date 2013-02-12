@@ -207,6 +207,17 @@ BOOST_AUTO_TEST_CASE(test_parse_emptiness)
   print_value(s7, std::cout);
 }
 
+BOOST_AUTO_TEST_CASE(test_malfromed_value)
+{
+  BOOST_CHECK_THROW(parse_value("<struct><member><name><MALFORMED>abc</MALFORMED></name><value>OK</value></member></struct>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<struct><member><name>OK</name><value><MALFORMED>OK</MALFORMED></value></member></struct>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<string><MALFORMED>OK</MALFORMED></string>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<int><MALFORMED>123</MALFORMED></int>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<int><MALFORMED/>123</int>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<int>123<MALFORMED/></int>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<string>OK<MALFORMED/></string>"), XML_RPC_violation);
+}
+
 //
 // request
 //
@@ -240,6 +251,30 @@ BOOST_AUTO_TEST_CASE(test_parse_request_no_params)
   std::auto_ptr<Request> req(parse_request(r));
   BOOST_CHECK_EQUAL(req->get_name(), "do_something");
   BOOST_CHECK_EQUAL(req->get_params().size(), 0);
+}
+
+BOOST_AUTO_TEST_CASE(test_parse_malformed_request)
+{
+  std::string r = "<methodCall><methodName><MALFORMED>do_something</MALFORMED></methodName></methodCall>";
+  BOOST_CHECK_THROW(parse_request(r), XML_RPC_violation);
+
+  // empty methodCall
+  r = "<methodCall></methodCall>";
+  BOOST_CHECK_THROW(parse_request(r), XML_RPC_violation);
+
+  // method call without method name
+  r = "<methodCall><params><param><value><i4>1</i4></value></param></params></methodCall>";
+  BOOST_CHECK_THROW(parse_request(r), XML_RPC_violation);
+
+  // method call with two method names
+  r = "<methodCall><name>N1</name><params/><name>N2</name></methodCall>";
+  BOOST_CHECK_THROW(parse_request(r), XML_RPC_violation);
+  r = "<methodCall><name>N1</name><name>N2></name><params/></methodCall>";
+  BOOST_CHECK_THROW(parse_request(r), XML_RPC_violation);
+
+  // method call with multiple params
+  r = "<methodCall><methodName>OK</methodName><params/><params/></methodCall>";
+  BOOST_CHECK_THROW(parse_request(r), XML_RPC_violation);
 }
 
 //

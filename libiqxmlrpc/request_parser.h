@@ -4,6 +4,7 @@
 #ifndef _iqxmlrpc_request_parser_h_
 #define _iqxmlrpc_request_parser_h_
 
+#include <boost/optional.hpp>
 #include "parser2.h"
 #include "request.h"
 
@@ -21,7 +22,7 @@ private:
   do_visit_element(const std::string&);
 
   StateMachine state_;
-  std::string method_name_;
+  boost::optional<std::string> method_name_;
   Param_list params_;
 };
 
