@@ -303,7 +303,7 @@ void Request_header::get_authinfo(std::string& user, std::string& pw) const
   boost::scoped_ptr<Binary_data> bin_authinfo( Binary_data::from_base64(v[1]) );
   std::string data = bin_authinfo->get_data();
 
-  unsigned colon_it = data.find_first_of(":");
+  size_t colon_it = data.find_first_of(":");
   user = data.substr(0, colon_it);
   pw = colon_it < std::string::npos ?
     data.substr(colon_it + 1, std::string::npos) : std::string();
