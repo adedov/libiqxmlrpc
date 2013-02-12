@@ -166,7 +166,7 @@ void Https_client_connection::send_succeed( bool& )
 }
 
 
-void Https_client_connection::recv_succeed( bool&, int req_len, int sz )
+void Https_client_connection::recv_succeed( bool&, int, int sz )
 {
   if( !sz )
     throw iqnet::network_error( "Connection closed by peer.", false );

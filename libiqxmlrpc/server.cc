@@ -16,7 +16,8 @@
 
 namespace iqxmlrpc {
 
-struct Server::Impl {
+class Server::Impl {
+public:
   Executor_factory_base* exec_factory;
 
   iqnet::Inet_addr bind_addr;

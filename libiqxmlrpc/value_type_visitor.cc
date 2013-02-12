@@ -74,7 +74,7 @@ void Print_value_visitor::do_visit_array(const Array& a)
   out_ << " ]";
 }
 
-void Print_value_visitor::do_visit_base64(const Binary_data& bin)
+void Print_value_visitor::do_visit_base64(const Binary_data&)
 {
   out_ << "RAWDATA";
 }

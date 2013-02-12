@@ -44,8 +44,8 @@ LibxmlInitializer libxml_init;
 BuilderBase::BuilderBase(Parser& p, bool t):
   parser_(p),
   depth_(0),
-  want_exit_(false),
-  expect_text_(t)
+  expect_text_(t),
+  want_exit_(false)
 {
 }
 
@@ -97,7 +97,7 @@ BuilderBase::do_visit_text(const std::string&)
 // Parser
 //
 
-struct Parser::Impl {
+class Parser::Impl {
 public:
   Impl(const std::string& str):
     pushed_back(false)

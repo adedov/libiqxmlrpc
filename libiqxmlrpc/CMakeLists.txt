@@ -115,6 +115,8 @@ add_library(iqxmlrpc SHARED
 if(WIN32)
 	add_definitions(-DLIBIQXMLRPC_COMPILATION -DDLL_EXPORT)
 	target_link_libraries(iqxmlrpc Ws2_32.lib)
+else()
+	add_definitions(-Wall -Wextra)
 endif()
 
 target_link_libraries(iqxmlrpc

@@ -181,7 +181,7 @@ ValueBuilder::do_visit_element(const std::string& tagname)
 }
 
 void
-ValueBuilder::do_visit_element_end(const std::string& tag)
+ValueBuilder::do_visit_element_end(const std::string&)
 {
   if (retval.get())
     return;

@@ -12,7 +12,7 @@ List_methods::List_methods(Method_dispatcher_manager* disp_manager):
 {
 }
 
-void List_methods::execute(const Param_list& params, Value& resp)
+void List_methods::execute(const Param_list&, Value& resp)
 {
   resp = Array();
   disp_manager_->get_methods_list(resp.the_array());

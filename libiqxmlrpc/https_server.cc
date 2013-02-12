@@ -29,8 +29,7 @@ void Https_server_connection::accept_succeed()
 }
 
 
-void Https_server_connection::recv_succeed
-  ( bool& terminate, int req_len, int real_len )
+void Https_server_connection::recv_succeed( bool&, int, int real_len )
 {
   try
   {
