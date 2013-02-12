@@ -484,7 +484,12 @@ Packet* Packet_reader::read_packet( const std::string& s, bool hdr_only )
 
 bool Packet_reader::expect_continue() const
 {
-  return header && header->expect_continue();
+  return header && header->expect_continue() && !continue_sent_;
+}
+
+void Packet_reader::set_continue_sent()
+{
+  continue_sent_ = true;
 }
 
 Packet* Packet_reader::read_request( const std::string& s )

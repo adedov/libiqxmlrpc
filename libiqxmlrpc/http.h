@@ -181,13 +181,17 @@ class Packet_reader {
   bool need_continue;
   unsigned pkt_max_sz;
   unsigned total_sz;
+  bool continue_sent_;
 
 public:
   Packet_reader():
     header(0),
     constructed(false),
     pkt_max_sz(0),
-    total_sz(0) {}
+    total_sz(0),
+    continue_sent_(false)
+  {
+  }
 
   ~Packet_reader()
   {
@@ -208,6 +212,7 @@ public:
   bool expect_continue() const;
   Packet* read_request( const std::string& );
   Packet* read_response( const std::string&, bool read_header_only );
+  void set_continue_sent(); 
 
 private:
   void clear();

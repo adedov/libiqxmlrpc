@@ -46,6 +46,7 @@ http::Packet* Server_connection::read_request( const std::string& s )
       response = "HTTP/1.1 100\r\n\r\n";
       keep_alive = true;
       do_schedule_response();
+      preader.set_continue_sent();
     }
 
     return r;
