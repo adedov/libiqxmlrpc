@@ -40,7 +40,7 @@ public:
 };
 
 void
-openssl_lock_callback(int mode, int n, const char* file, int line)
+openssl_lock_callback(int mode, int n, const char* /*file*/, int /*line*/)
 {
   static LockContainer lks;
   // assert n < lks.size
