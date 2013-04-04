@@ -81,11 +81,11 @@ init_library()
   SSL_load_error_strings();
   SSL_library_init();
 
-  if (CRYPTO_get_locking_callback() != 0)
+  if (!CRYPTO_get_locking_callback())
     CRYPTO_set_locking_callback(&openssl_lock_callback);
 
 #ifndef _WIN32
-  if (CRYPTO_get_id_callback())
+  if (!CRYPTO_get_id_callback())
     CRYPTO_set_id_callback(&openssl_id_function);
 #endif
 }
