@@ -116,6 +116,7 @@ Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client
 {
   boost::call_once(ssl_init, init_library);
   ctx = SSL_CTX_new( client ? SSLv23_method() : SSLv23_server_method() );
+  SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
 
   if(
     !SSL_CTX_use_certificate_file( ctx, cert_path.c_str(), SSL_FILETYPE_PEM ) ||
@@ -130,6 +131,7 @@ Ctx::Ctx()
 {
   boost::call_once(ssl_init, init_library);
   ctx = SSL_CTX_new( SSLv23_client_method() );
+  SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
 }
 
 
