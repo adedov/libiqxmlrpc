@@ -1,5 +1,9 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.2 - 0.12.3
+  * Stability: Fix OpenSSL locking initialization (Thanks to Jeff Wildgen).
+  * Security: Disable SSLv2 completely.
+
 0.12.1 - 0.12.2
   * Fix build out of source tree.
 
