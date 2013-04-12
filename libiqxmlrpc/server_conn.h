@@ -29,7 +29,7 @@ protected:
   Server *server;
   http::Packet_reader preader;
 
-  unsigned read_buf_sz;
+  size_t read_buf_sz;
   char    *read_buf;
 
   std::string response;
@@ -43,7 +43,7 @@ public:
 
   const iqnet::Inet_addr& get_peer_addr() const { return peer_addr; }
 
-  void set_read_sz( unsigned );
+  void set_read_sz( size_t );
 
   void set_server( Server* s )
   {

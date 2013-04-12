@@ -85,7 +85,7 @@ public:
   Array& the_array();
   const Array& the_array() const;
 
-  unsigned size() const;
+  size_t size() const;
   const Value& operator []( int ) const;
   Value&       operator []( int );
 

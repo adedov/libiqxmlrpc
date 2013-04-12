@@ -61,8 +61,8 @@ public:
   void log_errors( std::ostream* );
 
   //! Set maximum size of incoming client's request in bytes.
-  void set_max_request_sz( unsigned );
-  unsigned get_max_request_sz() const;
+  void set_max_request_sz( size_t );
+  size_t get_max_request_sz() const;
 
   //! Set optional firewall object.
   void set_firewall( iqnet::Firewall_base* );

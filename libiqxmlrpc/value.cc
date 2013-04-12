@@ -96,7 +96,7 @@ T* Value::cast() const
 template <class T>
 bool Value::can_cast() const
 {
-  return dynamic_cast<T*>( value );
+  return dynamic_cast<T*>( value ) != NULL;
 }
 
 const Value& Value::operator =( const Value& v )
@@ -226,7 +226,7 @@ const Array& Value::the_array() const
   return *cast<Array>();
 }
 
-unsigned Value::size() const
+size_t Value::size() const
 {
   return cast<Array>()->size();
 }

@@ -47,7 +47,7 @@ void Default_method_dispatcher::register_method
 Method* Default_method_dispatcher::do_create_method(const std::string& name)
 {
   if( fs.find(name) == fs.end() )
-    return 0;
+    return NULL;
 
   return fs[name]->create();
 }

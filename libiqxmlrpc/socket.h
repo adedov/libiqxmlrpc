@@ -13,7 +13,7 @@ namespace iqnet
 class LIBIQXMLRPC_API Socket {
 public:
 #ifdef _WINDOWS
-	typedef SOCKET Handler;
+  typedef SOCKET Handler;
 #else
   typedef int Handler;
 #endif //_WINDOWS
@@ -39,10 +39,10 @@ public:
   void set_non_blocking( bool );
 
   /*! \b Can \b not cause SIGPIPE signal. */
-  virtual int send( const char*, int );
-  virtual void send_shutdown( const char*, int );
+  virtual size_t send( const char*, size_t );
+  virtual void send_shutdown( const char*, size_t );
   /*! \b Can \b not cause SIGPIPE signal. */
-  virtual int recv( char*, int );
+  virtual size_t recv( char*, size_t );
 
   void   bind( const Inet_addr& addr );
   void   listen( unsigned backlog = 5 );

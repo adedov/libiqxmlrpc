@@ -118,7 +118,7 @@ public:
   const std::string& type_name() const;
   void apply_visitor(Value_type_visitor&) const;
 
-  unsigned size() const { return values.size(); }
+  size_t size() const { return values.size(); }
 
   const Value& operator []( unsigned i ) const
   {
@@ -252,7 +252,7 @@ public:
 };
 
 #ifdef _MSC_VER
-#pragma warning(pop)
+#pragma warning(disable: 4251)
 #endif
 
 //! XML-RPC Base64 type.
@@ -277,7 +277,7 @@ public:
   //! Construct an object from raw data.
   static Binary_data* from_data( const std::string& );
   //! Construct an object from raw data.
-  static Binary_data* from_data( const char*, unsigned size );
+  static Binary_data* from_data( const char*, size_t size );
 
   //! Get data in encoded form.
   const std::string& get_base64() const;

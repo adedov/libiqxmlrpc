@@ -218,7 +218,7 @@ ValueBuilder::do_visit_text(const std::string& text)
     break;
 
   case BOOL:
-    retval.reset(new Bool(bool(lexical_cast<int>(text))));
+    retval.reset(new Bool(lexical_cast<int>(text) != 0));
     break;
 
   case DOUBLE:

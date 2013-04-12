@@ -30,7 +30,7 @@ public:
 
   bool exit_flag;
   std::ostream* log;
-  unsigned max_req_sz;
+  size_t max_req_sz;
   http::Verification_level ver_level;
 
   Method_dispatcher_manager  disp_manager;
@@ -114,12 +114,12 @@ void Server::log_errors( std::ostream* log_ )
   impl->log = log_;
 }
 
-void Server::set_max_request_sz( unsigned sz )
+void Server::set_max_request_sz( size_t sz )
 {
   impl->max_req_sz = sz;
 }
 
-unsigned Server::get_max_request_sz() const
+size_t Server::get_max_request_sz() const
 {
   return impl->max_req_sz;
 }

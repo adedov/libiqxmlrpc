@@ -1,6 +1,10 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2011 Anton Dedov
 
+#if _MSC_VER >= 1700
+#include <windows.h>
+#endif
+
 #include <string.h>
 #include "net_except.h"
 
@@ -19,11 +23,11 @@ exception_message(const std::string& prefix, bool use_errno, int myerrno)
     buf[255] = 0;
     char* b = buf;
 
-    myerrno = myerrno ? myerrno : errno;	
+    myerrno = myerrno ? myerrno : errno;
 
-#if !defined _WINDOWS && defined _GNU_SOURCE
+#if !defined WIN32 && defined _GNU_SOURCE
     b = strerror_r( myerrno, buf, sizeof(buf) - 1 );
-#elif !defined _WINDOWS
+#elif !defined WIN32
     strerror_r( myerrno, buf, sizeof(buf) - 1 );
 #else
     strerror_s( buf, sizeof(buf) - 1, WSAGetLastError() );

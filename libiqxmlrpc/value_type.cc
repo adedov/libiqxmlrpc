@@ -326,7 +326,7 @@ Binary_data* Binary_data::from_data( const std::string& s )
 }
 
 
-Binary_data* Binary_data::from_data( const char* s, unsigned size )
+Binary_data* Binary_data::from_data( const char* s, size_t size )
 {
   return new Binary_data( std::string(s, size), true );
 }
@@ -368,9 +368,9 @@ inline void Binary_data::add_base64_char( int idx ) const
 void Binary_data::encode() const
 {
   const char* d = data.data();
-  unsigned dsz = data.length();
+  size_t dsz = data.length();
 
-  for( unsigned i = 0; i < dsz; i += 3 )
+  for( size_t i = 0; i < dsz; i += 3 )
   {
     unsigned c = 0xff0000 & d[i] << 16;
     add_base64_char( (c >> 18) & 0x3f );
@@ -456,10 +456,10 @@ inline void Binary_data::decode_four( const std::string& four )
 void Binary_data::decode()
 {
   const char* d = base64.data();
-  int dsz = base64.length();
+  size_t dsz = base64.length();
   std::string four;
 
-  for( int i = 0; i < dsz; i++ )
+  for( size_t i = 0; i < dsz; i++ )
   {
     if( isspace( d[i] ) )
       continue;

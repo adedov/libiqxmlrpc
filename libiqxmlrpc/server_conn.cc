@@ -24,7 +24,7 @@ Server_connection::~Server_connection()
 }
 
 
-void Server_connection::set_read_sz( unsigned rsz )
+void Server_connection::set_read_sz( size_t rsz )
 {
   delete[] read_buf;
   read_buf_sz = rsz;

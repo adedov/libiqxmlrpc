@@ -41,8 +41,8 @@ public:
     return sock.get_handler();
   }
 
-  virtual int send( const char*, int );
-  virtual int recv( char*, int );
+  virtual size_t send( const char*, size_t );
+  virtual size_t recv( char*, size_t );
 };
 
 } // namespace iqnet

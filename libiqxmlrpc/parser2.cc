@@ -102,7 +102,7 @@ public:
   Impl(const std::string& str):
     pushed_back(false)
   {
-    buf = xmlParserInputBufferCreateMem(str.data(), str.length(), XML_CHAR_ENCODING_NONE);
+    buf = xmlParserInputBufferCreateMem(str.data(), static_cast<int>(str.length()), XML_CHAR_ENCODING_NONE);
     // TODO: check buf is not 0
     reader = xmlNewTextReader(buf, 0);
     // TODO: check reader is not 0

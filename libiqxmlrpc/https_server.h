@@ -31,7 +31,7 @@ public:
 protected:
   void my_reg_recv();
   void accept_succeed();
-  void recv_succeed( bool& terminate, int req_len, int real_len );
+  void recv_succeed( bool& terminate, size_t req_len, size_t real_len );
   void send_succeed( bool& terminate );
   virtual void do_schedule_response();
 };

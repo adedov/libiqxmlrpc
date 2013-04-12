@@ -53,7 +53,7 @@ private:
   typedef HandlerStateList::const_iterator  hs_const_iterator;
   typedef HandlerStateList::iterator        hs_iterator;
 
-  unsigned          size()  const { return handlers_states.size(); }
+  size_t            size()  const { return handlers_states.size(); }
   hs_const_iterator begin() const { return handlers_states.begin(); }
   hs_iterator       begin()       { return handlers_states.begin(); }
   hs_const_iterator end()   const { return handlers_states.end(); }
@@ -100,7 +100,7 @@ iqnet::Event_handler* Reactor<Lock>::find_handler(Socket::Handler fd)
 {
   scoped_lock lk(lock);
   h_iterator i = handlers.find(fd);
-  return i == handlers.end() ? 0 : i->second;
+  return i == handlers.end() ? NULL : i->second;
 }
 
 template <class Lock>
@@ -176,8 +176,8 @@ template <class Lock>
 void Reactor<Lock>::invoke_clients_handler(
   Event_handler* handler, HandlerState& hs, bool& terminate )
 {
-  bool in  = hs.revents & Reactor_base::INPUT;
-  bool out = hs.revents & Reactor_base::OUTPUT;
+  bool in  = (hs.revents & Reactor_base::INPUT) != 0;
+  bool out = (hs.revents & Reactor_base::OUTPUT) != 0;
 
   if( in )
     handler->handle_input( terminate );

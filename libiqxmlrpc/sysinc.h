@@ -9,11 +9,15 @@
 #ifndef _iqxmlrpc_sysinc_h_
 #define _iqxmlrpc_sysinc_h_
 
-#if defined(_WINDOWS)
+#ifdef WIN32
   #define BOOST_ALL_NO_LIB
+
+#if _MSC_VER < 1700
   #include <Winsock2.h>
   #include <windows.h>
   #include <ws2tcpip.h>
+#endif
+
 #else
   #include <unistd.h>
   #include <netdb.h>
@@ -24,7 +28,7 @@
   #include <arpa/inet.h>
   #include <netinet/in.h>
   #include <netinet/tcp.h>
-#endif //_WINDOWS
+#endif //WIN32
 
 #include <ctype.h>
 #include <locale.h>

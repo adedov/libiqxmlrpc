@@ -27,13 +27,13 @@ void Connection::finish()
 }
 
 
-int Connection::send( const char* data, int len )
+size_t Connection::send( const char* data, size_t len )
 {
   return sock.send( data, len );
 }
 
 
-int Connection::recv( char* buf, int len )
+size_t Connection::recv( char* buf, size_t len )
 {
   return sock.recv( buf, len );
 }

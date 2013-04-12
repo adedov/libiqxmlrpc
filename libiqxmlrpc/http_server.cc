@@ -31,7 +31,7 @@ void Http_server_connection::finish()
 void Http_server_connection::handle_input( bool& terminate )
 {
   try {
-    int n = recv( read_buf, read_buf_sz );
+    size_t n = recv( read_buf, read_buf_sz );
 
     if( !n )
     {
@@ -57,7 +57,7 @@ void Http_server_connection::handle_input( bool& terminate )
 
 void Http_server_connection::handle_output( bool& terminate )
 {
-  unsigned sz = send( response.c_str(), response.length() );
+  size_t sz = send( response.c_str(), response.length() );
 
   if( sz == response.length() )
   {

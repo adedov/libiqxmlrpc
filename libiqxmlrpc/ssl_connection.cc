@@ -19,7 +19,7 @@ ssl::Connection::Connection( const Socket& s ):
   if( !ssl )
     throw ssl::exception();
 
-  if( !SSL_set_fd( ssl, sock.get_handler() ) )
+  if( !SSL_set_fd( ssl, static_cast<int>(sock.get_handler()) ) )
     throw ssl::exception();
 }
 
@@ -82,31 +82,31 @@ void ssl::Connection::shutdown()
 }
 
 
-int ssl::Connection::send( const char* data, int len )
+size_t ssl::Connection::send( const char* data, size_t len )
 {
-  int ret = SSL_write( ssl, data, len );
+  int ret = SSL_write( ssl, data, static_cast<int>(len) );
 
-  if( ret != len )
+  if( static_cast<size_t>(ret) != len )
     throw_io_exception( ssl, ret );
 
-  return ret;
+  return static_cast<size_t>(ret);
 }
 
 
-int ssl::Connection::recv( char* buf, int len )
+size_t ssl::Connection::recv( char* buf, size_t len )
 {
-  int ret = SSL_read( ssl, buf, len );
+  int ret = SSL_read( ssl, buf, static_cast<int>(len) );
 
   if( ret <= 0 )
     throw_io_exception( ssl, ret );
 
-  return ret;
+  return static_cast<size_t>(ret);
 }
 
 
 inline bool ssl::Connection::shutdown_recved()
 {
-  return SSL_get_shutdown(ssl) & SSL_RECEIVED_SHUTDOWN;
+  return (SSL_get_shutdown(ssl) & SSL_RECEIVED_SHUTDOWN) != 0;
 }
 
 
@@ -225,9 +225,9 @@ void ssl::Reaction_connection::try_send()
 }
 
 
-int ssl::Reaction_connection::try_recv()
+size_t ssl::Reaction_connection::try_recv()
 {
-  int ln = recv( recv_buf, buf_len );
+  size_t ln = recv( recv_buf, buf_len );
   state = EMPTY;
 
   return ln;
@@ -270,7 +270,7 @@ void ssl::Reaction_connection::reg_connect()
 }
 
 
-void ssl::Reaction_connection::reg_send( const char* buf, int len )
+void ssl::Reaction_connection::reg_send( const char* buf, size_t len )
 {
   state = WRITING;
   send_buf = buf;
@@ -279,7 +279,7 @@ void ssl::Reaction_connection::reg_send( const char* buf, int len )
 }
 
 
-void ssl::Reaction_connection::reg_recv( char* buf, int len )
+void ssl::Reaction_connection::reg_recv( char* buf, size_t len )
 {
   state = READING;
   recv_buf = buf;

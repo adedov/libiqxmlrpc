@@ -167,7 +167,7 @@ void Header::set_option(const std::string& name, const std::string& value)
   options_[name] = value;
 }
 
-void Header::set_option(const std::string& name, unsigned value)
+void Header::set_option(const std::string& name, size_t value)
 {
   set_option(name, boost::lexical_cast<std::string>(value));
 }
@@ -197,7 +197,7 @@ std::string Header::dump() const
   return retval;
 }
 
-void Header::set_content_length(unsigned len)
+void Header::set_content_length(size_t len)
 {
   set_option(names::content_length, len);
 
@@ -405,7 +405,7 @@ void Packet_reader::clear()
   total_sz = 0;
 }
 
-void Packet_reader::check_sz( unsigned sz )
+void Packet_reader::check_sz( size_t sz )
 {
   if( !pkt_max_sz )
     return;

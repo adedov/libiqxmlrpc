@@ -41,7 +41,7 @@ http::Packet* Http_client_connection::do_process_session( const std::string& s )
 
 void Http_client_connection::handle_output( bool& )
 {
-  int sz = send( out_str.c_str(), out_str.length() );
+  size_t sz = send( out_str.c_str(), out_str.length() );
   out_str.erase( 0, sz );
 
   if( out_str.empty() )
@@ -54,7 +54,7 @@ void Http_client_connection::handle_output( bool& )
 
 void Http_client_connection::handle_input( bool& )
 {
-  for( unsigned sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
+  for( size_t sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
   {
     read_buf[0] = 0;
 

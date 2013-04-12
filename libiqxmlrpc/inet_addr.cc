@@ -17,7 +17,7 @@ std::string iqnet::get_host_name()
 }
 
 
-#if defined(_WINDOWS) || defined(__APPLE__)
+#if defined(WIN32) || defined(__APPLE__)
 #define IQXMLRPC_GETHOSTBYNAME(_h) \
   hent = ::gethostbyname( _h ); \
   if( !hent ) { \
@@ -25,14 +25,14 @@ std::string iqnet::get_host_name()
   }
 #endif
 
-#if not defined(IQXMLRPC_GETHOSTBYNAME)
+#if !defined(IQXMLRPC_GETHOSTBYNAME)
 #define IQXMLRPC_GETHOSTBYNAME_PREP \
   struct hostent hent_local; \
   char buf[1024]; \
   int local_h_errno = 0;
 #endif
 
-#if not defined(IQXMLRPC_GETHOSTBYNAME)
+#if !defined(IQXMLRPC_GETHOSTBYNAME)
 #define IQXMLRPC_GETHOSTBYNAME_POST \
   if( !hent ) { \
     throw network_error( "gethostbyname: " + std::string(hstrerror(local_h_errno)), false ); \
@@ -46,7 +46,7 @@ std::string iqnet::get_host_name()
   IQXMLRPC_GETHOSTBYNAME_POST
 #endif
 
-#if not defined(IQXMLRPC_GETHOSTBYNAME)
+#if !defined(IQXMLRPC_GETHOSTBYNAME)
 #define IQXMLRPC_GETHOSTBYNAME(_h) \
   IQXMLRPC_GETHOSTBYNAME_PREP \
   ::gethostbyname_r( _h, &hent_local, buf, sizeof(buf), &hent, &local_h_errno ); \

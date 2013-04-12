@@ -25,8 +25,8 @@ public:
   ~Connection();
 
   void shutdown();
-  int send( const char*, int );
-  int recv( char*, int );
+  size_t send( const char*, size_t );
+  size_t recv( char*, size_t );
 
   //! Does ssl_accept()
   void post_accept();
@@ -53,7 +53,7 @@ class LIBIQXMLRPC_API Reaction_connection: public ssl::Connection {
 
   char* recv_buf;
   const char* send_buf;
-  int buf_len;
+  size_t buf_len;
 
 public:
   Reaction_connection( const Socket&, Reactor_base* = 0 );
@@ -72,7 +72,7 @@ public:
 private:
   void switch_state( bool& terminate );
   void try_send();
-  int  try_recv();
+  size_t try_recv();
 
 protected:
   void ssl_accept();
@@ -81,15 +81,15 @@ protected:
   bool reg_shutdown();
   void reg_accept();
   void reg_connect();
-  void reg_send( const char*, int );
-  void reg_recv( char*, int );
+  void reg_send( const char*, size_t );
+  void reg_recv( char*, size_t );
 
   //! Overwrite it for server connection.
   virtual void accept_succeed()  {};
   //! Overwrite it for client connection.
   virtual void connect_succeed() {};
 
-  virtual void recv_succeed( bool& terminate, int req_len, int real_len ) = 0;
+  virtual void recv_succeed( bool& terminate, size_t req_len, size_t real_len ) = 0;
   virtual void send_succeed( bool& terminate ) = 0;
 };
 

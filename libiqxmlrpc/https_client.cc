@@ -84,7 +84,7 @@ void Https_proxy_client_connection::setup_tunnel()
 
 void Https_proxy_client_connection::handle_output( bool& )
 {
-  int sz = send( out_str.c_str(), out_str.length() );
+  size_t sz = send( out_str.c_str(), out_str.length() );
   out_str.erase( 0, sz );
 
   if( out_str.empty() )
@@ -96,7 +96,7 @@ void Https_proxy_client_connection::handle_output( bool& )
 
 void Https_proxy_client_connection::handle_input( bool& )
 {
-  for( unsigned sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
+  for( size_t sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
   {
     read_buf[0] = 0;
 
@@ -166,7 +166,7 @@ void Https_client_connection::send_succeed( bool& )
 }
 
 
-void Https_client_connection::recv_succeed( bool&, int, int sz )
+void Https_client_connection::recv_succeed( bool&, size_t, size_t sz )
 {
   if( !sz )
     throw iqnet::network_error( "Connection closed by peer.", false );

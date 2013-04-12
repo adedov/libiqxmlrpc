@@ -43,7 +43,7 @@ public:
   bool      conn_keep_alive() const;
   bool      expect_continue() const;
 
-  void set_content_length( unsigned ln );
+  void set_content_length( size_t ln );
   void set_conn_keep_alive( bool );
   void set_option(const std::string& name, const std::string& value);
 
@@ -55,7 +55,7 @@ protected:
   void set_option_default(const std::string& name, const std::string& value);
   void set_option_default(const std::string& name, unsigned value);
   void set_option_checked(const std::string& name, const std::string& value);
-  void set_option(const std::string& name, unsigned value);
+  void set_option(const std::string& name, size_t value);
 
   const std::string&  get_head_line() const { return head_line_; }
   std::string         get_string(const std::string& name) const;
@@ -179,8 +179,8 @@ class Packet_reader {
   Verification_level ver_level_;
   bool constructed;
   bool need_continue;
-  unsigned pkt_max_sz;
-  unsigned total_sz;
+  size_t pkt_max_sz;
+  size_t total_sz;
   bool continue_sent_;
 
 public:
@@ -204,7 +204,7 @@ public:
     ver_level_ = lev;
   }
 
-  void set_max_size( unsigned m )
+  void set_max_size( size_t m )
   {
     pkt_max_sz = m;
   }
@@ -216,7 +216,7 @@ public:
 
 private:
   void clear();
-  void check_sz( unsigned );
+  void check_sz( size_t );
   bool read_header( const std::string& );
 
   template <class Header_type>
@@ -246,7 +246,7 @@ public:
 
   const Response_header* response_header() const
   {
-	  return dynamic_cast<const Response_header*>(header());
+    return dynamic_cast<const Response_header*>(header());
   }
 
   // deprecated

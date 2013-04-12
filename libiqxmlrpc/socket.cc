@@ -6,6 +6,10 @@
 #include "socket.h"
 #include "net_except.h"
 
+#if _MSC_VER >= 1700
+#include <ws2tcpip.h>
+#endif
+
 using namespace iqnet;
 
 Socket::Socket()
@@ -13,12 +17,12 @@ Socket::Socket()
   if( (sock = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP )) == -1 )
     throw network_error( "Socket::Socket" );
 
-#ifndef _WINDOWS
+#ifndef WIN32
   {
   int enable = 1;
   setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable) );
   }
-#endif //_WINDOWS
+#endif //WIN32
 
 #if defined(__APPLE__)
   {
@@ -41,16 +45,16 @@ void Socket::shutdown()
 
 void Socket::close()
 {
-#ifdef _WINDOWS
+#ifdef WIN32
   closesocket(sock);
 #else
   ::close( sock );
-#endif //_WINDOWS
+#endif //WIN32
 }
 
 void Socket::set_non_blocking( bool flag )
 {
-#ifdef _WINDOWS
+#ifdef WIN32
   unsigned long f = flag ? 1 : 0;
   if( ioctlsocket(sock, FIONBIO, &f) != 0 )
     throw network_error( "Socket::set_non_blocking");
@@ -60,7 +64,7 @@ void Socket::set_non_blocking( bool flag )
 
   if( fcntl( sock, F_SETFL, O_NDELAY ) == -1 )
     throw network_error( "Socket::set_non_blocking" );
-#endif //_WINDOWS
+#endif //WIN32
 }
 
 #if defined(MSG_NOSIGNAL)
@@ -69,27 +73,27 @@ void Socket::set_non_blocking( bool flag )
 #define IQXMLRPC_NOPIPE 0
 #endif
 
-int Socket::send( const char* data, int len )
+size_t Socket::send( const char* data, size_t len )
 {
-  int ret = ::send( sock, data, len, IQXMLRPC_NOPIPE);
+  int ret = ::send( sock, data, static_cast<int>(len), IQXMLRPC_NOPIPE);
 
   if( ret == -1 )
     throw network_error( "Socket::send" );
 
-  return ret;
+  return static_cast<size_t>(ret);
 }
 
-int Socket::recv( char* buf, int len )
+size_t Socket::recv( char* buf, size_t len )
 {
-  int ret = ::recv( sock, buf, len, 0 );
+  int ret = ::recv( sock, buf, static_cast<int>(len), 0 );
 
   if( ret == -1 )
     throw network_error( "Socket::recv" );
 
-  return ret;
+  return static_cast<size_t>(ret);
 }
 
-void Socket::send_shutdown( const char* data, int len )
+void Socket::send_shutdown( const char* data, size_t len )
 {
   send(data, len);
   const struct linger ling = {1, 0};
@@ -159,7 +163,7 @@ Inet_addr Socket::get_addr() const
 int Socket::get_last_error()
 {
   int err = 0;
-#ifndef _WINDOWS
+#ifndef WIN32
   socklen_t int_sz = sizeof(err);
   ::getsockopt( sock, SOL_SOCKET, SO_ERROR, &err, &int_sz );
 #else

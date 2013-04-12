@@ -4,8 +4,11 @@
 #ifndef _libiqnet_inet_addr_h_
 #define _libiqnet_inet_addr_h_
 
-#include "api_export.h"
+#if _MSC_VER >= 1700
+#include <winsock2.h>
+#endif
 
+#include "api_export.h"
 #include <string>
 
 //! Object-oriented networking/multithreading infrastructure.
@@ -15,6 +18,10 @@ namespace iqnet
 //! Returns host.domain of local processor.
 std::string LIBIQXMLRPC_API get_host_name();
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251)
+#endif
 //! An object representation of internet address.
 /*! A wrapper for sockaddr_in system structure. */
 class LIBIQXMLRPC_API Inet_addr {

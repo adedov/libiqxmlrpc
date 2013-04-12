@@ -143,9 +143,9 @@ Ctx::~Ctx()
 // ----------------------------------------------------------------------------
 exception::exception() throw():
   ssl_err( ERR_get_error() ),
-	  msg( ERR_reason_error_string(ssl_err) )
+  msg( ERR_reason_error_string(ssl_err) )
 {
-	msg.insert(0, "SSL: ");
+  msg.insert(0, "SSL: ");
 }
 
 
@@ -153,7 +153,7 @@ exception::exception( unsigned long err ) throw():
   ssl_err(err),
   msg( ERR_reason_error_string(ssl_err) )
 {
-	msg.insert(0, "SSL: ");
+  msg.insert(0, "SSL: ");
 }
 
 
@@ -161,7 +161,7 @@ exception::exception( const std::string& msg_ ) throw():
   ssl_err(0),
   msg( msg_ )
 {
-	msg.insert(0, "SSL: ");
+  msg.insert(0, "SSL: ");
 }
 
 
@@ -176,7 +176,7 @@ void throw_io_exception( SSL* ssl, int ret )
 
     case SSL_ERROR_ZERO_RETURN:
     {
-      bool clean = SSL_get_shutdown(ssl) & SSL_RECEIVED_SHUTDOWN;
+      bool clean = (SSL_get_shutdown(ssl) & SSL_RECEIVED_SHUTDOWN) != 0;
       throw connection_close( clean );
     }
 

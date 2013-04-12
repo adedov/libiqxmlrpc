@@ -61,7 +61,7 @@ public:
 
   void connect_succeed();
   void send_succeed( bool& );
-  void recv_succeed( bool&, int req_len, int real_len  );
+  void recv_succeed( bool&, size_t req_len, size_t real_len  );
 
 protected:
   friend class Https_proxy_client_connection;

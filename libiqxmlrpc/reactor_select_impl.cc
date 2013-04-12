@@ -50,7 +50,7 @@ bool Reactor_select_impl::poll(HandlerStateList& out, Reactor_base::Timeout to_m
   }
 
   do {
-    int code = ::select( max_fd+1, &read_set, &write_set, &err_set, ptv );
+    int code = ::select( static_cast<int>(max_fd+1), &read_set, &write_set, &err_set, ptv );
 
     if( code < 0 )
     {
