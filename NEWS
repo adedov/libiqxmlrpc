@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.3 - 0.12.4
+Support for Visual Studio 2012 and 64bit Windows.
+
 0.12.2 - 0.12.3
   * Stability: Fix OpenSSL locking initialization (Thanks to Jeff Wildgen).
   * Security: Disable SSLv2 completely.
