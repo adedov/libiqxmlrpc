@@ -7,6 +7,7 @@
 #include "api_export.h"
 
 #include <stdexcept>
+#include <string>
 
 // Exceptions are conformant ot Fault Code Interoperability, version 20010516.
 // http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php

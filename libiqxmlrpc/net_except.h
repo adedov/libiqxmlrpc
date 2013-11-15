@@ -7,6 +7,7 @@
 #include "api_export.h"
 
 #include <stdexcept>
+#include <string>
 
 namespace iqnet
 {
