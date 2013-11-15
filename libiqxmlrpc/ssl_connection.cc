@@ -6,7 +6,6 @@
 
 using namespace iqnet;
 
-
 ssl::Connection::Connection( const Socket& s ):
   iqnet::Connection( s ),
   ssl_ctx( ssl::ctx )
@@ -44,6 +43,7 @@ void ssl::Connection::post_connect()
 
 void ssl::Connection::ssl_accept()
 {
+  ssl_ctx->prepare_verify(ssl, true);
   int ret = SSL_accept( ssl );
 
   if( ret != 1 )
@@ -53,6 +53,7 @@ void ssl::Connection::ssl_accept()
 
 void ssl::Connection::ssl_connect()
 {
+  ssl_ctx->prepare_verify(ssl, false);
   int ret = SSL_connect( ssl );
 
   if( ret != 1 )

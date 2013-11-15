@@ -15,6 +15,7 @@
 #include <pthread.h>
 #endif
 
+#include <sstream>
 #include "ssl_lib.h"
 #include "net_except.h"
 
@@ -75,6 +76,10 @@ LockContainer::~LockContainer()
   delete[] locks;
 }
 
+Ctx* ctx = 0;
+boost::once_flag ssl_init;
+int iqxmlrpc_ssl_data_idx = 0;
+
 void
 init_library()
 {
@@ -88,11 +93,13 @@ init_library()
   if (!CRYPTO_get_id_callback())
     CRYPTO_set_id_callback(&openssl_id_function);
 #endif
+
+  iqxmlrpc_ssl_data_idx = SSL_get_ex_new_index(0, (void*)"iqxmlrpc verifier", NULL, NULL, NULL);
 }
 
-Ctx* ctx = 0;
-boost::once_flag ssl_init;
-
+//
+// Ctx
+//
 
 Ctx* Ctx::client_server( const std::string& cert_path, const std::string& key_path )
 {
@@ -111,12 +118,71 @@ Ctx* Ctx::client_only()
   return new Ctx;
 }
 
+namespace {
 
-Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client )
+void
+set_common_options(SSL_CTX* ctx)
+{
+  SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
+}
+
+int
+iqxmlrpc_SSL_verify(int prev_ok, X509_STORE_CTX* ctx)
+{
+  SSL* ssl = reinterpret_cast<SSL*>(X509_STORE_CTX_get_ex_data(ctx, SSL_get_ex_data_X509_STORE_CTX_idx()));
+  ConnectionVerifier* v = reinterpret_cast<ConnectionVerifier*>(SSL_get_ex_data(ssl, iqxmlrpc_ssl_data_idx));
+  return v->verify(prev_ok, ctx);
+}
+
+} // anonymous namespace
+
+//
+// ConnectionVerifier
+//
+
+ConnectionVerifier::~ConnectionVerifier()
+{
+}
+
+int
+ConnectionVerifier::verify(bool prev_ok, X509_STORE_CTX* ctx) const
+{
+  try {
+    return do_verify(prev_ok, ctx);
+  } catch (...) {
+    // TODO: log ability?
+    return 0;
+  }
+}
+
+std::string
+ConnectionVerifier::cert_finger_sha256(X509_STORE_CTX* ctx) const
+{
+  X509* x = X509_STORE_CTX_get_current_cert(ctx);
+  const EVP_MD* digest = EVP_get_digestbyname("sha256");
+  unsigned int n = 0;
+  unsigned char md[EVP_MAX_MD_SIZE];
+  X509_digest(x, digest, md, &n);
+
+  std::ostringstream ss;
+  for(int i = 0; i < 32; i++)
+     ss << std::hex << int(md[i]);
+
+  return ss.str();
+}
+
+//
+// Ctx
+//
+
+Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client ):
+  server_verifier_(0),
+  client_verifier_(0),
+  require_client_cert_(false)
 {
   boost::call_once(ssl_init, init_library);
   ctx = SSL_CTX_new( client ? SSLv23_method() : SSLv23_server_method() );
-  SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
+  set_common_options(ctx);
 
   if(
     !SSL_CTX_use_certificate_file( ctx, cert_path.c_str(), SSL_FILETYPE_PEM ) ||
@@ -127,11 +193,14 @@ Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client
 }
 
 
-Ctx::Ctx()
+Ctx::Ctx():
+  server_verifier_(0),
+  client_verifier_(0),
+  require_client_cert_(false)
 {
   boost::call_once(ssl_init, init_library);
   ctx = SSL_CTX_new( SSLv23_client_method() );
-  SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
+  set_common_options(ctx);
 }
 
 
@@ -139,6 +208,35 @@ Ctx::~Ctx()
 {
 }
 
+void
+Ctx::verify_server(ConnectionVerifier* v)
+{
+  server_verifier_ = v;
+}
+
+void
+Ctx::verify_client(bool require_certificate, ConnectionVerifier* v)
+{
+  require_client_cert_ = require_certificate;
+  client_verifier_ = v;
+}
+
+void
+Ctx::prepare_verify(SSL* ssl, bool server)
+{
+  ConnectionVerifier* v = server ? client_verifier_ : server_verifier_;
+  int mode = v ? SSL_VERIFY_PEER : SSL_VERIFY_NONE;
+
+  if (server && require_client_cert_)
+    mode |= SSL_VERIFY_FAIL_IF_NO_PEER_CERT;
+
+  if (v) {
+    SSL_set_verify(ssl, mode, iqxmlrpc_SSL_verify);
+    SSL_set_ex_data(ssl, iqxmlrpc_ssl_data_idx, (void*)v);
+  } else {
+    SSL_set_verify(ssl, mode, 0);
+  }
+}
 
 // ----------------------------------------------------------------------------
 exception::exception() throw():

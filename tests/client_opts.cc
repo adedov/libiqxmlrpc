@@ -1,10 +1,12 @@
 #include <sstream>
 #include <boost/program_options.hpp>
+#include <boost/algorithm/string.hpp>
 #include <libiqxmlrpc/http_client.h>
 #include <libiqxmlrpc/https_client.h>
 #include "client_opts.h"
 
 using namespace iqxmlrpc;
+namespace ssl = iqnet::ssl;
 using namespace boost::program_options;
 
 Client_opts::Client_opts():
@@ -22,7 +24,8 @@ Client_opts::Client_opts():
     ("proxy-port", value<int>(&proxy_port_))
     ("use-ssl", value<bool>(&use_ssl_))
     ("stop-server", value<bool>(&stop_server_))
-    ("timeout", value<int>(&timeout_));
+    ("timeout", value<int>(&timeout_))
+    ("server-finger", value<std::string>(&server_fingerprint_));
 }
 
 Client_opts::~Client_opts()
@@ -39,6 +42,26 @@ void Client_opts::configure(int argc, char** argv)
     throw_bad_config();
 }
 
+class FingerprintVerifier: public ssl::ConnectionVerifier {
+public:
+  FingerprintVerifier(const std::string& finger):
+    finger_(finger)
+  {
+    boost::erase_all(finger_, ":");
+    boost::to_lower(finger_);
+  }
+
+private:
+  int do_verify(bool, X509_STORE_CTX* ctx) const
+  {
+    return finger_ == cert_finger_sha256(ctx);
+  }
+
+  mutable std::string finger_;
+};
+
+boost::optional<FingerprintVerifier> server_verifier;
+
 iqxmlrpc::Client_base*
 Client_opts::create_instance() const
 {
@@ -46,7 +69,6 @@ Client_opts::create_instance() const
 
   if (use_ssl_)
   {
-    namespace ssl = iqnet::ssl;
     if (!ssl::ctx)
       ssl::ctx = ssl::Ctx::client_only();
 
@@ -62,6 +84,11 @@ Client_opts::create_instance() const
 
   if (timeout())
     retval->set_timeout(timeout());
+
+  if (use_ssl_ && server_fingerprint_.size()) {
+    server_verifier = FingerprintVerifier(server_fingerprint_);
+    ssl::ctx->verify_server(&server_verifier.get());
+  }
 
   return retval;
 }

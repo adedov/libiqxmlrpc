@@ -25,6 +25,19 @@ extern LIBIQXMLRPC_API Ctx* ctx;
 //! Throws concrete SSL IO subsystem's exception.
 void LIBIQXMLRPC_API throw_io_exception( SSL*, int ret );
 
+class LIBIQXMLRPC_API ConnectionVerifier {
+public:
+  virtual ~ConnectionVerifier();
+
+  int verify(bool preverified_ok, X509_STORE_CTX*) const;
+
+protected:
+  std::string cert_finger_sha256(X509_STORE_CTX*) const;
+
+private:
+  virtual int do_verify(bool preverified_ok, X509_STORE_CTX*) const = 0;
+};
+
 //! SSL context class. Initializes SSL library.
 /*!
   \code
@@ -34,8 +47,6 @@ void LIBIQXMLRPC_API throw_io_exception( SSL*, int ret );
   \endcode
 */
 class LIBIQXMLRPC_API Ctx {
-  SSL_CTX* ctx;
-
 public:
   static Ctx* client_server( const std::string& cert_path, const std::string& key_path );
   static Ctx* server_only( const std::string& cert_path, const std::string& key_path );
@@ -45,9 +56,19 @@ public:
 
   SSL_CTX* context() { return ctx; }
 
+  void verify_server(ConnectionVerifier*);
+  void verify_client(bool require_certificate, ConnectionVerifier*);
+  void prepare_verify(SSL*, bool server);
+
 private:
   Ctx( const std::string&, const std::string&, bool init_client );
   Ctx();
+
+  // TODO: pimpl
+  SSL_CTX* ctx;
+  ConnectionVerifier* server_verifier_;
+  ConnectionVerifier* client_verifier_;
+  bool require_client_cert_;
 };
 
 #ifdef _MSC_VER

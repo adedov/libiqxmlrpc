@@ -35,6 +35,7 @@ private:
   bool        use_ssl_;
   bool        stop_server_;
   int         timeout_;
+  std::string server_fingerprint_;
 
 protected:
   boost::program_options::options_description opts_;
