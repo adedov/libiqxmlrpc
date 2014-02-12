@@ -1,5 +1,10 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.4 - 0.12.5
+Add support for SSL connections verification. There is possibility to verify
+client or server certificates natively by OpenSSL. Optionally one can implement
+custom verifier, e.g. to check for specific certificate's fingerprint, etc.
+
 0.12.3 - 0.12.4
 Support for Visual Studio 2012 and 64bit Windows.
 
