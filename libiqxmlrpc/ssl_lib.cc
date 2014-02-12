@@ -175,32 +175,42 @@ ConnectionVerifier::cert_finger_sha256(X509_STORE_CTX* ctx) const
 // Ctx
 //
 
+struct Ctx::Impl {
+  SSL_CTX* ctx;
+  ConnectionVerifier* server_verifier;
+  ConnectionVerifier* client_verifier;
+  bool require_client_cert;
+
+  Impl():
+    server_verifier(0),
+    client_verifier(0),
+    require_client_cert(false)
+  {
+  }
+};
+
 Ctx::Ctx( const std::string& cert_path, const std::string& key_path, bool client ):
-  server_verifier_(0),
-  client_verifier_(0),
-  require_client_cert_(false)
+  impl_(new Impl)
 {
   boost::call_once(ssl_init, init_library);
-  ctx = SSL_CTX_new( client ? SSLv23_method() : SSLv23_server_method() );
-  set_common_options(ctx);
+  impl_->ctx = SSL_CTX_new( client ? SSLv23_method() : SSLv23_server_method() );
+  set_common_options(impl_->ctx);
 
   if(
-    !SSL_CTX_use_certificate_file( ctx, cert_path.c_str(), SSL_FILETYPE_PEM ) ||
-    !SSL_CTX_use_PrivateKey_file( ctx, key_path.c_str(), SSL_FILETYPE_PEM ) ||
-    !SSL_CTX_check_private_key( ctx )
+    !SSL_CTX_use_certificate_file( impl_->ctx, cert_path.c_str(), SSL_FILETYPE_PEM ) ||
+    !SSL_CTX_use_PrivateKey_file( impl_->ctx, key_path.c_str(), SSL_FILETYPE_PEM ) ||
+    !SSL_CTX_check_private_key( impl_->ctx )
   )
     throw exception();
 }
 
 
 Ctx::Ctx():
-  server_verifier_(0),
-  client_verifier_(0),
-  require_client_cert_(false)
+  impl_(new Impl)
 {
   boost::call_once(ssl_init, init_library);
-  ctx = SSL_CTX_new( SSLv23_client_method() );
-  set_common_options(ctx);
+  impl_->ctx = SSL_CTX_new( SSLv23_client_method() );
+  set_common_options( impl_->ctx );
 }
 
 
@@ -208,26 +218,32 @@ Ctx::~Ctx()
 {
 }
 
+SSL_CTX*
+Ctx::context()
+{
+  return impl_->ctx;
+}
+
 void
 Ctx::verify_server(ConnectionVerifier* v)
 {
-  server_verifier_ = v;
+  impl_->server_verifier = v;
 }
 
 void
 Ctx::verify_client(bool require_certificate, ConnectionVerifier* v)
 {
-  require_client_cert_ = require_certificate;
-  client_verifier_ = v;
+  impl_->require_client_cert = require_certificate;
+  impl_->client_verifier = v;
 }
 
 void
 Ctx::prepare_verify(SSL* ssl, bool server)
 {
-  ConnectionVerifier* v = server ? client_verifier_ : server_verifier_;
+  ConnectionVerifier* v = server ? impl_->client_verifier : impl_->server_verifier;
   int mode = v ? SSL_VERIFY_PEER : SSL_VERIFY_NONE;
 
-  if (server && require_client_cert_)
+  if (server && impl_->require_client_cert)
     mode |= SSL_VERIFY_FAIL_IF_NO_PEER_CERT;
 
   if (v) {

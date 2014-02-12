@@ -7,7 +7,7 @@
 #include "api_export.h"
 
 #include <openssl/ssl.h>
-
+#include <boost/shared_ptr.hpp>
 #include <stdexcept>
 
 namespace iqnet {
@@ -54,7 +54,7 @@ public:
 
   ~Ctx();
 
-  SSL_CTX* context() { return ctx; }
+  SSL_CTX* context();
 
   void verify_server(ConnectionVerifier*);
   void verify_client(bool require_certificate, ConnectionVerifier*);
@@ -64,11 +64,8 @@ private:
   Ctx( const std::string&, const std::string&, bool init_client );
   Ctx();
 
-  // TODO: pimpl
-  SSL_CTX* ctx;
-  ConnectionVerifier* server_verifier_;
-  ConnectionVerifier* client_verifier_;
-  bool require_client_cert_;
+  struct Impl;
+  boost::shared_ptr<Impl> impl_;
 };
 
 #ifdef _MSC_VER
