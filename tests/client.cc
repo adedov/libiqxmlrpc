@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE( get_file_test )
 {
   BOOST_REQUIRE(test_client);
   Get_file_proxy get_file(test_client);
-  Response retval( get_file(1048576) ); // request 1Mb
+  Response retval( get_file(1024*1024*10) ); // request 10Mb
 
   const Value& v = retval.value();
   const Binary_data& d = v["data"];

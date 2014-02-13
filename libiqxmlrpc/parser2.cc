@@ -100,19 +100,18 @@ BuilderBase::do_visit_text(const std::string&)
 class Parser::Impl {
 public:
   Impl(const std::string& str):
+    buf(str),
     pushed_back(false)
   {
-    buf = xmlParserInputBufferCreateMem(str.data(), static_cast<int>(str.length()), XML_CHAR_ENCODING_NONE);
-    // TODO: check buf is not 0
-    reader = xmlNewTextReader(buf, 0);
-    // TODO: check reader is not 0
+    const char* buf2 = str.data();
+    int sz = static_cast<int>(str.size());
+    reader = xmlReaderForMemory(buf2, sz, 0, 0, XML_PARSE_NONET | XML_PARSE_HUGE);
     xmlTextReaderSetParserProp(reader, XML_PARSER_SUBST_ENTITIES, 0); // No XXE
   }
 
   ~Impl()
   {
     xmlFreeTextReader(reader);
-    xmlFreeParserInputBuffer(buf);
   }
 
   struct ParseStep {
@@ -207,7 +206,7 @@ public:
     return to_string(xmlGetNodePath(n));
   }
 
-  xmlParserInputBufferPtr buf;
+  const std::string buf;
   xmlTextReaderPtr reader;
   ParseStep curr;
   bool pushed_back;
