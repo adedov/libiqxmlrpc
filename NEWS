@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.6 - 0.12.7
+Fix complatibility with some clients: treat empty int/i4 tags as zero integer.
+
 0.12.5 - 0.12.6
 Fix parsing errors for string/binary nodes > 10Mb.
 
