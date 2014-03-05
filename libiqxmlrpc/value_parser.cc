@@ -192,6 +192,10 @@ ValueBuilder::do_visit_element_end(const std::string&)
     retval.reset(new String(""));
     break;
 
+  case INT:
+    retval.reset(new Int(0));
+    break;
+
   case BINARY:
     retval.reset(Binary_data::from_data(""));
     break;
