@@ -1,5 +1,9 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.7 - 0.12.8
+Reimplementation of changes in 0.12.7: Allow configure if empty int/i4 tags are
+allowed, specify default int value. 
+
 0.12.6 - 0.12.7
 Fix complatibility with some clients: treat empty int/i4 tags as zero integer.
 
