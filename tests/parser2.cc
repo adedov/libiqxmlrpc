@@ -142,11 +142,17 @@ BOOST_AUTO_TEST_CASE(test_parse_emptiness)
   BOOST_CHECK_THROW(parse_value("<datetime.iso8601></datetime.iso8601>"), XML_RPC_violation);
   BOOST_CHECK_THROW(parse_value("<dateTime.iso8601/>"), XML_RPC_violation);
 
-  // For compatibility with xmlrpc++
-  BOOST_CHECK_EQUAL(parse_value("<int></int>").get_int(), 0);
-  BOOST_CHECK_EQUAL(parse_value("<int/>").get_int(), 0);
-  BOOST_CHECK_EQUAL(parse_value("<i4></i4>").get_int(), 0);
-  BOOST_CHECK_EQUAL(parse_value("<i4/>").get_int(), 0);
+  Value::set_default_int(-123);
+  BOOST_CHECK_EQUAL(parse_value("<int></int>").get_int(), -123);
+  BOOST_CHECK_EQUAL(parse_value("<int/>").get_int(), -123);
+  BOOST_CHECK_EQUAL(parse_value("<i4></i4>").get_int(), -123);
+  BOOST_CHECK_EQUAL(parse_value("<i4/>").get_int(), -123);
+
+  Value::drop_default_int();
+  BOOST_CHECK_THROW(parse_value("<int></int>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<int/>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<i4></i4>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<i4/>"), XML_RPC_violation);
 
   BOOST_CHECK_EQUAL(parse_value("<string/>").get_string(), "");
   BOOST_CHECK_EQUAL(parse_value("<string></string>").get_string(), "");
@@ -171,10 +177,6 @@ BOOST_AUTO_TEST_CASE(test_parse_emptiness)
   BOOST_CHECK_EQUAL(a3.size(), 2);
   BOOST_CHECK_EQUAL(a3[0].the_struct().size(), 0);
   BOOST_CHECK_EQUAL(a3[1].the_struct().size(), 0);
-
-  Array a4 = parse_value("<array><data><value><i4/></value></data></array>").the_array();
-  BOOST_CHECK_EQUAL(a4.size(), 1);
-  BOOST_CHECK_EQUAL(a4[0].get_int(), 0);
 
   //
   // Structs with empty values

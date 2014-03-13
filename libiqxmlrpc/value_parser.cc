@@ -186,6 +186,8 @@ ValueBuilder::do_visit_element_end(const std::string&)
   if (retval.get())
     return;
 
+  std::auto_ptr<Int> default_int(Value::get_default_int());
+
   switch (state_.get_state()) {
   case VALUE:
   case STRING:
@@ -193,8 +195,11 @@ ValueBuilder::do_visit_element_end(const std::string&)
     break;
 
   case INT:
-    retval.reset(new Int(0));
-    break;
+    if (default_int.get()) {
+      retval.reset(default_int.release());
+      break;
+    }
+    throw XML_RPC_violation(parser_.context());
 
   case BINARY:
     retval.reset(Binary_data::from_data(""));

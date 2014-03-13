@@ -1,6 +1,7 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2011 Anton Dedov
 
+#include <boost/optional.hpp>
 #include <stdexcept>
 
 #include "value.h"
@@ -13,6 +14,25 @@ namespace iqxmlrpc {
 Value::Bad_cast::Bad_cast():
   Exception( "iqxmlrpc::Value: incorrect type was requested." ) {}
 
+
+namespace ValueOptions {
+  boost::optional<int> default_int;
+}
+
+void Value::set_default_int(int dint)
+{
+  ValueOptions::default_int = dint;
+}
+
+Int* Value::get_default_int()
+{
+  return ValueOptions::default_int ? new Int(*ValueOptions::default_int) : 0;
+}
+
+void Value::drop_default_int()
+{
+  ValueOptions::default_int.reset();
+}
 
 Value::Value( Value_type* v ):
   value(v)

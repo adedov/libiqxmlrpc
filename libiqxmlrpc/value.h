@@ -113,6 +113,10 @@ public:
 
   void apply_visitor(Value_type_visitor&) const;
 
+  static void set_default_int(int);
+  static Int* get_default_int();
+  static void drop_default_int();
+
 private:
   template <class T> T* cast() const;
   template <class T> bool can_cast() const;
