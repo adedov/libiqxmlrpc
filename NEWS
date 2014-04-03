@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.8 - 0.12.9
+Support for weird clients: ability to omit <string> tag names in server responses.
+
 0.12.7 - 0.12.8
 Reimplementation of changes in 0.12.7: Allow configure if empty int/i4 tags are
 allowed, specify default int value. 
