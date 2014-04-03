@@ -178,7 +178,6 @@ class Packet_reader {
   Header* header;
   Verification_level ver_level_;
   bool constructed;
-  bool need_continue;
   size_t pkt_max_sz;
   size_t total_sz;
   bool continue_sent_;
