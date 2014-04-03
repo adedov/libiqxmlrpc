@@ -117,6 +117,9 @@ public:
   static Int* get_default_int();
   static void drop_default_int();
 
+  static void omit_string_tag_in_responses(bool);
+  static bool omit_string_tag_in_responses();
+
 private:
   template <class T> T* cast() const;
   template <class T> bool can_cast() const;

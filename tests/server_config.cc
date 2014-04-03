@@ -1,21 +1,42 @@
-#include <stdlib.h>
+#include <iostream>
+#include <sstream>
+#include <boost/program_options.hpp>
 #include "server_config.h"
+#include "libiqxmlrpc/value.h"
 
-Test_server_config::Malformed_cmd_line::Malformed_cmd_line():
-  Malformed_config(
-    "Usage:\n\ttest_server <port> <numthreads> [use_ssl]\n")
+using boost::program_options::options_description;
+
+void throw_bad_config(options_description& opts)
 {
+  std::ostringstream ss;
+  ss << opts;
+  throw Test_server_config::Bad_config(ss.str());
 }
 
 Test_server_config::Test_server_config(int argc, const char** argv):
-  use_ssl(false)
+  port(0),
+  numthreads(1),
+  use_ssl(false),
+  omit_string_tags(false)
 {
-  if (argc != 3 && argc != 4)
-    throw Malformed_cmd_line();
+  using namespace boost::program_options;
+  options_description opts;
+  opts.add_options()
+    ("port", value<unsigned>(&port))
+    ("numthreads", value<unsigned>(&numthreads))
+    ("use-ssl", value<bool>(&use_ssl))
+    ("omit-string-tags", value<bool>(&omit_string_tags));
 
-  port = atoi(argv[1]);
-  numthreads = atoi(argv[2]);
+  variables_map vm;
+  store(parse_command_line(argc, argv, opts), vm);
+  notify(vm);
 
-  if (argc == 4)
-    use_ssl = true;
+  if (!port)
+    throw_bad_config(opts);
+
+  if (omit_string_tags)
+  {
+    std::cout << "Omit string tags in responses" << std::endl;
+    iqxmlrpc::Value::omit_string_tag_in_responses(true);
+  }
 }

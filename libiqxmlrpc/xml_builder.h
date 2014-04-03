@@ -30,6 +30,9 @@ public:
   ~XmlBuilder();
 
   void
+  add_textdata(const std::string&);
+
+  void
   stop();
 
   std::string

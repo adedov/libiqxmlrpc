@@ -46,7 +46,11 @@ void Value_type_to_xml::do_visit_bool(bool val)
 
 void Value_type_to_xml::do_visit_string(const std::string& val)
 {
-  add_textnode("string", val);
+  if (server_mode_ && Value::omit_string_tag_in_responses()) {
+    builder_.add_textdata(val);
+  } else {
+    add_textnode("string", val);
+  }
 }
 
 void Value_type_to_xml::do_visit_struct(const Struct& s)
@@ -59,7 +63,7 @@ void Value_type_to_xml::do_visit_struct(const Struct& s)
     XmlNode member(builder_, "member");
     add_textnode("name", i->first);
 
-    Value_type_to_xml vis(builder_);
+    Value_type_to_xml vis(builder_, server_mode_);
     i->second->apply_visitor(vis);
   }
 }
@@ -70,7 +74,7 @@ void Value_type_to_xml::do_visit_array(const Array& a)
   XmlNode data(builder_, "data");
 
   typedef Array::const_iterator CI;
-  Value_type_to_xml vis(builder_);
+  Value_type_to_xml vis(builder_, server_mode_);
 
   for(CI i = a.begin(); i != a.end(); ++i ) {
     i->apply_visitor(vis);

@@ -42,8 +42,7 @@ XmlBuilder::Node::~Node()
 void
 XmlBuilder::Node::set_textdata(const std::string& data)
 {
-  const xmlChar* xdata = reinterpret_cast<const xmlChar*>(data.c_str());
-  throwBuildError(xmlTextWriterWriteString(ctx.writer, xdata), -1);
+  ctx.add_textdata(data);
 }
 
 //
@@ -61,6 +60,13 @@ XmlBuilder::~XmlBuilder()
 {
   xmlFreeTextWriter(writer);
   xmlBufferFree(buf);
+}
+
+void
+XmlBuilder::add_textdata(const std::string& data)
+{
+  const xmlChar* xdata = reinterpret_cast<const xmlChar*>(data.c_str());
+  throwBuildError(xmlTextWriterWriteString(writer, xdata), -1);
 }
 
 void

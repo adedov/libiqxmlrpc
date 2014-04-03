@@ -6,27 +6,20 @@
 
 //! Test server configuration structure
 struct Test_server_config {
-  class Malformed_config;
-  class Malformed_cmd_line;
+  class Bad_config;
 
-  bool use_ssl;
-  int port;
+  unsigned port;
   unsigned numthreads;
+  bool use_ssl;
+  bool omit_string_tags;
 
   Test_server_config(int argc, const char** argv);
 };
 
-class Test_server_config::Malformed_config: public std::runtime_error {
+class Test_server_config::Bad_config: public std::runtime_error {
 public:
-  Malformed_config(const std::string& usage):
+  Bad_config(const std::string& usage):
     runtime_error(usage) {}
-};
-
-class Test_server_config::Malformed_cmd_line:
-  public Test_server_config::Malformed_config
-{
-public:
-  Malformed_cmd_line();
 };
 
 #endif
