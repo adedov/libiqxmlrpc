@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.9 - 0.12.10
+Fix building with libxml2 < 2.7.3 (broken in 0.12.6).
+
 0.12.8 - 0.12.9
 Support for weird clients: ability to omit <string> tag names in server responses.
 
