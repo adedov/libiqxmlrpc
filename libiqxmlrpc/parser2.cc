@@ -105,6 +105,9 @@ public:
   {
     const char* buf2 = str.data();
     int sz = static_cast<int>(str.size());
+#if (LIBXML_VERSION < 20703)
+#define XML_PARSE_HUGE 0
+#endif 
     reader = xmlReaderForMemory(buf2, sz, 0, 0, XML_PARSE_NONET | XML_PARSE_HUGE);
     xmlTextReaderSetParserProp(reader, XML_PARSER_SUBST_ENTITIES, 0); // No XXE
   }

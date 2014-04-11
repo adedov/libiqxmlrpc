@@ -136,7 +136,7 @@ main(int argc, const char** argv)
 #endif
 
   try {
-    Test_server_config conf(argc, argv);
+    Test_server_config conf(argc, const_cast<char**>(argv));
     test_server = new Test_server(conf);
     ::signal(SIGINT, &test_server_sig_handler);
     test_server->work();

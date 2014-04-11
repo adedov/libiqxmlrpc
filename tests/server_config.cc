@@ -4,7 +4,7 @@
 #include "server_config.h"
 #include "libiqxmlrpc/value.h"
 
-using boost::program_options::options_description;
+using namespace boost::program_options;
 
 void throw_bad_config(options_description& opts)
 {
@@ -13,17 +13,16 @@ void throw_bad_config(options_description& opts)
   throw Test_server_config::Bad_config(ss.str());
 }
 
-Test_server_config::Test_server_config(int argc, const char** argv):
+Test_server_config::Test_server_config(int argc, char** argv):
   port(0),
   numthreads(1),
   use_ssl(false),
   omit_string_tags(false)
 {
-  using namespace boost::program_options;
   options_description opts;
   opts.add_options()
-    ("port", value<unsigned>(&port))
-    ("numthreads", value<unsigned>(&numthreads))
+    ("port", value<int>(&port))
+    ("numthreads", value<int>(&numthreads))
     ("use-ssl", value<bool>(&use_ssl))
     ("omit-string-tags", value<bool>(&omit_string_tags));
 
