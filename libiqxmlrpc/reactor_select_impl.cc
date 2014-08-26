@@ -33,6 +33,7 @@ void Reactor_select_impl::reset(const HandlerStateList& in)
     if( i->mask & Reactor_base::OUTPUT )
       FD_SET( i->fd, &write_set );
 
+    FD_SET( i->fd, &err_set );
     max_fd = i->fd > max_fd ? i->fd : max_fd;
   }
 }
@@ -70,7 +71,7 @@ bool Reactor_select_impl::poll(HandlerStateList& out, Reactor_base::Timeout to_m
     short revents = 0;
     revents |= FD_ISSET( i->fd, &read_set ) ? Reactor_base::INPUT : 0;
     revents |= FD_ISSET( i->fd, &write_set ) ? Reactor_base::OUTPUT : 0;
-//    revents |= FD_ISSET( i->fd, &err_set ) ? POLLERR : 0;
+    revents |= FD_ISSET( i->fd, &err_set ) ? Reactor_base::OUTPUT : 0;
 
     if( revents )
     {
