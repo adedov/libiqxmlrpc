@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.11 - 0.12.12
+Fix thread safety issues during HTTP packet generation. Reproduced on Windows only. 
+
 0.12.10 - 0.12.11
 Fix client hangs on Windows in case of connection errors.
 
