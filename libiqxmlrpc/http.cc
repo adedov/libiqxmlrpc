@@ -353,17 +353,13 @@ std::string Response_header::current_date() const
 {
   using namespace boost::posix_time;
   ptime p = second_clock::universal_time();
-  struct tm bdt = to_tm(p);
 
-  char *oldlocale = setlocale( LC_TIME, 0 );
-  setlocale( LC_TIME, "C" );
+  std::ostringstream ss;
+  time_facet * tf = new time_facet("%a, %d %b %Y %H:%M:%S GMT");
+  ss.imbue(std::locale(std::locale::classic(), tf));
+  ss << p;
 
-  char date_str[31];
-  date_str[30] = 0;
-  strftime( date_str, 30, "%a, %d %b %Y %H:%M:%S GMT", &bdt );
-
-  setlocale( LC_TIME, oldlocale );
-  return date_str;
+  return ss.str();
 }
 
 std::string Response_header::dump_head() const
