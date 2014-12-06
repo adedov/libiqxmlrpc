@@ -9,7 +9,9 @@
 #endif
 
 #include "api_export.h"
+
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 //! Object-oriented networking/multithreading infrastructure.
 namespace iqnet
@@ -25,9 +27,8 @@ std::string LIBIQXMLRPC_API get_host_name();
 //! An object representation of internet address.
 /*! A wrapper for sockaddr_in system structure. */
 class LIBIQXMLRPC_API Inet_addr {
-  struct sockaddr_in sa;
-  std::string host;
-  int port;
+  struct Impl;
+  boost::shared_ptr<Impl> impl_;
 
 public:
   //! Does nothing.
@@ -39,9 +40,9 @@ public:
 
   virtual ~Inet_addr() {}
 
-  const struct sockaddr_in* get_sockaddr() const { return &sa; }
-  const std::string& get_host_name() const { return host; }
-  int get_port() const { return port; }
+  const struct sockaddr_in* get_sockaddr() const;
+  const std::string& get_host_name() const;
+  int get_port() const;
 };
 
 } // namespace iqnet

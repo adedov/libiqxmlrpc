@@ -1,13 +1,13 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2011 Anton Dedov
 
+#include <boost/optional.hpp>
 #include "inet_addr.h"
 #include "net_except.h"
 
-using namespace iqnet;
+namespace iqnet {
 
-
-std::string iqnet::get_host_name()
+std::string get_host_name()
 {
   char buf[1024];
   buf[1023] = 0;
@@ -53,29 +53,86 @@ std::string iqnet::get_host_name()
   IQXMLRPC_GETHOSTBYNAME_POST
 #endif
 
-Inet_addr::Inet_addr( const std::string& host_, int port_ ):
-  host(host_), port(port_)
+typedef struct sockaddr_in SystemSockAddrIn;
+
+struct Inet_addr::Impl {
+  mutable boost::optional<SystemSockAddrIn> sa;
+  std::string host;
+  int port;
+
+  Impl( const SystemSockAddrIn& );
+  Impl( const std::string& host, int port );
+  Impl( int port );
+
+  void init_sockaddr() const;
+};
+
+Inet_addr::Impl::Impl( const std::string& h, int p ):
+  sa(), host(h), port(p)
 {
+}
+
+Inet_addr::Impl::Impl( int p ):
+  sa(SystemSockAddrIn()), host("0.0.0.0"), port(p)
+{
+  sa->sin_family = PF_INET;
+  sa->sin_port = htons(port);
+  sa->sin_addr.s_addr = INADDR_ANY;
+}
+
+Inet_addr::Impl::Impl( const SystemSockAddrIn& s ):
+  sa(s)
+{
+  host = inet_ntoa( sa->sin_addr );
+  port = ntohs( sa->sin_port );
+}
+
+void
+Inet_addr::Impl::init_sockaddr() const
+{
+  sa = SystemSockAddrIn();
   struct hostent* hent = 0;
   IQXMLRPC_GETHOSTBYNAME(host.c_str());
-  sa.sin_family = PF_INET;
-  sa.sin_port = htons(port);
-  memcpy( (char*)&sa.sin_addr, (char*)hent->h_addr, hent->h_length );
+  sa->sin_family = PF_INET;
+  sa->sin_port = htons(port);
+  memcpy( (char*)&(sa->sin_addr), (char*)hent->h_addr, hent->h_length );
 }
 
-
-Inet_addr::Inet_addr( int port_ ):
-  host("0.0.0.0"), port(port_)
+Inet_addr::Inet_addr( const std::string& host, int port ):
+  impl_(new Impl(host, port))
 {
-  sa.sin_family = PF_INET;
-  sa.sin_port = htons(port);
-  sa.sin_addr.s_addr = INADDR_ANY;
 }
 
-
-Inet_addr::Inet_addr( const struct sockaddr_in& sa_ ):
-  sa(sa_)
+Inet_addr::Inet_addr( int port ):
+  impl_(new Impl(port))
 {
-  host = inet_ntoa( sa.sin_addr );
-  port = ntohs( sa.sin_port );
 }
+
+Inet_addr::Inet_addr( const SystemSockAddrIn& sa ):
+  impl_(new Impl(sa))
+{
+}
+
+const SystemSockAddrIn*
+Inet_addr::get_sockaddr() const
+{
+  if (!impl_->sa) {
+    impl_->init_sockaddr();
+  }
+
+  return &impl_->sa.get();
+}
+
+const std::string&
+Inet_addr::get_host_name() const
+{
+  return impl_->host;
+}
+
+int
+Inet_addr::get_port() const
+{
+  return impl_->port;
+}
+
+} // namespace iqnet
