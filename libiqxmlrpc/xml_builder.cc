@@ -34,9 +34,7 @@ XmlBuilder::Node::Node(XmlBuilder& w, const char* name):
 
 XmlBuilder::Node::~Node()
 {
-  if (!std::uncaught_exception()) {
-    xmlTextWriterEndElement(ctx.writer);
-  }
+  xmlTextWriterEndElement(ctx.writer);
 }
 
 void
