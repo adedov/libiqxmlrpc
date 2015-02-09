@@ -355,7 +355,8 @@ std::string Response_header::current_date() const
   ptime p = second_clock::universal_time();
 
   std::ostringstream ss;
-  time_facet * tf = new time_facet("%a, %d %b %Y %H:%M:%S GMT");
+  // locale is responsible for deleting facets: smartptr isn't required.
+  time_facet* tf = new time_facet("%a, %d %b %Y %H:%M:%S GMT");
   ss.imbue(std::locale(std::locale::classic(), tf));
   ss << p;
 
