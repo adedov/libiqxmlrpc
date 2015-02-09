@@ -70,6 +70,8 @@ struct Inet_addr::Impl {
 Inet_addr::Impl::Impl( const std::string& h, int p ):
   sa(), host(h), port(p)
 {
+  if (h.find_first_of("\n\r") != std::string::npos)
+    throw network_error("Hostname must not contain CR LF characters", false);
 }
 
 Inet_addr::Impl::Impl( int p ):
