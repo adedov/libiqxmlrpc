@@ -15,10 +15,10 @@ if (build_docs)
 endif (build_docs)
 
 add_custom_target(clog
-	COMMAND bzr log --short > ChangeLog)
+	COMMAND git log > ChangeLog)
 
 add_custom_target(dist
-	COMMAND bzr export --root=libiqxmlrpc-${Libiqxmlrpc_VERSION} libiqxmlrpc-${Libiqxmlrpc_VERSION}.tar.bz2
+	COMMAND git archive --prefix=libiqxmlrpc-${Libiqxmlrpc_VERSION}/ --format=tar HEAD | bzip2 > libiqxmlrpc-${Libiqxmlrpc_VERSION}.tar.bz2
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 include(LibiqxmlrpcCPack.txt)
