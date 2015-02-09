@@ -10,8 +10,7 @@ using namespace iqnet;
 
 Https_server_connection::Https_server_connection( const iqnet::Socket& s ):
   ssl::Reaction_connection( s ),
-  Server_connection( s.get_peer_addr() ),
-  send_buf(0)
+  Server_connection( s.get_peer_addr() )
 {
 }
 
@@ -38,7 +37,7 @@ void Https_server_connection::recv_succeed( bool&, size_t, size_t real_len )
 
     if( !packet )
     {
-      if (!send_buf)
+      if (response.empty())
         my_reg_recv();
       return;
     }
@@ -56,8 +55,7 @@ void Https_server_connection::recv_succeed( bool&, size_t, size_t real_len )
 
 void Https_server_connection::send_succeed( bool& terminate )
 {
-  delete[] send_buf;
-  send_buf = 0;
+  response = std::string();
 
   if( keep_alive )
     my_reg_recv();
@@ -72,9 +70,7 @@ void Https_server_connection::send_succeed( bool& terminate )
 
 void Https_server_connection::do_schedule_response()
 {
-  send_buf = new char[response.length()];
-  response.copy( send_buf, std::string::npos );
-  reg_send( send_buf, response.length() );
+  reg_send( response.data(), response.length() );
 }
 
 #ifdef _MSC_VER

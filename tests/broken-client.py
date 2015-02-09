@@ -16,4 +16,3 @@ s.send(r)
 
 print "Close prematurely"
 s.close()
-#rv = s.recv()

@@ -16,8 +16,6 @@ class LIBIQXMLRPC_API Https_server_connection:
   public iqnet::ssl::Reaction_connection,
   public iqxmlrpc::Server_connection
 {
-  char* send_buf;
-
 public:
   Https_server_connection( const iqnet::Socket& );
 
