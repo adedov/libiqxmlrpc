@@ -11,24 +11,14 @@ using namespace iqxmlrpc;
 Server_connection::Server_connection( const iqnet::Inet_addr& a ):
   peer_addr(a),
   server(0),
-  read_buf_sz(65000),
-  read_buf(new char[read_buf_sz]),
-  keep_alive(false)
+  keep_alive(false),
+  read_buf_(65536, '\0')
 {
 }
 
 
 Server_connection::~Server_connection()
 {
-  delete[] read_buf;
-}
-
-
-void Server_connection::set_read_sz( size_t rsz )
-{
-  delete[] read_buf;
-  read_buf_sz = rsz;
-  read_buf = new char[read_buf_sz];
 }
 
 

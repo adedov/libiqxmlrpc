@@ -62,8 +62,7 @@ Https_server_connection::Https_server_connection( const iqnet::Socket& s ):
 
 inline void Https_server_connection::my_reg_recv()
 {
-  read_buf[0] = 0;
-  reg_recv( read_buf, read_buf_sz-1 );
+  reg_recv( read_buf(), read_buf_sz() );
 }
 
 
@@ -77,7 +76,7 @@ void Https_server_connection::recv_succeed( bool&, size_t, size_t real_len )
 {
   try
   {
-    std::string s( read_buf, real_len );
+    std::string s( read_buf(), real_len );
     http::Packet* packet = read_request( s );
 
     if( !packet )

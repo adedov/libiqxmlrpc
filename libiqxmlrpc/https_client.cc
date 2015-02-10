@@ -96,14 +96,12 @@ void Https_proxy_client_connection::handle_output( bool& )
 
 void Https_proxy_client_connection::handle_input( bool& )
 {
-  for( size_t sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
+  for( size_t sz = read_buf_sz(); (sz == read_buf_sz()) && !resp_packet ; )
   {
-    read_buf[0] = 0;
-
-    if( !(sz = recv( read_buf, read_buf_sz )) )
+    if( !(sz = recv( read_buf(), read_buf_sz() )) )
       throw iqnet::network_error( "Connection closed by peer.", false );
 
-    resp_packet.reset( read_response(std::string(read_buf, sz), true) );
+    resp_packet.reset( read_response(std::string(read_buf(), sz), true) );
   }
 
   if( resp_packet )
@@ -161,8 +159,7 @@ void Https_client_connection::connect_succeed()
 
 void Https_client_connection::send_succeed( bool& )
 {
-  read_buf[0] = 0;
-  reg_recv( read_buf, read_buf_sz );
+  reg_recv( read_buf(), read_buf_sz() );
 }
 
 
@@ -171,13 +168,12 @@ void Https_client_connection::recv_succeed( bool&, size_t, size_t sz )
   if( !sz )
     throw iqnet::network_error( "Connection closed by peer.", false );
 
-  std::string s( read_buf, sz );
+  std::string s( read_buf(), sz );
   resp_packet = read_response( s );
 
   if( !resp_packet )
   {
-    read_buf[0] = 0;
-    reg_recv( read_buf, read_buf_sz );
+    reg_recv( read_buf(), read_buf_sz() );
   }
 }
 

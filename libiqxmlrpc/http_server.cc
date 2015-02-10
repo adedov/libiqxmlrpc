@@ -79,7 +79,7 @@ void Http_server_connection::finish()
 void Http_server_connection::handle_input( bool& terminate )
 {
   try {
-    size_t n = recv( read_buf, read_buf_sz );
+    size_t n = recv( read_buf(), read_buf_sz() );
 
     if( !n )
     {
@@ -87,7 +87,7 @@ void Http_server_connection::handle_input( bool& terminate )
       return;
     }
 
-    http::Packet* packet = read_request( std::string(read_buf, n) );
+    http::Packet* packet = read_request( std::string(read_buf(), n) );
     if( !packet )
       return;
 

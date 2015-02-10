@@ -4,6 +4,7 @@
 #ifndef _iqxmlrpc_client_conn_h_
 #define _iqxmlrpc_client_conn_h_
 
+#include <vector>
 #include "connection.h"
 #include "http.h"
 #include "request.h"
@@ -29,15 +30,15 @@ protected:
 
   const Client_options& opts() const { return *options; }
 
+  char* read_buf() { return &read_buf_[0]; }
+  size_t read_buf_sz() const { return read_buf_.size(); }
+
 private:
   virtual std::string decorate_uri() const;
 
   http::Packet_reader preader;
   const Client_options* options;
-
-protected:
-  unsigned read_buf_sz;
-  char *read_buf;
+  std::vector<char> read_buf_;
 };
 
 //! Exception which be thrown by client when timeout occured.

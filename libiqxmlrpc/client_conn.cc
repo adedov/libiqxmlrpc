@@ -8,14 +8,12 @@
 namespace iqxmlrpc {
 
 Client_connection::Client_connection():
-  read_buf_sz(65000),
-  read_buf(new char[read_buf_sz])
+  read_buf_(65536, '\0')
 {
 }
 
 Client_connection::~Client_connection()
 {
-  delete[] read_buf;
 }
 
 Response Client_connection::process_session( const Request& req )

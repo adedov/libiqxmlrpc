@@ -54,14 +54,12 @@ void Http_client_connection::handle_output( bool& )
 
 void Http_client_connection::handle_input( bool& )
 {
-  for( size_t sz = read_buf_sz; (sz == read_buf_sz) && !resp_packet ; )
+  for( size_t sz = read_buf_sz(); (sz == read_buf_sz()) && !resp_packet ; )
   {
-    read_buf[0] = 0;
-
-    if( !(sz = recv( read_buf, read_buf_sz )) )
+    if( !(sz = recv( read_buf(), read_buf_sz() )) )
       throw iqnet::network_error( "Connection closed by peer.", false );
 
-    resp_packet = read_response( std::string(read_buf, sz) );
+    resp_packet = read_response( std::string(read_buf(), sz) );
   }
 
   if( resp_packet )

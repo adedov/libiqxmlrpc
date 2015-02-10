@@ -4,6 +4,7 @@
 #ifndef _iqxmlrpc_server_conn_h_
 #define _iqxmlrpc_server_conn_h_
 
+#include <vector>
 #include "connection.h"
 #include "conn_factory.h"
 #include "http.h"
@@ -28,13 +29,7 @@ protected:
   iqnet::Inet_addr peer_addr;
   Server *server;
   http::Packet_reader preader;
-
-  size_t read_buf_sz;
-  char    *read_buf;
-
   std::string response;
-
-protected:
   bool keep_alive;
 
 public:
@@ -42,8 +37,6 @@ public:
   virtual ~Server_connection() = 0;
 
   const iqnet::Inet_addr& get_peer_addr() const { return peer_addr; }
-
-  void set_read_sz( size_t );
 
   void set_server( Server* s )
   {
@@ -55,7 +48,13 @@ public:
 protected:
   http::Packet* read_request( const std::string& );
 
+  char* read_buf() { return &read_buf_[0]; }
+  size_t read_buf_sz() const { return read_buf_.size(); }
+
   virtual void do_schedule_response() = 0;
+
+private:
+  std::vector<char> read_buf_;
 };
 
 #ifdef _MSC_VER
