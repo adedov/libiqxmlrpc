@@ -2,11 +2,56 @@
 //  Copyright (C) 2011 Anton Dedov
 
 #include "https_server.h"
-#include "server.h"
+#include "server_conn.h"
+#include "ssl_connection.h"
 
-using namespace iqxmlrpc;
 using namespace iqnet;
 
+namespace iqxmlrpc {
+
+namespace {
+
+//! Represents server-side \b HTTPS non-blocking connection.
+class Https_server_connection:
+  public iqnet::ssl::Reaction_connection,
+  public iqxmlrpc::Server_connection
+{
+public:
+  Https_server_connection( const iqnet::Socket& );
+
+  void post_accept() { Reaction_connection::post_accept(); }
+  void finish() { delete this; }
+
+  bool catch_in_reactor() const { return true; }
+  void log_exception( const std::exception& );
+  void log_unknown_exception();
+
+protected:
+  void my_reg_recv();
+  void accept_succeed();
+  void recv_succeed( bool& terminate, size_t req_len, size_t real_len );
+  void send_succeed( bool& terminate );
+  virtual void do_schedule_response();
+};
+
+typedef Server_conn_factory<Https_server_connection> Https_conn_factory;
+
+} // anonymous namespace
+
+//
+// Https_server
+//
+
+Https_server::Https_server(const iqnet::Inet_addr& bind_addr, Executor_factory_base* ef):
+  Server(bind_addr, new Https_conn_factory, ef)
+{
+  static_cast<Https_conn_factory*>(get_conn_factory())->post_init(this, get_reactor());
+}
+
+
+//
+// Https_server_connection
+//
 
 Https_server_connection::Https_server_connection( const iqnet::Socket& s ):
   ssl::Reaction_connection( s ),
@@ -90,4 +135,4 @@ void Https_server_connection::log_unknown_exception()
   server->log_err_msg( "iqxmlrpc::Https_server_connection: unknown exception." );
 }
 
-// vim:et:sw=2:ts=2
+} // namespace iqxmlrpc
