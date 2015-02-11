@@ -1,5 +1,13 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.12 - 0.13
+  This realease is binary incompatible with previous ones!
+
+  * Client: do not resolve target host from client when proxy is used.
+  * Server: fix memory leak when client refuses to read from socket.
+  * Fix XML build during stack unwinding due to exception. I.e. allow call XML-RPC from destructors.
+  * Some code cleanups aim future maintenance ease.
+
 0.12.11 - 0.12.12
 Fix thread safety issues during HTTP packet generation. Reproduced on Windows only. 
 

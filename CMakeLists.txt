@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(Libiqxmlrpc)
-set(Libiqxmlrpc_VERSION 0.12.12)
+set(Libiqxmlrpc_VERSION 0.13)
 
 add_subdirectory(libiqxmlrpc)
 
