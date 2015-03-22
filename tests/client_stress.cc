@@ -62,17 +62,31 @@ public:
 BOOST_GLOBAL_FIXTURE( ClientFixture );
 
 // Stress test thread function
+void do_call(Client_base* client)
+{
+  try {
+    Get_file_proxy get_file(client);
+    Response r( get_file(65536) );
+
+    if (r.is_fault())
+      std::cerr << "Fault response: " << r.fault_string() << std::endl;
+  }
+  catch(const std::exception& e)
+  {
+    std::cerr << "E: " << e.what() << std::endl;
+  }
+  catch(...)
+  {
+    std::cerr << "Unexpected exception" << std::endl;
+  }
+}
+
 void do_test()
 {
   try {
     std::auto_ptr<Client_base> client(test_config.create_instance());
-    Get_file_proxy get_file(client.get());
-
     for (int i = 0; i < test_config.calls_per_thread(); ++i) {
-      Response r( get_file(65536) );
-
-      if (r.is_fault())
-        std::cerr << "Fault response: " << r.fault_string() << std::endl;
+      do_call(client.get());
     }
   }
   catch(const std::exception& e)

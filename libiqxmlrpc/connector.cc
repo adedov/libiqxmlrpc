@@ -61,8 +61,10 @@ Connector_base::connect(int timeout)
   reactor.register_handler( &connector, Reactor_base::OUTPUT );
 
   int ms = timeout > 0 ? timeout*1000 : -1;
-  if (!reactor.handle_events(ms))
+  if (!reactor.handle_events(ms)) {
+    connector.sock.close();
     throw iqxmlrpc::Client_timeout();
+  }
 
   return create_connection( connector.sock );
 }
