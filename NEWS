@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.13 - 0.13.1
+Stability: fix socket leakage in client when connection process is timed out.
+
 0.12.12 - 0.13
   This realease is binary incompatible with previous ones!
 
