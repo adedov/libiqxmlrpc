@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<ns1:methodCall xmlns:ns1="http://example.com/ns1/">
+  <methodName>system.listMethods</methodName>
+  <params></params>
+</ns1:methodCall>
