@@ -22,8 +22,6 @@ Connection::~Connection()
 
 void Connection::finish()
 {
-  sock.shutdown();
-  sock.close();
 }
 
 
