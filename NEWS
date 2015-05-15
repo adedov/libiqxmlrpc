@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.12 - 0.12.12.1
+Cherry-pick from 0.13.2: Compatibility: Ignore XML namespaces in tagnames to allow some weird clients.
+
 0.12.11 - 0.12.12
 Fix thread safety issues during HTTP packet generation. Reproduced on Windows only. 
 
