@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.13.2 - 0.13.3
+Remove reduntant socket close in client connection.
+
 0.13.1 - 0.13.2
 Compilatibility: Ignore XML namespaces in request's tag names.
 
