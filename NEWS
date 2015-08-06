@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.12.12.1 - 0.12.12.2
+Cherry-pick from 0.13.4: Fix compilation on Windows when OpenSSL 1.0.2 is used.
+
 0.12.12 - 0.12.12.1
 Cherry-pick from 0.13.2: Compatibility: Ignore XML namespaces in tagnames to allow some weird clients.
 
