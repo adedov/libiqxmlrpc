@@ -51,7 +51,7 @@ ResponseBuilder::do_visit_element(const std::string& tagname)
 void
 ResponseBuilder::parse_ok()
 {
-  ok_ = sub_build<Value_type*, ValueBuilder>();
+  ok_ = sub_build<Value_type*, ValueBuilder>(true);
 }
 
 void

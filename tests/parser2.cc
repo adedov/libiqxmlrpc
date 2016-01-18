@@ -253,6 +253,24 @@ BOOST_AUTO_TEST_CASE(test_parse_request)
   BOOST_CHECK_EQUAL(req->get_params().back().get_string(), "now");
 }
 
+BOOST_AUTO_TEST_CASE(test_parse_request_empty_param)
+{
+  std::string r = "<methodCall> \
+  <methodName>do_something</methodName> \
+  <params> \
+    <param> \
+      <value> \
+      </value> \
+    </param> \
+  </params> \
+</methodCall>";
+
+  std::auto_ptr<Request> req(parse_request(r));
+  BOOST_CHECK_EQUAL(req->get_name(), "do_something");
+  BOOST_CHECK_EQUAL(req->get_params().size(), 1);
+  BOOST_CHECK_EQUAL(req->get_params().back().get_string(), "");
+}
+
 BOOST_AUTO_TEST_CASE(test_parse_request_no_params)
 {
   std::string r = "<methodCall><methodName>do_something</methodName></methodCall>";
@@ -289,6 +307,21 @@ BOOST_AUTO_TEST_CASE(test_parse_malformed_request)
 // response
 //
 
+BOOST_AUTO_TEST_CASE(test_parse_empty_response)
+{
+  std::string r = "<methodResponse> \
+  <params> \
+    <param> \
+      <value> \
+      </value> \
+    </param> \
+  </params> \
+</methodResponse>";
+
+  Response res = parse_response(r);
+  BOOST_CHECK_EQUAL(res.value().get_string(), "");
+}
+
 BOOST_AUTO_TEST_CASE(test_parse_ok_response)
 {
   std::string r = "<methodResponse> \
@@ -310,6 +343,28 @@ BOOST_AUTO_TEST_CASE(test_parse_ok_response)
   BOOST_CHECK(res.value().is_struct());
   BOOST_CHECK_EQUAL(res.value().the_struct().size(), 1);
   BOOST_CHECK_EQUAL(res.value()["temp"].get_double(), 15.5);
+}
+
+BOOST_AUTO_TEST_CASE(test_parse_empty_fault_response_1)
+{
+  std::string r = "<methodResponse> \
+    <fault> \
+    </fault> \
+</methodResponse>";
+
+  BOOST_CHECK_THROW(parse_response(r), XML_RPC_violation);
+}
+
+BOOST_AUTO_TEST_CASE(test_parse_empty_fault_response_2)
+{
+  std::string r = "<methodResponse> \
+    <fault> \
+    <value> \
+    </value> \
+    </fault> \
+</methodResponse>";
+
+  BOOST_CHECK_THROW(parse_response(r), XML_RPC_violation);
 }
 
 BOOST_AUTO_TEST_CASE(test_parse_fault_response)
