@@ -20,7 +20,7 @@ void register_user_methods(iqxmlrpc::Server& s)
 void serverctl_stop::execute( 
   const iqxmlrpc::Param_list&, iqxmlrpc::Value& )
 {
-  BOOST_MESSAGE("Stop_server method invoked.");
+  BOOST_TEST_MESSAGE("Stop_server method invoked.");
   server().log_message( "Stopping the server." );
   server().set_exit_flag();
 }
@@ -31,7 +31,7 @@ void echo_method(
   const iqxmlrpc::Param_list& args,
   iqxmlrpc::Value& retval )
 {
-  BOOST_MESSAGE("Echo method invoked.");
+  BOOST_TEST_MESSAGE("Echo method invoked.");
 
   if (args.size())
     retval = args[0];
@@ -42,7 +42,7 @@ void echo_user(
   const iqxmlrpc::Param_list&,
   iqxmlrpc::Value& retval )
 {
-  BOOST_MESSAGE("echo_user method invoked.");
+  BOOST_TEST_MESSAGE("echo_user method invoked.");
   retval = m->authname();
 }
 
@@ -51,7 +51,7 @@ void error_method(
   const iqxmlrpc::Param_list&,
   iqxmlrpc::Value& retval )
 {
-  BOOST_MESSAGE("error_method method invoked.");
+  BOOST_TEST_MESSAGE("error_method method invoked.");
   throw iqxmlrpc::Fault(123, "My fault");
 }
 
@@ -66,13 +66,13 @@ namespace
 void Get_file::execute( 
   const iqxmlrpc::Param_list& args, iqxmlrpc::Value& retval )
 {
-  BOOST_MESSAGE("Get_file method invoked.");
+  BOOST_TEST_MESSAGE("Get_file method invoked.");
 
   int retsize = args[0]["requested-size"]; 
   if (retsize <= 0)
 	  throw Fault( 0, "requested-size must be > 0" );
 
-  BOOST_MESSAGE("Generating data...");
+  BOOST_TEST_MESSAGE("Generating data...");
   srand(time(0));
   std::string s(retsize, '\0');
   std::generate(s.begin(), s.end(), brand);
@@ -80,7 +80,7 @@ void Get_file::execute(
   retval = Struct();
   retval.insert("data", Binary_data::from_data(s));
 
-  BOOST_MESSAGE("Calculating MD5 checksum...");
+  BOOST_TEST_MESSAGE("Calculating MD5 checksum...");
   typedef const unsigned char md5char;
   typedef const char strchar;
 

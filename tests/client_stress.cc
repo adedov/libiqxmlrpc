@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE( stress_test )
 
   std::ostringstream ss;
   ss << "Stress test elapsed time: " << timer.elapsed();
-  BOOST_MESSAGE(ss.str());
+  BOOST_TEST_MESSAGE(ss.str());
 }
 
 // vim:ts=2:sw=2:et

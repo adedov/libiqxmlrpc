@@ -11,14 +11,14 @@ using namespace iqxmlrpc;
 
 BOOST_AUTO_TEST_CASE( nil_test )
 {
-  BOOST_MESSAGE("Nil test...");
+  BOOST_TEST_MESSAGE("Nil test...");
   Value nil = Nil();
   BOOST_CHECK(nil.is_nil());
 }
 
 BOOST_AUTO_TEST_CASE( scalar_test )
 {
-  BOOST_MESSAGE("Scalar types test...");
+  BOOST_TEST_MESSAGE("Scalar types test...");
 
   Value vi = 10;
   BOOST_CHECK(vi.is_int());
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE( scalar_test )
 
 BOOST_AUTO_TEST_CASE( array_test )
 {
-  BOOST_MESSAGE("Array test...");
+  BOOST_TEST_MESSAGE("Array test...");
 
   Array a;
   a.push_back("test string");
@@ -103,7 +103,7 @@ inline void check_struct_value(const Struct& s)
 
 BOOST_AUTO_TEST_CASE( struct_test )
 {
-  BOOST_MESSAGE("Struct test...");
+  BOOST_TEST_MESSAGE("Struct test...");
 
   BOOST_CHECKPOINT("Filling the struct");
   Struct s;
@@ -166,13 +166,13 @@ BOOST_AUTO_TEST_CASE( struct_test )
 #if 0
 BOOST_AUTO_TEST_CASE( binary_test )
 {
-  BOOST_MESSAGE("Binary_data test...");
+  BOOST_TEST_MESSAGE("Binary_data test...");
   BOOST_FAIL("TEST NOT IMPLEMENTED!");
 }
 
 BOOST_AUTO_TEST_CASE( date_time_test )
 {
-  BOOST_MESSAGE("Date_time test...");
+  BOOST_TEST_MESSAGE("Date_time test...");
   BOOST_FAIL("TEST NOT IMPLEMENTED!");
 }
 #endif

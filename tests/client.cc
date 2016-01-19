@@ -49,11 +49,11 @@ BOOST_AUTO_TEST_CASE( introspection_test )
   Response retval( introspect() );
   BOOST_REQUIRE_MESSAGE(!retval.is_fault(), retval.fault_string());
 
-  BOOST_MESSAGE("system.listMethods output:");
+  BOOST_TEST_MESSAGE("system.listMethods output:");
   const Value& v = retval.value();
   for (Array::const_iterator i = v.arr_begin(); i != v.arr_end(); ++i)
   {
-    BOOST_MESSAGE("\t" + i->get_string());
+    BOOST_TEST_MESSAGE("\t" + i->get_string());
   }
 }
 
@@ -118,9 +118,9 @@ BOOST_AUTO_TEST_CASE( get_file_test )
   std::auto_ptr<Binary_data> gen_md5( Binary_data::from_data(
     reinterpret_cast<strchar*>(md5), sizeof(md5)) );
 
-  BOOST_MESSAGE("Recieved MD5:   " + m.get_base64());
-  BOOST_MESSAGE("Calculated MD5: " + gen_md5->get_base64());
-  BOOST_WARN_MESSAGE(false, "TODO: Binary_data::operator ==(const Binary_data&)");
+  BOOST_TEST_MESSAGE("Recieved MD5:   " + m.get_base64());
+  BOOST_TEST_MESSAGE("Calculated MD5: " + gen_md5->get_base64());
+  // "TODO: Binary_data::operator ==(const Binary_data&)");
   BOOST_CHECK(gen_md5->get_base64() == m.get_base64());
 }
 
