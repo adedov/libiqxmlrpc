@@ -1,5 +1,10 @@
 Look into ChangeLog file for full list of changes.
 
+0.13.4 - 0.13.5
+  * Stability: Fix crash on parsing requests/responses with empty root <value>
+    parameter (Thanks to Evgeny Dontsov).
+  * Minor build and installation fixes (Thanks to Joseph VanAndel).
+
 0.13.3 - 0.13.4
 Fix compilation on Windows when OpenSSL 1.0.2 is used.
 
