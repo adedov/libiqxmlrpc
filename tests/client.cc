@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE( get_file_test )
 {
   BOOST_REQUIRE(test_client);
   Get_file_proxy get_file(test_client);
-  Response retval( get_file(1024*1024*10) ); // request 10Mb
+  Response retval( get_file(1024*1024*1) ); // request 10Mb
 
   const Value& v = retval.value();
   const Binary_data& d = v["data"];
@@ -137,4 +137,49 @@ BOOST_AUTO_TEST_CASE( stop_server )
   } catch (const iqnet::network_error&) {}
 }
 
+BOOST_AUTO_TEST_CASE( trace_all ) {
+  BOOST_REQUIRE(test_client);
+  test_client->set_traceinfo(TraceInfo("123", "456"));
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "123456");
+}
+
+BOOST_AUTO_TEST_CASE( trace_all_exec ) {
+  BOOST_REQUIRE(test_client);
+  Trace_proxy trace(test_client);
+  Response retval(trace("", TraceInfo("580", "111")));
+  BOOST_CHECK(retval.value().get_string() == "580111");
+}
+
+BOOST_AUTO_TEST_CASE( trace_corr ) {
+  BOOST_REQUIRE(test_client);
+  test_client->set_traceinfo(TraceInfo("123", ""));
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "123");
+}
+
+BOOST_AUTO_TEST_CASE( trace_span ) {
+  BOOST_REQUIRE(test_client);
+  test_client->set_traceinfo(TraceInfo("", "456"));
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "456");
+}
+
+BOOST_AUTO_TEST_CASE( trace_no ) {
+  BOOST_REQUIRE(test_client);
+  test_client->set_traceinfo(TraceInfo());
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "");
+}
+
+BOOST_AUTO_TEST_CASE( trace_empty ) {
+  BOOST_REQUIRE(test_client);
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "");
+}
 // vim:ts=2:sw=2:et

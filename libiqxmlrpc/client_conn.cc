@@ -16,7 +16,7 @@ Client_connection::~Client_connection()
 {
 }
 
-Response Client_connection::process_session( const Request& req )
+Response Client_connection::process_session( const Request& req, const boost::optional<TraceInfo>& trace_info )
 {
   using namespace http;
 
@@ -30,6 +30,12 @@ Response Client_connection::process_session( const Request& req )
 
   if (opts().has_authinfo())
     req_h->set_authinfo( opts().auth_user(), opts().auth_passwd() );
+
+  if (trace_info) {
+    req_h->set_traceinfo( trace_info.get() );
+  } else {
+    req_h->set_traceinfo( opts().trace_info() );
+  }
 
   Packet req_p( req_h.release(), req_xml_str );
   req_p.set_keep_alive( opts().keep_alive() );

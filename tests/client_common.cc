@@ -17,3 +17,9 @@ Response Method_proxy::operator ()(const iqxmlrpc::Value& val)
   pl.push_back(val);
   return client_->execute(method_name_, pl);
 }
+
+Response Method_proxy::operator ()(const iqxmlrpc::Value& val, const TraceInfo& trace_info) {
+  Param_list pl;
+  pl.push_back(val);
+  return client_->execute(method_name_, pl, trace_info); 
+}

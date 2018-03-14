@@ -32,6 +32,8 @@ namespace names {
   const char date[]           = "date";
   const char authorization[]  = "authorization";
   const char expect_continue[]= "expect";
+  const char correlation_id[] = "X-Correlation-ID";
+  const char span_id[]        = "X-Span-ID";
 } // namespace names
 
 
@@ -140,6 +142,15 @@ T Header::get_option(const std::string& name) const
 std::string Header::get_string(const std::string& name) const
 {
   return get_option<std::string>(name);
+}
+
+std::string Header::get_string(const std::string& name, const std::string& dflt) const
+{
+  try {
+    return get_option<std::string>(name);
+  } catch (Malformed_packet e) {
+    return dflt;
+  }
 }
 
 unsigned Header::get_unsigned(const std::string& name) const
@@ -277,6 +288,20 @@ std::string Request_header::host() const
 std::string Request_header::agent() const
 {
   return get_string(names::user_agent);
+}
+
+void Request_header::get_traceinfo(iqxmlrpc::TraceInfo& traceInfo) const
+{
+  traceInfo(
+      get_string(boost::algorithm::to_lower_copy(std::string(names::correlation_id)), ""),
+      get_string(boost::algorithm::to_lower_copy(std::string(names::span_id)), "")
+      );
+}
+
+void Request_header::set_traceinfo(const iqxmlrpc::TraceInfo& traceInfo)
+{
+  set_option(names::correlation_id, traceInfo.correlationID);
+  set_option(names::span_id, traceInfo.spanID);
 }
 
 bool Request_header::has_authinfo() const

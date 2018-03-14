@@ -10,6 +10,8 @@
 #include "request.h"
 #include "response.h"
 
+#include <boost/optional.hpp>
+
 namespace iqxmlrpc {
 
 class Client_options;
@@ -22,7 +24,7 @@ public:
 
   void set_options(const Client_options& o) { options = &o; }
 
-  Response process_session(const Request&);
+  Response process_session(const Request&, const boost::optional<TraceInfo>& trace_info = boost::optional<TraceInfo>());
 
 protected:
   http::Packet* read_response( const std::string&, bool read_hdr_only = false );

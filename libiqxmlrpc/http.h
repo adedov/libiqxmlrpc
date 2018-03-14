@@ -6,6 +6,7 @@
 
 #include "except.h"
 #include "inet_addr.h"
+#include "trace_info.h"
 
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
@@ -59,6 +60,7 @@ protected:
 
   const std::string&  get_head_line() const { return head_line_; }
   std::string         get_string(const std::string& name) const;
+  std::string         get_string(const std::string& name, const std::string& dflt) const;
   unsigned            get_unsigned(const std::string& name) const;
 
   //
@@ -114,6 +116,9 @@ public:
   bool has_authinfo() const;
   void get_authinfo(std::string& user, std::string& password) const;
   void set_authinfo(const std::string& user, const std::string& password);
+
+  void get_traceinfo(iqxmlrpc::TraceInfo& traceInfo) const;
+  void set_traceinfo(const iqxmlrpc::TraceInfo& traceInfo);
 
 private:
   virtual std::string dump_head() const;

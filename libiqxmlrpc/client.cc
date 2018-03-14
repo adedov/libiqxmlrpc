@@ -124,15 +124,20 @@ void Client_base::set_authinfo( const std::string& u, const std::string& p )
   impl_->opts.set_authinfo( u, p );
 }
 
+void Client_base::set_traceinfo( const TraceInfo& traceInfo)
+{
+  impl_->opts.set_traceinfo(traceInfo);
+}
+
 Response Client_base::execute(
-  const std::string& method, const Param_list& pl )
+  const std::string& method, const Param_list& pl, const boost::optional<TraceInfo>& trace_info )
 {
   Request req( method, pl );
 
   Auto_conn conn( *impl_.get(), *this );
   conn->set_options(impl_->opts);
 
-  return conn->process_session( req );
+  return conn->process_session( req, trace_info );
 }
 
 } // namespace iqxmlrpc
