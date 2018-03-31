@@ -3,6 +3,7 @@
 
 #include <string>
 #include <libiqxmlrpc/client.h>
+#include <libiqxmlrpc/trace_info.h>
 
 class Method_proxy {
   iqxmlrpc::Client_base* client_;
@@ -13,6 +14,7 @@ public:
   virtual ~Method_proxy();
 
   iqxmlrpc::Response operator ()(const iqxmlrpc::Value&);
+  iqxmlrpc::Response operator ()(const iqxmlrpc::Value&, const iqxmlrpc::TraceInfo&);
 };
 
 class Stop_server_proxy: public Method_proxy {
@@ -41,6 +43,12 @@ class Echo_proxy: public Method_proxy {
 public:
   Echo_proxy(iqxmlrpc::Client_base* cb):
     Method_proxy(cb, "echo") {}
+};
+
+class Trace_proxy: public Method_proxy {
+public:
+  Trace_proxy(iqxmlrpc::Client_base* cb):
+    Method_proxy(cb, "trace") {}
 };
 
 class Error_proxy: public Method_proxy {

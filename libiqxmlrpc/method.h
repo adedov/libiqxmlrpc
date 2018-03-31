@@ -7,6 +7,7 @@
 #include "except.h"
 #include "inet_addr.h"
 #include "value.h"
+#include "trace_info.h"
 
 #include <boost/utility.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -57,6 +58,7 @@ private:
   friend class Method_dispatcher_base;
   Data data_;
   std::string authname_;
+  TraceInfo        traceInfo_;
 
 public:
   virtual ~Method() {}
@@ -73,9 +75,12 @@ public:
   const std::string&      authname()      const { return authname_; }
   void                    authname(const std::string& n) { authname_ = n; }
 
+  const TraceInfo&        traceInfo() const { return traceInfo_; }
+  void                    traceInfo(const TraceInfo& traceInfo) { traceInfo_ = traceInfo; }
+
 private:
   //! Replace it with your actual code.
-  virtual void execute( const Param_list& params, Value& response ) = 0;
+  virtual void execute( const Param_list& params, Value& response) = 0;
 };
 
 #ifdef _MSC_VER

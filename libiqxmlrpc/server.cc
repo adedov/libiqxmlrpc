@@ -13,6 +13,7 @@
 #include "request.h"
 #include "response.h"
 #include "server_conn.h"
+#include "trace_info.h"
 
 namespace iqxmlrpc {
 
@@ -175,6 +176,18 @@ authenticate(const http::Packet& pkt, const Auth_Plugin_base* ap)
   return username;
 }
 
+iqxmlrpc::TraceInfo
+parseTraceInfo(const http::Packet& pkt) {
+  
+  const http::Request_header& hdr =
+    dynamic_cast<const http::Request_header&>(*pkt.header());
+
+  iqxmlrpc::TraceInfo traceInfo;
+  hdr.get_traceinfo(traceInfo);
+
+  return traceInfo;
+}
+
 } // anonymous namespace
 
 void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
@@ -199,6 +212,8 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 
     if (authname)
       meth->authname(authname.get());
+
+    meth->traceInfo(parseTraceInfo(*pkt));
 
     executor = impl->exec_factory->create( meth, this, conn );
     executor->set_interceptors(impl->interceptors.get());
