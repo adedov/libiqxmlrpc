@@ -119,8 +119,6 @@ public:
   void get_authinfo(std::string& user, std::string& password) const;
   void set_authinfo(const std::string& user, const std::string& password);
 
-
-
 private:
   virtual std::string dump_head() const;
 };

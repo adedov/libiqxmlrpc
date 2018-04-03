@@ -10,8 +10,6 @@
 #include "request.h"
 #include "response.h"
 
-#include <boost/optional.hpp>
-
 namespace iqxmlrpc {
 
 class Client_options;
