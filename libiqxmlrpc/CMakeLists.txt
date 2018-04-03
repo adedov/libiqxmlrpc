@@ -110,6 +110,7 @@ add_library(iqxmlrpc SHARED
   value_type_visitor.cc
   value_type_xml.cc
   xml_builder.cc
+  xheaders.cc
 )
 
 if(WIN32)

@@ -6,7 +6,7 @@
 
 #include <string>
 #include "inet_addr.h"
-#include "trace_info.h"
+#include "xheaders.h"
 
 namespace iqxmlrpc {
 
@@ -36,7 +36,7 @@ public:
   bool                     has_authinfo() const { return !auth_user_.empty(); }
   const std::string&       auth_user()    const { return auth_user_; }
   const std::string&       auth_passwd()  const { return auth_passwd_; }
-  const TraceInfo&         trace_info()   const { return traceInfo_; }
+  const XHeaders&          xheaders()     const { return xheaders_; }
 
   void set_timeout( int seconds )
   {
@@ -55,9 +55,9 @@ public:
     auth_passwd_ = password;
   }
 
-  void set_traceinfo( const TraceInfo& traceInfo )
+  void set_xheaders( const XHeaders& xheaders )
   {
-    traceInfo_ = traceInfo;
+    xheaders_ = xheaders;
   }
 
 private:
@@ -72,7 +72,7 @@ private:
   std::string      auth_user_;
   std::string      auth_passwd_;
 
-  TraceInfo        traceInfo_;
+  XHeaders         xheaders_;
 };
 
 } // namespace iqxmlrpc

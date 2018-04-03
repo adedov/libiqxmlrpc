@@ -139,7 +139,10 @@ BOOST_AUTO_TEST_CASE( stop_server )
 
 BOOST_AUTO_TEST_CASE( trace_all ) {
   BOOST_REQUIRE(test_client);
-  test_client->set_traceinfo(TraceInfo("123", "456"));
+  XHeaders h;
+  h["X-Correlation-ID"] = "123";
+  h["X-Span-ID"] = "456";
+  test_client->set_xheaders(h);
   Trace_proxy trace(test_client);
   Response retval(trace(""));
   BOOST_CHECK(retval.value().get_string() == "123456");
@@ -147,14 +150,19 @@ BOOST_AUTO_TEST_CASE( trace_all ) {
 
 BOOST_AUTO_TEST_CASE( trace_all_exec ) {
   BOOST_REQUIRE(test_client);
+  XHeaders h;
+  h["X-Correlation-ID"] = "580";
+  h["X-Span-ID"] = "111";
   Trace_proxy trace(test_client);
-  Response retval(trace("", TraceInfo("580", "111")));
+  Response retval(trace("", h));
   BOOST_CHECK(retval.value().get_string() == "580111");
 }
 
 BOOST_AUTO_TEST_CASE( trace_corr ) {
   BOOST_REQUIRE(test_client);
-  test_client->set_traceinfo(TraceInfo("123", ""));
+  XHeaders h;
+  h["X-Correlation-ID"] = "123";
+  test_client->set_xheaders(h);
   Trace_proxy trace(test_client);
   Response retval(trace(""));
   BOOST_CHECK(retval.value().get_string() == "123");
@@ -162,7 +170,9 @@ BOOST_AUTO_TEST_CASE( trace_corr ) {
 
 BOOST_AUTO_TEST_CASE( trace_span ) {
   BOOST_REQUIRE(test_client);
-  test_client->set_traceinfo(TraceInfo("", "456"));
+  XHeaders h;
+  h["X-Span-ID"] = "456";
+  test_client->set_xheaders(h);
   Trace_proxy trace(test_client);
   Response retval(trace(""));
   BOOST_CHECK(retval.value().get_string() == "456");
@@ -170,7 +180,7 @@ BOOST_AUTO_TEST_CASE( trace_span ) {
 
 BOOST_AUTO_TEST_CASE( trace_no ) {
   BOOST_REQUIRE(test_client);
-  test_client->set_traceinfo(TraceInfo());
+  test_client->set_xheaders(XHeaders());
   Trace_proxy trace(test_client);
   Response retval(trace(""));
   BOOST_CHECK(retval.value().get_string() == "");

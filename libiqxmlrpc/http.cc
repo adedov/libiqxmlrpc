@@ -32,8 +32,6 @@ namespace names {
   const char date[]           = "date";
   const char authorization[]  = "authorization";
   const char expect_continue[]= "expect";
-  const char correlation_id[] = "X-Correlation-ID";
-  const char span_id[]        = "X-Span-ID";
 } // namespace names
 
 
@@ -70,7 +68,6 @@ void expect_continue(const std::string& val)
   if (!boost::starts_with(exp, "100-continue"))
     throw Expectation_failed();
 }
-
 } // namespace validator
 
 
@@ -142,15 +139,6 @@ T Header::get_option(const std::string& name) const
 std::string Header::get_string(const std::string& name) const
 {
   return get_option<std::string>(name);
-}
-
-std::string Header::get_string(const std::string& name, const std::string& dflt) const
-{
-  try {
-    return get_option<std::string>(name);
-  } catch (Malformed_packet e) {
-    return dflt;
-  }
 }
 
 unsigned Header::get_unsigned(const std::string& name) const
@@ -290,18 +278,20 @@ std::string Request_header::agent() const
   return get_string(names::user_agent);
 }
 
-void Request_header::get_traceinfo(iqxmlrpc::TraceInfo& traceInfo) const
+void Header::get_xheaders(iqxmlrpc::XHeaders& xheaders) const
 {
-  traceInfo(
-      get_string(boost::algorithm::to_lower_copy(std::string(names::correlation_id)), ""),
-      get_string(boost::algorithm::to_lower_copy(std::string(names::span_id)), "")
-      );
+  for (Options::const_iterator it = options_.begin(); it != options_.end(); ++it) {
+    if (XHeaders::validate(it->first)) {
+      xheaders[it->first] = it->second;
+    }
+  }
 }
 
-void Request_header::set_traceinfo(const iqxmlrpc::TraceInfo& traceInfo)
+void Header::set_xheaders(const iqxmlrpc::XHeaders& xheaders)
 {
-  set_option(names::correlation_id, traceInfo.correlationID);
-  set_option(names::span_id, traceInfo.spanID);
+  for( iqxmlrpc::XHeaders::const_iterator it = xheaders.begin(); it!=xheaders.end(); ++it ) {
+    set_option(it->first, it->second);
+  }
 }
 
 bool Request_header::has_authinfo() const

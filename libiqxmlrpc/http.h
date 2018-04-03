@@ -6,7 +6,7 @@
 
 #include "except.h"
 #include "inet_addr.h"
-#include "trace_info.h"
+#include "xheaders.h"
 
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
@@ -48,6 +48,9 @@ public:
   void set_conn_keep_alive( bool );
   void set_option(const std::string& name, const std::string& value);
 
+  void get_xheaders(iqxmlrpc::XHeaders& xheaders) const;
+  void set_xheaders(const iqxmlrpc::XHeaders& xheaders);
+
   //! Return text representation of header including final CRLF.
   std::string dump() const;
 
@@ -60,7 +63,6 @@ protected:
 
   const std::string&  get_head_line() const { return head_line_; }
   std::string         get_string(const std::string& name) const;
-  std::string         get_string(const std::string& name, const std::string& dflt) const;
   unsigned            get_unsigned(const std::string& name) const;
 
   //
@@ -117,8 +119,7 @@ public:
   void get_authinfo(std::string& user, std::string& password) const;
   void set_authinfo(const std::string& user, const std::string& password);
 
-  void get_traceinfo(iqxmlrpc::TraceInfo& traceInfo) const;
-  void set_traceinfo(const iqxmlrpc::TraceInfo& traceInfo);
+
 
 private:
   virtual std::string dump_head() const;

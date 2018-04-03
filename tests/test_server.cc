@@ -11,7 +11,7 @@
 #include "libiqxmlrpc/auth_plugin.h"
 #include "server_config.h"
 #include "methods.h"
-#include "libiqxmlrpc/trace_info.h"
+#include "libiqxmlrpc/xheaders.h"
 
 #if defined(WIN32)
 #include <winsock2.h>
@@ -24,7 +24,7 @@ class LogInterceptor: public Interceptor {
 public:
   void process(Method* m, const Param_list& p, Value& r)
   {
-    std::cout << "Log Interceptor: " << m->name() << " is executing." << m->traceInfo() << "\n";
+    std::cout << "Log Interceptor: " << m->name() << " is executing." << m->xheaders() << "\n";
     yield(m, p, r);
   }
 };
@@ -35,8 +35,14 @@ public:
   {
     if( m->name() == "trace" ){
       Param_list np;
-      np.push_back(m->traceInfo().correlationID);
-      np.push_back(m->traceInfo().spanID);
+      XHeaders::const_iterator it = m->xheaders().find("X-Correlation-ID");
+      if (it != m->xheaders().end()) {
+        np.push_back(it->second);
+      }
+      it = m->xheaders().find("X-Span-ID");
+      if (it != m->xheaders().end()) {
+        np.push_back(it->second);
+      }
       yield(m, np, r);
     } else {
       yield(m, p, r);

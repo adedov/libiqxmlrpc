@@ -24,7 +24,7 @@ public:
 
   void set_options(const Client_options& o) { options = &o; }
 
-  Response process_session(const Request&, const boost::optional<TraceInfo>& trace_info = boost::optional<TraceInfo>());
+  Response process_session(const Request&, const XHeaders& xheaders = XHeaders());
 
 protected:
   http::Packet* read_response( const std::string&, bool read_hdr_only = false );
