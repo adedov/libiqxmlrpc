@@ -281,11 +281,7 @@ std::string Request_header::agent() const
 
 void Header::get_xheaders(iqxmlrpc::XHeaders& xheaders) const
 {
-  for (Options::const_iterator it = options_.begin(); it != options_.end(); ++it) {
-    if (XHeaders::validate(it->first)) {
-      xheaders[it->first] = it->second;
-    }
-  }
+  xheaders = options_;
 }
 
 void Header::set_xheaders(const iqxmlrpc::XHeaders& xheaders)
