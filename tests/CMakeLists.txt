@@ -10,7 +10,7 @@ macro (iqxmlrpc_test test_name)
 	message("Add test ${test_name}")
 	add_executable(${test_name} ${ARGN})
 	target_link_libraries(${test_name} iqxmlrpc ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES} crypto)
-  link_directories(../libiqxmlrpc)
+	link_directories(../libiqxmlrpc)
 endmacro (iqxmlrpc_test)
 
 iqxmlrpc_test(value-test test_value_usage.cc)

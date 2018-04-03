@@ -68,6 +68,7 @@ void expect_continue(const std::string& val)
   if (!boost::starts_with(exp, "100-continue"))
     throw Expectation_failed();
 }
+
 } // namespace validator
 
 
