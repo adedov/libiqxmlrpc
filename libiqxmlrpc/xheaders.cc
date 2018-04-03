@@ -7,9 +7,9 @@ namespace iqxmlrpc
 XHeaders& XHeaders::operator=(const std::map<std::string, std::string>& v) {
   xheaders_.clear();
   for (XHeaders::const_iterator it = v.begin(); it != v.end(); ++it) {
-    std::string key(it->first);
-    boost::to_lower(key);
-    if (validate(key)) {
+    if (validate(it->first)) {
+      std::string key(it->first);
+      boost::to_lower(key);
       xheaders_[key] = it->second;
     }
   }
@@ -19,11 +19,11 @@ XHeaders& XHeaders::operator=(const std::map<std::string, std::string>& v) {
 XHeaders::~XHeaders() {}
 
 std::string& XHeaders::operator[] (const std::string& v) {
-  std::string key(v);
-  boost::to_lower(key);
-  if (!validate(key)) {
+  if (!validate(v)) {
     throw Error_xheader("The header doesn't starts with `X-`");
   }
+  std::string key(v);
+  boost::to_lower(key);
   return xheaders_[key];
 }
 
@@ -42,10 +42,7 @@ XHeaders::const_iterator XHeaders::end() const {
 }
 
 bool XHeaders::validate(const std::string& val) {
-  std::string exp(val);
-  boost::to_lower(exp);
-
-  return boost::starts_with(exp, "x-");
+  return boost::starts_with(val, "X-") || boost::starts_with(val, "x-");
 }
 
 Error_xheader::Error_xheader(const char* msg) : invalid_argument(msg) {}

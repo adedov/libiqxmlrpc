@@ -176,10 +176,6 @@ authenticate(const http::Packet& pkt, const Auth_Plugin_base* ap)
   return username;
 }
 
-void parseTraceInfo(const http::Packet& pkt, XHeaders &xheaders) {
-  pkt.header()->get_xheaders(xheaders);
-}
-
 } // anonymous namespace
 
 void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
@@ -205,7 +201,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
     if (authname)
       meth->authname(authname.get());
 
-    parseTraceInfo(*pkt, meth->xheaders());
+    pkt->header()->get_xheaders(meth->xheaders());
 
     executor = impl->exec_factory->create( meth, this, conn );
     executor->set_interceptors(impl->interceptors.get());
