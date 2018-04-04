@@ -137,4 +137,72 @@ BOOST_AUTO_TEST_CASE( stop_server )
   } catch (const iqnet::network_error&) {}
 }
 
+BOOST_AUTO_TEST_CASE( trace_all ) {
+  BOOST_REQUIRE(test_client);
+  XHeaders h;
+  h["X-Correlation-ID"] = "123";
+  h["X-Span-ID"] = "456";
+  test_client->set_xheaders(h);
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "123456");
+}
+
+BOOST_AUTO_TEST_CASE( trace_all_exec ) {
+  BOOST_REQUIRE(test_client);
+  XHeaders h;
+  h["X-Correlation-ID"] = "580";
+  h["X-Span-ID"] = "111";
+  Trace_proxy trace(test_client);
+  Response retval(trace("", h));
+  BOOST_CHECK(retval.value().get_string() == "580111");
+}
+
+BOOST_AUTO_TEST_CASE( trace_all_exec_override ) {
+  BOOST_REQUIRE(test_client);
+  XHeaders gh;
+  gh["X-Correlation-ID"] = "123";
+  gh["X-Span-ID"] = "456";
+  test_client->set_xheaders(gh);
+  XHeaders h;
+  h["X-Span-ID"] = "111";
+  Trace_proxy trace(test_client);
+  Response retval(trace("", h));
+  BOOST_CHECK(retval.value().get_string() == "123111");
+}
+
+BOOST_AUTO_TEST_CASE( trace_corr ) {
+  BOOST_REQUIRE(test_client);
+  XHeaders h;
+  h["X-Correlation-ID"] = "123";
+  test_client->set_xheaders(h);
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "123");
+}
+
+BOOST_AUTO_TEST_CASE( trace_span ) {
+  BOOST_REQUIRE(test_client);
+  XHeaders h;
+  h["X-Span-ID"] = "456";
+  test_client->set_xheaders(h);
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "456");
+}
+
+BOOST_AUTO_TEST_CASE( trace_no ) {
+  BOOST_REQUIRE(test_client);
+  test_client->set_xheaders(XHeaders());
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "");
+}
+
+BOOST_AUTO_TEST_CASE( trace_empty ) {
+  BOOST_REQUIRE(test_client);
+  Trace_proxy trace(test_client);
+  Response retval(trace(""));
+  BOOST_CHECK(retval.value().get_string() == "");
+}
 // vim:ts=2:sw=2:et

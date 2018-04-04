@@ -7,6 +7,7 @@
 #include "except.h"
 #include "inet_addr.h"
 #include "value.h"
+#include "xheaders.h"
 
 #include <boost/utility.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -57,6 +58,7 @@ private:
   friend class Method_dispatcher_base;
   Data data_;
   std::string authname_;
+  XHeaders xheaders_;
 
 public:
   virtual ~Method() {}
@@ -72,6 +74,8 @@ public:
   bool                    authenticated() const { return !authname_.empty(); }
   const std::string&      authname()      const { return authname_; }
   void                    authname(const std::string& n) { authname_ = n; }
+
+  XHeaders&               xheaders() { return xheaders_; }
 
 private:
   //! Replace it with your actual code.

@@ -6,6 +6,7 @@
 
 #include <string>
 #include "inet_addr.h"
+#include "xheaders.h"
 
 namespace iqxmlrpc {
 
@@ -35,6 +36,7 @@ public:
   bool                     has_authinfo() const { return !auth_user_.empty(); }
   const std::string&       auth_user()    const { return auth_user_; }
   const std::string&       auth_passwd()  const { return auth_passwd_; }
+  const XHeaders&          xheaders()     const { return xheaders_; }
 
   void set_timeout( int seconds )
   {
@@ -53,6 +55,11 @@ public:
     auth_passwd_ = password;
   }
 
+  void set_xheaders( const XHeaders& xheaders )
+  {
+    xheaders_ = xheaders;
+  }
+
 private:
   iqnet::Inet_addr addr_;
   std::string      uri_;
@@ -64,6 +71,8 @@ private:
 
   std::string      auth_user_;
   std::string      auth_passwd_;
+
+  XHeaders         xheaders_;
 };
 
 } // namespace iqxmlrpc

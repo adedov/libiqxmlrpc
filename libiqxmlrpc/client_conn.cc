@@ -16,7 +16,7 @@ Client_connection::~Client_connection()
 {
 }
 
-Response Client_connection::process_session( const Request& req )
+Response Client_connection::process_session( const Request& req, const XHeaders& xheaders )
 {
   using namespace http;
 
@@ -30,6 +30,9 @@ Response Client_connection::process_session( const Request& req )
 
   if (opts().has_authinfo())
     req_h->set_authinfo( opts().auth_user(), opts().auth_passwd() );
+
+  req_h->set_xheaders( opts().xheaders() );
+  req_h->set_xheaders( xheaders );
 
   Packet req_p( req_h.release(), req_xml_str );
   req_p.set_keep_alive( opts().keep_alive() );

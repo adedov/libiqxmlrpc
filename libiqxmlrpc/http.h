@@ -6,6 +6,7 @@
 
 #include "except.h"
 #include "inet_addr.h"
+#include "xheaders.h"
 
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
@@ -46,6 +47,9 @@ public:
   void set_content_length( size_t ln );
   void set_conn_keep_alive( bool );
   void set_option(const std::string& name, const std::string& value);
+
+  void get_xheaders(iqxmlrpc::XHeaders& xheaders) const;
+  void set_xheaders(const iqxmlrpc::XHeaders& xheaders);
 
   //! Return text representation of header including final CRLF.
   std::string dump() const;

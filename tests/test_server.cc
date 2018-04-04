@@ -11,6 +11,7 @@
 #include "libiqxmlrpc/auth_plugin.h"
 #include "server_config.h"
 #include "methods.h"
+#include "libiqxmlrpc/xheaders.h"
 
 #if defined(WIN32)
 #include <winsock2.h>
@@ -23,8 +24,29 @@ class LogInterceptor: public Interceptor {
 public:
   void process(Method* m, const Param_list& p, Value& r)
   {
-    std::cout << "Log Interceptor: " << m->name() << " is executing.\n";
+    std::cout << "Log Interceptor: " << m->name() << " is executing." << m->xheaders() << "\n";
     yield(m, p, r);
+  }
+};
+
+class TraceInterceptor: public Interceptor {
+public:
+  void process(Method* m, const Param_list& p, Value& r)
+  {
+    if( m->name() == "trace" ){
+      Param_list np;
+      XHeaders::const_iterator it = m->xheaders().find("X-Correlation-ID");
+      if (it != m->xheaders().end()) {
+        np.push_back(it->second);
+      }
+      it = m->xheaders().find("X-Span-ID");
+      if (it != m->xheaders().end()) {
+        np.push_back(it->second);
+      }
+      yield(m, np, r);
+    } else {
+      yield(m, p, r);
+    }
   }
 };
 
@@ -102,6 +124,7 @@ Test_server::Test_server(const Test_server_config& conf):
 
   impl_->push_interceptor(new CallCountingInterceptor);
   impl_->push_interceptor(new LogInterceptor);
+  impl_->push_interceptor(new TraceInterceptor);
 
   impl_->log_errors( &std::cerr );
   impl_->enable_introspection();

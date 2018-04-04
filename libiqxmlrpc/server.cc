@@ -13,6 +13,7 @@
 #include "request.h"
 #include "response.h"
 #include "server_conn.h"
+#include "xheaders.h"
 
 namespace iqxmlrpc {
 
@@ -199,6 +200,8 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 
     if (authname)
       meth->authname(authname.get());
+
+    pkt->header()->get_xheaders(meth->xheaders());
 
     executor = impl->exec_factory->create( meth, this, conn );
     executor->set_interceptors(impl->interceptors.get());

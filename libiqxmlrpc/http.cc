@@ -279,6 +279,18 @@ std::string Request_header::agent() const
   return get_string(names::user_agent);
 }
 
+void Header::get_xheaders(iqxmlrpc::XHeaders& xheaders) const
+{
+  xheaders = options_;
+}
+
+void Header::set_xheaders(const iqxmlrpc::XHeaders& xheaders)
+{
+  for( iqxmlrpc::XHeaders::const_iterator it = xheaders.begin(); it!=xheaders.end(); ++it ) {
+    set_option(it->first, it->second);
+  }
+}
+
 bool Request_header::has_authinfo() const
 {
   return option_exists(names::authorization);

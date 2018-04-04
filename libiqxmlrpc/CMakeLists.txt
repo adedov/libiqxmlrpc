@@ -58,6 +58,7 @@ set(PUBLIC_HEADERS
   value_type.inl
   value_type_visitor.h
   value.h
+  xheaders.h
 )
 
 set(PRIVATE_HEADERS
@@ -110,6 +111,7 @@ add_library(iqxmlrpc SHARED
   value_type_visitor.cc
   value_type_xml.cc
   xml_builder.cc
+  xheaders.cc
 )
 
 if(WIN32)

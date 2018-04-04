@@ -33,7 +33,7 @@ public:
   virtual ~Client_base();
 
   //! Perform Remote Procedure Call
-  Response execute( const std::string&, const Param_list& );
+  Response execute( const std::string&, const Param_list&, const XHeaders& xheaders = XHeaders() );
 
   //! Perform Remote Procedure Call with only one parameter transfered
   Response execute( const std::string& method, const Value& val )
@@ -56,6 +56,8 @@ public:
 
   //! Set data for HTTP Basic authentication
   void set_authinfo(const std::string& user, const std::string& password);
+
+  void set_xheaders(const XHeaders& xheaders);
 
 protected:
   int timeout() const;
