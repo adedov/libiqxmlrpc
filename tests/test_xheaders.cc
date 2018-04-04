@@ -52,7 +52,7 @@ BOOST_FIXTURE_TEST_CASE( find, XHeaders_fixture )
 
 BOOST_FIXTURE_TEST_CASE( brackets, XHeaders_fixture )
 {
-  BOOST_TEST_MESSAGE("Operator = test...");
+  BOOST_TEST_MESSAGE("Operator [] test...");
 
   h["X-new"] = "new";
   BOOST_CHECK_EQUAL(h.size(), 1);
