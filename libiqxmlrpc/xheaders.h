@@ -15,8 +15,9 @@ private:
 public:
   typedef std::map<std::string, std::string>::const_iterator const_iterator;
   virtual XHeaders& operator=(const std::map<std::string, std::string>& v);
-  virtual std::string& operator[] (const std::string& v);
-  virtual const_iterator find (const std::string& k) const;
+  virtual std::string& operator[](const std::string& v);
+  virtual size_t size() const;
+  virtual const_iterator find(const std::string& k) const;
   virtual const_iterator begin() const;
   virtual const_iterator end() const;
   virtual ~XHeaders();

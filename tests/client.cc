@@ -158,6 +158,19 @@ BOOST_AUTO_TEST_CASE( trace_all_exec ) {
   BOOST_CHECK(retval.value().get_string() == "580111");
 }
 
+BOOST_AUTO_TEST_CASE( trace_all_exec_override ) {
+  BOOST_REQUIRE(test_client);
+  XHeaders gh;
+  gh["X-Correlation-ID"] = "123";
+  gh["X-Span-ID"] = "456";
+  test_client->set_xheaders(gh);
+  XHeaders h;
+  h["X-Span-ID"] = "111";
+  Trace_proxy trace(test_client);
+  Response retval(trace("", h));
+  BOOST_CHECK(retval.value().get_string() == "123111");
+}
+
 BOOST_AUTO_TEST_CASE( trace_corr ) {
   BOOST_REQUIRE(test_client);
   XHeaders h;

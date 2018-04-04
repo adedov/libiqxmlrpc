@@ -27,6 +27,10 @@ std::string& XHeaders::operator[] (const std::string& v) {
   return xheaders_[key];
 }
 
+size_t XHeaders::size() const {
+  return xheaders_.size();
+}
+
 XHeaders::const_iterator XHeaders::find (const std::string& k) const {
   std::string key(k);
   boost::to_lower(key);

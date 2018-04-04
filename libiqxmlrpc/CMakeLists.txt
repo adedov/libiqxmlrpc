@@ -58,6 +58,7 @@ set(PUBLIC_HEADERS
   value_type.inl
   value_type_visitor.h
   value.h
+  xheaders.h
 )
 
 set(PRIVATE_HEADERS

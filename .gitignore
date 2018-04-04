@@ -25,3 +25,4 @@ tests/cmake_install.cmake
 tests/parser-test
 tests/server-test
 tests/value-test
+tests/xheaders-test
