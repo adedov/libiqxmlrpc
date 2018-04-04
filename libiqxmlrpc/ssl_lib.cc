@@ -127,7 +127,7 @@ namespace {
 void
 set_common_options(SSL_CTX* ctx)
 {
-  SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
+  SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3);
 }
 
 int
