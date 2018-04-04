@@ -1,5 +1,9 @@
 Look into ChangeLog file for full list of changes.
 
+0.13.5 - 0.13.6
+  * Add support for tracing via HTTP X- headers (thanks to Dmitry Salomatin)
+  * Security: Disable SSLv3 (issue #4)
+
 0.13.4 - 0.13.5
   * Stability: Fix crash on parsing requests/responses with empty root <value>
     parameter (Thanks to Evgeny Dontsov).
