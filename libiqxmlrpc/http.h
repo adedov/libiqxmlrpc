@@ -189,6 +189,7 @@ class Packet_reader {
 public:
   Packet_reader():
     header(0),
+    ver_level_(HTTP_CHECK_WEAK),
     constructed(false),
     pkt_max_sz(0),
     total_sz(0),
