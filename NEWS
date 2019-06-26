@@ -1,5 +1,8 @@
 Look into ChangeLog file for full list of changes.
 
+0.13.6 - 0.13.7
+  * Fix conditional jump or move depends on uninitialised value
+
 0.13.5 - 0.13.6
   * Add support for tracing via HTTP X- headers (thanks to Dmitry Salomatin)
   * Security: Disable SSLv3 (issue #4)
