@@ -2,8 +2,6 @@
 //  Copyright (C) 2011 Anton Dedov
 
 #include <boost/optional.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <memory>
 
 #include "server.h"
 #include "auth_plugin.h"
@@ -15,6 +13,8 @@
 #include "server_conn.h"
 #include "xheaders.h"
 
+#include <memory>
+
 namespace iqxmlrpc {
 
 class Server::Impl {
@@ -23,10 +23,10 @@ public:
 
   iqnet::Inet_addr bind_addr;
 
-  std::auto_ptr<iqnet::Reactor_base>          reactor;
-  std::auto_ptr<iqnet::Reactor_interrupter>   interrupter;
-  std::auto_ptr<iqnet::Accepted_conn_factory> conn_factory;
-  std::auto_ptr<iqnet::Acceptor>              acceptor;
+  std::unique_ptr<iqnet::Reactor_base>          reactor;
+  std::unique_ptr<iqnet::Reactor_interrupter>   interrupter;
+  std::unique_ptr<iqnet::Accepted_conn_factory> conn_factory;
+  std::unique_ptr<iqnet::Acceptor>              acceptor;
   iqnet::Firewall_base* firewall;
 
   bool exit_flag;
@@ -35,7 +35,7 @@ public:
   http::Verification_level ver_level;
 
   Method_dispatcher_manager  disp_manager;
-  std::auto_ptr<Interceptor> interceptors;
+  std::unique_ptr<Interceptor> interceptors;
   const Auth_Plugin_base*    auth_plugin;
 
   Impl(
@@ -47,14 +47,14 @@ public:
       reactor(ef->create_reactor()),
       interrupter(new iqnet::Reactor_interrupter(reactor.get())),
       conn_factory(cf),
-      acceptor(0),
-      firewall(0),
+      acceptor(nullptr),
+      firewall(nullptr),
       exit_flag(false),
-      log(0),
+      log(nullptr),
       max_req_sz(0),
       ver_level(http::HTTP_CHECK_WEAK),
-      interceptors(0),
-      auth_plugin(0)
+      interceptors(nullptr),
+      auth_plugin(nullptr)
   {
   }
 };
@@ -180,15 +180,15 @@ authenticate(const http::Packet& pkt, const Auth_Plugin_base* ap)
 
 void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 {
-  using boost::scoped_ptr;
+  using std::unique_ptr;
   using boost::optional;
 
   Executor* executor = 0;
 
   try {
-    scoped_ptr<http::Packet> packet(pkt);
+    unique_ptr<http::Packet> packet(pkt);
     optional<std::string> authname = authenticate(*pkt, impl->auth_plugin);
-    scoped_ptr<Request> req( parse_request(packet->content()) );
+    unique_ptr<Request> req( parse_request(packet->content()) );
 
     Method::Data mdata = {
       req->get_name(),
@@ -210,7 +210,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
   catch( const iqxmlrpc::http::Error_response& e )
   {
     log_err_msg( e.what() );
-    std::auto_ptr<Executor> executor_to_delete(executor);
+    std::unique_ptr<Executor> executor_to_delete(executor);
     http::Packet *pkt = new http::Packet(e);
     conn->schedule_response( pkt );
   }
@@ -237,7 +237,7 @@ void Server::schedule_execute( http::Packet* pkt, Server_connection* conn )
 void Server::schedule_response(
   const Response& resp, Server_connection* conn, Executor* exec )
 {
-  std::auto_ptr<Executor> executor_to_delete(exec);
+  std::unique_ptr<Executor> executor_to_delete(exec);
   std::string resp_str = dump_response(resp);
   http::Packet *packet = new http::Packet(new http::Response_header(), resp_str);
   conn->schedule_response( packet );

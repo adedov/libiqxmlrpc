@@ -312,7 +312,7 @@ void Request_header::get_authinfo(std::string& user, std::string& pw) const
   if (v[0] != "basic")
     throw Unauthorized();
 
-  boost::scoped_ptr<Binary_data> bin_authinfo( Binary_data::from_base64(v[1]) );
+  std::unique_ptr<Binary_data> bin_authinfo( Binary_data::from_base64(v[1]) );
   std::string data = bin_authinfo->get_data();
 
   size_t colon_it = data.find_first_of(":");
@@ -324,7 +324,7 @@ void Request_header::get_authinfo(std::string& user, std::string& pw) const
 void Request_header::set_authinfo(const std::string& u, const std::string& p)
 {
   std::string h = u + ":" + p;
-  boost::scoped_ptr<Binary_data> bin_authinfo( Binary_data::from_data(h) );
+  std::unique_ptr<Binary_data> bin_authinfo( Binary_data::from_data(h) );
   set_option( names::authorization, "Basic " + bin_authinfo->get_base64() );
 }
 

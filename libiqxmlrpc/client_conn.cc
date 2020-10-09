@@ -5,6 +5,8 @@
 #include "client_opts.h"
 #include "http.h"
 
+#include <memory>
+
 namespace iqxmlrpc {
 
 Client_connection::Client_connection():
@@ -22,7 +24,7 @@ Response Client_connection::process_session( const Request& req, const XHeaders&
 
   std::string req_xml_str( dump_request(req) );
 
-  std::auto_ptr<Request_header> req_h(
+  std::unique_ptr<Request_header> req_h(
     new Request_header(
       decorate_uri(),
       opts().vhost(),
@@ -38,7 +40,7 @@ Response Client_connection::process_session( const Request& req, const XHeaders&
   req_p.set_keep_alive( opts().keep_alive() );
 
   // Received packet
-  std::auto_ptr<Packet> res_p( do_process_session(req_p.dump()) );
+  std::unique_ptr<Packet> res_p( do_process_session(req_p.dump()) );
 
   const Response_header* res_h =
     static_cast<const Response_header*>(res_p->header());

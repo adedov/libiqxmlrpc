@@ -17,12 +17,12 @@ Socket::Socket()
   if( (sock = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP )) == -1 )
     throw network_error( "Socket::Socket" );
 
-#ifndef WIN32
+#ifndef _WIN32
   {
   int enable = 1;
   setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable) );
   }
-#endif //WIN32
+#endif //_WIN32
 
 #if defined(__APPLE__)
   {
@@ -45,16 +45,16 @@ void Socket::shutdown()
 
 void Socket::close()
 {
-#ifdef WIN32
+#ifdef _WIN32
   closesocket(sock);
 #else
   ::close( sock );
-#endif //WIN32
+#endif //_WIN32
 }
 
 void Socket::set_non_blocking( bool flag )
 {
-#ifdef WIN32
+#ifdef _WIN32
   unsigned long f = flag ? 1 : 0;
   if( ioctlsocket(sock, FIONBIO, &f) != 0 )
     throw network_error( "Socket::set_non_blocking");
@@ -64,7 +64,7 @@ void Socket::set_non_blocking( bool flag )
 
   if( fcntl( sock, F_SETFL, O_NDELAY ) == -1 )
     throw network_error( "Socket::set_non_blocking" );
-#endif //WIN32
+#endif //_WIN32
 }
 
 #if defined(MSG_NOSIGNAL)
@@ -135,7 +135,7 @@ bool Socket::connect( const iqnet::Inet_addr& peer_addr )
   bool wouldblock = false;
 
   if( code == -1 ) {
-#ifndef WIN32
+#ifndef _WIN32
     wouldblock = errno == EINPROGRESS;
 #else
     wouldblock = get_last_error() == WSAEWOULDBLOCK;
@@ -163,7 +163,7 @@ Inet_addr Socket::get_addr() const
 int Socket::get_last_error()
 {
   int err = 0;
-#ifndef WIN32
+#ifndef _WIN32
   socklen_t int_sz = sizeof(err);
   ::getsockopt( sock, SOL_SOCKET, SO_ERROR, &err, &int_sz );
 #else

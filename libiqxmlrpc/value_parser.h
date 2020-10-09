@@ -7,6 +7,8 @@
 #include "parser2.h"
 #include "value.h"
 
+#include <memory>
+
 namespace iqxmlrpc {
 
 class ValueBuilderBase: public BuilderBase {
@@ -20,7 +22,7 @@ public:
   }
 
 protected:
-  std::auto_ptr<Value_type> retval;
+  std::unique_ptr<Value_type> retval;
 };
 
 class ValueBuilder: public ValueBuilderBase {

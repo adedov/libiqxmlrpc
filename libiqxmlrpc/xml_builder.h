@@ -6,13 +6,12 @@
 
 #include "api_export.h"
 
-#include <boost/utility.hpp>
 #include <string>
 #include <libxml/xmlwriter.h>
 
 namespace iqxmlrpc {
 
-class XmlBuilder: boost::noncopyable {
+class XmlBuilder {
 public:
   class Node {
   public:
@@ -27,6 +26,10 @@ public:
   };
 
   XmlBuilder();
+  XmlBuilder(const XmlBuilder&) = delete;
+  XmlBuilder(XmlBuilder&&) = delete;
+  XmlBuilder& operator=(const XmlBuilder&) = delete;
+  XmlBuilder& operator=(XmlBuilder&&) = delete;
   ~XmlBuilder();
 
   void
@@ -35,8 +38,7 @@ public:
   void
   stop();
 
-  std::string
-  content() const;
+  std::string content() const;
 
 private:
   xmlBufferPtr buf;

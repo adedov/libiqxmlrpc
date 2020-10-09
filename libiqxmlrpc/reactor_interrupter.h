@@ -6,8 +6,6 @@
 
 #include "reactor.h"
 
-#include <boost/utility.hpp>
-
 namespace iqnet {
 
 #ifdef _MSC_VER
@@ -15,9 +13,13 @@ namespace iqnet {
 #pragma warning(disable: 4275)
 #endif
 
-class LIBIQXMLRPC_API Reactor_interrupter: boost::noncopyable {
+class LIBIQXMLRPC_API Reactor_interrupter {
 public:
   Reactor_interrupter(Reactor_base*);
+  Reactor_interrupter(const Reactor_interrupter&) = delete;
+  Reactor_interrupter(Reactor_interrupter&&) = delete;
+  Reactor_interrupter& operator=(const Reactor_interrupter&) = delete;
+  Reactor_interrupter& operator=(Reactor_interrupter&&) = delete;
   ~Reactor_interrupter();
 
   void make_interrupt();

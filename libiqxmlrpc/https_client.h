@@ -10,7 +10,7 @@
 #include "reactor.h"
 #include "ssl_connection.h"
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace iqxmlrpc
 {
@@ -32,8 +32,8 @@ protected:
 
   void setup_tunnel();
 
-  boost::scoped_ptr<iqnet::Reactor_base> reactor;
-  boost::scoped_ptr<http::Packet> resp_packet;
+  std::unique_ptr<iqnet::Reactor_base> reactor;
+  std::unique_ptr<http::Packet> resp_packet;
   bool non_blocking;
   std::string out_str;
 };
@@ -43,7 +43,7 @@ class LIBIQXMLRPC_API Https_client_connection:
   public iqxmlrpc::Client_connection,
   public iqnet::ssl::Reaction_connection
 {
-  std::auto_ptr<iqnet::Reactor_base> reactor;
+  std::unique_ptr<iqnet::Reactor_base> reactor;
   http::Packet* resp_packet;
   std::string out_str;
   bool established;
