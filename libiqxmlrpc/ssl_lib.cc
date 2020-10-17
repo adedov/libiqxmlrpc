@@ -12,6 +12,7 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+#include <boost/core/noncopyable.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/once.hpp>
 

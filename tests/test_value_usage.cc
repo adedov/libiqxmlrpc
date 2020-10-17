@@ -72,13 +72,13 @@ BOOST_AUTO_TEST_CASE( array_test )
   {
     Array a;
     a.push_back(0);
-    BOOST_CHECKPOINT("Suspicious Array cloning");
+    BOOST_TEST_CHECKPOINT("Suspicious Array cloning");
     std::auto_ptr<Array> a1(a.clone());
     BOOST_CHECK_EQUAL((*a1.get())[0].get_int(), 0);
   }
 
   {
-    BOOST_CHECKPOINT("Using STL algorithms with Array iterators");
+    BOOST_TEST_CHECKPOINT("Using STL algorithms with Array iterators");
 
     Array a;
     std::fill_n(std::back_inserter(a), 10, 5);
@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_CASE( struct_test )
 {
   BOOST_TEST_MESSAGE("Struct test...");
 
-  BOOST_CHECKPOINT("Filling the struct");
+  BOOST_TEST_CHECKPOINT("Filling the struct");
   Struct s;
   s.insert( "author", "D.D.Salinger" );
   s.insert( "title", "The catcher in the rye." );
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE( struct_test )
   check_struct_value(s);
 
   {
-    BOOST_CHECKPOINT("Struct iterators");
+    BOOST_TEST_CHECKPOINT("Struct iterators");
     Struct::const_iterator it = s.find("author");
     BOOST_CHECK_EQUAL( (*it->second).get_string(), "D.D.Salinger" );
     BOOST_CHECK( s.find("nonexistent") == s.end() );
@@ -126,20 +126,20 @@ BOOST_AUTO_TEST_CASE( struct_test )
   }
 
   {
-    BOOST_CHECKPOINT("Struct assigment");
+    BOOST_TEST_CHECKPOINT("Struct assigment");
     Struct s1;
     s1 = s;
     check_struct_value(s1);
   }
 
   {
-    BOOST_CHECKPOINT("Struct copy ctor");
+    BOOST_TEST_CHECKPOINT("Struct copy ctor");
     Struct s1(s);
     check_struct_value(s1);
   }
 
   {
-    BOOST_CHECKPOINT("Struct hand-copy");
+    BOOST_TEST_CHECKPOINT("Struct hand-copy");
     Struct s1;
     for (Struct::const_iterator i = s.begin(); i != s.end(); ++i)
       s1.insert(i->first, *i->second);
@@ -151,10 +151,10 @@ BOOST_AUTO_TEST_CASE( struct_test )
     Struct s;
     s.insert("pages", 0);
 
-    BOOST_CHECKPOINT("Inserting 0 into struct");
+    BOOST_TEST_CHECKPOINT("Inserting 0 into struct");
     BOOST_CHECK(s["pages"].is_int());
 
-    BOOST_CHECKPOINT("Suspicious Struct cloning");
+    BOOST_TEST_CHECKPOINT("Suspicious Struct cloning");
     std::auto_ptr<Struct> s1(s.clone());
     BOOST_CHECK(s1->has_field("pages"));
   }
