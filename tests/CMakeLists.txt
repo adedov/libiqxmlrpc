@@ -9,7 +9,7 @@ endif (NOT Boost_USE_STATIC_LIBS)
 macro (iqxmlrpc_test test_name)
 	message("Add test ${test_name}")
 	add_executable(${test_name} ${ARGN})
-	target_link_libraries(${test_name} iqxmlrpc ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES} crypto)
+	target_link_libraries(${test_name} iqxmlrpc ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES} ${OPENSSL_LIBRARIES})
 endmacro (iqxmlrpc_test)
 
 iqxmlrpc_test(value-test test_value_usage.cc)
