@@ -1,7 +1,7 @@
 //  Libiqxmlrpc - an object-oriented XML-RPC solution.
 //  Copyright (C) 2011 Anton Dedov
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <winsock2.h>
 #endif
 
@@ -13,10 +13,10 @@
 #include <openssl/err.h>
 
 #include <boost/core/noncopyable.hpp>
-#include <boost/thread/mutex.hpp>
 #include <boost/thread/once.hpp>
+#include <mutex>
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <pthread.h>
 #endif
 
@@ -31,18 +31,22 @@ namespace ssl {
 // Mutli-threading support stuff
 //
 
-class LockContainer: boost::noncopyable {
+class LockContainer {
 public:
   LockContainer():
     size(CRYPTO_num_locks()),
-    locks(new boost::mutex[size])
+    locks(new std::mutex[size])
   {
   }
+  LockContainer(const LockContainer&) = delete;
+  LockContainer(LockContainer&&) = delete;
+  LockContainer& operator=(const LockContainer&) = delete;
+  LockContainer& operator=(LockContainer&&) = delete;
 
   ~LockContainer();
 
   size_t size;
-  boost::mutex* locks;
+  std::mutex* locks;
 };
 
 void
@@ -51,7 +55,7 @@ openssl_lock_callback(int mode, int n, const char* /*file*/, int /*line*/)
   static LockContainer lks;
   // assert n < lks.size
 
-  boost::mutex& m = lks.locks[n];
+  std::mutex& m = lks.locks[n];
   if (mode & CRYPTO_LOCK) {
     m.lock();
   } else {

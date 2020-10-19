@@ -5,6 +5,8 @@
 #include "client_conn.h"
 #include "client_opts.h"
 
+#include <memory>
+
 namespace iqxmlrpc {
 
 //
@@ -21,14 +23,14 @@ public:
     opts(addr, uri, vhost) {}
 
   Client_options opts;
-  boost::scoped_ptr<Client_connection> conn_cache;
+  std::unique_ptr<Client_connection> conn_cache;
 };
 
 //
 // Auto_conn
 //
 
-class Auto_conn: boost::noncopyable {
+class Auto_conn {
 public:
   Auto_conn( Client_base::Impl& client_impl, Client_base& client ):
     client_impl_(client_impl)
@@ -45,6 +47,10 @@ public:
       conn_ptr_ = tmp_conn_.get();
     }
   }
+  Auto_conn(const Auto_conn&) = delete;
+  Auto_conn(Auto_conn&&) = delete;
+  Auto_conn& operator=(const Auto_conn&) = delete;
+  Auto_conn& operator=(Auto_conn&&) = delete;
 
   ~Auto_conn()
   {
@@ -74,7 +80,7 @@ private:
   }
 
   Client_base::Impl& client_impl_;
-  boost::scoped_ptr<Client_connection> tmp_conn_;
+  std::unique_ptr<Client_connection> tmp_conn_;
   Client_connection* conn_ptr_;
 };
 

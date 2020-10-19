@@ -9,9 +9,9 @@
 #include "xheaders.h"
 
 #include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <map>
+#include <memory>
 #include <string>
 
 namespace iqxmlrpc {
@@ -149,7 +149,7 @@ private:
 //! HTTP packet: Header + Content.
 class LIBIQXMLRPC_API Packet {
 protected:
-  boost::shared_ptr<http::Header> header_;
+  std::shared_ptr<http::Header> header_;
   std::string content_;
 
 public:

@@ -7,8 +7,8 @@
 #include "api_export.h"
 
 #include <openssl/ssl.h>
-#include <boost/shared_ptr.hpp>
 #include <stdexcept>
+#include <memory>
 
 namespace iqnet {
 namespace ssl {
@@ -65,7 +65,7 @@ private:
   Ctx();
 
   struct Impl;
-  boost::shared_ptr<Impl> impl_;
+  std::shared_ptr<Impl> impl_;
 };
 
 #ifdef _MSC_VER

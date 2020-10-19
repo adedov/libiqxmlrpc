@@ -4,7 +4,7 @@
 #ifndef _iqxmlrpc_response_h_
 #define _iqxmlrpc_response_h_
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include "api_export.h"
 
@@ -41,7 +41,7 @@ public:
   const std::string& fault_string() const { return fault_string_; }
 
 private:
-  boost::shared_ptr<Value> value_;
+  std::shared_ptr<Value> value_;
   int fault_code_;
   std::string fault_string_;
 };

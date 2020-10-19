@@ -66,13 +66,18 @@ public:
 
 //! Provides serialized access to some bool value
 template <class Lock>
-class LockedBool: boost::noncopyable {
+class LockedBool {
   bool val;
   Lock lock;
 
 public:
   LockedBool(bool default_):
     val(default_) {}
+
+  LockedBool(const LockedBool&) = delete;
+  LockedBool(LockedBool&&) = delete;
+  LockedBool& operator=(const LockedBool&) = delete;
+  LockedBool& operator=(LockedBool&&) = delete;
 
   ~LockedBool() {}
 

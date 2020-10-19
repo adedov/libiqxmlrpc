@@ -12,9 +12,10 @@
 #pragma warning(disable: 4275)
 #endif
 
-#include <boost/thread/thread.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition.hpp>
+#include <boost/thread/thread.hpp> // thread_group
+#include <condition_variable>
+#include <mutex>
+#include <thread>
 
 #ifdef _MSC_VER
 #pragma warning(pop)
@@ -46,7 +47,7 @@ struct Serial_executor_traits
 struct Pool_executor_traits
 {
   typedef Pool_executor_factory Executor_factory;
-  typedef boost::mutex Lock;
+  typedef std::mutex Lock;
 };
 
 //! Abstract executor class. Defines the policy for method execution.
@@ -134,11 +135,11 @@ class LIBIQXMLRPC_API Pool_executor_factory: public Executor_factory_base {
 
   // Objects Pool_thread works with
   std::deque<Pool_executor*> req_queue;
-  boost::mutex               req_queue_lock;
-  boost::condition           req_queue_cond;
+  std::mutex               req_queue_lock;
+  std::condition_variable  req_queue_cond;
 
   bool          in_destructor;
-  boost::mutex  destructor_lock;
+  std::mutex    destructor_lock;
 
 public:
   Pool_executor_factory(unsigned num_threads);

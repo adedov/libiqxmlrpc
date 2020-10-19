@@ -31,12 +31,17 @@ class Auth_Plugin_base;
 #endif
 
 //! XML-RPC server.
-class LIBIQXMLRPC_API Server: boost::noncopyable {
+class LIBIQXMLRPC_API Server {
 public:
   Server(
     const iqnet::Inet_addr& addr,
     iqnet::Accepted_conn_factory* conn_factory,
     Executor_factory_base* executor_factory );
+
+  Server(const Server&) = delete;
+  Server(Server&&) = delete;
+  Server& operator=(const Server&) = delete;
+  Server& operator=(Server&&) = delete;
 
   virtual ~Server();
 

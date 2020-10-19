@@ -9,7 +9,7 @@
 #ifndef _iqxmlrpc_sysinc_h_
 #define _iqxmlrpc_sysinc_h_
 
-#ifdef WIN32
+#ifdef _WIN32
   #define BOOST_ALL_NO_LIB
 
 #if _MSC_VER < 1700
@@ -28,7 +28,7 @@
   #include <arpa/inet.h>
   #include <netinet/in.h>
   #include <netinet/tcp.h>
-#endif //WIN32
+#endif //_WIN32
 
 #include <ctype.h>
 #include <locale.h>

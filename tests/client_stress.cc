@@ -1,9 +1,5 @@
 #define BOOST_TEST_MODULE test_client_stress
-#include <stdlib.h>
 #include <openssl/md5.h>
-#include <memory>
-#include <iostream>
-#include <sstream>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/thread/thread.hpp>
@@ -11,9 +7,15 @@
 #include "client_common.h"
 #include "client_opts.h"
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #include <winsock2.h>
 #endif
+
+#include <cstdlib>
+#include <iostream>
+#include <memory>
+#include <sstream>
+#include <thread>
 
 using namespace boost::unit_test;
 using namespace boost::program_options;
@@ -45,7 +47,7 @@ class ClientFixture {
 public:
   ClientFixture()
   {
-#if defined(WIN32)
+#if defined(_WIN32)
     WORD wVersionRequested;
     WSADATA wsaData;
     wVersionRequested = MAKEWORD(2, 2);
@@ -84,7 +86,7 @@ void do_call(Client_base* client)
 void do_test()
 {
   try {
-    std::auto_ptr<Client_base> client(test_config.create_instance());
+    std::unique_ptr<Client_base> client(test_config.create_instance());
     for (int i = 0; i < test_config.calls_per_thread(); ++i) {
       do_call(client.get());
     }

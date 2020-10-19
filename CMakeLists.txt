@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 2.8)
 project(Libiqxmlrpc)
 set(Libiqxmlrpc_VERSION 0.13.6)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 add_subdirectory(libiqxmlrpc)
 
 option(build_tests "Build tests?" OFF)

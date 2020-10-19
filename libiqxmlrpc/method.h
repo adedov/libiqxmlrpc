@@ -10,9 +10,9 @@
 #include "xheaders.h"
 
 #include <boost/utility.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include <map>
+#include <memory>
 #include <string>
 
 namespace iqxmlrpc
@@ -100,8 +100,14 @@ private:
  *  in the same time. So the synchronization of internal state of
  *  user-defined interceptor is up to it's creator.
  */
-class LIBIQXMLRPC_API Interceptor: boost::noncopyable {
+class LIBIQXMLRPC_API Interceptor {
 public:
+  Interceptor() = default;
+
+  Interceptor(const Interceptor&) = delete;
+  Interceptor(Interceptor&&) = delete;
+  Interceptor& operator=(const Interceptor&) = delete;
+  Interceptor& operator=(Interceptor&&) = delete;
   virtual ~Interceptor() {}
 
   void nest(Interceptor* ic)
@@ -127,7 +133,7 @@ protected:
   }
 
 private:
-  boost::scoped_ptr<Interceptor> nested;
+  std::unique_ptr<Interceptor> nested;
 };
 
 #ifdef _MSC_VER

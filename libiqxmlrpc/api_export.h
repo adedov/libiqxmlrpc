@@ -6,9 +6,9 @@
 
 #include "sysinc.h"
 
-#if defined(WIN32) || defined(__MINGW32__)
+#if defined(_WIN32) || defined(__MINGW32__)
   #define LIBIQXMLRPC_DLL
-#endif // WIN32 || __MINGW32__
+#endif // _WIN32 || __MINGW32__
 
 #ifdef LIBIQXMLRPC_DLL
   #if defined(LIBIQXMLRPC_COMPILATION) && defined(DLL_EXPORT)

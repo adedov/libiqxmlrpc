@@ -7,9 +7,9 @@
 #include "socket.h"
 
 #include <boost/optional.hpp>
-#include <boost/thread/mutex.hpp>
 
 #include <memory>
+#include <mutex>
 
 namespace iqnet {
 
@@ -39,17 +39,21 @@ private:
   Reactor_base* reactor_;
 };
 
-class Reactor_interrupter::Impl: boost::noncopyable {
+class Reactor_interrupter::Impl {
 public:
   Impl(Reactor_base* reactor);
+  Impl(const Impl&) = delete;
+  Impl(Impl&&) = delete;
+  Impl& operator=(const Impl&) = delete;
+  Impl& operator=(Impl&&) = delete;
   ~Impl() {}
 
   void make_interrupt();
 
 private:
-  std::auto_ptr<Interrupter_connection> server_;
+  std::unique_ptr<Interrupter_connection> server_;
   Socket client_;
-  boost::mutex lock_;
+  std::mutex mutex_;
 };
 
 
@@ -68,7 +72,7 @@ Reactor_interrupter::Impl::Impl(Reactor_base* reactor)
 
 void Reactor_interrupter::Impl::make_interrupt()
 {
-  boost::mutex::scoped_lock lk(lock_);
+  std::lock_guard<std::mutex> lk(mutex_);
   client_.send("\0", 1);
 }
 

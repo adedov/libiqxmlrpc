@@ -6,6 +6,8 @@
 #include "http_errors.h"
 #include "server.h"
 
+#include <memory>
+
 using namespace iqxmlrpc;
 
 Server_connection::Server_connection( const iqnet::Inet_addr& a ):
@@ -50,7 +52,7 @@ http::Packet* Server_connection::read_request( const std::string& s )
 
 void Server_connection::schedule_response( http::Packet* pkt )
 {
-  std::auto_ptr<http::Packet> p(pkt);
+  std::unique_ptr<http::Packet> p(pkt);
   p->set_keep_alive( keep_alive );
   response = p->dump();
   do_schedule_response();

@@ -23,19 +23,25 @@
 
 #include <boost/utility.hpp>
 
-#include <assert.h>
-#include <map>
 #include <algorithm>
+#include <cassert>
+#include <mutex>
+#include <map>
+#include <type_traits>
 
 namespace iqnet
 {
 
 //! The Reactor template class.
-//! Lock param can be either boost::mutex or iqnet::Null_lock.
+//! Lock param can be either std::mutex or iqnet::Null_lock.
 template <class Lock>
-class Reactor: public Reactor_base, boost::noncopyable {
+class Reactor: public Reactor_base {
 public:
   Reactor();
+  Reactor(const Reactor&) = delete;
+  Reactor(Reactor&&) = delete;
+  Reactor& operator=(const Reactor&) = delete;
+  Reactor& operator=(Reactor&&) = delete;
   ~Reactor() {}
 
   void register_handler( Event_handler*, Event_mask );
@@ -47,7 +53,12 @@ public:
   bool handle_events( Timeout ms = -1 );
 
 private:
-  typedef typename Lock::scoped_lock        scoped_lock;
+  using unique_lock = typename std::conditional<
+                                   std::is_same<Lock, iqnet::Null_lock>::value,
+                                   iqnet::Null_lock::scoped_lock,
+                                   std::unique_lock<std::mutex>
+                               >::type;
+
   typedef std::map<Socket::Handler, Event_handler*> EventHandlersMap;
   typedef EventHandlersMap::iterator        h_iterator;
   typedef HandlerStateList::const_iterator  hs_const_iterator;
@@ -98,7 +109,7 @@ Reactor<Lock>::find_handler_state(Event_handler* eh)
 template <class Lock>
 iqnet::Event_handler* Reactor<Lock>::find_handler(Socket::Handler fd)
 {
-  scoped_lock lk(lock);
+  unique_lock lk(lock);
   h_iterator i = handlers.find(fd);
   return i == handlers.end() ? NULL : i->second;
 }
@@ -106,7 +117,7 @@ iqnet::Event_handler* Reactor<Lock>::find_handler(Socket::Handler fd)
 template <class Lock>
 void Reactor<Lock>::register_handler( Event_handler* eh, Event_mask mask )
 {
-  scoped_lock lk(lock);
+  unique_lock lk(lock);
 
   if (eh->is_stopper())
     num_stoppers++;
@@ -128,7 +139,7 @@ void Reactor<Lock>::register_handler( Event_handler* eh, Event_mask mask )
 template <class Lock>
 void Reactor<Lock>::unregister_handler( Event_handler* eh, Event_mask mask )
 {
-  scoped_lock lk(lock);
+  unique_lock lk(lock);
   hs_iterator i = find_handler_state( eh );
 
   if( i != end() )
@@ -149,7 +160,7 @@ void Reactor<Lock>::unregister_handler( Event_handler* eh, Event_mask mask )
 template <class Lock>
 void Reactor<Lock>::unregister_handler( Event_handler* eh )
 {
-  scoped_lock lk(lock);
+  unique_lock lk(lock);
   h_iterator i = handlers.find(eh->get_handler());
 
   if( i != handlers.end() )
@@ -165,7 +176,7 @@ void Reactor<Lock>::unregister_handler( Event_handler* eh )
 template <class Lock>
 void Reactor<Lock>::fake_event( Event_handler* eh, Event_mask mask )
 {
-  scoped_lock lk(lock);
+  unique_lock lk(lock);
   hs_iterator i = find_handler_state( eh );
 
   if( i != end() )
@@ -228,7 +239,7 @@ template <class Lock>
 void Reactor<Lock>::handle_user_events()
 {
   HandlerStateList called_by_user;
-  scoped_lock lk(lock);
+  unique_lock lk(lock);
 
   for( hs_iterator i = begin(); i != end(); ++i )
   {
@@ -252,7 +263,7 @@ void Reactor<Lock>::handle_user_events()
 template <class Lock>
 bool Reactor<Lock>::handle_system_events(Reactor_base::Timeout ms)
 {
-  scoped_lock lk(lock);
+  unique_lock lk(lock);
   HandlerStateList tmp(handlers_states);
   lk.unlock();
 

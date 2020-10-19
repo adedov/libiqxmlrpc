@@ -9,7 +9,8 @@
 #include "response.h"
 
 #include <boost/optional.hpp>
-#include <boost/scoped_ptr.hpp>
+
+#include <memory>
 
 namespace iqxmlrpc {
 
@@ -22,13 +23,17 @@ class Client_connection;
 
 //! Client base class.
 //! It is responsible for performing RPC calls and connection management.
-class LIBIQXMLRPC_API Client_base: boost::noncopyable {
+class LIBIQXMLRPC_API Client_base {
 public:
   Client_base(
     const iqnet::Inet_addr& addr,
     const std::string& uri,
     const std::string& vhost
   );
+  Client_base(const Client_base&) = delete;
+  Client_base(Client_base&&) = delete;
+  Client_base& operator=(const Client_base&) = delete;
+  Client_base& operator=(Client_base&&) = delete;
 
   virtual ~Client_base();
 
@@ -69,7 +74,7 @@ private:
   friend class Auto_conn;
   class Impl;
 
-  boost::scoped_ptr<Impl> impl_;
+  std::unique_ptr<Impl> impl_;
 };
 
 #ifdef _MSC_VER

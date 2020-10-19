@@ -1,10 +1,12 @@
 #define BOOST_TEST_MODULE value_test
-#include <iostream>
-#include <vector>
-#include <algorithm>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test.hpp>
 #include "libiqxmlrpc/value.h"
+
+#include <algorithm>
+#include <iostream>
+#include <memory>
+#include <vector>
 
 using namespace boost::unit_test;
 using namespace iqxmlrpc;
@@ -73,7 +75,7 @@ BOOST_AUTO_TEST_CASE( array_test )
     Array a;
     a.push_back(0);
     BOOST_TEST_CHECKPOINT("Suspicious Array cloning");
-    std::auto_ptr<Array> a1(a.clone());
+    std::unique_ptr<Array> a1(a.clone());
     BOOST_CHECK_EQUAL((*a1.get())[0].get_int(), 0);
   }
 
@@ -155,7 +157,7 @@ BOOST_AUTO_TEST_CASE( struct_test )
     BOOST_CHECK(s["pages"].is_int());
 
     BOOST_TEST_CHECKPOINT("Suspicious Struct cloning");
-    std::auto_ptr<Struct> s1(s.clone());
+    std::unique_ptr<Struct> s1(s.clone());
     BOOST_CHECK(s1->has_field("pages"));
   }
 

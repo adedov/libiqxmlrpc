@@ -17,7 +17,7 @@ std::string get_host_name()
 }
 
 
-#if defined(WIN32) || defined(__APPLE__)
+#if defined(_WIN32) || defined(__APPLE__)
 #define IQXMLRPC_GETHOSTBYNAME(_h) \
   hent = ::gethostbyname( _h ); \
   if( !hent ) { \

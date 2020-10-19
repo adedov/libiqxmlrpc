@@ -25,9 +25,9 @@ exception_message(const std::string& prefix, bool use_errno, int myerrno)
 
     myerrno = myerrno ? myerrno : errno;
 
-#if !defined WIN32 && defined _GNU_SOURCE
+#if !defined _WIN32 && defined _GNU_SOURCE
     b = strerror_r( myerrno, buf, sizeof(buf) - 1 );
-#elif !defined WIN32
+#elif !defined _WIN32
     strerror_r( myerrno, buf, sizeof(buf) - 1 );
 #else
     strerror_s( buf, sizeof(buf) - 1, WSAGetLastError() );

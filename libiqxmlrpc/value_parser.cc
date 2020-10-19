@@ -6,6 +6,8 @@
 #include "except.h"
 #include "value_parser.h"
 
+#include <memory>
+
 namespace iqxmlrpc {
 
 ValueBuilderBase::ValueBuilderBase(Parser& parser, bool expect_text):
@@ -186,7 +188,7 @@ ValueBuilder::do_visit_element_end(const std::string&)
   if (retval.get())
     return;
 
-  std::auto_ptr<Int> default_int(Value::get_default_int());
+  std::unique_ptr<Int> default_int(Value::get_default_int());
 
   switch (state_.get_state()) {
   case VALUE:

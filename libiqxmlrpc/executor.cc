@@ -11,7 +11,8 @@
 #include <memory>
 
 using namespace iqxmlrpc;
-typedef boost::mutex::scoped_lock scoped_lock;
+typedef std::lock_guard<std::mutex> scoped_lock;
+typedef std::unique_lock<std::mutex> unique_lock;
 
 Executor::Executor( Method* m, Server* s, Server_connection* cb ):
   method(m),
@@ -43,7 +44,7 @@ void Executor::interrupt_server()
 void Serial_executor::execute( const Param_list& params )
 {
   try {
-    std::auto_ptr<Value> result(new Value(0));
+    std::unique_ptr<Value> result(new Value(0));
     method->process_execution( interceptors, params, *result.get() );
     schedule_response( Response(result.release()) );
   }
@@ -95,7 +96,7 @@ void Pool_executor_factory::Pool_thread::operator ()()
 
   for(;;)
   {
-    scoped_lock lk(pool->req_queue_lock);
+    unique_lock lk(pool->req_queue_lock);
 
     if (pool->req_queue.empty())
     {
@@ -145,7 +146,7 @@ Executor* Pool_executor_factory::create(
 
 iqnet::Reactor_base* Pool_executor_factory::create_reactor()
 {
-  return new iqnet::Reactor<boost::mutex>;
+  return new iqnet::Reactor<std::mutex>;
 }
 
 
@@ -211,7 +212,7 @@ void Pool_executor::execute( const Param_list& params_ )
 void Pool_executor::process_actual_execution()
 {
   try {
-    std::auto_ptr<Value> result(new Value(0));
+    std::unique_ptr<Value> result(new Value(0));
     method->process_execution( interceptors, params, *result.get() );
     schedule_response( Response(result.release()) );
   }
