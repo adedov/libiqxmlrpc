@@ -126,6 +126,7 @@ enum ValueBuilderState {
   VALUE,
   STRING,
   INT,
+  INT64,
   BOOL,
   DOUBLE,
   BINARY,
@@ -143,6 +144,7 @@ ValueBuilder::ValueBuilder(Parser& parser):
     { VALUE,  STRING, "string" },
     { VALUE,  INT,    "int" },
     { VALUE,  INT,    "i4" },
+    { VALUE,  INT64,  "i8" },
     { VALUE,  BOOL,   "boolean" },
     { VALUE,  DOUBLE, "double" },
     { VALUE,  BINARY, "base64" },
@@ -187,6 +189,7 @@ ValueBuilder::do_visit_element_end(const std::string&)
     return;
 
   std::auto_ptr<Int> default_int(Value::get_default_int());
+  std::auto_ptr<Int64> default_int64(Value::get_default_int64());
 
   switch (state_.get_state()) {
   case VALUE:
@@ -197,6 +200,13 @@ ValueBuilder::do_visit_element_end(const std::string&)
   case INT:
     if (default_int.get()) {
       retval.reset(default_int.release());
+      break;
+    }
+    throw XML_RPC_violation(parser_.context());
+
+  case INT64:
+    if (default_int64.get()) {
+      retval.reset(new Int64(default_int64.release()->value()));
       break;
     }
     throw XML_RPC_violation(parser_.context());
@@ -224,6 +234,10 @@ ValueBuilder::do_visit_text(const std::string& text)
 
   case INT:
     retval.reset(new Int(lexical_cast<int>(text)));
+    break;
+
+  case INT64:
+    retval.reset(new Int64(lexical_cast<int64_t>(text)));
     break;
 
   case BOOL:

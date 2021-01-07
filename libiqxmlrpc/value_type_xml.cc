@@ -34,6 +34,11 @@ void Value_type_to_xml::do_visit_int(int val)
   add_textnode("i4", boost::lexical_cast<std::string>(val));
 }
 
+void Value_type_to_xml::do_visit_int64(int64_t val)
+{
+  add_textnode("i8", boost::lexical_cast<std::string>(val));
+}
+
 void Value_type_to_xml::do_visit_double(double val)
 {
   add_textnode("double", boost::lexical_cast<std::string>(val));

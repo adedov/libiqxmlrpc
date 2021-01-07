@@ -28,6 +28,7 @@ BOOST_AUTO_TEST_CASE(test_parse_scalar)
 {
   BOOST_CHECK_EQUAL(parse_value("<int>123</int>").get_int(), 123);
   BOOST_CHECK_EQUAL(parse_value("<i4>123</i4>").get_int(), 123);
+  BOOST_CHECK_EQUAL(parse_value("<i8>5000000000</i8>").get_int64(), 5000000000L);
   BOOST_CHECK_EQUAL(parse_value("<boolean>0</boolean>").get_bool(), false);
   BOOST_CHECK_EQUAL(parse_value("<double>123.45</double>").get_double(), 123.45);
   BOOST_CHECK_EQUAL(parse_value("<string>str</string>").get_string(), "str");
@@ -50,20 +51,25 @@ BOOST_AUTO_TEST_CASE(test_parse_array)
           "<struct>"
           "<member><name>v1</name><value>str</value></member>"
           "<member><name>v2</name><value><int>123</int></value></member>"
+          "<member><name>v3</name><value><i8>6000000000</i8></value></member>"
           "</struct>"
       "</value>"
+      "<value><i8>5000000000</i8></value>"
       "</data>"
     "</array>").the_array();
 
-  BOOST_CHECK_EQUAL(v.size(), 6);
+  BOOST_CHECK_EQUAL(v.size(), 7);
   BOOST_CHECK_EQUAL(v[0].get_int(), 123);
   BOOST_CHECK_EQUAL(v[1].get_double(), 123.456);
   BOOST_CHECK_EQUAL(v[2].get_string(), "str");
   BOOST_CHECK_EQUAL(v[3].get_string(), "str2");
   BOOST_CHECK_EQUAL(v[4].get_bool(), true);
   BOOST_CHECK(v[5].is_struct());
-  BOOST_CHECK_EQUAL(v[5].the_struct().size(), 2);
+  BOOST_CHECK_EQUAL(v[5].the_struct().size(), 3);
+  BOOST_CHECK_EQUAL(v[5].the_struct()["v1"].get_string(), "str");
   BOOST_CHECK_EQUAL(v[5].the_struct()["v2"].get_int(), 123);
+  BOOST_CHECK_EQUAL(v[5].the_struct()["v3"].get_int64(), 6000000000l);
+  BOOST_CHECK_EQUAL(v[6].get_int64(), 5000000000);
 }
 
 BOOST_AUTO_TEST_CASE(test_parse_unknown_type)
@@ -143,16 +149,22 @@ BOOST_AUTO_TEST_CASE(test_parse_emptiness)
   BOOST_CHECK_THROW(parse_value("<dateTime.iso8601/>"), XML_RPC_violation);
 
   Value::set_default_int(-123);
+  Value::set_default_int64(-1234567890L);
   BOOST_CHECK_EQUAL(parse_value("<int></int>").get_int(), -123);
   BOOST_CHECK_EQUAL(parse_value("<int/>").get_int(), -123);
   BOOST_CHECK_EQUAL(parse_value("<i4></i4>").get_int(), -123);
   BOOST_CHECK_EQUAL(parse_value("<i4/>").get_int(), -123);
+  BOOST_CHECK_EQUAL(parse_value("<i8></i8>").get_int64(), -1234567890L);
+  BOOST_CHECK_EQUAL(parse_value("<i8/>").get_int64(), -1234567890L);
 
   Value::drop_default_int();
+  Value::drop_default_int64();
   BOOST_CHECK_THROW(parse_value("<int></int>"), XML_RPC_violation);
   BOOST_CHECK_THROW(parse_value("<int/>"), XML_RPC_violation);
   BOOST_CHECK_THROW(parse_value("<i4></i4>"), XML_RPC_violation);
   BOOST_CHECK_THROW(parse_value("<i4/>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<i8></i8>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<i8/>"), XML_RPC_violation);
 
   BOOST_CHECK_EQUAL(parse_value("<string/>").get_string(), "");
   BOOST_CHECK_EQUAL(parse_value("<string></string>").get_string(), "");
@@ -223,6 +235,7 @@ BOOST_AUTO_TEST_CASE(test_malfromed_value)
   BOOST_CHECK_THROW(parse_value("<int><MALFORMED>123</MALFORMED></int>"), XML_RPC_violation);
   BOOST_CHECK_THROW(parse_value("<int><MALFORMED/>123</int>"), XML_RPC_violation);
   BOOST_CHECK_THROW(parse_value("<int>123<MALFORMED/></int>"), XML_RPC_violation);
+  BOOST_CHECK_THROW(parse_value("<i8><MALFORMED>123</MALFORMED></i8>"), XML_RPC_violation);
   BOOST_CHECK_THROW(parse_value("<string>OK<MALFORMED/></string>"), XML_RPC_violation);
 }
 

@@ -19,6 +19,7 @@ private:
   virtual void do_visit_value(const Value_type&);
   virtual void do_visit_nil();
   virtual void do_visit_int(int);
+  virtual void do_visit_int64(int64_t);
   virtual void do_visit_double(double);
   virtual void do_visit_bool(bool);
   virtual void do_visit_string(const std::string&);

@@ -84,7 +84,7 @@ class Client: public iqxmlrpc::Client_base {
 public:
   /*! \param addr Actual server address;
       \param uri  Requested URI (default "/RPC");
-      \param host Requested virtual host (by default calculated form addr).
+      \param vhost Requested virtual host (by default calculated form addr).
   */
   Client(
     const iqnet::Inet_addr& addr,
