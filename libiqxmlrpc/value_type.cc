@@ -17,6 +17,7 @@ namespace iqxmlrpc {
 namespace type_names {
   const std::string nil_type_name     = "nil";
   const std::string int_type_name     = "i4";
+  const std::string int64_type_name   = "i8";
   const std::string bool_type_name    = "boolean";
   const std::string double_type_name  = "double";
   const std::string string_type_name  = "string";
@@ -56,6 +57,18 @@ template<>
 void Int::apply_visitor(Value_type_visitor& v) const
 {
   v.visit_int(value_);
+}
+
+template<>
+const std::string& Int64::type_name() const
+{
+  return type_names::int64_type_name;
+}
+
+template<>
+void Int64::apply_visitor(Value_type_visitor& v) const
+{
+  v.visit_int64(value_);
 }
 
 template<>

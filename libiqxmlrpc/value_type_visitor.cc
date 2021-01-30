@@ -29,6 +29,11 @@ void Print_value_visitor::do_visit_int(int val)
   out_ << val;
 }
 
+void Print_value_visitor::do_visit_int64(int64_t val)
+{
+  out_ << val;
+}
+
 void Print_value_visitor::do_visit_double(double val)
 {
   out_ << val;

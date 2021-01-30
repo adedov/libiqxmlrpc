@@ -33,6 +33,7 @@ public:
   Value( const Value& );
   Value( Nil );
   Value( int );
+  Value( int64_t );
   Value( bool );
   Value( double );
   Value( std::string );
@@ -51,6 +52,7 @@ public:
   //! \{
   bool is_nil()    const;
   bool is_int()    const;
+  bool is_int64()  const;
   bool is_bool()   const;
   bool is_double() const;
   bool is_string() const;
@@ -65,6 +67,7 @@ public:
   //! \name Access scalar value
   //! \{
   int         get_int()    const;
+  int64_t     get_int64()  const;
   bool        get_bool()   const;
   double      get_double() const;
   std::string get_string() const;
@@ -72,6 +75,7 @@ public:
   Date_time   get_datetime() const;
 
   operator int()         const;
+  operator int64_t()     const;
   operator bool()        const;
   operator double()      const;
   operator std::string() const;
@@ -116,6 +120,10 @@ public:
   static void set_default_int(int);
   static Int* get_default_int();
   static void drop_default_int();
+
+  static void set_default_int64(int64_t);
+  static Int64* get_default_int64();
+  static void drop_default_int64();
 
   static void omit_string_tag_in_responses(bool);
   static bool omit_string_tag_in_responses();

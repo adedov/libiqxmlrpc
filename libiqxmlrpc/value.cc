@@ -17,6 +17,7 @@ Value::Bad_cast::Bad_cast():
 
 namespace ValueOptions {
   boost::optional<int> default_int;
+  boost::optional<int64_t> default_int64;
   bool omit_string_tag_in_responses = false;
 }
 
@@ -33,6 +34,21 @@ Int* Value::get_default_int()
 void Value::drop_default_int()
 {
   ValueOptions::default_int.reset();
+}
+
+void Value::set_default_int64(int64_t dint)
+{
+  ValueOptions::default_int64 = dint;
+}
+
+Int64* Value::get_default_int64()
+{
+  return ValueOptions::default_int64 ? new Int64(*ValueOptions::default_int64) : 0;
+}
+
+void Value::drop_default_int64()
+{
+  ValueOptions::default_int64.reset();
 }
 
 void Value::omit_string_tag_in_responses(bool v)
@@ -62,6 +78,11 @@ Value::Value( Nil n ):
 
 Value::Value( int i ):
   value( new Int(i) )
+{
+}
+
+Value::Value( int64_t i ):
+  value( new Int64(i) )
 {
 }
 
@@ -148,6 +169,11 @@ bool Value::is_int() const
   return can_cast<Int>();
 }
 
+bool Value::is_int64() const
+{
+  return can_cast<Int64>();
+}
+
 bool Value::is_bool() const
 {
   return can_cast<Bool>();
@@ -192,6 +218,11 @@ int Value::get_int() const
   return cast<Int>()->value();
 }
 
+int64_t Value::get_int64() const
+{
+  return cast<Int64>()->value();
+}
+
 bool Value::get_bool() const
 {
   return cast<Bool>()->value();
@@ -220,6 +251,11 @@ Date_time Value::get_datetime() const
 Value::operator int() const
 {
   return get_int();
+}
+
+Value::operator int64_t() const
+{
+  return get_int64();
 }
 
 Value::operator bool() const

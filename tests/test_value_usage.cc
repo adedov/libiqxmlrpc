@@ -26,6 +26,12 @@ BOOST_AUTO_TEST_CASE( scalar_test )
   BOOST_CHECK_EQUAL(i, 10);
   BOOST_CHECK_EQUAL(vi.type_name(), "i4");
 
+  Value vi64 = static_cast<int64_t>(5000000000L);
+  BOOST_CHECK(vi64.is_int64());
+  int64_t i64 = vi64;
+  BOOST_CHECK_EQUAL(i64, 5000000000L);
+  BOOST_CHECK_EQUAL(vi64.type_name(), "i8");
+
   Value vd = 0.33;
   BOOST_CHECK(vd.is_double());
   double d = vd;
