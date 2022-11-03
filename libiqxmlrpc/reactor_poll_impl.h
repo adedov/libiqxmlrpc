@@ -7,18 +7,20 @@
 #ifdef HAVE_POLL
 #include "reactor.h"
 
-#include <boost/utility.hpp>
-
 namespace iqnet
 {
 
 //! Reactor implementation helper based on poll() system call.
-class LIBIQXMLRPC_API Reactor_poll_impl: boost::noncopyable {
+class LIBIQXMLRPC_API Reactor_poll_impl {
   struct Impl;
   Impl* impl;
 
 public:
   Reactor_poll_impl();
+  Reactor_poll_impl(const Reactor_poll_impl&) = delete;
+  Reactor_poll_impl(Reactor_poll_impl&&) = delete;
+  Reactor_poll_impl& operator=(const Reactor_poll_impl&) = delete;
+  Reactor_poll_impl& operator=(Reactor_poll_impl&&) = delete;
   virtual ~Reactor_poll_impl();
 
   void reset(const Reactor_base::HandlerStateList&);

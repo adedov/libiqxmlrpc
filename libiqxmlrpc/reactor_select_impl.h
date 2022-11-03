@@ -7,8 +7,6 @@
 #ifndef HAVE_POLL
 #include "reactor.h"
 
-#include <boost/utility.hpp>
-
 namespace iqnet
 {
 
@@ -19,13 +17,17 @@ namespace iqnet
 #endif
 
 //! Reactor implementation helper based on select() system call.
-class LIBIQXMLRPC_API Reactor_select_impl: boost::noncopyable {
+class LIBIQXMLRPC_API Reactor_select_impl {
   Socket::Handler max_fd;
   fd_set read_set, write_set, err_set;
   Reactor_base::HandlerStateList hs;
 
 public:
   Reactor_select_impl();
+  Reactor_select_impl(const Reactor_select_impl&) = delete;
+  Reactor_select_impl(Reactor_select_impl&&) = delete;
+  Reactor_select_impl& operator=(const Reactor_select_impl&) = delete;
+  Reactor_select_impl& operator=(Reactor_select_impl&&) = delete;
   virtual ~Reactor_select_impl();
 
   void reset(const Reactor_base::HandlerStateList&);

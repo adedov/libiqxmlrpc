@@ -1,10 +1,6 @@
 #include <memory>
 #include <iostream>
 #include <boost/bind.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/thread.hpp>
-#include <boost/thread/condition.hpp>
-#include <boost/thread/mutex.hpp>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/utility.hpp>
@@ -18,19 +14,34 @@
 #define MY_BOOST_TIME_UTC boost::TIME_UTC
 #endif
 
+#include <chrono>
+#include <condition_variable>
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <thread>
+
 using namespace boost::unit_test_framework;
 using namespace iqxmlrpc;
 
-class TestServer: boost::noncopyable {
+std::chrono::microseconds from_xtime(const boost::xtime& xt) {
+    return std::chrono::seconds(xt.sec) + std::chrono::microseconds(xt.usec);
+}
+
+class TestServer {
 public:
   TestServer(int port, unsigned threads):
     exec_factory_(threads > 1 ?
       static_cast<Executor_factory_base*>(new Pool_executor_factory(threads)) :
       static_cast<Executor_factory_base*>(new Serial_executor_factory)),
     serv_(new Http_server(port, exec_factory_.get())),
-    thread_(new boost::thread(boost::bind(&TestServer::run, this)))
+    thread_(new std::thread(std::bind(&TestServer::run, this)))
   {
   }
+  TestServer(const TestServer&) = delete;
+  TestServer(TestServer&&) = delete;
+  TestServer& operator=(const TestServer&) = delete;
+  TestServer& operator=(TestServer&&) = delete;
 
   void stop()
   {
@@ -43,9 +54,9 @@ public:
   }
 
 private:
-  boost::scoped_ptr<iqxmlrpc::Executor_factory_base> exec_factory_;
-  boost::scoped_ptr<iqxmlrpc::Server> serv_;
-  boost::scoped_ptr<boost::thread> thread_;
+  std::unique_ptr<iqxmlrpc::Executor_factory_base> exec_factory_;
+  std::unique_ptr<iqxmlrpc::Server> serv_;
+  std::unique_ptr<std::thread> thread_;
 
   static void run(TestServer* obj)
   {
@@ -53,7 +64,7 @@ private:
   }
 };
 
-void stop_and_join(unsigned threads, boost::condition* on_stop)
+void stop_and_join(unsigned threads, std::condition_variable* on_stop)
 {
   TestServer s(3344, threads);
 
@@ -61,7 +72,7 @@ void stop_and_join(unsigned threads, boost::condition* on_stop)
   boost::xtime_get(&time_wait, MY_BOOST_TIME_UTC);
   time_wait.sec += 1;
 
-  boost::thread::sleep(time_wait);
+  std::this_thread::sleep_for(from_xtime(time_wait));
 
   s.stop();
   s.join();
@@ -70,23 +81,23 @@ void stop_and_join(unsigned threads, boost::condition* on_stop)
 
 void stop_test_server(unsigned server_threads)
 {
-  boost::condition stopped;
-  boost::mutex c_mutex;
+  std::condition_variable stopped;
+  std::mutex c_mutex;
 
-  boost::thread thr(boost::bind(stop_and_join, server_threads, &stopped));
+  std::thread thr(std::bind(stop_and_join, server_threads, &stopped));
 
   {
   boost::xtime time_wait;
   boost::xtime_get(&time_wait, MY_BOOST_TIME_UTC);
   time_wait.sec += 1;
-  boost::thread::sleep(time_wait);
+  std::this_thread::sleep_for(from_xtime(time_wait));
   }
 
   boost::xtime time_wait;
   boost::xtime_get(&time_wait, MY_BOOST_TIME_UTC);
   time_wait.sec += 3;
 
-  boost::mutex::scoped_lock lck(c_mutex);
+  std::lock_guard lck(c_mutex);
   BOOST_CHECK( stopped.timed_wait(lck, time_wait) );
 }
 

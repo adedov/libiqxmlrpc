@@ -6,7 +6,7 @@
 
 namespace iqnet {
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #define IQXMLRPC_INPROGRESS WSAEWOULDBLOCK
 #else
 #define IQXMLRPC_INPROGRESS EINPROGRESS

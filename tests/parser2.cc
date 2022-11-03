@@ -1,13 +1,15 @@
 #define BOOST_TEST_MODULE test_parser
-#include <iostream>
-#include <vector>
-#include <algorithm>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test.hpp>
 #include "libiqxmlrpc/value.h"
 #include "libiqxmlrpc/value_parser.h"
 #include "libiqxmlrpc/request_parser.h"
 #include "libiqxmlrpc/response_parser.h"
+
+#include <algorithm>
+#include <iostream>
+#include <memory>
+#include <vector>
 
 using namespace boost::unit_test;
 using namespace iqxmlrpc;
@@ -259,7 +261,7 @@ BOOST_AUTO_TEST_CASE(test_parse_request)
   </params> \
 </methodCall>";
 
-  std::auto_ptr<Request> req(parse_request(r));
+  std::unique_ptr<Request> req(parse_request(r));
   BOOST_CHECK_EQUAL(req->get_name(), "get_weather");
   BOOST_CHECK_EQUAL(req->get_params().size(), 2);
   BOOST_CHECK_EQUAL(req->get_params().front().get_string(), "Krasnoyarsk");
@@ -278,7 +280,7 @@ BOOST_AUTO_TEST_CASE(test_parse_request_empty_param)
   </params> \
 </methodCall>";
 
-  std::auto_ptr<Request> req(parse_request(r));
+  std::unique_ptr<Request> req(parse_request(r));
   BOOST_CHECK_EQUAL(req->get_name(), "do_something");
   BOOST_CHECK_EQUAL(req->get_params().size(), 1);
   BOOST_CHECK_EQUAL(req->get_params().back().get_string(), "");
@@ -287,7 +289,7 @@ BOOST_AUTO_TEST_CASE(test_parse_request_empty_param)
 BOOST_AUTO_TEST_CASE(test_parse_request_no_params)
 {
   std::string r = "<methodCall><methodName>do_something</methodName></methodCall>";
-  std::auto_ptr<Request> req(parse_request(r));
+  std::unique_ptr<Request> req(parse_request(r));
   BOOST_CHECK_EQUAL(req->get_name(), "do_something");
   BOOST_CHECK_EQUAL(req->get_params().size(), 0);
 }

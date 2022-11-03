@@ -8,6 +8,8 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include <memory>
+
 using namespace iqnet;
 
 namespace iqxmlrpc {
@@ -45,7 +47,7 @@ Https_proxy_client_connection::Https_proxy_client_connection(
   Client_connection(),
   Connection( s ),
   reactor( new Reactor<Null_lock> ),
-  resp_packet(0),
+  resp_packet(nullptr),
   non_blocking(nb)
 {
   sock.set_non_blocking( nb );

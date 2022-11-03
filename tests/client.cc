@@ -11,9 +11,11 @@
 #include "client_common.h"
 #include "client_opts.h"
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #include <winsock2.h>
 #endif
+
+#include <memory>
 
 using namespace boost::unit_test;
 using namespace iqxmlrpc;
@@ -26,7 +28,7 @@ class ClientFixture {
 public:
   ClientFixture()
   {
-#if defined(WIN32)
+#if defined(_WIN32)
     WORD wVersionRequested;
     WSADATA wsaData;
     wVersionRequested = MAKEWORD(2, 2);
@@ -115,7 +117,7 @@ BOOST_AUTO_TEST_CASE( get_file_test )
 
   MD5(reinterpret_cast<md5char*>(d.get_data().data()),
     d.get_data().length(), md5);
-  std::auto_ptr<Binary_data> gen_md5( Binary_data::from_data(
+  std::unique_ptr<Binary_data> gen_md5( Binary_data::from_data(
     reinterpret_cast<strchar*>(md5), sizeof(md5)) );
 
   BOOST_TEST_MESSAGE("Recieved MD5:   " + m.get_base64());

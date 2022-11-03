@@ -5,9 +5,9 @@
 #define _iqxmlrpc_parser2_h_
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
 
 namespace iqxmlrpc {
 
@@ -93,7 +93,7 @@ public:
 
 private:
   class Impl;
-  boost::shared_ptr<Impl> impl_;
+  std::shared_ptr<Impl> impl_;
 };
 
 class StateMachine {
